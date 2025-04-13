@@ -21,7 +21,7 @@ const SubjectSelectionScreen = ({ navigation, route }) => {
 
 
     const handlePress = (subject) => {
-         navigation.navigate('QuestionList', {
+         navigation.navigate('OrganizationSelection', {
              branchId: branchId,
              semesterId: semesterId,
              subjectId: subject.id,

@@ -1,10 +1,11 @@
+// FILE: src/components/QuestionCard.js
 // src/components/QuestionCard.js
 import React, { useMemo } from 'react';
-import { View, Text, Switch, StyleSheet, Platform } from 'react-native';
+import { View, Text, Switch, StyleSheet, Platform, TouchableOpacity, Linking } from 'react-native';
 import SyntaxHighlighter from 'react-native-syntax-highlighter';
-// --- CHANGE HERE: Import a light theme like 'prism' ---
-import { prism } from 'react-syntax-highlighter/dist/esm/styles/prism'; // Or try vs, ghcolors, etc.
+import { prism } from 'react-syntax-highlighter/dist/esm/styles/prism'; // Or try vs, ghcolors, atomOneLight, etc.
 import * as Animatable from 'react-native-animatable';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 import { globalStyles, Colors } from '../styles/globalStyles'; // Use updated styles/colors
 
@@ -98,11 +99,10 @@ const QuestionCard = React.memo(({ question, isCompleted, onToggleCompletion }) 
                         return (
                             <View key={`code-${index}`} style={styles.codeContainer}>
                                 <SyntaxHighlighter
-                                    language={part.language || 'cpp'}
-                                    // --- CHANGE HERE: Use the imported light theme ---
-                                    style={prism}
+                                    // language={part.language || 'cpp'}
+                                    style={prism} // Use the selected light theme (e.g., prism)
                                     customStyle={globalStyles.codeBlockStyle} // Background, padding, border
-                                    codeTagProps={{ style: globalStyles.codeTextStyle }} // Base font settings
+                                    codeTagProps={{ style: globalStyles.codeTextStyle }} // Base font settings (without explicit color)
                                     highlighter="prism"
                                     PreTag={View}
                                     CodeTag={Text}
@@ -118,7 +118,7 @@ const QuestionCard = React.memo(({ question, isCompleted, onToggleCompletion }) 
                 })}
             </View>
 
-            {/* Footer Section (Tags and Switch) */}
+            {/* Footer Section (Tags, Ask AI Button, and Switch) */}
             <View style={globalStyles.questionFooter}>
                 <View style={globalStyles.questionFooterLeft}>
                    {question.type && typeof question.type === 'string' && (
@@ -132,7 +132,48 @@ const QuestionCard = React.memo(({ question, isCompleted, onToggleCompletion }) 
                         </Text>
                    )}
                 </View>
-                 <View style={globalStyles.completionContainer}>
+                <TouchableOpacity 
+                    style={styles.askAiButton}
+                    onPress={() => {
+                        // Format question data as a natural language prompt
+                        let promptText = `Help me solve this ${question.type || ''} question `;
+                        
+                        // Add contextual information
+                        if (question.chapter) {
+                            promptText += `about ${question.chapter.replace(/^Module\s*\d+:\s*/i, '')} `;
+                        }
+                        
+                        if (question.year) {
+                            promptText += `from ${question.year} exam `;
+                        }
+                        
+                        if (question.marks) {
+                            promptText += `worth ${question.marks} marks: \n`;
+                        } else {
+                            promptText += ": \n";
+                        }
+                        
+                        // Add the actual question text
+                        promptText += question.text;
+                        
+                        // Create search query string with the formatted prompt
+                        const searchQuery = encodeURIComponent(promptText);
+                        
+                        // Open ChatGPT with the search query
+                        const url = `https://chatgpt.com/search?q=${searchQuery}`;
+                        Linking.canOpenURL(url).then(supported => {
+                            if (supported) {
+                                Linking.openURL(url);
+                            } else {
+                                console.warn("Cannot open URL: " + url);
+                            }
+                        });
+                    }}
+                >
+                    <FontAwesome5 name="robot" size={14} color={Colors.accent} />
+                    <Text style={styles.askAiButtonText}>Ask AI</Text>
+                </TouchableOpacity>
+                <View style={globalStyles.completionContainer}>
                    <Switch
                      trackColor={{ false: Colors.disabledBg, true: Colors.success + 'B3' }}
                      thumbColor={isCompleted ? Colors.success : Colors.surface}
@@ -148,7 +189,7 @@ const QuestionCard = React.memo(({ question, isCompleted, onToggleCompletion }) 
     );
 });
 
-// Local styles specific to QuestionCard (remain the same)
+// Local styles specific to QuestionCard
 const styles = StyleSheet.create({
     codeContainer: {
         marginVertical: 8,
@@ -160,6 +201,23 @@ const styles = StyleSheet.create({
          fontSize: 10,
          paddingVertical: 3,
          paddingHorizontal: 8,
+    },
+    askAiButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: Colors.accent + '15',
+        paddingVertical: 6,
+        paddingHorizontal: 10,
+        borderRadius: 16,
+        borderWidth: 1,
+        borderColor: Colors.accent + '30',
+        marginRight: 10,
+    },
+    askAiButtonText: {
+        color: Colors.accent,
+        fontSize: 12,
+        fontWeight: '600',
+        marginLeft: 5,
     },
     switchStyle: {
          transform: [{ scaleX: 0.85 }, { scaleY: 0.85 }]

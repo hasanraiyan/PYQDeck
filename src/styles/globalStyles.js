@@ -1,3 +1,4 @@
+// FILE: src/styles/globalStyles.js
 // src/styles/globalStyles.js
 import { StyleSheet, Platform } from 'react-native';
 
@@ -40,9 +41,9 @@ export const Colors = {
   modalSecondaryButtonText: '#6C757D', // Use secondary text color for text
   modalBackdrop: 'rgba(0, 0, 0, 0.4)', // Slightly lighter backdrop
 
-  // Syntax Highlighting (Okaidia dark theme contrasts well)
+  // Syntax Highlighting (Prism light theme will provide colors)
   codeBlockBackground: '#F1F3F5', // Light grey background for code blocks
-  codeBlockText: '#343A40', // Use dark text for code itself if not using highlighter theme colors
+  // codeBlockText: '#343A40', // NO LONGER NEEDED - Color defined by the theme (e.g., prism)
 };
 
 // --- UPDATED GLOBAL STYLES ---
@@ -80,14 +81,14 @@ export const globalStyles = StyleSheet.create({
   },
   // Titles (Standard header is preferred, but keep for consistency if used elsewhere)
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
     color: Colors.textPrimary,
     marginBottom: 15,
     textAlign: 'center',
   },
   subtitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '600',
     color: Colors.textSecondary,
     marginBottom: 15,
@@ -95,14 +96,14 @@ export const globalStyles = StyleSheet.create({
   },
   // Default Text Styles
   text: {
-    fontSize: 16,
+    fontSize: 18,
     color: Colors.textPrimary,
-    lineHeight: 23,
+    lineHeight: 25,
   },
   textSecondary: {
-    fontSize: 14,
+    fontSize: 16,
     color: Colors.textSecondary,
-    lineHeight: 20,
+    lineHeight: 22,
   },
   // List Item Styling (Branch, Semester, Subject)
   listItem: {
@@ -125,7 +126,7 @@ export const globalStyles = StyleSheet.create({
     elevation: 2,
   },
   listItemText: {
-    fontSize: 17,
+    fontSize: 19,
     fontWeight: '500', // Medium weight for list items
     color: Colors.textPrimary,
     flexShrink: 1,
@@ -148,7 +149,7 @@ export const globalStyles = StyleSheet.create({
   },
   buttonText: {
     color: Colors.modalPrimaryButtonText,
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '500',
   },
   // Filter Modal Styling
@@ -180,7 +181,7 @@ export const globalStyles = StyleSheet.create({
     marginBottom: 15,
   },
   modalTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '600',
     color: Colors.modalTextPrimary,
   },
@@ -191,7 +192,7 @@ export const globalStyles = StyleSheet.create({
     paddingHorizontal: 10, // Adjusted padding
     paddingVertical: 5,
     borderRadius: 16, // More rounded
-    fontSize: 11,
+    fontSize: 13,
     fontWeight: '600',
     overflow: 'hidden',
     textAlign: 'center',
@@ -208,7 +209,7 @@ export const globalStyles = StyleSheet.create({
   },
   filterOptionText: {
     marginLeft: 12,
-    fontSize: 16,
+    fontSize: 18,
     color: Colors.modalTextPrimary, // Use modal text color
     flexShrink: 1,
   },
@@ -257,16 +258,15 @@ export const globalStyles = StyleSheet.create({
     borderRadius: 6,
     padding: 12,
     marginVertical: 10, // Keep vertical margin
-    backgroundColor: Colors.codeBlockBackground, // Should be light (e.g., #F1F3F5 or #F8F9FA)
+    backgroundColor: Colors.codeBlockBackground, // Light grey background
     borderWidth: 1,
     borderColor: Colors.border, // Use standard border color
     overflow: 'hidden', // Ensure rounded corners clip content
   },
   codeTextStyle: { // Base style for text *within* the code block
-    fontSize: Platform.OS === 'ios' ? 13 : 12, // Font size
-    lineHeight: 19, // Line height
-    // --- REMOVE COLOR HERE --- Let the theme (prism) control the text color
-    // color: Colors.codeBlockText, // REMOVE THIS or ensure it's a sensible default like textPrimary
+    fontSize: Platform.OS === 'ios' ? 15 : 14, // Font size
+    lineHeight: 21, // Line height
+    // --- COLOR REMOVED --- Theme (e.g., prism) controls the text color
     fontFamily: Platform.OS === 'ios' ? 'Menlo-Regular' : 'monospace', // Font family
   },
   // Activity Indicator / Empty List Styling
@@ -287,7 +287,7 @@ export const globalStyles = StyleSheet.create({
   emptyListText: {
     textAlign: 'center',
     color: Colors.textSecondary, // Use themed secondary text
-    fontSize: 16,
+    fontSize: 18,
     marginTop: 15, // Space below icon
   }
 });

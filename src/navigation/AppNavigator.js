@@ -6,6 +6,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BranchSelectionScreen from '../screens/BranchSelectionScreen';
 import SemesterSelectionScreen from '../screens/SemesterSelectionScreen';
 import SubjectSelectionScreen from '../screens/SubjectSelectionScreen';
+import OrganizationSelectionScreen from '../screens/OrganizationSelectionScreen';
+import YearListScreen from '../screens/YearListScreen';
+import ChapterListScreen from '../screens/ChapterListScreen';
 import QuestionListScreen from '../screens/QuestionListScreen';
 
 import fullData from '../data/data.json';
@@ -52,6 +55,21 @@ const AppNavigator = () => {
           name="SubjectSelection"
           component={SubjectSelectionScreen}
            options={({ route }) => ({ title: route.params?.semesterName || 'Select Subject' })}
+        />
+        <Stack.Screen
+          name="OrganizationSelection"
+          component={OrganizationSelectionScreen}
+          options={({ route }) => ({ title: route.params?.subjectName || 'View Options' })}
+        />
+        <Stack.Screen
+          name="YearListScreen"
+          component={YearListScreen}
+          options={({ route }) => ({ title: `${route.params?.subjectName} - Years` || 'Years' })}
+        />
+        <Stack.Screen
+          name="ChapterListScreen"
+          component={ChapterListScreen}
+          options={({ route }) => ({ title: `${route.params?.subjectName} - Chapters` || 'Chapters' })}
         />
         <Stack.Screen
           name="QuestionList"

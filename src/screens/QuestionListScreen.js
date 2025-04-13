@@ -1,3 +1,4 @@
+// FILE: src/screens/QuestionListScreen.js
 // src/screens/QuestionListScreen.js
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { View, Text, FlatList, ActivityIndicator, Pressable, StyleSheet, Platform } from 'react-native';
@@ -6,18 +7,18 @@ import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { globalStyles, Colors } from '../styles/globalStyles'; // Use updated styles/colors
 import { loadCompletedQuestions, toggleQuestionCompletion } from '../utils/storage';
 import QuestionCard from '../components/QuestionCard';
-import FilterModal from '../components/FilterModal';
+// FilterModal import removed
 
 const QuestionListScreen = ({ navigation, route }) => {
-  const { subjectId, branchId, semesterId, allBranchesData, subjectName } = route.params;
+  const { subjectId, branchId, semesterId, allBranchesData, subjectName, presetFilters: initialFilters } = route.params;
 
   // State Management
   const [allQuestions, setAllQuestions] = useState([]);
   const [filteredQuestions, setFilteredQuestions] = useState([]);
   const [completedQuestions, setCompletedQuestions] = useState(new Set());
   const [isLoading, setIsLoading] = useState(true);
-  const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [activeFilters, setActiveFilters] = useState({ years: [], chapters: [] });
+
 
   // Memoized selector for subject (more robust check)
   const subject = useMemo(() => {
@@ -64,9 +65,11 @@ const QuestionListScreen = ({ navigation, route }) => {
            setIsLoading(false);
       };
       initialize();
-      // Reset filters when subject changes (optional, good practice)
-      setActiveFilters({ years: [], chapters: [] });
-  }, [subject, navigation, subjectId, subjectName]); // Add subjectName dependency
+      // Set initial filters from route params
+      if (initialFilters) {
+          setActiveFilters(initialFilters);
+      }
+  }, [subject, navigation, subjectId, subjectName, initialFilters]); // Add subjectName and initialFilters dependency
 
    // Effect to apply filters and sort questions
    useEffect(() => {
@@ -75,33 +78,46 @@ const QuestionListScreen = ({ navigation, route }) => {
 
       let result = [...allQuestions];
 
-      // Apply Year Filters
-      if (activeFilters.years.length > 0) {
-          const yearSet = new Set(activeFilters.years);
-          result = result.filter(q => q.year && yearSet.has(q.year));
+      // --- Filtering Logic ---
+      if (activeFilters.years?.length > 0) {
+          result = result.filter(q => activeFilters.years.includes(q.year));
       }
-      // Apply Chapter Filters
-       if (activeFilters.chapters.length > 0) {
-          const chapterSet = new Set(activeFilters.chapters);
-          result = result.filter(q => chapterSet.has(q.chapter || 'Uncategorized'));
+      if (activeFilters.chapters?.length > 0) {
+          result = result.filter(q => activeFilters.chapters.includes(q.chapter || 'Uncategorized'));
       }
+      // --- END OF FILTERING LOGIC ---
 
-      // Sort questions: By Year (desc), then by Question Number (asc)
+      // --- SORTING LOGIC (No Changes) ---
       result.sort((a, b) => {
-           // Handle potential null/undefined years
-           const yearA = a.year || 0;
-           const yearB = b.year || 0;
-           if (yearA !== yearB) return yearB - yearA; // Sort descending by year
+           // 1. Primary Sort: Completion Status (Incomplete first)
+           // Check if question IDs exist before checking the Set
+           const isACompleted = a?.questionId ? completedQuestions.has(a.questionId) : false;
+           const isBCompleted = b?.questionId ? completedQuestions.has(b.questionId) : false;
 
-           // Sort by qNumber, handling potential variations like "Q1a", "Q10"
+           if (isACompleted !== isBCompleted) {
+               // Sort based on boolean value (false=0, true=1)
+               // false comes before true, putting incomplete questions first.
+               return isACompleted - isBCompleted;
+           }
+
+           // 2. Secondary Sort: Year (Descending)
+           const yearA = a.year || 0; // Handle potential null/undefined years
+           const yearB = b.year || 0;
+           if (yearA !== yearB) {
+               // yearB - yearA gives descending order (higher year first)
+               return yearB - yearA;
+           }
+
+           // 3. Tertiary Sort: Question Number (Ascending, Alphanumeric)
            const qNumA = a.qNumber || '';
            const qNumB = b.qNumber || '';
            return qNumA.localeCompare(qNumB, undefined, { numeric: true, sensitivity: 'base' });
        });
+      // --- END OF SORTING LOGIC (No Changes) ---
 
       setFilteredQuestions(result);
 
-  }, [allQuestions, activeFilters, isLoading]); // Dependencies
+  }, [allQuestions, isLoading, completedQuestions, activeFilters]); // Add activeFilters dependency
 
   // --- Callbacks ---
   // Toggle completion status
@@ -118,12 +134,14 @@ const QuestionListScreen = ({ navigation, route }) => {
       } else {
           optimisticSet.add(questionId);
       }
-      setCompletedQuestions(optimisticSet);
+      setCompletedQuestions(optimisticSet); // State update triggers the sort useEffect
 
       // Perform async storage update
       try {
           const updatedCompletedSet = await toggleQuestionCompletion(subjectId, questionId);
-          // Update state with the actual result from storage (in case of error)
+          // Update state with the actual result from storage (in case of error or if optimistic update was wrong)
+          // Note: Setting state again might seem redundant if toggle worked, but ensures consistency
+          // If performance is critical and toggleQuestionCompletion is reliable, you could skip this set state.
           setCompletedQuestions(new Set(updatedCompletedSet));
       } catch (error) {
           console.error("Failed to toggle completion status in storage:", error);
@@ -132,29 +150,12 @@ const QuestionListScreen = ({ navigation, route }) => {
       }
   }, [subjectId, completedQuestions]); // Dependency on subjectId and completedQuestions state
 
-  // Apply filters from modal
-  const handleApplyFilters = useCallback((newFilters) => {
-      setActiveFilters(newFilters);
-      // FilterModal now closes itself
-  }, []);
+  // handleApplyFilters callback removed
 
   // --- Header Button ---
    React.useLayoutEffect(() => {
       navigation.setOptions({
-      headerRight: () => (
-        <Pressable
-            onPress={() => setFilterModalVisible(true)}
-            hitSlop={15} // Increase touch area
-            style={({ pressed }) => [styles.headerButton, { opacity: pressed ? 0.6 : 1 }]}
-            android_ripple={{ color: Colors.accent + '30', borderless: true }} // Ripple effect
-        >
-          <MaterialCommunityIcons
-              name="filter-variant"
-              size={26} // Slightly smaller icon to fit better
-              color={Colors.accent} // Use Accent color for the filter icon
-          />
-        </Pressable>
-      ),
+      // HeaderRight button removed
       });
   }, [navigation]); // Re-run only if navigation changes
 
@@ -206,15 +207,7 @@ const QuestionListScreen = ({ navigation, route }) => {
                         : "No questions match the current filters." // Message when filters yield no results
                     }
                  </Text>
-                 {/* Optionally add a 'Clear Filters' button here if filters are active and list is empty */}
-                 {activeFilters.years.length > 0 || activeFilters.chapters.length > 0 ? (
-                    <Pressable
-                       style={[globalStyles.button, styles.clearFiltersButton]}
-                       onPress={() => setActiveFilters({ years: [], chapters: [] })}
-                     >
-                        <Text style={globalStyles.buttonText}>Clear Filters</Text>
-                    </Pressable>
-                 ) : null}
+           
               </View>
            }
           // Performance Optimizations
@@ -222,17 +215,11 @@ const QuestionListScreen = ({ navigation, route }) => {
           maxToRenderPerBatch={5}
           windowSize={10}
           removeClippedSubviews={Platform.OS === 'android'} // Can improve Android performance
+          // Add extraData prop to force FlatList re-render when sorting changes due to completion toggle
+          extraData={completedQuestions}
         />
 
-        {/* Filter Modal */}
-        <FilterModal
-           isVisible={filterModalVisible}
-           onClose={() => setFilterModalVisible(false)}
-           availableYears={availableYears}
-           availableChapters={availableChapters}
-           currentFilters={activeFilters}
-           onApplyFilters={handleApplyFilters}
-        />
+        {/* Filter Modal Component Rendering removed */}
     </View>
   );
 };
@@ -241,15 +228,8 @@ const styles = StyleSheet.create({
     listContentContainer: {
         paddingTop: 15, // Padding below header
     },
-    headerButton: {
-        marginRight: 15,
-        padding: 5, // Add padding for easier pressing
-        borderRadius: 20, // Make it circular for ripple effect
-    },
-    clearFiltersButton: {
-        marginTop: 20,
-        backgroundColor: Colors.accentSecondary, // Use a secondary accent color
-    }
+    // headerButton style removed
+    // clearFiltersButton removed
 });
 
 export default QuestionListScreen;
