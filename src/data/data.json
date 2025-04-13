@@ -591,7 +591,7 @@
                   "year": 2022,
                   "qNumber": "Q2a",
                   "chapter": "Module 2: Transfer Function and Block Diagrams",
-                  "text": "Find the overall transfer function C(s)/R(s) for the given block diagram using block diagram reduction techniques.\n\n![Control System Block Diagram](https://image.pollinations.ai/prompt/Control%20system%20block%20diagram%20with%20summing%20points%2C%20blocks%20G(s)%20and%20H(s)%2C%20input%20R(s)%20and%20output%20C(s)%20suitable%20for%20block%20diagram%20reduction)\n(Assume the diagram is provided)",
+                  "text": "Find the overall transfer function C(s)/R(s) for the given block diagram using block diagram reduction techniques.\n\n![Control System Block Diagram](https://image.pollinations.ai/prompt/Control%20system%20block%20diagram%20with%20summing%20points%2C%20blocks%20G(s)%20and%20H(s)%2C%20input%20R(s)%20and%20output%20C(s)%20suitable%20for%20block%20diagram%20chatgpt)\n(Assume the diagram is provided)",
                   "type": "Problem Solving",
                   "marks": 7
                 },

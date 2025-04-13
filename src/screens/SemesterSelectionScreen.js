@@ -43,7 +43,7 @@ const SemesterSelectionScreen = ({ navigation, route }) => {
         {/* Icon Container */}
         <View style={styles.iconContainer}>
           {/* Use a relevant icon, e.g., numbered list or school */}
-          <FontAwesome5 name="layer-group" size={18} color={Colors.accent} />
+          <FontAwesome5 name="layer-group" size={20} color={Colors.accent} />
         </View>
 
         {/* Text Container */}
@@ -85,8 +85,8 @@ const SemesterSelectionScreen = ({ navigation, route }) => {
           contentContainerStyle={[globalStyles.listContentContainer, { paddingTop: 15 }]}
           ListEmptyComponent={ // Consistent empty state display
              <View style={globalStyles.emptyListContainer}>
-                <MaterialIcons name="school" size={48} color={Colors.textSecondary} style={globalStyles.emptyListIcon}/>
-                <Text style={globalStyles.emptyListText}>No semesters found for this branch.</Text>
+                <FontAwesome5 name="calendar-alt" size={48} color={Colors.textSecondary} style={globalStyles.emptyListIcon} />
+                <Text style={globalStyles.emptyListText}>No semesters available</Text>
               </View>
           }
           // Performance optimizations

@@ -16,19 +16,32 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "runtimeVersion": {
+        "policy": "appVersion"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.hasanraiyan.PYQDeck",
+      "runtimeVersion": "1.0.0"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-       "expo-font" 
-    ]
+      "expo-font"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "ddfa8c5f-ce72-4706-aefe-7f8f770b09f1"
+      }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/ddfa8c5f-ce72-4706-aefe-7f8f770b09f1"
+    }
   }
 }

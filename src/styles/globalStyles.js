@@ -45,6 +45,33 @@ export const globalStyles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.background, // Use the main background color
   },
+  
+  // --- Custom Header Styles ---
+  header: {
+    backgroundColor: Colors.surface,
+    height: 60,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+    shadowColor: Colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: Colors.textPrimary,
+    maxWidth: '70%',
+  },
+  headerBackButton: {
+    padding: 8,
+    marginRight: 10,
+  },
   listContentContainer: { // Padding for FlatList content
     paddingHorizontal: 10, // Slightly reduced horizontal padding for lists
     paddingBottom: 30, // Ample space at the bottom
@@ -98,10 +125,16 @@ export const globalStyles = StyleSheet.create({
     marginTop: 15, // Space below icon
     lineHeight: 22,
   },
-  loadingText: { // Text shown with loading indicator
-      marginTop: 10,
-      fontSize: 14,
-      color: Colors.textSecondary,
+  loadingText: {
+    fontSize: 16,
+    color: Colors.textSecondary,
+    marginTop: 16,
+    letterSpacing: 0.5,
+  },
+  listItemPressed: {
+    opacity: 0.9,
+    transform: [{ scale: 0.98 }],
+    backgroundColor: Colors.disabledBg,
   },
 
   // --- Icons ---
@@ -111,23 +144,22 @@ export const globalStyles = StyleSheet.create({
 
   // --- List Items (Branches, Semesters, Subjects, etc.) ---
   listItem: {
-    backgroundColor: Colors.listItemBg, // White background
-    paddingVertical: 14, // Vertical padding
-    paddingHorizontal: 15, // Horizontal padding
-    marginVertical: 5, // Vertical spacing between items
-    marginHorizontal: 10, // Horizontal spacing from screen edges
-    borderRadius: 8, // Slightly rounded corners
+    backgroundColor: Colors.surface,
+    borderRadius: 14,
+    paddingVertical: 18,
+    paddingHorizontal: 20,
+    marginVertical: 4,
+    marginHorizontal: 0,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: Colors.border, // Subtle border
-    // Subtle shadow for depth
     shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
     shadowRadius: 3,
-    elevation: 2, // Android shadow
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
 
   // --- Cards (QuestionCard) ---

@@ -187,7 +187,7 @@ const QuestionCard = React.memo(({ question, isCompleted, onToggleCompletion }) 
                  <View style={globalStyles.questionHeaderRight}>
                     {/* Chapter Tag (Cleaned) */}
                     {displayChapter && (
-                         <Text style={[globalStyles.tag, styles.chapterTag]} numberOfLines={2}>
+                         <Text style={[globalStyles.tag, styles.chapterTag]} numberOfLines={1}>
                             {displayChapter}
                          </Text>
                     )}
@@ -270,13 +270,13 @@ const QuestionCard = React.memo(({ question, isCompleted, onToggleCompletion }) 
 
                 {/* Left side: Type and Marks tags */}
                 <View style={globalStyles.questionFooterLeft}>
-                   {question.type && typeof question.type === 'string' && (
-                        <Text style={[globalStyles.tag, styles.footerTag]}>
+                   {/* {question.type && typeof question.type === 'string' && (
+                        <Text style={[globalStyles.tag, styles.footerTag]} numberOfLines={1} ellipsizeMode="tail">
                            {question.type}
                         </Text>
-                   )}
+                   )} */}
                    {(question.marks !== null && question.marks !== undefined && question.marks !== '') && (
-                        <Text style={[globalStyles.tag, styles.footerTag]}>
+                        <Text style={[globalStyles.tag, styles.footerTag]} numberOfLines={1} ellipsizeMode="tail">
                             {question.marks} Marks
                         </Text>
                    )}
@@ -320,12 +320,17 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         color: Colors.textSecondary,
     },
-    chapterTag: { // Specific style for chapter tag if needed (e.g., different color/bg)
-        backgroundColor: Colors.accent + '10', // Even lighter background
+    chapterTag: {
+        backgroundColor: Colors.accent + '10',
         borderColor: Colors.accent + '20',
-        color: Colors.accent, // Keep accent color
-        maxWidth: '100%', // Ensure it can take full width if needed on right side
-        textAlign: 'right', // Align text right if it wraps within the tag container
+        color: Colors.accent,
+        maxWidth: 150,
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+        borderRadius: 12,
+        overflow: 'hidden',
+        marginLeft: 4,
+        flexShrink: 1,
     },
     codeOuterContainer: {
         marginVertical: 8, // Keep vertical margin around code blocks
@@ -364,7 +369,7 @@ const styles = StyleSheet.create({
     footerTag: { // Style for Type/Marks tags in footer
          backgroundColor: Colors.textSecondary + '15', // Lighter secondary background
          color: Colors.textSecondary,
-         borderColor: Colors.textSecondary + '30',
+         borderColor: Colors.accent + '30',
          fontSize: 11, // Slightly smaller font for footer tags
          paddingVertical: 4, // Adjust padding
          paddingHorizontal: 9,

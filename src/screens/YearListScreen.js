@@ -74,7 +74,7 @@ const YearListScreen = ({ navigation, route }) => {
       >
         {/* Icon */}
         <View style={styles.iconContainer}>
-          <FontAwesome5 name="calendar-check" size={18} color={Colors.accent} />
+          <FontAwesome5 name="calendar-check" size={20} color={Colors.accent} />
         </View>
         {/* Text Content (Year and Count) */}
         <View style={styles.textContainer}>
@@ -111,8 +111,8 @@ const YearListScreen = ({ navigation, route }) => {
         contentContainerStyle={[globalStyles.listContentContainer, { paddingTop: 15 }]}
         ListEmptyComponent={ // Consistent empty state
           <View style={globalStyles.emptyListContainer}>
-            <FontAwesome5 name="calendar-times" size={48} color={Colors.textSecondary} style={globalStyles.emptyListIcon} />
-            <Text style={globalStyles.emptyListText}>No questions with assigned years found.</Text>
+            <FontAwesome5 name="calendar-day" size={48} color={Colors.textSecondary} style={globalStyles.emptyListIcon} />
+            <Text style={globalStyles.emptyListText}>No questions found by year</Text>
           </View>
         }
         // Performance optimizations

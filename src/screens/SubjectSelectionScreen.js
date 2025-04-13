@@ -60,13 +60,11 @@ const SubjectSelectionScreen = ({ navigation, route }) => {
           >
             {/* Icon Container */}
             <View style={styles.iconContainer}>
-              <FontAwesome5 name={getSubjectIcon(item.name)} size={18} color={Colors.accent} />
+              <FontAwesome5 name={getSubjectIcon(item.name)} size={20} color={Colors.accent} />
             </View>
 
-            {/* Text Container (Name and Code) */}
             <View style={styles.textContainer}>
                 <Text style={globalStyles.listItemText} numberOfLines={2}>{item.name}</Text>
-                {/* Display subject code if available */}
                 {item.code && (
                   <Text style={globalStyles.listItemSubtitle} numberOfLines={1}>
                       Code: {item.code}
