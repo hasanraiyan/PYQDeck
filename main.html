@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Q&A Editor (jQuery)</title>
+    <title>Enhanced Q&A Editor (jQuery)</title>
     <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome for Icons via CDN -->
@@ -12,30 +12,39 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <style>
         /* Base styles */
-        body { background-color: #f3f4f6; /* gray-100 */ font-family: sans-serif; }
+        body { background-color: #f3f4f6; /* gray-100 */ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         /* JSON output styling */
-        #json-output { background-color: #1f2937; color: #d1d5db; border-radius: 0.375rem; padding: 1rem; font-family: monospace; font-size: 0.875rem; line-height: 1.25rem; white-space: pre-wrap; word-wrap: break-word; max-height: 85vh; overflow: auto; }
+        #json-output { background-color: #1f2937; color: #d1d5db; border-radius: 0.375rem; padding: 1rem; font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace; font-size: 0.875rem; line-height: 1.4; white-space: pre-wrap; word-wrap: break-word; max-height: 85vh; overflow: auto; }
         /* Modal styles */
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.6); display: flex; align-items: center; justify-content: center; z-index: 50; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.65); display: flex; align-items: center; justify-content: center; z-index: 50; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
         .modal-overlay.active { opacity: 1; visibility: visible; }
-        .modal-content { background-color: white; padding: 1.5rem 2rem; border-radius: 0.5rem; max-width: 90%; width: 550px; /* Slightly wider */ max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.1); transform: scale(0.95); transition: transform 0.3s ease; }
-        .modal-overlay.active .modal-content { transform: scale(1); }
+        .modal-content { background-color: white; padding: 1.5rem 2rem; border-radius: 0.5rem; max-width: 90%; width: 550px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.1); transform: translateY(-20px); transition: transform 0.3s ease; }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
         /* Custom scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #e5e7eb; border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: #9ca3af; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
-        /* Hide elements meant for specific contexts */
+        /* Form Field styling */
         .form-field.hidden { display: none; }
+        .form-field label { margin-bottom: 0.25rem; }
+        .form-field input, .form-field textarea { transition: border-color 0.2s ease, box-shadow 0.2s ease; }
         /* Action button styling */
-        .action-btn { background: none; border: none; cursor: pointer; padding: 5px; border-radius: 50%; line-height: 1; display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; }
+        .action-btn { background: none; border: none; cursor: pointer; padding: 5px; border-radius: 50%; line-height: 1; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; transition: background-color 0.15s ease; }
         .action-btn:hover { background-color: rgba(0,0,0,0.08); }
         .action-btn .fa-trash-alt { color: #ef4444; /* red-500 */ }
         .action-btn .fa-pencil-alt { color: #3b82f6; /* blue-500 */ }
         .action-btn .fa-plus { color: #10b981; /* emerald-500 */ }
-        .action-btn .fas { font-size: 0.8rem; /* Smaller icons */ }
+        .action-btn .fas { font-size: 0.85rem; }
         /* Question completion toggle */
         .toggle-dot { transition: transform 0.2s ease-in-out; }
+        /* Toast Notification */
+        #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 100; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+        .toast { padding: 12px 18px; border-radius: 6px; color: white; font-size: 0.9rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15); opacity: 0; transform: translateX(100%); transition: opacity 0.4s ease, transform 0.4s ease; }
+        .toast.show { opacity: 1; transform: translateX(0); }
+        .toast.success { background-color: #22c55e; } /* green-500 */
+        .toast.error { background-color: #ef4444; } /* red-500 */
+        .toast.info { background-color: #3b82f6; } /* blue-500 */
     </style>
 </head>
 <body class="flex flex-col lg:flex-row gap-6 p-6 min-h-screen">
@@ -44,12 +53,16 @@
     <div id="editor-container" class="w-full lg:w-3/5 bg-white p-5 rounded-lg shadow-lg overflow-y-auto max-h-[90vh]">
         <div class="flex justify-between items-center mb-4 border-b pb-3">
             <h2 class="text-2xl font-bold text-gray-800">Editor</h2>
-            <button id="add-branch-main-btn"
-                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
+            <button id="add-branch-main-btn" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 <i class="fas fa-plus -ml-1 mr-2"></i> Add Branch
             </button>
         </div>
+         <!-- Search Input -->
+         <div class="mb-4 relative">
+             <input type="text" id="question-search" placeholder="Search questions by text..." class="w-full pl-10 pr-8 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+             <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+             <button id="clear-search-btn" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 hidden text-lg leading-none" aria-label="Clear search">×</button>
+         </div>
         <div id="branches-list" class="space-y-6">
             <!-- Dynamic Content Rendered Here -->
             <p class="text-gray-500 text-center py-10">No branches added yet. Click "Add Branch" to start.</p>
@@ -60,45 +73,42 @@
     <div id="json-output-container" class="w-full lg:w-2/5">
         <h2 class="text-2xl font-bold text-gray-800 mb-4">Live JSON Output</h2>
         <pre id="json-output">{}</pre>
-         <button id="save-local-btn" class="mt-4 mr-2 px-4 py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400">Save</button>
-         <button id="load-local-btn" class="mt-4 px-4 py-2 bg-gray-500 text-white text-sm rounded hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400">Load</button>
+         <button id="save-local-btn" class="mt-4 mr-2 px-4 py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400">Save to Local Storage</button>
+         <button id="load-local-btn" class="mt-4 px-4 py-2 bg-gray-500 text-white text-sm rounded hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400">Load from Local Storage</button>
+         <p class="mt-2 text-xs text-gray-500">Note: Data is saved in your browser's local storage. It is not saved to a central database.</p>
     </div>
 
-    <!-- Modal Structure (Hidden by default) -->
-    <div id="item-modal" class="modal-overlay">
+    <!-- Modal Structure -->
+    <div id="item-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
         <div class="modal-content">
             <h3 id="modal-title" class="text-xl font-semibold mb-5 text-gray-900">Add/Edit Item</h3>
             <form id="modal-form" class="space-y-4">
                 <!-- Hidden fields for context -->
-                <input type="hidden" id="edit-mode">
-                <input type="hidden" id="edit-indices"> <!-- Stores stringified JSON indices -->
+                <input type="hidden" id="edit-mode"> <input type="hidden" id="edit-context"> <input type="hidden" id="edit-indices">
 
-                <!-- Common Fields -->
+                <!-- Fields -->
                 <div class="form-field" data-context="branch semester subject question">
-                    <label for="item-id" class="block text-sm font-medium text-gray-700">ID *</label>
+                    <label for="item-id" class="block text-sm font-medium text-gray-700">ID * <span class="text-xs text-gray-500">(Unique within its level, e.g., 'CSE', 'SEM3', 'MA201', 'CSE_SEM1_CS101_Q1a')</span></label>
                     <input type="text" id="item-id" name="id" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 </div>
                 <div class="form-field" data-context="branch subject">
                     <label for="item-name" class="block text-sm font-medium text-gray-700">Name *</label>
                     <input type="text" id="item-name" name="name" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 </div>
-                <!-- Semester Specific -->
                 <div class="form-field" data-context="semester">
                     <label for="item-number" class="block text-sm font-medium text-gray-700">Semester Number *</label>
                     <input type="number" id="item-number" name="number" required min="1" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 </div>
-                <!-- Subject Specific -->
                 <div class="form-field" data-context="subject">
-                    <label for="item-code" class="block text-sm font-medium text-gray-700">Subject Code *</label>
+                    <label for="item-code" class="block text-sm font-medium text-gray-700">Subject Code * <span class="text-xs text-gray-500">(e.g., CS101)</span></label>
                     <input type="text" id="item-code" name="code" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 </div>
-                <!-- Question Specific Fields -->
                 <div class="form-field" data-context="question">
-                    <label for="item-year" class="block text-sm font-medium text-gray-700">Year *</label>
+                    <label for="item-year" class="block text-sm font-medium text-gray-700">Year * <span class="text-xs text-gray-500">(Exam year)</span></label>
                     <input type="number" id="item-year" name="year" required min="1900" max="2100" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 </div>
                  <div class="form-field" data-context="question">
-                    <label for="item-qNumber" class="block text-sm font-medium text-gray-700">Question Number (e.g., Q1a) *</label>
+                    <label for="item-qNumber" class="block text-sm font-medium text-gray-700">Question Number * <span class="text-xs text-gray-500">(e.g., Q1a, Q5 Part B)</span></label>
                     <input type="text" id="item-qNumber" name="qNumber" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 </div>
                 <div class="form-field" data-context="question">
@@ -106,12 +116,12 @@
                     <input type="text" id="item-chapter" name="chapter" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 </div>
                  <div class="form-field" data-context="question">
-                    <label for="item-text" class="block text-sm font-medium text-gray-700">Question Text (Markdown supported) *</label>
+                    <label for="item-text" class="block text-sm font-medium text-gray-700">Question Text (Markdown-like supported) *</label>
                     <textarea id="item-text" name="text" required rows="5" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
-                    <p class="mt-1 text-xs text-gray-500">Use ```lang\\n...``` for code, ![alt](url) for images.</p>
+                    <p class="mt-1 text-xs text-gray-500">Use ```lang\\n...``` for code blocks, ![alt text](image_url) for images.</p>
                 </div>
                 <div class="form-field" data-context="question">
-                    <label for="item-type" class="block text-sm font-medium text-gray-700">Question Type *</label>
+                    <label for="item-type" class="block text-sm font-medium text-gray-700">Question Type * <span class="text-xs text-gray-500">(e.g., Definition, Derivation, Problem, Theory)</span></label>
                     <input type="text" id="item-type" name="type" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 </div>
                  <div class="form-field" data-context="question">
@@ -121,32 +131,28 @@
 
                 <!-- Action Buttons -->
                 <div class="flex justify-end space-x-3 pt-4">
-                    <button type="button" id="modal-cancel-btn" class="px-4 py-2 bg-gray-200 text-gray-800 text-sm font-medium rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                        Cancel
-                    </button>
-                    <button type="submit" id="modal-submit-button" class="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Save
-                    </button>
+                    <button type="button" id="modal-cancel-btn" class="px-4 py-2 bg-gray-200 text-gray-800 text-sm font-medium rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">Cancel</button>
+                    <button type="submit" id="modal-submit-button" class="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Save</button>
                 </div>
             </form>
         </div>
     </div>
 
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
     <script>
-    $(document).ready(function() { // Ensure DOM is ready
+    $(document).ready(function() {
 
         // --- Constants & State ---
-        const CODE_BLOCK_REGEX = /```(\w+)?\s*\n([\s\S]*?)\n?```/g;
-        const IMAGE_REGEX = /!\[([^\]]*)\]\(([^)]+)\)/g;
-        const QUESTION_ID_REGEX = /^(Q\d+[a-z]?\s*:)\s*/i;
-        const LOCAL_STORAGE_KEY = 'universityQuestionData_v2'; // Use new key
+        const CODE_BLOCK_REGEX = /```(\w+)?\s*\n([\s\S]*?)\n?```/g; // Matches code blocks
+        const IMAGE_REGEX = /!\[([^\]]*)\]\(([^)]+)\)/g;          // Matches ![alt](url) images
+        const QUESTION_ID_REGEX = /^(Q\d+[a-z]?\s*:)\s*/i;       // Matches patterns like "Q1a:", "Q5:" at the start of question text
+        const LOCAL_STORAGE_KEY = 'universityQuestionData_v4';  // Key for storing data locally
 
-        let universityData = { branches: [] };
-        let currentModalContext = null;
-        let isEditMode = false;
-        let currentEditIndices = {}; // Use object for indices { branchIndex, semesterIndex, ... }
+        let universityData = { branches: [] }; // Main data object
 
-        // --- jQuery Objects ---
+        // --- jQuery Objects Cache ---
         const $modal = $('#item-modal');
         const $modalForm = $('#modal-form');
         const $modalTitle = $('#modal-title');
@@ -154,102 +160,297 @@
         const $branchesListDiv = $('#branches-list');
         const $jsonOutputPre = $('#json-output');
         const $allFormFields = $modalForm.find('.form-field');
+        const $toastContainer = $('#toast-container');
+        const $questionSearch = $('#question-search');
+        const $clearSearchBtn = $('#clear-search-btn');
 
-        // --- Utility Functions ---
+        // =========================================
+        //            UTILITY FUNCTIONS
+        // =========================================
+        // Basic sanitization to prevent simple HTML injection
         function sanitizeInput(str = '') {
-            // Basic sanitization, consider a library like DOMPurify for production
+            if (!str) return '';
             const temp = document.createElement('div');
             temp.textContent = str;
             return temp.innerHTML;
         }
 
+        // Capitalize the first letter of a string
         function capitalizeFirstLetter(string) {
-            if (!string) return '';
-            return string.charAt(0).toUpperCase() + string.slice(1);
+             if (!string) return '';
+             return string.charAt(0).toUpperCase() + string.slice(1);
         }
 
-        // --- Parsing & Rendering HTML for Content ---
+        // Display toast notifications
+        function showToast(message, type = 'info', duration = 3000) {
+            const toastId = 'toast-' + Date.now();
+            const toastHtml = `<div id="${toastId}" class="toast ${type}">${sanitizeInput(message)}</div>`; // Sanitize message
+            const $toast = $(toastHtml).appendTo($toastContainer);
+
+            setTimeout(() => $toast.addClass('show'), 10); // Animate in
+
+            setTimeout(() => { // Animate out and remove
+                $toast.removeClass('show');
+                $toast.on('transitionend webkitTransitionEnd oTransitionEnd', function() { $(this).remove(); });
+                setTimeout(() => $toast.remove(), duration + 500); // Fallback removal
+            }, duration);
+        }
+
+        // *** CORRECTED FUNCTION ***
+        // Safely get indices from data attribute, handling both string and object types
+        function getIndicesFromElement($el) {
+             try {
+                 const indicesData = $el.data('indices'); // Get whatever jQuery returns
+
+                 // Check if it's already a parsed object (and not null)
+                 if (typeof indicesData === 'object' && indicesData !== null) {
+                     return indicesData; // Return the object directly
+                 }
+                 // Check if it's a string that needs parsing
+                 else if (typeof indicesData === 'string') {
+                     // Avoid parsing empty strings which can cause errors or return null
+                     if (indicesData.trim() === '') {
+                         return {};
+                     }
+                     return JSON.parse(indicesData); // Parse the string
+                 }
+                 // Handle unexpected types
+                 else {
+                      console.warn("Indices data is not a valid object or string:", indicesData);
+                      return {}; // Return empty object as a safe fallback
+                 }
+             } catch (e) {
+                 console.error("Failed to get or parse indices data:", $el.data('indices'), e);
+                 showToast("Internal Error: Could not read item context.", "error");
+                 return {}; // Return empty object on error
+             }
+        }
+
+        // Get a reference to an item in the universityData object using indices
+        function getItemRef(context, indices) {
+            try {
+                 // Check if indices is valid before destructuring
+                 if (!indices || typeof indices !== 'object') {
+                    console.error(`Invalid indices object provided for ${context}:`, indices);
+                    return null;
+                 }
+                 const { branchIndex, semesterIndex, subjectIndex, questionIndex } = indices;
+
+                 switch(context) {
+                     case 'branch':
+                        if (branchIndex === undefined || universityData.branches[branchIndex] === undefined) return null;
+                        return universityData.branches[branchIndex];
+                     case 'semester':
+                        if (branchIndex === undefined || semesterIndex === undefined || universityData.branches[branchIndex]?.semesters[semesterIndex] === undefined) return null;
+                        return universityData.branches[branchIndex].semesters[semesterIndex];
+                     case 'subject':
+                        if (branchIndex === undefined || semesterIndex === undefined || subjectIndex === undefined || universityData.branches[branchIndex]?.semesters[semesterIndex]?.subjects[subjectIndex] === undefined) return null;
+                        return universityData.branches[branchIndex].semesters[semesterIndex].subjects[subjectIndex];
+                     case 'question':
+                         if (branchIndex === undefined || semesterIndex === undefined || subjectIndex === undefined || questionIndex === undefined || universityData.branches[branchIndex]?.semesters[semesterIndex]?.subjects[subjectIndex]?.questions[questionIndex] === undefined) return null;
+                        return universityData.branches[branchIndex].semesters[semesterIndex].subjects[subjectIndex].questions[questionIndex];
+                     default:
+                         console.warn("Unknown context in getItemRef:", context);
+                         return null;
+                 }
+            } catch (e) {
+                console.error(`Error getting reference for ${context} with indices:`, indices, e);
+                return null; // Return null if path is invalid or any error occurs
+            }
+        }
+
+        // =========================================
+        //     MARKDOWN/CONTENT RENDERING
+        // =========================================
+        // Parses text with ```code``` and ![img]() into structured parts
         function parseContent(text = '') {
              if (!text) return [{ type: 'text', content: '[No Content]' }];
-            const parts = []; let lastIndex = 0; let match; const sourceText = text;
-            const imagePlaceholders = {}; let placeholderIndex = 0;
+            const parts = [];
+            let lastIndex = 0;
+            let match;
+            const sourceText = text;
+
+            // 1. Temporarily replace images with placeholders to simplify code block parsing
+            const imagePlaceholders = {};
+            let placeholderIndex = 0;
             const textWithoutImages = sourceText.replace(IMAGE_REGEX, (fullMatch, alt, uri) => {
-                const placeholder = `__IMAGE_PLACEHOLDER_${placeholderIndex++}__`; imagePlaceholders[placeholder] = { type: 'image', alt, uri }; return placeholder;
+                const placeholder = `__IMAGE_PLACEHOLDER_${placeholderIndex++}__`;
+                imagePlaceholders[placeholder] = { type: 'image', alt, uri };
+                return placeholder;
             });
+
+            // 2. Parse code blocks
             while ((match = CODE_BLOCK_REGEX.exec(textWithoutImages)) !== null) {
-                if (match.index > lastIndex) { let textPart = textWithoutImages.substring(lastIndex, match.index).trim(); textPart = restoreImagesInText(textPart, imagePlaceholders, parts); const cleanedTextPart = textPart.replace(QUESTION_ID_REGEX, '').trim(); if (cleanedTextPart && !cleanedTextPart.startsWith('__IMAGE_PLACEHOLDER_')) parts.push({ type: 'text', content: cleanedTextPart }); }
-                const language = match[1] || 'plaintext'; const codeContent = match[2].trim(); if (codeContent) parts.push({ type: 'code', language: language.toLowerCase(), content: codeContent }); lastIndex = CODE_BLOCK_REGEX.lastIndex;
+                // Add text before the code block (if any)
+                if (match.index > lastIndex) {
+                    let textPart = textWithoutImages.substring(lastIndex, match.index).trim();
+                    textPart = restoreImagesInText(textPart, imagePlaceholders, parts); // Restore images within this text part
+                    const cleanedTextPart = textPart.replace(QUESTION_ID_REGEX, '').trim(); // Remove leading Q number
+                    if (cleanedTextPart && !cleanedTextPart.startsWith('__IMAGE_PLACEHOLDER_')) {
+                        parts.push({ type: 'text', content: cleanedTextPart });
+                    }
+                }
+                // Add the code block
+                const language = match[1] || 'plaintext';
+                const codeContent = match[2].trim();
+                if (codeContent) {
+                    parts.push({ type: 'code', language: language.toLowerCase(), content: codeContent });
+                }
+                lastIndex = CODE_BLOCK_REGEX.lastIndex;
             }
-            if (lastIndex < textWithoutImages.length) { let remainingText = textWithoutImages.substring(lastIndex).trim(); remainingText = restoreImagesInText(remainingText, imagePlaceholders, parts); const cleanedRemainingText = remainingText.replace(QUESTION_ID_REGEX, '').trim(); if (cleanedRemainingText && !cleanedRemainingText.startsWith('__IMAGE_PLACEHOLDER_')) parts.push({ type: 'text', content: cleanedRemainingText }); }
-            restoreImagesInText('', imagePlaceholders, parts);
-            if (parts.length === 0 && sourceText.match(QUESTION_ID_REGEX)) {}
-            else if (parts.length === 0 && lastIndex === 0) { let fullTextPart = textWithoutImages.trim(); fullTextPart = restoreImagesInText(fullTextPart, imagePlaceholders, parts); const cleanedFullText = fullTextPart.replace(QUESTION_ID_REGEX, '').trim(); if (cleanedFullText && !cleanedFullText.startsWith('__IMAGE_PLACEHOLDER_')) parts.push({ type: 'text', content: cleanedFullText }); restoreImagesInText('', imagePlaceholders, parts); }
-            if (parts.length === 0) return [{ type: 'text', content: '[Question content appears empty or is only formatting]' }];
+
+            // 3. Add any remaining text after the last code block
+            if (lastIndex < textWithoutImages.length) {
+                let remainingText = textWithoutImages.substring(lastIndex).trim();
+                remainingText = restoreImagesInText(remainingText, imagePlaceholders, parts); // Restore images
+                const cleanedRemainingText = remainingText.replace(QUESTION_ID_REGEX, '').trim(); // Remove leading Q number
+                 if (cleanedRemainingText && !cleanedRemainingText.startsWith('__IMAGE_PLACEHOLDER_')) {
+                    parts.push({ type: 'text', content: cleanedRemainingText });
+                }
+            }
+
+             // 4. Ensure any remaining image placeholders (e.g., if text ONLY contains images) are processed
+             restoreImagesInText('', imagePlaceholders, parts);
+
+
+             // Handle edge case: If the original text ONLY contained a Q ID (e.g., "Q1a:"), it might be empty now.
+             // Or if parsing resulted in no parts for some reason.
+            if (parts.length === 0 && sourceText.match(QUESTION_ID_REGEX)) {
+                // Don't add a default message if it was just the Q ID
+            } else if (parts.length === 0 && lastIndex === 0) {
+                 // If no code blocks were found at all, parse the whole text for images and remove Q ID
+                 let fullTextPart = textWithoutImages.trim();
+                 fullTextPart = restoreImagesInText(fullTextPart, imagePlaceholders, parts);
+                 const cleanedFullText = fullTextPart.replace(QUESTION_ID_REGEX, '').trim();
+                 if (cleanedFullText && !cleanedFullText.startsWith('__IMAGE_PLACEHOLDER_')) {
+                     parts.push({ type: 'text', content: cleanedFullText });
+                 }
+                 restoreImagesInText('', imagePlaceholders, parts); // Process remaining images
+            }
+
+            // Final fallback if still empty
+            if (parts.length === 0) {
+                return [{ type: 'text', content: '[Question content appears empty or is only formatting]' }];
+            }
+
             return parts;
         }
 
+        // Helper to restore image objects from placeholders back into the parts array
         function restoreImagesInText(textSegment, imagePlaceholders, partsArray) {
-            let currentSegment = textSegment; const placeholderRegex = /__IMAGE_PLACEHOLDER_(\d+)__/g; let match; let lastTextIndex = 0;
+            let currentSegment = textSegment;
+            const placeholderRegex = /__IMAGE_PLACEHOLDER_(\d+)__/g;
+            let match;
+            let lastTextIndex = 0;
+
             while ((match = placeholderRegex.exec(currentSegment)) !== null) {
-                if (match.index > lastTextIndex) { const textBefore = currentSegment.substring(lastTextIndex, match.index).trim(); if (textBefore) partsArray.push({ type: 'text', content: textBefore }); }
-                const placeholder = match[0]; if (imagePlaceholders[placeholder]) { partsArray.push(imagePlaceholders[placeholder]); delete imagePlaceholders[placeholder]; } lastTextIndex = placeholderRegex.lastIndex;
+                // Add text before the placeholder
+                if (match.index > lastTextIndex) {
+                    const textBefore = currentSegment.substring(lastTextIndex, match.index).trim();
+                     if (textBefore) partsArray.push({ type: 'text', content: textBefore.replace(QUESTION_ID_REGEX, '').trim() });
+                }
+                // Add the image object
+                const placeholder = match[0];
+                if (imagePlaceholders[placeholder]) {
+                    partsArray.push(imagePlaceholders[placeholder]);
+                    delete imagePlaceholders[placeholder]; // Remove processed placeholder
+                }
+                lastTextIndex = placeholderRegex.lastIndex;
             }
-            if (lastTextIndex < currentSegment.length) { const textAfter = currentSegment.substring(lastTextIndex).trim(); if (textAfter) partsArray.push({ type: 'text', content: textAfter }); } return '';
+
+            // Add any text remaining after the last placeholder
+            if (lastTextIndex < currentSegment.length) {
+                const textAfter = currentSegment.substring(lastTextIndex).trim();
+                 if (textAfter) partsArray.push({ type: 'text', content: textAfter.replace(QUESTION_ID_REGEX, '').trim() });
+            }
+
+            return ''; // Return empty string as text is now moved to partsArray
         }
 
-        function renderHtmlForPart(part, index) {
+        // Renders a single parsed content part to HTML
+        function renderHtmlForPart(part) {
              switch (part.type) {
-                case 'text': return `<p class="text-gray-700 mb-2 text-sm leading-relaxed">${sanitizeInput(part.content)}</p>`;
-                case 'code': return `<div class="my-3"><pre class="bg-gray-800 text-gray-200 text-xs font-mono p-3 rounded-md overflow-x-auto"><code>${sanitizeInput(part.content)}</code></pre></div>`;
-                case 'image': const imageUrl = part.uri && part.uri.includes('https://image.pollinations.ai/prompt/') ? part.uri : `https://image.pollinations.ai/prompt/${encodeURIComponent(part.alt || 'placeholder image')}`; return `<img src="${sanitizeInput(imageUrl)}" alt="${sanitizeInput(part.alt || 'image')}" class="my-3 rounded-lg border border-gray-200 max-w-full h-auto block" style="max-height: 250px;">`;
-                default: return '';
+                case 'text':
+                    // Sanitize text content
+                    return `<p class="text-gray-700 mb-2 text-sm leading-relaxed">${sanitizeInput(part.content)}</p>`;
+                case 'code':
+                    // Sanitize code content and wrap in pre/code tags
+                     return `<div class="my-3"><pre class="bg-gray-800 text-gray-200 text-xs font-mono p-3 rounded-md overflow-x-auto"><code class="language-${sanitizeInput(part.language)}">${sanitizeInput(part.content)}</code></pre></div>`;
+                case 'image':
+                    // Sanitize alt text and URI. Use Pollinations AI as a fallback/placeholder service.
+                    const altText = sanitizeInput(part.alt || 'image');
+                    let imageUrl = sanitizeInput(part.uri || '');
+                     // Basic check if it's a valid-looking URL, otherwise use Pollinations
+                     if (!imageUrl || !imageUrl.startsWith('http')) {
+                         imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(altText || 'placeholder image')}`;
+                     }
+                    return `<img src="${imageUrl}" alt="${altText}" class="my-3 rounded-lg border border-gray-200 max-w-full h-auto block" style="max-height: 250px;">`;
+                default:
+                    return '';
             }
         }
 
-        // --- UI Rendering Functions ---
+        // =========================================
+        //           UI RENDERING FUNCTIONS
+        // =========================================
+        // Renders the entire editor view based on universityData
         function renderEditor() {
-            $branchesListDiv.empty(); // Clear previous content using jQuery
+            console.time("renderEditor"); // Start performance timer
+            $branchesListDiv.empty(); // Clear current view
 
             if (!universityData.branches || universityData.branches.length === 0) {
                  $branchesListDiv.html('<p class="text-gray-500 text-center py-10">No branches added yet. Click "Add Branch" to start.</p>');
                  updateJsonOutput();
+                 console.timeEnd("renderEditor"); // End performance timer
                  return;
             }
 
+            // Loop through branches and build HTML
             universityData.branches.forEach((branch, branchIndex) => {
+                const branchIndices = { branchIndex }; // Indices for this branch
                 const branchHtml = `
-                    <div class="p-4 border border-gray-200 rounded-lg bg-white shadow-sm">
+                    <div class="p-4 border border-gray-200 rounded-lg bg-white shadow-sm transition-shadow hover:shadow-md">
                         <div class="flex justify-between items-center mb-3">
-                            <h3 class="text-lg font-semibold text-gray-800 truncate mr-2" title="${sanitizeInput(branch.name)}">${sanitizeInput(branch.name)} <code class="text-sm text-gray-500 font-normal">(${sanitizeInput(branch.id)})</code></h3>
+                            <h3 class="text-lg font-semibold text-gray-800 truncate mr-2" title="${sanitizeInput(branch.name)} (${sanitizeInput(branch.id)})">
+                                ${sanitizeInput(branch.name)} <code class="text-sm text-gray-500 font-normal">(${sanitizeInput(branch.id)})</code>
+                            </h3>
                             <div class="flex space-x-1 flex-shrink-0">
-                                <button class="action-btn add-semester-btn" data-branch-index="${branchIndex}" title="Add Semester"> <i class="fas fa-plus"></i> </button>
-                                <button class="action-btn edit-item-btn" data-context="branch" data-indices='${JSON.stringify({ branchIndex })}' title="Edit Branch"> <i class="fas fa-pencil-alt"></i> </button>
-                                <button class="action-btn delete-item-btn" data-context="branch" data-indices='${JSON.stringify({ branchIndex })}' title="Delete Branch"> <i class="fas fa-trash-alt"></i> </button>
+                                <!-- Ensure data-indices attribute is correctly stringified -->
+                                <button class="action-btn add-item-btn" data-context="semester" data-indices='${JSON.stringify(branchIndices)}' title="Add Semester"><i class="fas fa-plus"></i></button>
+                                <button class="action-btn edit-item-btn" data-context="branch" data-indices='${JSON.stringify(branchIndices)}' title="Edit Branch"><i class="fas fa-pencil-alt"></i></button>
+                                <button class="action-btn delete-item-btn" data-context="branch" data-indices='${JSON.stringify(branchIndices)}' title="Delete Branch"><i class="fas fa-trash-alt"></i></button>
                             </div>
                         </div>
                         <div class="semesters-list space-y-4 pl-4 border-l-2 border-gray-200 ml-1" id="semesters-list-${branchIndex}">
-                            ${renderSemesters(branchIndex)} <!-- Render nested content -->
+                            ${renderSemesters(branchIndex)}
                         </div>
                     </div>`;
                 $branchesListDiv.append(branchHtml);
             });
-            updateJsonOutput();
+
+            updateJsonOutput(); // Update the JSON view
+            filterQuestions($questionSearch.val()); // Re-apply search filter after full render
+            console.timeEnd("renderEditor"); // End performance timer
         }
 
+        // Renders semesters for a given branch
         function renderSemesters(branchIndex) {
-            const branch = universityData.branches[branchIndex];
-            if (!branch || !branch.semesters || branch.semesters.length === 0) return '<p class="text-xs text-gray-400 pl-1 pt-1">No semesters added.</p>';
+             const branch = universityData.branches[branchIndex];
+            if (!branch?.semesters || branch.semesters.length === 0) return '<p class="text-xs text-gray-400 pl-1 pt-1">No semesters added.</p>';
 
             let semestersHtml = '';
             branch.semesters.forEach((semester, semesterIndex) => {
+                const currentIndices = { branchIndex, semesterIndex }; // Indices for this semester
                 semestersHtml += `
                     <div class="p-3 border border-gray-200 rounded-md bg-gray-50 shadow-xs">
                         <div class="flex justify-between items-center mb-2">
-                            <h4 class="text-md font-medium text-gray-700">Semester: ${sanitizeInput(semester.number)} <code class="text-xs text-gray-500 font-normal">(${sanitizeInput(semester.id)})</code></h4>
+                             <h4 class="text-md font-medium text-gray-700" title="Semester ${sanitizeInput(semester.number)} (${sanitizeInput(semester.id)})">
+                                Semester ${sanitizeInput(semester.number)} <code class="text-xs text-gray-500 font-normal">(${sanitizeInput(semester.id)})</code>
+                            </h4>
                              <div class="flex space-x-1 flex-shrink-0">
-                                <button class="action-btn add-subject-btn" data-branch-index="${branchIndex}" data-semester-index="${semesterIndex}" title="Add Subject"> <i class="fas fa-plus"></i> </button>
-                                <button class="action-btn edit-item-btn" data-context="semester" data-indices='${JSON.stringify({ branchIndex, semesterIndex })}' title="Edit Semester"> <i class="fas fa-pencil-alt"></i> </button>
-                                <button class="action-btn delete-item-btn" data-context="semester" data-indices='${JSON.stringify({ branchIndex, semesterIndex })}' title="Delete Semester"> <i class="fas fa-trash-alt"></i> </button>
+                                <button class="action-btn add-item-btn" data-context="subject" data-indices='${JSON.stringify(currentIndices)}' title="Add Subject"><i class="fas fa-plus"></i></button>
+                                <button class="action-btn edit-item-btn" data-context="semester" data-indices='${JSON.stringify(currentIndices)}' title="Edit Semester"><i class="fas fa-pencil-alt"></i></button>
+                                <button class="action-btn delete-item-btn" data-context="semester" data-indices='${JSON.stringify(currentIndices)}' title="Delete Semester"><i class="fas fa-trash-alt"></i></button>
                             </div>
                         </div>
                         <div class="subjects-list space-y-3 pl-3 border-l border-gray-300 ml-1" id="subjects-list-${branchIndex}-${semesterIndex}">
@@ -260,20 +461,24 @@
             return semestersHtml;
         }
 
+        // Renders subjects for a given semester
         function renderSubjects(branchIndex, semesterIndex) {
             const semester = universityData.branches[branchIndex]?.semesters[semesterIndex];
-             if (!semester || !semester.subjects || semester.subjects.length === 0) return '<p class="text-xs text-gray-400 pl-1 pt-1">No subjects added.</p>';
+             if (!semester?.subjects || semester.subjects.length === 0) return '<p class="text-xs text-gray-400 pl-1 pt-1">No subjects added.</p>';
 
             let subjectsHtml = '';
             semester.subjects.forEach((subject, subjectIndex) => {
+                const currentIndices = { branchIndex, semesterIndex, subjectIndex }; // Indices for this subject
                 subjectsHtml += `
                     <div class="p-3 border border-dashed border-gray-300 rounded-md bg-white">
                          <div class="flex justify-between items-center mb-2">
-                            <h5 class="text-sm font-semibold text-indigo-800 truncate mr-2" title="${sanitizeInput(subject.name)} (${sanitizeInput(subject.code)})">${sanitizeInput(subject.name)} <code class="text-xs text-gray-500 font-normal">(${sanitizeInput(subject.code)} / ${sanitizeInput(subject.id)})</code></h5>
+                            <h5 class="text-sm font-semibold text-indigo-800 truncate mr-2" title="${sanitizeInput(subject.name)} (${sanitizeInput(subject.code)} / ${sanitizeInput(subject.id)})">
+                                ${sanitizeInput(subject.name)} <code class="text-xs text-gray-500 font-normal">(${sanitizeInput(subject.code)} / ${sanitizeInput(subject.id)})</code>
+                            </h5>
                             <div class="flex space-x-1 flex-shrink-0">
-                                <button class="action-btn add-question-btn" data-branch-index="${branchIndex}" data-semester-index="${semesterIndex}" data-subject-index="${subjectIndex}" title="Add Question"> <i class="fas fa-plus"></i> </button>
-                                <button class="action-btn edit-item-btn" data-context="subject" data-indices='${JSON.stringify({ branchIndex, semesterIndex, subjectIndex })}' title="Edit Subject"> <i class="fas fa-pencil-alt"></i> </button>
-                                <button class="action-btn delete-item-btn" data-context="subject" data-indices='${JSON.stringify({ branchIndex, semesterIndex, subjectIndex })}' title="Delete Subject"> <i class="fas fa-trash-alt"></i> </button>
+                                <button class="action-btn add-item-btn" data-context="question" data-indices='${JSON.stringify(currentIndices)}' title="Add Question"><i class="fas fa-plus"></i></button>
+                                <button class="action-btn edit-item-btn" data-context="subject" data-indices='${JSON.stringify(currentIndices)}' title="Edit Subject"><i class="fas fa-pencil-alt"></i></button>
+                                <button class="action-btn delete-item-btn" data-context="subject" data-indices='${JSON.stringify(currentIndices)}' title="Delete Subject"><i class="fas fa-trash-alt"></i></button>
                             </div>
                         </div>
                         <div class="questions-list space-y-4" id="questions-list-${branchIndex}-${semesterIndex}-${subjectIndex}">
@@ -284,44 +489,51 @@
              return subjectsHtml;
         }
 
-        function renderQuestions(branchIndex, semesterIndex, subjectIndex) {
+        // Renders questions for a given subject
+         function renderQuestions(branchIndex, semesterIndex, subjectIndex) {
              const subject = universityData.branches[branchIndex]?.semesters[semesterIndex]?.subjects[subjectIndex];
-             if (!subject || !subject.questions || subject.questions.length === 0) return '<p class="text-xs text-gray-400 pl-1 pt-2">No questions added.</p>';
+             if (!subject?.questions || subject.questions.length === 0) return '<p class="text-xs text-gray-400 pl-1 pt-2">No questions added.</p>';
 
              let questionsHtml = '';
              subject.questions.forEach((question, questionIndex) => {
-                 const indices = { branchIndex, semesterIndex, subjectIndex, questionIndex };
-                 const parsedContent = parseContent(question.text);
-                 const bodyHtml = parsedContent.map(renderHtmlForPart).join('');
-                 const displayChapter = (question.chapter || '').replace(/^Module\s*\d+:\s*/i, '').trim();
+                 const currentIndices = { branchIndex, semesterIndex, subjectIndex, questionIndex }; // Full indices for this question
+                 const parsedContent = parseContent(question.text); // Parse text for rendering
+                 const bodyHtml = parsedContent.map(renderHtmlForPart).join(''); // Generate HTML for content parts
+                 const displayChapter = (question.chapter || '').replace(/^Module\s*\d+:\s*/i, '').trim(); // Clean up chapter display if needed
+
+                 // Prepare question data for the 'Ask AI' button, ensuring it's valid JSON
+                 let questionDataForAI = '{}';
+                 try {
+                     questionDataForAI = sanitizeInput(JSON.stringify(question)); // Stringify and sanitize
+                 } catch (e) { console.error("Could not stringify question for AI button:", question); }
+
 
                  questionsHtml += `
-                    <div class="question-card bg-white rounded-lg shadow-sm overflow-hidden border ${question.isCompleted ? 'border-l-4 border-green-500' : 'border-gray-200'}">
-                        <!-- Header -->
-                        <div class="flex justify-between items-start p-3 border-b border-gray-100 bg-gray-50/70">
+                    <div class="question-card bg-white rounded-lg shadow-sm overflow-hidden border ${question.isCompleted ? 'border-l-4 border-green-500' : 'border-gray-200'} transition-all duration-200 ease-in-out" data-question-text="${sanitizeInput(question.text || '').toLowerCase()}">
+                         <div class="flex justify-between items-start p-3 border-b border-gray-100 bg-gray-50/70">
                             <div class="text-xs font-medium text-gray-600">
                                 ${sanitizeInput(question.year) || 'N/A'} - ${sanitizeInput(question.qNumber) || '?'}
-                                <p class="text-xs text-gray-400 font-normal mt-0.5">${sanitizeInput(question.questionId)}</p>
+                                <p class="text-xs text-gray-400 font-normal mt-0.5" title="Question ID: ${sanitizeInput(question.questionId)}">${sanitizeInput(question.questionId)}</p>
                             </div>
                             <div class="flex items-center">
-                                ${displayChapter ? `<span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-2 py-0.5 rounded-full text-right max-w-[150px] truncate mr-2" title="${sanitizeInput(displayChapter)}">${sanitizeInput(displayChapter)}</span>` : ''}
+                                ${displayChapter ? `<span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-2 py-0.5 rounded-full text-right max-w-[150px] truncate mr-2" title="Chapter/Module: ${sanitizeInput(question.chapter)}">${sanitizeInput(displayChapter)}</span>` : ''}
                                 <div class="flex space-x-1 flex-shrink-0">
-                                    <button class="action-btn edit-item-btn" data-context="question" data-indices='${JSON.stringify(indices)}' title="Edit Question"> <i class="fas fa-pencil-alt"></i> </button>
-                                    <button class="action-btn delete-item-btn" data-context="question" data-indices='${JSON.stringify(indices)}' title="Delete Question"> <i class="fas fa-trash-alt"></i> </button>
+                                    <button class="action-btn edit-item-btn" data-context="question" data-indices='${JSON.stringify(currentIndices)}' title="Edit Question"><i class="fas fa-pencil-alt"></i></button>
+                                    <button class="action-btn delete-item-btn" data-context="question" data-indices='${JSON.stringify(currentIndices)}' title="Delete Question"><i class="fas fa-trash-alt"></i></button>
                                 </div>
                             </div>
                         </div>
-                        <!-- Body -->
                         <div class="p-4 text-sm">${bodyHtml}</div>
-                        <!-- Footer -->
-                        <div class="flex flex-wrap justify-between items-center p-3 border-t border-gray-100 bg-gray-50/70">
+                         <div class="flex flex-wrap justify-between items-center p-3 border-t border-gray-100 bg-gray-50/70">
                             <div class="flex flex-wrap items-center mb-2 sm:mb-0">
                                 ${question.type ? `<span class="inline-block bg-blue-100 text-blue-800 text-xs font-medium mr-2 mb-1 px-2 py-0.5 rounded-full">${sanitizeInput(question.type)}</span>` : ''}
                                 ${(question.marks !== null && question.marks !== undefined && question.marks !== '') ? `<span class="inline-block bg-green-100 text-green-800 text-xs font-medium mr-2 mb-1 px-2 py-0.5 rounded-full">${sanitizeInput(question.marks)} Marks</span>` : ''}
                             </div>
                             <div class="flex items-center space-x-3">
-                                <button class="ask-ai-btn inline-flex items-center bg-indigo-100 text-indigo-700 text-xs font-medium px-2.5 py-1 rounded-full hover:bg-indigo-200" data-question='${sanitizeInput(JSON.stringify(question))}'> <i class="fas fa-robot mr-1.5 text-xs"></i> Ask AI </button>
-                                <div class="toggle-completion-btn relative inline-block w-10 h-5 align-middle select-none transition duration-200 ease-in cursor-pointer" data-indices='${JSON.stringify(indices)}' title="Toggle Completion">
+                                <button class="ask-ai-btn inline-flex items-center bg-indigo-100 text-indigo-700 text-xs font-medium px-2.5 py-1 rounded-full hover:bg-indigo-200" data-question='${questionDataForAI}' title="Ask AI about this question">
+                                    <i class="fas fa-robot mr-1.5 text-xs"></i> Ask AI
+                                </button>
+                                <div class="toggle-completion-btn relative inline-block w-10 h-5 align-middle select-none transition duration-200 ease-in cursor-pointer" data-indices='${JSON.stringify(currentIndices)}' title="Toggle Completion Status">
                                     <div class="toggle-bg ${question.isCompleted ? 'bg-green-500' : 'bg-gray-300'} absolute block w-full h-full rounded-full"></div>
                                     <div class="toggle-dot absolute left-0 top-0 bg-white w-5 h-5 rounded-full shadow transform transition-transform duration-200 ease-in ${question.isCompleted ? 'translate-x-5' : 'translate-x-0'}"></div>
                                 </div>
@@ -332,328 +544,630 @@
              return questionsHtml;
          }
 
+        // Updates the JSON output display
         function updateJsonOutput() {
-            const dataToDisplay = JSON.parse(JSON.stringify(universityData, (key, value) => {
-                // Keep isCompleted in JSON output for persistence if desired
-                // if (key === 'isCompleted') return undefined; // Uncomment to EXCLUDE from JSON
-                return value;
-            }));
-            $jsonOutputPre.text(JSON.stringify(dataToDisplay, null, 2));
+            try {
+                // Create a deep copy to avoid modifying original data if needed later
+                const dataToDisplay = JSON.parse(JSON.stringify(universityData));
+                $jsonOutputPre.text(JSON.stringify(dataToDisplay, null, 2)); // Pretty print
+            } catch (e) {
+                console.error("Error updating JSON output:", e);
+                $jsonOutputPre.text("Error generating JSON output.");
+            }
         }
 
-        // --- Modal Management ---
-        function showModal(context, indices = {}) {
-            currentModalContext = context;
-            isEditMode = indices && Object.keys(indices).length > 0 && (indices.branchIndex !== undefined);
-            currentEditIndices = indices;
-
-            $modalForm[0].reset(); // Use [0] to access the native form element for reset
-            $modalForm.find('#edit-mode').val(isEditMode ? 'edit' : 'add');
+        // =========================================
+        //           MODAL MANAGEMENT
+        // =========================================
+        // Shows the modal for adding or editing an item
+        function showModal(context, indices = {}, isEditing = false) {
+            $modalForm[0].reset(); // Clear previous form data
+            $modalForm.find('#edit-mode').val(isEditing ? 'edit' : 'add');
+            $modalForm.find('#edit-context').val(context);
+            // Store indices as a JSON string in the hidden field
             $modalForm.find('#edit-indices').val(JSON.stringify(indices));
 
-            $modalTitle.text(`${isEditMode ? 'Edit' : 'Add'} ${capitalizeFirstLetter(context)}`);
-            $modalSubmitButton.text(isEditMode ? 'Update' : 'Add');
+            $modalTitle.text(`${isEditing ? 'Edit' : 'Add'} ${capitalizeFirstLetter(context)}`);
+            $modalSubmitButton.text(isEditing ? 'Update' : 'Add');
 
-            // Show/Hide fields based on context and manage required/disabled states
+            // Show/hide form fields based on context
             $allFormFields.each(function() {
                 const $field = $(this);
                 const fieldContexList = $field.data('context')?.split(' ') || [];
                 const $input = $field.find('input, textarea');
+                const isIdField = $input.attr('id') === 'item-id';
 
                 if (fieldContexList.includes(context)) {
                     $field.removeClass('hidden');
-                    // Only make required if not ID field during edit mode
-                    const isIdField = $input.attr('id') === 'item-id';
-                    $input.prop('required', !(isEditMode && isIdField));
-                    $input.prop('disabled', isEditMode && isIdField); // Disable ID on edit
-                    if (isEditMode && isIdField) {
-                         $input.addClass('bg-gray-100 cursor-not-allowed');
-                    } else {
-                         $input.removeClass('bg-gray-100 cursor-not-allowed');
-                    }
-
+                    // ID field is required only when adding, disabled when editing
+                    $input.prop('required', !(isEditing && isIdField));
+                    $input.prop('disabled', isEditing && isIdField);
+                    $input.toggleClass('bg-gray-100 cursor-not-allowed focus:ring-0 focus:border-gray-300', isEditing && isIdField);
                 } else {
                     $field.addClass('hidden');
                     $input.prop('required', false); // Not required if hidden
-                    $input.prop('disabled', false); // Ensure enabled if shown later
-                    $input.removeClass('bg-gray-100 cursor-not-allowed');
+                    $input.prop('disabled', false); // Ensure re-enabled if previously disabled
+                    $input.removeClass('bg-gray-100 cursor-not-allowed focus:ring-0 focus:border-gray-300');
                 }
             });
 
-            if (isEditMode) {
+            // If editing, populate the form with existing data
+            if (isEditing) {
                 populateFormForEdit(context, indices);
             }
 
-            $modal.addClass('active');
-            // Focus first visible input field
-            $modal.find('input:visible, textarea:visible').first().focus();
+            $modal.addClass('active'); // Show the modal
+            // Focus the first visible and enabled input/textarea
+            $modal.find('input:visible:not(:disabled), textarea:visible:not(:disabled)').first().focus();
         }
 
+        // Fills the modal form with data for editing
         function populateFormForEdit(context, indices) {
-             const { branchIndex, semesterIndex, subjectIndex, questionIndex } = indices;
-             let itemData = {};
+             let itemData = getItemRef(context, indices); // Use helper to get item data
+             if (!itemData) {
+                 showToast("Error: Could not load item data for editing.", "error");
+                 closeModal();
+                 return;
+             }
              try {
-                 switch(context) {
-                    case 'branch': itemData = universityData.branches[branchIndex]; break;
-                    case 'semester': itemData = universityData.branches[branchIndex].semesters[semesterIndex]; break;
-                    case 'subject': itemData = universityData.branches[branchIndex].semesters[semesterIndex].subjects[subjectIndex]; break;
-                    case 'question': itemData = universityData.branches[branchIndex].semesters[semesterIndex].subjects[subjectIndex].questions[questionIndex]; break;
-                 }
-                 if (!itemData) throw new Error("Item data not found for indices.");
-             } catch (e) { console.error("Error retrieving item data for edit:", e); alert("Could not load item data."); closeModal(); return; }
-
-            // Use jQuery's .val() to set form values
-            $modalForm.find('#item-id').val(itemData.id || '');
-            if(context === 'branch' || context === 'subject') $modalForm.find('#item-name').val(itemData.name || '');
-            if(context === 'subject') $modalForm.find('#item-code').val(itemData.code || '');
-            if(context === 'semester') $modalForm.find('#item-number').val(itemData.number || '');
-             if (context === 'question') {
-                $modalForm.find('#item-year').val(itemData.year || '');
-                $modalForm.find('#item-qNumber').val(itemData.qNumber || '');
-                $modalForm.find('#item-chapter').val(itemData.chapter || '');
-                $modalForm.find('#item-text').val(itemData.text || '');
-                $modalForm.find('#item-type').val(itemData.type || '');
-                $modalForm.find('#item-marks').val(itemData.marks !== undefined ? itemData.marks : '');
-            }
+                 // Populate common and context-specific fields
+                 $modalForm.find('#item-id').val(itemData.id || itemData.questionId || ''); // Use questionId for questions
+                 if (itemData.name !== undefined) $modalForm.find('#item-name').val(itemData.name);
+                 if (itemData.number !== undefined) $modalForm.find('#item-number').val(itemData.number);
+                 if (itemData.code !== undefined) $modalForm.find('#item-code').val(itemData.code);
+                 if (itemData.year !== undefined) $modalForm.find('#item-year').val(itemData.year);
+                 if (itemData.qNumber !== undefined) $modalForm.find('#item-qNumber').val(itemData.qNumber);
+                 if (itemData.chapter !== undefined) $modalForm.find('#item-chapter').val(itemData.chapter);
+                 if (itemData.text !== undefined) $modalForm.find('#item-text').val(itemData.text);
+                 if (itemData.type !== undefined) $modalForm.find('#item-type').val(itemData.type);
+                 if (itemData.marks !== undefined) $modalForm.find('#item-marks').val(itemData.marks);
+             } catch (e) {
+                 console.error("Error populating form:", e, "Data:", itemData);
+                 showToast("Error filling form data.", "error");
+                 closeModal();
+             }
         }
 
+        // Hides the modal
         function closeModal() {
-            $modal.removeClass('active');
-            currentModalContext = null;
-            isEditMode = false;
-            currentEditIndices = {};
+             $modal.removeClass('active');
+             $modalForm[0].reset(); // Clear form on close
         }
 
-        // --- Form Submission ---
-        $modalForm.on('submit', function(event) {
-            event.preventDefault();
-            const formData = new FormData(this); // 'this' is the form element
-            const data = {};
+        // =========================================
+        //        VALIDATION FUNCTIONS
+        // =========================================
+        // Validates form data before adding/updating
+        function validateItem(context, data, indices, isEditing) {
+            const id = data.id?.trim();
+            if (!id) return "ID cannot be empty.";
 
-            // Populate data object from visible fields
-            $allFormFields.each(function() {
-                 const $field = $(this);
-                 if (!$field.hasClass('hidden')) {
-                     const $input = $field.find('input, textarea');
-                     if ($input.length) {
-                         const key = $input.attr('name'); // Use name attribute
-                         const value = formData.get(key) || '';
-                         // Convert numbers where appropriate (safer parsing)
-                         if ($input.attr('type') === 'number') {
-                             data[key] = parseInt(value, 10);
-                             if (isNaN(data[key])) data[key] = 0; // Default to 0 if parse fails
-                         } else {
-                             data[key] = value;
-                         }
+            // Check for duplicate IDs only when adding
+            if (!isEditing) {
+                 let siblings = [];
+                 // Get parent indices correctly based on context
+                 const { branchIndex, semesterIndex, subjectIndex } = indices;
+
+                 try {
+                     switch(context) {
+                        case 'branch':   siblings = universityData.branches; break;
+                        case 'semester': siblings = universityData.branches[branchIndex]?.semesters || []; break;
+                        case 'subject':  siblings = universityData.branches[branchIndex]?.semesters[semesterIndex]?.subjects || []; break;
+                        case 'question': siblings = universityData.branches[branchIndex]?.semesters[semesterIndex]?.subjects[subjectIndex]?.questions || []; break;
+                        default: siblings = []; // Should not happen if context is valid
                      }
+                     // Check if ID exists (use questionId field for questions)
+                     const idKey = (context === 'question') ? 'questionId' : 'id';
+                     // Ensure siblings array exists before checking
+                     const idExists = Array.isArray(siblings) && siblings.some(item => item[idKey] === id);
+                     if (idExists) return `${capitalizeFirstLetter(context)} ID '${id}' already exists in this scope.`;
+
+                 } catch (e) {
+                     // This might happen if parent path doesn't fully exist yet (e.g., adding semester to non-existent branch index somehow)
+                     console.warn("Could not perform duplicate ID check (parent path might be invalid):", context, indices, e);
                  }
-             });
-
-            const editMode = $modalForm.find('#edit-mode').val() === 'edit';
-            const indices = JSON.parse($modalForm.find('#edit-indices').val() || '{}');
-
-            if (editMode) {
-                updateItem(currentModalContext, indices, data); // Pass raw form data map
-            } else {
-                addItem(currentModalContext, indices, data);
             }
 
-            closeModal();
+            // Context-specific validation
+            if (context === 'semester' && (data.number === undefined || data.number === null || data.number < 1)) return "Semester number must be 1 or greater.";
+            if (context === 'question') {
+                if (data.year === undefined || data.year === null || data.year < 1900 || data.year > 2100) return "Year must be between 1900 and 2100.";
+                if (data.marks === undefined || data.marks === null || data.marks < 0) return "Marks cannot be negative.";
+                if (!data.qNumber?.trim()) return "Question Number is required.";
+                if (!data.text?.trim()) return "Question Text is required.";
+                if (!data.chapter?.trim()) return "Chapter/Module is required.";
+                if (!data.type?.trim()) return "Question Type is required.";
+            }
+            if ((context === 'branch' || context === 'subject') && !data.name?.trim()) return "Name is required.";
+             if (context === 'subject' && !data.code?.trim()) return "Subject Code is required.";
+
+
+            return null; // Validation passed
+        }
+
+
+        // =========================================
+        //         FORM SUBMISSION HANDLER
+        // =========================================
+        $modalForm.on('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+            const formData = new FormData(this);
+            const data = {};
+            const context = $('#edit-context').val();
+            const isEditing = $('#edit-mode').val() === 'edit';
+            // Retrieve and parse indices from the hidden input
+            let indices = {};
+            try {
+                indices = JSON.parse($('#edit-indices').val() || '{}');
+            } catch (e) {
+                console.error("Failed to parse indices from hidden input:", $('#edit-indices').val(), e);
+                showToast("Internal Error: Invalid context data.", "error");
+                return;
+            }
+
+
+            // Extract data only from visible fields
+            $allFormFields.each(function() {
+                const $field = $(this);
+                if (!$field.hasClass('hidden')) {
+                    const $input = $field.find('input:not(:disabled), textarea:not(:disabled)'); // Only get enabled inputs
+                    if ($input.length && $input.attr('name')) {
+                        const key = $input.attr('name');
+                        const value = formData.get(key); // Get value from FormData (null if empty/missing)
+
+                        // Convert to number if applicable
+                        if ($input.attr('type') === 'number') {
+                            data[key] = (value === null || value.trim() === '') ? null : parseFloat(value); // Use parseFloat, null if empty
+                            if (isNaN(data[key])) data[key] = null; // Handle invalid number input gracefully
+                        } else {
+                            // Ensure value is a string before trimming
+                            data[key] = (typeof value === 'string') ? value.trim() : (value || ''); // Trim strings, keep others (like null), default empty strings
+                        }
+                    }
+                }
+            });
+            // Ensure ID is correctly captured
+            // The ID field in the modal form always has name="id"
+             data.id = $('#item-id').val().trim();
+
+
+            // --- Validation ---
+            // Pass correct indices for validation (parent indices for 'add', item indices for 'edit')
+            const validationIndices = isEditing ? indices : indices; // For validation, use the same indices (parent for add, item for edit)
+            const validationError = validateItem(context, data, validationIndices, isEditing);
+            if (validationError) {
+                showToast(`Validation Error: ${validationError}`, "error", 4000);
+                return; // Stop submission
+            }
+
+            // --- Perform Add or Update ---
+            if (isEditing) {
+                updateItem(context, indices, data); // Pass item indices for update
+            } else {
+                addItem(context, indices, data); // Pass parent indices for 'add'
+            }
+            closeModal(); // Close modal on success
         });
 
-        // --- Data Manipulation (CRUD) ---
-         function addItem(context, indices, itemData) {
-             // itemData now comes directly from form fields via name attribute
-             const { branchIndex, semesterIndex, subjectIndex } = indices;
+
+        // =========================================
+        //         DATA MANIPULATION (CRUD)
+        // =========================================
+         // Adds a new item to the data structure
+         function addItem(context, parentIndices, itemData) {
+             // Validate parentIndices structure
+             if (!parentIndices || typeof parentIndices !== 'object') {
+                 console.error("Invalid parentIndices in addItem:", parentIndices);
+                 showToast("Internal Error: Cannot determine where to add the item.", "error");
+                 return;
+             }
+             const { branchIndex, semesterIndex, subjectIndex } = parentIndices; // Indices of the PARENT where item is added
+
              try {
                  let newItem;
+                 let parentRef;
+
                  switch (context) {
                     case 'branch':
-                         newItem = { id: itemData.id, name: itemData.name, semesters: [] };
-                         universityData.branches.push(newItem);
-                         break;
+                        newItem = { id: itemData.id, name: itemData.name, semesters: [] };
+                        universityData.branches.push(newItem);
+                        break;
                     case 'semester':
-                         newItem = { id: itemData.id, number: itemData.number, subjects: [] };
-                         universityData.branches[branchIndex].semesters.push(newItem);
-                         universityData.branches[branchIndex].semesters.sort((a,b) => a.number - b.number);
-                         break;
+                        newItem = { id: itemData.id, number: itemData.number, subjects: [] };
+                        // Ensure branch exists at the index
+                        if (branchIndex === undefined || !universityData.branches[branchIndex]) {
+                            throw new Error(`Parent Branch at index ${branchIndex} not found.`);
+                        }
+                        parentRef = universityData.branches[branchIndex];
+                        parentRef.semesters = parentRef.semesters || []; // Ensure array exists
+                        parentRef.semesters.push(newItem);
+                        parentRef.semesters.sort((a,b) => (a.number || 0) - (b.number || 0)); // Keep semesters sorted (handle null number)
+                        break;
                     case 'subject':
-                         newItem = { id: itemData.id, name: itemData.name, code: itemData.code, questions: [] };
-                         universityData.branches[branchIndex].semesters[semesterIndex].subjects.push(newItem);
-                         break;
+                        newItem = { id: itemData.id, name: itemData.name, code: itemData.code, questions: [] };
+                        // Ensure semester exists at the indices
+                        if (branchIndex === undefined || semesterIndex === undefined || !universityData.branches[branchIndex]?.semesters[semesterIndex]) {
+                             throw new Error(`Parent Semester at index ${branchIndex}-${semesterIndex} not found.`);
+                        }
+                        parentRef = universityData.branches[branchIndex].semesters[semesterIndex];
+                        parentRef.subjects = parentRef.subjects || []; // Ensure array exists
+                        parentRef.subjects.push(newItem);
+                        // Optional: Sort subjects by code or name?
+                        // parentRef.subjects.sort((a,b) => (a.code || '').localeCompare(b.code || ''));
+                        break;
                     case 'question':
-                          newItem = {
-                              questionId: itemData.id, // Map form 'id' to 'questionId'
-                              year: itemData.year, qNumber: itemData.qNumber, chapter: itemData.chapter,
-                              text: itemData.text, type: itemData.type, marks: itemData.marks,
-                              isCompleted: false // Default completion state
-                          };
-                          universityData.branches[branchIndex].semesters[semesterIndex].subjects[subjectIndex].questions.push(newItem);
-                          break;
-                     default: throw new Error(`Invalid context for adding: ${context}`);
+                        // Use the ID from itemData as questionId
+                        newItem = {
+                            questionId: itemData.id, // Map modal 'id' field to 'questionId'
+                            year: itemData.year,
+                            qNumber: itemData.qNumber,
+                            chapter: itemData.chapter,
+                            text: itemData.text,
+                            type: itemData.type,
+                            marks: itemData.marks,
+                            isCompleted: false // Default completion state
+                        };
+                        // Ensure subject exists at the indices
+                        if (branchIndex === undefined || semesterIndex === undefined || subjectIndex === undefined || !universityData.branches[branchIndex]?.semesters[semesterIndex]?.subjects[subjectIndex]) {
+                            throw new Error(`Parent Subject at index ${branchIndex}-${semesterIndex}-${subjectIndex} not found.`);
+                        }
+                        parentRef = universityData.branches[branchIndex].semesters[semesterIndex].subjects[subjectIndex];
+                        parentRef.questions = parentRef.questions || []; // Ensure array exists
+                        parentRef.questions.push(newItem);
+                         // Sort questions (e.g., by year then qNumber)
+                         parentRef.questions.sort((a, b) => {
+                             const yearA = a.year || 0; const yearB = b.year || 0;
+                             if (yearA !== yearB) return yearA - yearB;
+                             const qNumA = a.qNumber || ''; const qNumB = b.qNumber || '';
+                             return qNumA.localeCompare(qNumB, undefined, { numeric: true, sensitivity: 'base' });
+                         });
+                        break;
+                    default:
+                        throw new Error(`Invalid context for adding: ${context}`);
                  }
-                 renderEditor(); // Re-render everything
-             } catch (e) { console.error("Error adding item:", e); alert("Failed to add item."); }
+                 renderEditor(); // Re-render the entire editor UI
+                 showToast(`${capitalizeFirstLetter(context)} added successfully!`, "success");
+             } catch (e) {
+                 console.error("Error adding item:", e, "Context:", context, "Parent Indices:", parentIndices, "Data:", itemData);
+                 showToast(`Error: ${e.message || 'Failed to add item.'}`, "error");
+             }
          }
 
-        function updateItem(context, indices, updatedFormData) {
-            const { branchIndex, semesterIndex, subjectIndex, questionIndex } = indices;
+        // Updates an existing item
+        function updateItem(context, itemIndices, updatedFormData) {
             try {
-                let currentItemRef; // Reference to the object in universityData
-                switch (context) {
-                    case 'branch': currentItemRef = universityData.branches[branchIndex]; break;
-                    case 'semester': currentItemRef = universityData.branches[branchIndex].semesters[semesterIndex]; break;
-                    case 'subject': currentItemRef = universityData.branches[branchIndex].semesters[semesterIndex].subjects[subjectIndex]; break;
-                    case 'question': currentItemRef = universityData.branches[branchIndex].semesters[semesterIndex].subjects[subjectIndex].questions[questionIndex]; break;
-                    default: throw new Error(`Invalid context for updating: ${context}`);
-                }
+                let currentItemRef = getItemRef(context, itemIndices); // Get reference to the item being edited
+                if (!currentItemRef) throw new Error("Item not found for update.");
 
-                if (!currentItemRef) throw new Error("Item reference not found for update.");
-
-                // Update properties based on context, preserving nested arrays and ID
-                Object.keys(updatedFormData).forEach(key => {
-                    // Do not update ID, and skip hidden fields which might be null/undefined
-                     if (key !== 'id' && updatedFormData[key] !== undefined && currentItemRef.hasOwnProperty(key)) {
-                          // Special mapping for questionId
-                          if (context === 'question' && key === 'id') {
-                              // This case is skipped by key !== 'id', ID shouldn't change
-                          } else if (context === 'question' && key === 'questionId') {
-                               // Also skip direct update if 'questionId' somehow comes from form
-                          }
-                          else {
-                              currentItemRef[key] = updatedFormData[key];
-                          }
-                     } else if (context === 'question' && key === 'id' && currentItemRef.hasOwnProperty('questionId')) {
-                          // Map form 'id' back to 'questionId' ONLY IF it exists on the object (should always for questions)
-                          // But we generally prevent ID edits. If needed, update logic here carefully.
-                          // currentItemRef.questionId = updatedFormData[key]; // Usually disabled
+                 // Update properties from form data, skipping the ID field (it's immutable)
+                 Object.keys(updatedFormData).forEach(key => {
+                     // The 'id' from the form is the identifier, not data to be updated here
+                     // We only update other fields. Question ID ('questionId') is also immutable here.
+                     if (key !== 'id' && key !== 'questionId' && updatedFormData.hasOwnProperty(key) && currentItemRef.hasOwnProperty(key)) {
+                          currentItemRef[key] = updatedFormData[key];
+                     } else if (key === 'id' && context === 'question' && currentItemRef.hasOwnProperty('questionId') && updatedFormData[key] !== currentItemRef.questionId) {
+                         // This case should technically not happen as ID field is disabled, but log if it does.
+                         console.warn("Attempted to change questionId via form, which is not allowed.");
+                     } else if (key === 'id' && context !== 'question' && currentItemRef.hasOwnProperty('id') && updatedFormData[key] !== currentItemRef.id) {
+                         // This case should technically not happen as ID field is disabled, but log if it does.
+                         console.warn("Attempted to change item ID via form, which is not allowed.");
                      }
-                });
+                 });
 
-                 // Re-sort semesters if a semester was updated (number might change)
+                 // Re-sort if properties affecting sort order changed
                  if (context === 'semester') {
-                     universityData.branches[branchIndex].semesters.sort((a,b) => a.number - b.number);
+                    const { branchIndex } = itemIndices;
+                    if (branchIndex !== undefined && universityData.branches[branchIndex]?.semesters) {
+                        universityData.branches[branchIndex].semesters.sort((a,b) => (a.number || 0) - (b.number || 0));
+                    }
+                 }
+                 if (context === 'question') {
+                     const { branchIndex, semesterIndex, subjectIndex } = itemIndices;
+                     if (branchIndex !== undefined && semesterIndex !== undefined && subjectIndex !== undefined && universityData.branches[branchIndex]?.semesters[semesterIndex]?.subjects[subjectIndex]?.questions) {
+                        universityData.branches[branchIndex].semesters[semesterIndex].subjects[subjectIndex].questions.sort((a, b) => {
+                             const yearA = a.year || 0; const yearB = b.year || 0;
+                             if (yearA !== yearB) return yearA - yearB;
+                              const qNumA = a.qNumber || ''; const qNumB = b.qNumber || '';
+                             return qNumA.localeCompare(qNumB, undefined, { numeric: true, sensitivity: 'base' });
+                         });
+                    }
                  }
 
-                 renderEditor(); // Re-render
-             } catch (e) { console.error("Error updating item:", e); alert("Failed to update item."); }
+                 renderEditor(); // Re-render UI
+                 showToast(`${capitalizeFirstLetter(context)} updated successfully!`, "success");
+             } catch (e) {
+                 console.error("Error updating item:", e, "Context:", context, "Indices:", itemIndices, "Data:", updatedFormData);
+                 showToast(`Error: ${e.message || 'Failed to update item.'}`, "error");
+             }
          }
 
+        // Deletes an item
          function deleteItem(context, indices) {
-            const { branchIndex, semesterIndex, subjectIndex, questionIndex } = indices;
-             let itemName = `this ${context}`;
-             try { // Attempt to get a more descriptive name
-                let item;
-                if(context === 'branch') item = universityData.branches[branchIndex];
-                else if(context === 'semester') item = universityData.branches[branchIndex]?.semesters[semesterIndex];
-                else if(context === 'subject') item = universityData.branches[branchIndex]?.semesters[semesterIndex]?.subjects[subjectIndex];
-                else if(context === 'question') item = universityData.branches[branchIndex]?.semesters[semesterIndex]?.subjects[subjectIndex]?.questions[questionIndex];
-
-                if(item) itemName = item.name || `Semester ${item.number}` || item.code || `Q# ${item.qNumber}` || item.id || item.questionId || itemName;
-             } catch {}
-
-            if (confirm(`Are you sure you want to delete ${itemName}? This cannot be undone.`)) {
-                try {
-                    switch (context) {
-                        case 'branch': universityData.branches.splice(branchIndex, 1); break;
-                        case 'semester': universityData.branches[branchIndex]?.semesters.splice(semesterIndex, 1); break;
-                        case 'subject': universityData.branches[branchIndex]?.semesters[semesterIndex]?.subjects.splice(subjectIndex, 1); break;
-                        case 'question': universityData.branches[branchIndex]?.semesters[semesterIndex]?.subjects[subjectIndex]?.questions.splice(questionIndex, 1); break;
-                        default: throw new Error(`Invalid context for deletion: ${context}`);
-                    }
-                    renderEditor(); // Re-render after delete
-                } catch (e) { console.error("Error deleting item:", e); alert("Failed to delete item."); }
+            let itemName = `this ${context}`; // Default name
+            let itemRef = getItemRef(context, indices);
+            if (itemRef) { // Try to get a more specific name for confirmation
+                 itemName = itemRef.name || `Semester ${itemRef.number}` || itemRef.code || `Q# ${itemRef.qNumber}` || itemRef.id || itemRef.questionId || itemName;
             }
-        }
 
-        // --- Event Handlers (using delegation) ---
+            if (confirm(`Are you sure you want to DELETE '${sanitizeInput(itemName)}'?\n\nThis action cannot be undone.`)) {
+                try {
+                     const { branchIndex, semesterIndex, subjectIndex, questionIndex } = indices;
+                     let parentArray;
+                     let indexToDelete;
 
-        // Modal Triggers (Add/Edit)
-        $('#add-branch-main-btn').on('click', function() { showModal('branch'); });
-        $(document).on('click', '.add-semester-btn', function() { showModal('semester', { branchIndex: $(this).data('branch-index') }); });
-        $(document).on('click', '.add-subject-btn', function() { showModal('subject', { branchIndex: $(this).data('branch-index'), semesterIndex: $(this).data('semester-index') }); });
-        $(document).on('click', '.add-question-btn', function() { showModal('question', { branchIndex: $(this).data('branch-index'), semesterIndex: $(this).data('semester-index'), subjectIndex: $(this).data('subject-index') }); });
-        $(document).on('click', '.edit-item-btn', function() { showModal($(this).data('context'), $(this).data('indices')); });
+                     switch(context) {
+                         case 'branch':   parentArray = universityData.branches; indexToDelete = branchIndex; break;
+                         case 'semester': parentArray = universityData.branches[branchIndex]?.semesters; indexToDelete = semesterIndex; break;
+                         case 'subject':  parentArray = universityData.branches[branchIndex]?.semesters[semesterIndex]?.subjects; indexToDelete = subjectIndex; break;
+                         case 'question': parentArray = universityData.branches[branchIndex]?.semesters[semesterIndex]?.subjects[subjectIndex]?.questions; indexToDelete = questionIndex; break;
+                         default: throw new Error(`Invalid context for deletion: ${context}`);
+                     }
 
-        // Delete Trigger
-        $(document).on('click', '.delete-item-btn', function() { deleteItem($(this).data('context'), $(this).data('indices')); });
+                    // Validate array and index before splicing
+                    if (!Array.isArray(parentArray) || indexToDelete === undefined || indexToDelete < 0 || indexToDelete >= parentArray.length) {
+                         throw new Error("Item or its parent container not found for deletion.");
+                     }
 
-        // Ask AI Trigger
+                    parentArray.splice(indexToDelete, 1); // Remove the item from the array
+
+                    renderEditor(); // Re-render UI
+                    showToast(`${capitalizeFirstLetter(context)} deleted.`, "info");
+                } catch (e) {
+                    console.error("Error deleting item:", e, "Context:", context, "Indices:", indices);
+                    showToast(`Error: ${e.message || 'Failed to delete item.'}`, "error");
+                }
+            }
+         }
+
+        // =========================================
+        //         EVENT HANDLERS (DELEGATED)
+        // =========================================
+        // Use event delegation for dynamically added elements
+
+        // Main "Add Branch" button
+        $('#add-branch-main-btn').on('click', function() {
+             showModal('branch', {}, false); // No parent indices needed for top-level branch
+        });
+
+        // Delegated Add button clicks (for Semester, Subject, Question)
+        $(document).on('click', '.add-item-btn', function() {
+             const context = $(this).data('context'); // e.g., 'semester', 'subject', 'question'
+             const parentIndices = getIndicesFromElement($(this)); // Get indices of the PARENT item
+             showModal(context, parentIndices, false); // Open modal to add child item
+        });
+
+        // Delegated Edit button clicks
+        $(document).on('click', '.edit-item-btn', function() {
+            const context = $(this).data('context');
+            const itemIndices = getIndicesFromElement($(this)); // Get indices of the item ITSELF
+            showModal(context, itemIndices, true); // Open modal in edit mode
+        });
+
+        // Delegated Delete button clicks
+        $(document).on('click', '.delete-item-btn', function() {
+            const context = $(this).data('context');
+            const itemIndices = getIndicesFromElement($(this)); // Get indices of the item ITSELF
+            deleteItem(context, itemIndices);
+        });
+
+        // Delegated "Ask AI" button click
         $(document).on('click', '.ask-ai-btn', function() {
              try {
-                const question = $(this).data('question'); // Retrieve the stringified JSON
-                let promptText = `Help me understand or solve this question`;
-                if (question.type) promptText += ` (Type: ${question.type})`;
-                // ... rest of the prompt building logic ...
-                if (question.chapter) promptText += ` about "${question.chapter.replace(/^Module\s*\d+:\s*/i, '').trim()}"`;
-                if (question.year) promptText += ` from the ${question.year} exam`;
-                if (question.marks) promptText += ` worth ${question.marks} marks`;
-                const cleanedText = (question.text || '').replace(QUESTION_ID_REGEX, '').trim();
-                promptText += `:\n\n${cleanedText}`;
+                 const questionDataString = $(this).attr('data-question'); // Get the JSON string
+                 if (!questionDataString) throw new Error("Missing question data.");
 
-                const searchQuery = encodeURIComponent(promptText); const url = `https://www.google.com/search?q=${searchQuery}`; window.open(url, '_blank');
-            } catch (e) { console.error("Error in Ask AI:", e); alert("Could not process question data for Ask AI."); }
+                 const question = JSON.parse(questionDataString); // Parse it back into an object
+
+                 // Construct a basic prompt
+                 let promptText = `Help me understand or solve this question`;
+                 if (question.type) promptText += ` (Type: ${question.type})`;
+                 if (question.chapter) promptText += ` about "${question.chapter.replace(/^Module\s*\d+:\s*/i, '').trim()}"`;
+                 if (question.year) promptText += ` from the ${question.year} exam`;
+                 if (question.marks) promptText += ` worth ${question.marks} marks`;
+
+                 // Clean the question text (remove leading ID if parseContent didn't already)
+                 const cleanedText = (question.text || '').replace(QUESTION_ID_REGEX, '').trim();
+                 promptText += `:\n\n${cleanedText}`;
+
+                 // Encode the prompt for URL and open ChatGPT search (or preferred AI)
+                 const searchQuery = encodeURIComponent(promptText);
+                 const url = `https://chatgpt.com/search?q=${searchQuery}`; // Example using ChatGPT search URL parameter
+
+                 window.open(url, '_blank'); // Open in a new tab
+             } catch (e) {
+                 console.error("Error in Ask AI button:", e);
+                 showToast("Could not process question data for AI.", "error");
+             }
         });
 
-        // Toggle Completion Trigger
+        // Delegated Toggle Completion button click
         $(document).on('click', '.toggle-completion-btn', function() {
-            const indices = $(this).data('indices');
-             try {
-                const { branchIndex, semesterIndex, subjectIndex, questionIndex } = indices;
-                const question = universityData.branches[branchIndex].semesters[semesterIndex].subjects[subjectIndex].questions[questionIndex];
-                question.isCompleted = !question.isCompleted;
-                // Visually update just the toggle and card border without full re-render
-                $(this).find('.toggle-bg').toggleClass('bg-gray-300 bg-green-500');
-                $(this).find('.toggle-dot').toggleClass('translate-x-0 translate-x-5');
-                $(this).closest('.question-card').toggleClass('border-gray-200 border-l-4 border-green-500');
-                updateJsonOutput(); // Update JSON as completion state changes
-             } catch (e) { console.error("Error toggling completion:", e); }
+            const $button = $(this);
+            const indices = getIndicesFromElement($button);
+            try {
+                let question = getItemRef('question', indices);
+                if (!question) {
+                    console.warn("Question not found for toggle:", indices);
+                    showToast("Error: Question not found.", "error");
+                    return; // Item might have been deleted just before click
+                }
+                question.isCompleted = !question.isCompleted; // Toggle the boolean state
+
+                // Update UI immediately
+                $button.find('.toggle-bg').toggleClass('bg-gray-300 bg-green-500');
+                $button.find('.toggle-dot').toggleClass('translate-x-0 translate-x-5');
+                $button.closest('.question-card')
+                       .toggleClass('border-gray-200 border-l-4 border-green-500');
+
+                updateJsonOutput(); // Reflect change in JSON output
+                // Optional: Save to local storage immediately after toggle?
+                // saveDataToLocalStorage();
+             } catch (e) {
+                 console.error("Error toggling completion:", e, "Indices:", indices);
+                 showToast("Error updating completion status.", "error");
+             }
         });
 
-        // Modal Cancel/Close
+        // Modal Cancel button
         $('#modal-cancel-btn').on('click', closeModal);
-        $modal.on('click', function(event) { // Close on overlay click
-            if (event.target === this) closeModal();
+
+        // Close modal if clicking on the overlay background
+        $modal.on('click', function(event) {
+            if (event.target === this) {
+                closeModal();
+            }
+        });
+
+        // --- Question Search ---
+        function filterQuestions(searchTerm) {
+            const term = searchTerm.trim().toLowerCase();
+            const $questionCards = $('.question-card'); // Select all question cards
+
+            if (!term) {
+                // If search is empty, show all questions and hide clear button
+                $questionCards.show();
+                $clearSearchBtn.hide();
+                // Optional: Show parent elements if they were hidden previously
+                $questionCards.parents('.subjects-list, .semesters-list').show(); // Adjust selectors if needed
+                return;
+            }
+
+            $clearSearchBtn.show(); // Show clear button if there's a term
+
+            // Iterate over each question card
+            $questionCards.each(function() {
+                 const $card = $(this);
+                 const questionText = $card.data('question-text') || ''; // Get text stored in data attribute
+
+                 // Show card if the stored text includes the search term, hide otherwise
+                 if (questionText.includes(term)) {
+                     $card.show();
+                     // Ensure parent elements are visible too
+                     $card.parents('.subjects-list, .semesters-list').show(); // Adjust selectors if needed
+                 } else {
+                     $card.hide();
+                 }
+            });
+
+             // Optional: Hide parent containers (subjects/semesters/branches) if ALL their children are hidden
+             // This is more complex and might impact performance on very large datasets
+             // Example (simple version for subjects):
+             /*
+             $('.subjects-list').each(function() {
+                 const $subjectList = $(this);
+                 if ($subjectList.find('.question-card:visible').length === 0) {
+                     // $subjectList.closest('.p-3.border-dashed').hide(); // Hide the subject container
+                 } else {
+                    // $subjectList.closest('.p-3.border-dashed').show();
+                 }
+             });
+             */
+        }
+
+        // Use 'input' event for real-time filtering as the user types
+        $questionSearch.on('input', function() {
+             filterQuestions($(this).val());
+        });
+
+        // Clear search button functionality
+        $clearSearchBtn.on('click', function() {
+             $questionSearch.val('').trigger('input'); // Clear input and trigger the filter function
         });
 
         // --- Local Storage ---
         function saveDataToLocalStorage() {
-             try { localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(universityData)); alert('Data saved.'); }
-             catch (e) { console.error("Error saving:", e); alert('Failed to save.'); }
+             try {
+                 const dataString = JSON.stringify(universityData);
+                 console.log(`Attempting to save ${dataString.length} bytes to Local Storage.`); // Add this log
+                 // Basic check - real limit varies slightly by browser
+                 if (dataString.length > 5 * 1000 * 1000) {
+                     showToast('Warning: Data size is large (~5MB+), saving might fail or cause issues.', 'info', 5000);
+                 }
+                 localStorage.setItem(LOCAL_STORAGE_KEY, dataString);
+                 showToast('Data saved to Local Storage.', "success");
+             } catch (e) {
+                 console.error("Error saving to Local Storage:", e);
+                 // Handle potential storage limit errors
+                 if (e.name === 'QuotaExceededError' || (e.message && e.message.toLowerCase().includes('quota'))) {
+                     showToast('Error: Local Storage limit exceeded. Cannot save all data.', "error", 5000);
+                 } else {
+                     showToast('Failed to save data to Local Storage.', "error");
+                 }
+             }
         }
+
         function loadDataFromLocalStorage() {
              const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
              if (savedData) {
                  try {
                      const parsedData = JSON.parse(savedData);
-                     // Basic validation/defaulting
-                     universityData = { branches: parsedData.branches || [] };
-                     // Add default 'isCompleted' if missing (important for toggle logic)
-                      universityData.branches.forEach(b => {
-                         b.semesters = b.semesters || [];
-                         b.semesters.forEach(s => {
-                            s.subjects = s.subjects || [];
-                             s.subjects.forEach(sub => {
-                                 sub.questions = sub.questions || [];
-                                 sub.questions.forEach(q => q.isCompleted = q.isCompleted || false);
-                             });
-                         });
-                     });
-                     renderEditor(); alert('Data loaded.');
-                 } catch (e) { console.error("Error loading:", e); alert('Failed to load data.'); universityData = { branches: [] }; renderEditor();}
-             } else { alert('No data found.'); }
+                     // Basic validation/migration: Ensure top-level 'branches' array exists
+                     if (Array.isArray(parsedData.branches)) {
+                          universityData = parsedData;
+                          // **Data Sanitization/Migration on Load:**
+                          // Ensure nested arrays exist and 'isCompleted' defaults to false if missing
+                          (universityData.branches || []).forEach(branch => {
+                              branch.semesters = branch.semesters || [];
+                              branch.semesters.forEach(semester => {
+                                  semester.subjects = semester.subjects || [];
+                                  semester.subjects.forEach(subject => {
+                                      subject.questions = subject.questions || [];
+                                      subject.questions.forEach(question => {
+                                          // Ensure 'isCompleted' is explicitly boolean, default false
+                                          question.isCompleted = question.isCompleted === true;
+                                          // Ensure 'questionId' exists if migrating from older format where 'id' was used
+                                          if (question.id && !question.questionId) {
+                                              question.questionId = question.id;
+                                              // delete question.id; // Optionally remove old 'id' if desired
+                                          }
+                                          // Ensure numeric fields are numbers (or null)
+                                          if (question.marks !== null && typeof question.marks !== 'number') question.marks = parseFloat(question.marks) || null; // Allow null marks
+                                          if (question.year !== null && typeof question.year !== 'number') question.year = parseInt(question.year, 10) || null; // Allow null year
+                                          if (semester.number !== null && typeof semester.number !== 'number') semester.number = parseInt(semester.number, 10) || null;
+
+                                      });
+                                       // Optional: Sort questions after loading/sanitizing
+                                        subject.questions.sort((a, b) => {
+                                             const yearA = a.year || 0; const yearB = b.year || 0;
+                                             if (yearA !== yearB) return yearA - yearB;
+                                              const qNumA = a.qNumber || ''; const qNumB = b.qNumber || '';
+                                             return qNumA.localeCompare(qNumB, undefined, { numeric: true, sensitivity: 'base' });
+                                         });
+                                  });
+                                  // Optional: Sort subjects after loading/sanitizing
+                                  // subject.subjects.sort((a,b) => (a.code || '').localeCompare(b.code || ''));
+                              });
+                               // Sort semesters after loading/sanitizing
+                               branch.semesters.sort((a,b) => (a.number || 0) - (b.number || 0));
+                          });
+
+                          renderEditor(); // Render the loaded data
+                          showToast('Data loaded from Local Storage.', "info");
+                     } else {
+                         throw new Error("Invalid data structure in Local Storage (missing 'branches' array).");
+                     }
+                 } catch (e) {
+                     console.error("Error loading or parsing data from Local Storage:", e);
+                     showToast('Failed to load or parse data from Local Storage. Data might be corrupt. Resetting.', "error", 5000);
+                     universityData = { branches: [] }; // Reset to empty state
+                     localStorage.removeItem(LOCAL_STORAGE_KEY); // Remove corrupt data
+                     renderEditor(); // Render the empty state
+                 }
+             } else {
+                  // No message needed if nothing found, just render empty state
+                 renderEditor();
+             }
         }
 
+        // Button handlers for Local Storage actions
         $('#save-local-btn').on('click', saveDataToLocalStorage);
         $('#load-local-btn').on('click', loadDataFromLocalStorage);
 
         // --- Initial Load ---
-        loadDataFromLocalStorage(); // Try loading on startup
-        if (!universityData || !universityData.branches || universityData.branches.length === 0) {
-             renderEditor(); // Render empty state if no data loaded
-        }
+        loadDataFromLocalStorage(); // Attempt to load data when the page loads
+        // No need to call renderEditor() here again, loadDataFromLocalStorage calls it.
 
-    }); // End of $(document).ready()
+    }); 
     </script>
 </body>
 </html>
