@@ -36,7 +36,10 @@ export const saveCompletedQuestions = async (subjectId, completedSet) => {
 
 // Toggles the completion status for a specific question in a subject
 export const toggleQuestionCompletion = async (subjectId, questionId) => {
-   if (!subjectId || !questionId) return await loadCompletedQuestions(subjectId); // Return current set on bad input
+   if (!subjectId || !questionId) {
+       console.warn("toggleQuestionCompletion called with invalid subjectId or questionId");
+       return await loadCompletedQuestions(subjectId); // Return current set on bad input
+   }
     try {
         // Load the current set
         const completedSet = await loadCompletedQuestions(subjectId);

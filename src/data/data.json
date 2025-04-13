@@ -1,122 +1,71 @@
+
 {
-    "branches": [
-      {
-        "id": "cse",
-        "name": "Computer Science Engineering",
-        "semesters": [
-          {
-            "id": "sem3",
-            "number": 3,
-            "subjects": [
-              {
-                "id": "cse301",
-                "name": "C++ & Object Oriented Programming",
-                "code": "CSE301",
-                "questions": [
-                  {
-                    "questionId": "cse301_2023_1a",
-                    "year": 2023,
-                    "qNumber": "Q1a",
-                    "chapter": "Module 4: Overloading, Templates and Inheritance",
-                    "text": "To prevent any method from overriding we declare the method as\n(i) static\n(ii) final\n(iii) const\n(iv) None of the above",
-                    "type": "MCQ",
-                    "marks": 2
-                  },
-                  {
-                    "questionId": "cse301_2023_1b",
-                    "year": 2023,
-                    "qNumber": "Q1b",
-                    "chapter": "Module 3: Classes and Data Abstraction",
-                    "text": "Does constructor overloading include different return types for constructors to be overloaded?\n(i) yes, if return types are different, signature becomes different.\n(ii) yes, because return types can differentiate two functions.\n(iii) no, because return types cannot differentiate two functions\n(iv) no, constructors don't have any return type.",
+  "branches": [
+    {
+      "id": "cse",
+      "name": "Computer Science Engineering",
+      "semesters": [
+        {
+          "id": "sem3",
+          "number": 3,
+          "subjects": [
+            {
+              "id": "cse301",
+              "name": "C++ & Object Oriented Programming",
+              "code": "CSE301",
+              "questions": [
+                 {
+                  "questionId": "cse301_2023_1a",
+                  "year": 2023,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "To prevent any method from overriding we declare the method as\n(i) static\n(ii) final\n(iii) const\n(iv) None of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                
+                {
+                     "questionId": "cse301_2019_1e",
+                     "year": 2019,
+                     "qNumber": "Q1e",
+                     "chapter": "Module 4: Overloading, Templates and Inheritance",
+                     "text": "Which class/set of classes can illustrate polymorphism in the following code\n```cpp\nabstract class student\n{\n  public: int marks;\n  virtual calc_grade() = 0; \n}\nclass topper: public student\n{\n  public: calc_grade() \n  { return 10; }\n};\nclass average: public student\n{\n  public: calc_grade() \n  { return 20; }\n};\nclass failed{int marks;};\n```\n(i) Only class student can show polymorphism\n(ii) Only class student and topper together can show polymorphism\n(iii) All class students, topper and average together can show polymorphism\n(iv) Class failed should also inherit class student for this code to work for polymorphism",
                      "type": "MCQ",
                      "marks": 2
-                  },
-                  {
-                      "questionId": "cse301_2023_7a",
-                      "year": 2023,
-                      "qNumber": "Q7a",
-                      "chapter": "Module 4: Overloading, Templates and Inheritance",
-                      "text": "With the help of example programs, differentiate between Overloading and Overriding.",
-                      "type": "Theory",
-                      "marks": 7
-                    },
-                    {
-                        "questionId": "cse301_2022_2b",
-                        "year": 2022,
-                        "qNumber": "Q2b",
-                        "chapter": "Module 2: Control Structures and Functions",
-                        "text": "Write a C++ program to find the sum of the series 1+3+5+...+n.",
-                        "type": "Program",
-                        "marks": 7
-                      },
-                      {
-                        "questionId": "cse301_2022_6a",
-                        "year": 2022,
-                        "qNumber": "Q6a",
-                        "chapter": "Module 3: Classes and Data Abstraction",
-                        "text": "Differentiate between a class and an object. Write an example (syntax) to define a class in C++.",
-                        "type": "Theory",
-                        "marks": 7
-                    },
-                    {
-                       "questionId": "cse301_2019_1e",
-                       "year": 2019,
-                       "qNumber": "Q1e",
-                       "chapter": "Module 4: Overloading, Templates and Inheritance",
-                       "text": "Which class/set of classes can illustrate polymorphism in the following code\n```cpp\nabstract class student\n{\n  public: int marks;\n  virtual calc_grade() = 0; \n}\nclass topper: public student\n{\n  public: calc_grade() \n  { return 10; }\n};\nclass average: public student\n{\n  public: calc_grade() \n  { return 20; }\n};\nclass failed{int marks;};\n```\n(i) Only class student can show polymorphism\n(ii) Only class student and topper together can show polymorphism\n(iii) All class students, topper and average together can show polymorphism\n(iv) Class failed should also inherit class student for this code to work for polymorphism",
-                       "type": "MCQ",
-                       "marks": 2
-                   }
-                ]
-              },
-              {
-                "id": "cse302",
-                "name": "Data Structures",
-                "code": "CSE302",
-                "questions": [
-                   {
-                    "questionId": "cse302_2023_1a",
-                    "year": 2023,
-                    "qNumber": "Q1a",
-                    "chapter": "Module 1: Introduction",
-                    "text": "What is an abstract data type?",
-                    "type": "Definition",
-                    "marks": 2
-                  }
-                ]
-              }
-            ]
-          }
-         
-        ]
-      },
-      {
-          "id": "ece",
-          "name": "Electronics & Communication",
-          "semesters": [
-               {
-                  "id": "ece_sem3",
-                  "number": 3,
-                  "subjects": [
-                      {
-                         "id": "ece301",
-                         "name": "Network Theory",
-                         "code": "ECE301",
-                         "questions": [
-                             {
-                                "questionId": "ece301_2023_1a",
-                                "year": 2023,
-                                "qNumber": "Q1a",
-                                "chapter": "Module 1: Basic Circuits",
-                                "text": "State Thevenin's theorem.",
-                                "type": "Definition",
-                                "marks": 2
-                              }
-                         ]
-                      }
-                  ]
-              }
+                 }
+              ]
+            }
           ]
-      }
-    ]
-  }
+        }
+      ]
+    },
+    {
+        "id": "ece",
+        "name": "Electronics & Communication",
+        "semesters": [
+             {
+                "id": "ece_sem3",
+                "number": 3,
+                "subjects": [
+                    {
+                       "id": "ece301",
+                       "name": "Network Theory",
+                       "code": "ECE301",
+                       "questions": [
+                           {
+                              "questionId": "ece301_2023_1a",
+                              "year": 2023,
+                              "qNumber": "Q1a",
+                              "chapter": "Module 1: Basic Circuits",
+                              "text": "State Thevenin's theorem.",
+                              "type": "Definition",
+                              "marks": 2
+                            }
+                       ]
+                    }
+                ]
+            }
+        ]
+    }
+  ]
+}

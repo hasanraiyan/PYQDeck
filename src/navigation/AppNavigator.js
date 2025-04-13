@@ -1,6 +1,6 @@
 // src/navigation/AppNavigator.js
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+// Removed NavigationContainer import as it's in App.js
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import BranchSelectionScreen from '../screens/BranchSelectionScreen';
@@ -8,75 +8,59 @@ import SemesterSelectionScreen from '../screens/SemesterSelectionScreen';
 import SubjectSelectionScreen from '../screens/SubjectSelectionScreen';
 import QuestionListScreen from '../screens/QuestionListScreen';
 
-// Load data directly at the root
 import fullData from '../data/data.json';
-import { Colors } from '../styles/globalStyles';
+import { Colors } from '../styles/globalStyles'; // Use updated Colors
 
 const Stack = createNativeStackNavigator();
 
-// Helper function to get data needed for screens, reduces prop drilling slightly
-const getScreenProps = (route, screenName) => {
-    const baseParams = { allBranchesData: fullData.branches };
-    switch (screenName) {
-        case 'BranchSelection':
-            return { ...baseParams, branches: fullData.branches };
-        case 'SemesterSelection':
-            return { ...baseParams, branchId: route.params?.branchId };
-        case 'SubjectSelection':
-            return { ...baseParams, branchId: route.params?.branchId, semesterId: route.params?.semesterId };
-        case 'QuestionList':
-            return { ...baseParams, branchId: route.params?.branchId, semesterId: route.params?.semesterId, subjectId: route.params?.subjectId };
-        default:
-            return baseParams;
-    }
-};
+// Helper function can remain the same if needed, but screens now primarily use route.params
+// const getScreenProps = (route, screenName) => { ... };
 
 const AppNavigator = () => {
   return (
-    <NavigationContainer>
       <Stack.Navigator
         initialRouteName="BranchSelection"
         screenOptions={{
           headerStyle: {
-            backgroundColor: Colors.primary,
+            backgroundColor: Colors.transparent, // Make header background transparent
           },
-          headerTintColor: Colors.textLight,
+          headerTintColor: Colors.textPrimary, // Light color for title and back button
           headerTitleStyle: {
             fontWeight: 'bold',
+            fontSize: 18,
           },
-          headerBackTitleVisible: false, // Keep header clean on iOS
-          animation: 'slide_from_right', // Modern slide animation
-          contentStyle: { backgroundColor: Colors.background },
-          // Add a nice transition effect
-          transitionSpec: {
-            open: { animation: 'timing', config: { duration: 300 } },
-            close: { animation: 'timing', config: { duration: 300 } },
+          headerBackTitleVisible: false,
+          headerTransparent: true, // Crucial for the gradient background to show through
+          headerShadowVisible: false, // Hide the default shadow/border under the header
+          animation: 'slide_from_right',
+          contentStyle: {
+             backgroundColor: Colors.transparent, // Make screen content area transparent too
           },
         }}
       >
         <Stack.Screen
           name="BranchSelection"
           component={BranchSelectionScreen}
-          options={{ title: 'Select Branch' }}
-          initialParams={getScreenProps(null, 'BranchSelection')}
+          // Pass initial data via initialParams if needed directly
+           initialParams={{ allBranchesData: fullData.branches }}
+           options={{ title: 'Select Branch' }}
         />
         <Stack.Screen
           name="SemesterSelection"
           component={SemesterSelectionScreen}
-          options={({ route }) => ({ title: route.params?.branchName || 'Select Semester' })} // Dynamic title example
+          options={({ route }) => ({ title: route.params?.branchName || 'Select Semester' })}
         />
         <Stack.Screen
           name="SubjectSelection"
           component={SubjectSelectionScreen}
-           options={({ route }) => ({ title: route.params?.semesterName || 'Select Subject' })} // Dynamic title example
+           options={({ route }) => ({ title: route.params?.semesterName || 'Select Subject' })}
         />
         <Stack.Screen
           name="QuestionList"
           component={QuestionListScreen}
-           options={({ route }) => ({ title: route.params?.subjectName || 'Questions' })} // Dynamic title set in component anyway
+           options={({ route }) => ({ title: route.params?.subjectName || 'Questions' })}
         />
       </Stack.Navigator>
-    </NavigationContainer>
   );
 };
 
