@@ -148,7 +148,7 @@ const ChapterListScreen = ({ navigation, route }) => {
         useNativeDriver
       >
         <TouchableOpacity
-          style={globalStyles.listItem} // Consistent list item styling
+          style={[globalStyles.listItem,{flexDirection: 'col'}]} // Consistent list item styling
           onPress={() => handleChapterPress(item)}
           activeOpacity={0.75}
         >

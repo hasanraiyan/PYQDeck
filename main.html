@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Bank Creator - Enhanced UI</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- jQuery via CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                            950: '#172554'
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Consistent Focus Ring */
+        button, input, select, textarea {
+            @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1;
+        }
+        /* Specific overrides if needed */
+        .cancel-modal-btn {
+             @apply focus:ring-gray-400;
+        }
+
+        /* Branch hierarchy styling */
+        .branch-item,
+        .semester-item,
+        .subject-item,
+        .question-item {
+            border-left: 2px solid #e5e7eb; /* Slightly thinner, lighter border */
+            padding-left: 1.25rem; /* More padding */
+            margin-left: 1rem; /* More margin */
+            margin-top: 0.5rem; /* Consistent top margin */
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-radius: 0px 8px 8px 0px; /* Rounded corners on the right */
+            transition: background-color 0.15s ease-in-out;
+        }
+
+        .branch-item:hover,
+        .semester-item:hover,
+        .subject-item:hover,
+        .question-item:hover {
+             background-color: #f9fafb; /* Lighter gray hover */
+             border-left-color: #3b82f6; /* Highlight border on hover */
+        }
+
+        /* Action buttons - subtle by default, color on hover */
+        .action-buttons button {
+            @apply text-gray-400 p-1 rounded-md; /* Add padding for easier clicks */
+            margin-left: 0.25rem; /* Slightly reduced margin */
+            transition: all 0.15s ease-in-out;
+        }
+        .action-buttons button:hover {
+             background-color: #e5e7eb; /* Subtle background on hover */
+        }
+        .action-buttons .add-semester-btn:hover,
+        .action-buttons .add-subject-btn:hover,
+        .action-buttons .add-question-btn:hover {
+             @apply text-primary-600;
+        }
+        .action-buttons .edit-branch-btn:hover,
+        .action-buttons .edit-semester-btn:hover,
+        .action-buttons .edit-subject-btn:hover,
+        .action-buttons .edit-question-btn:hover {
+             @apply text-yellow-600;
+        }
+        .action-buttons .delete-branch-btn:hover,
+        .action-buttons .delete-semester-btn:hover,
+        .action-buttons .delete-subject-btn:hover,
+        .action-buttons .delete-question-btn:hover {
+             @apply text-red-600;
+        }
+
+
+        /* Animation for modals */
+        .modal-content {
+            animation: modalFade 0.3s ease-out;
+        }
+
+        @keyframes modalFade {
+            from {
+                opacity: 0;
+                transform: translateY(-10px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Scrollbar styling (subtler) */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d1d5db; /* Lighter gray */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af; /* Darker gray on hover */
+        }
+
+        /* Badge styling */
+        .badge {
+            font-size: 0.7rem; /* Slightly smaller */
+            padding: 0.15rem 0.5rem;
+            border-radius: 9999px;
+            font-weight: 500; /* Medium weight */
+        }
+
+        /* Tooltip styling */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            min-width: 80px; /* Min width */
+            background-color: #1f2937; /* Darker gray */
+            color: #fff;
+            text-align: center;
+            border-radius: 4px; /* Smaller radius */
+            padding: 4px 8px;
+            position: absolute;
+            z-index: 10; /* Ensure tooltip is above other elements */
+            bottom: 140%; /* Position above */
+            left: 50%;
+            transform: translateX(-50%); /* Center align */
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+            font-size: 0.75rem;
+            white-space: nowrap; /* Prevent wrapping */
+        }
+         /* Tooltip arrow */
+        .tooltip .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -4px;
+            border-width: 4px;
+            border-style: solid;
+            border-color: #1f2937 transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+            transition-delay: 0.1s; /* Slight delay before showing */
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 font-sans text-gray-800">
+    <!-- Top navigation bar -->
+    <header class="bg-primary-800 text-white shadow-md sticky top-0 z-40">
+        <div class="container mx-auto py-3 px-6 border-b border-primary-700">
+            <div class="flex justify-between items-center">
+                <h1 class="text-xl font-semibold">Question Bank Creator</h1>
+                <div class="flex gap-3">
+                     <!-- Mobile Menu Button Placeholder if needed -->
+                    <button id="export-json-btn"
+                        class="bg-white text-primary-800 hover:bg-gray-100 px-4 py-2 rounded-md shadow-sm font-medium text-sm transition-all flex items-center focus:ring-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Export JSON
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mx-auto p-4 md:p-6">
+        <!-- Main content area with improved layout -->
+        <div class="flex flex-col lg:flex-row gap-6">
+
+            <!-- Editor Pane -->
+            <div id="editor-pane" class="w-full lg:w-7/12 bg-white p-6 rounded-lg shadow-lg overflow-hidden"
+                style="height: calc(100vh - 120px);"> 
+                <div class="flex justify-between items-center mb-5 pb-3 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-800">Question Bank Structure</h2>
+                    <button id="add-branch-btn"
+                        class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-md shadow-sm text-sm font-medium transition-all flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        Add Branch
+                    </button>
+                </div>
+
+                <!-- Stats summary cards -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+                    <div class="bg-blue-50 p-3 rounded-lg border border-blue-100 shadow-sm flex items-center gap-3">
+                        <div class="bg-blue-100 p-2 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg></div>
+                        <div>
+                            <div class="text-xs text-blue-600 font-medium uppercase tracking-wider">Branches</div>
+                            <div class="text-xl font-bold text-blue-800" id="stat-branches">0</div>
+                        </div>
+                    </div>
+                     <div class="bg-purple-50 p-3 rounded-lg border border-purple-100 shadow-sm flex items-center gap-3">
+                        <div class="bg-purple-100 p-2 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg></div>
+                        <div>
+                            <div class="text-xs text-purple-600 font-medium uppercase tracking-wider">Semesters</div>
+                            <div class="text-xl font-bold text-purple-800" id="stat-semesters">0</div>
+                         </div>
+                    </div>
+                     <div class="bg-green-50 p-3 rounded-lg border border-green-100 shadow-sm flex items-center gap-3">
+                         <div class="bg-green-100 p-2 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg></div>
+                         <div>
+                            <div class="text-xs text-green-600 font-medium uppercase tracking-wider">Subjects</div>
+                            <div class="text-xl font-bold text-green-800" id="stat-subjects">0</div>
+                        </div>
+                    </div>
+                     <div class="bg-amber-50 p-3 rounded-lg border border-amber-100 shadow-sm flex items-center gap-3">
+                         <div class="bg-amber-100 p-2 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
+                         <div>
+                            <div class="text-xs text-amber-600 font-medium uppercase tracking-wider">Questions</div>
+                            <div class="text-xl font-bold text-amber-800" id="stat-questions">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="overflow-y-auto h-[calc(100%-130px)] pr-2"> 
+                    <div id="branch-list" class="space-y-1">
+                    </div>
+
+                    <div id="empty-state" class="hidden py-16 flex flex-col items-center text-center text-gray-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 mb-4 text-gray-300" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <h3 class="text-lg font-medium text-gray-600 mb-2">Your Question Bank is Empty</h3>
+                        <p class="text-sm max-w-sm mb-6">Click "Add Branch" to begin structuring your questions.</p>
+                        <button id="empty-add-branch-btn"
+                            class="bg-primary-600 hover:bg-primary-700 text-white px-5 py-2.5 rounded-lg shadow transition-all text-sm font-medium flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5 inline" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            </svg>
+                            Add First Branch
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- JSON Preview Pane -->
+            <div id="json-preview-pane" class="w-full lg:w-5/12 bg-gray-800 text-gray-200 p-6 rounded-lg shadow-lg overflow-hidden"
+                 style="height: calc(100vh - 120px);">
+                <div class="flex justify-between items-center mb-5 pb-3 border-b border-gray-700">
+                    <h2 class="text-lg font-semibold text-gray-100">JSON Preview</h2>
+                    <div class="flex gap-2">
+                        <button id="copy-json-btn"
+                            class="bg-gray-600 hover:bg-gray-500 text-gray-100 px-3 py-1.5 rounded-md shadow-sm text-xs font-medium transition-all flex items-center focus:ring-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            Copy
+                        </button>
+                        <button id="format-json-btn"
+                            class="bg-gray-600 hover:bg-gray-500 text-gray-100 px-3 py-1.5 rounded-md shadow-sm text-xs font-medium transition-all flex items-center focus:ring-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7" />
+                            </svg>
+                            Format
+                        </button>
+                    </div>
+                </div>
+                <pre id="json-output"
+                    class="text-sm bg-transparent p-0 rounded-lg overflow-auto whitespace-pre-wrap break-all h-[calc(100%-55px)]"></pre> 
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals (Hidden by default) -->
+
+    <!-- Branch Modal -->
+    <div id="branch-modal" class="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md modal-content">
+            <div class="flex justify-between items-start mb-5">
+                <h3 class="text-lg font-semibold text-gray-800" id="branch-modal-title">Add Branch</h3>
+                <button type="button" class="cancel-modal-btn text-gray-400 hover:text-gray-700 transition-all -mt-1 -mr-1 p-1 rounded-full focus:ring-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <form id="branch-form" class="space-y-4">
+                <input type="hidden" id="branch-edit-id">
+                <div>
+                    <label for="branch-id" class="block text-sm font-medium text-gray-700 mb-1">Branch ID <span class="text-red-500">*</span></label>
+                    <input type="text" id="branch-id" name="id" placeholder="e.g., cse"
+                        class="w-full p-2.5 border border-gray-300 rounded-md focus:border-primary-500 outline-none transition-all text-sm"
+                        required>
+                    <p class="text-xs text-gray-500 mt-1">Short, unique identifier (no spaces).</p>
+                </div>
+                <div>
+                    <label for="branch-name" class="block text-sm font-medium text-gray-700 mb-1">Branch Name <span class="text-red-500">*</span></label>
+                    <input type="text" id="branch-name" name="name" placeholder="e.g., Computer Science & Engineering"
+                        class="w-full p-2.5 border border-gray-300 rounded-md focus:border-primary-500 outline-none transition-all text-sm"
+                        required>
+                     <p class="text-xs text-gray-500 mt-1">Full display name of the branch.</p>
+                </div>
+                <div class="flex justify-end gap-3 pt-4">
+                    <button type="button" class="cancel-modal-btn px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md font-medium text-sm transition-all">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-md font-medium text-sm transition-all">Save Branch</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Semester Modal -->
+     <div id="semester-modal" class="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md modal-content">
+             <div class="flex justify-between items-start mb-5">
+                <h3 class="text-lg font-semibold text-gray-800" id="semester-modal-title">Add Semester</h3>
+                <button type="button" class="cancel-modal-btn text-gray-400 hover:text-gray-700 transition-all -mt-1 -mr-1 p-1 rounded-full focus:ring-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <form id="semester-form" class="space-y-4">
+                <input type="hidden" id="semester-branch-id">
+                <input type="hidden" id="semester-edit-id">
+                <div>
+                    <label for="semester-id" class="block text-sm font-medium text-gray-700 mb-1">Semester ID <span class="text-red-500">*</span></label>
+                    <input type="text" id="semester-id" name="id" placeholder="e.g., sem3"
+                        class="w-full p-2.5 border border-gray-300 rounded-md focus:border-primary-500 outline-none transition-all text-sm"
+                        required>
+                    <p class="text-xs text-gray-500 mt-1">Short, unique identifier within the branch.</p>
+                </div>
+                <div>
+                    <label for="semester-number" class="block text-sm font-medium text-gray-700 mb-1">Semester Number <span class="text-red-500">*</span></label>
+                    <input type="number" id="semester-number" name="number" placeholder="e.g., 3"
+                        class="w-full p-2.5 border border-gray-300 rounded-md focus:border-primary-500 outline-none transition-all text-sm"
+                        required min="1">
+                     <p class="text-xs text-gray-500 mt-1">The numerical value of the semester.</p>
+                </div>
+                <div class="flex justify-end gap-3 pt-4">
+                    <button type="button" class="cancel-modal-btn px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md font-medium text-sm transition-all">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-md font-medium text-sm transition-all">Save Semester</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Subject Modal -->
+    <div id="subject-modal" class="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md modal-content">
+            <div class="flex justify-between items-start mb-5">
+                <h3 class="text-lg font-semibold text-gray-800" id="subject-modal-title">Add Subject</h3>
+                 <button type="button" class="cancel-modal-btn text-gray-400 hover:text-gray-700 transition-all -mt-1 -mr-1 p-1 rounded-full focus:ring-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <form id="subject-form" class="space-y-4">
+                <input type="hidden" id="subject-branch-id">
+                <input type="hidden" id="subject-semester-id">
+                <input type="hidden" id="subject-edit-id">
+                 <div>
+                    <label for="subject-id" class="block text-sm font-medium text-gray-700 mb-1">Subject ID <span class="text-red-500">*</span></label>
+                    <input type="text" id="subject-id" name="id" placeholder="e.g., dsa"
+                        class="w-full p-2.5 border border-gray-300 rounded-md focus:border-primary-500 outline-none transition-all text-sm"
+                        required>
+                    <p class="text-xs text-gray-500 mt-1">Short, unique identifier within the semester.</p>
+                </div>
+                <div>
+                    <label for="subject-name" class="block text-sm font-medium text-gray-700 mb-1">Subject Name <span class="text-red-500">*</span></label>
+                    <input type="text" id="subject-name" name="name" placeholder="e.g., Data Structures & Algorithms"
+                        class="w-full p-2.5 border border-gray-300 rounded-md focus:border-primary-500 outline-none transition-all text-sm"
+                        required>
+                </div>
+                <div>
+                    <label for="subject-code" class="block text-sm font-medium text-gray-700 mb-1">Subject Code <span class="text-red-500">*</span></label>
+                    <input type="text" id="subject-code" name="code" placeholder="e.g., CSE301"
+                        class="w-full p-2.5 border border-gray-300 rounded-md focus:border-primary-500 outline-none transition-all text-sm"
+                        required>
+                    <p class="text-xs text-gray-500 mt-1">Official course code.</p>
+                </div>
+                <div class="flex justify-end gap-3 pt-4">
+                     <button type="button" class="cancel-modal-btn px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md font-medium text-sm transition-all">Cancel</button>
+                     <button type="submit" class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-md font-medium text-sm transition-all">Save Subject</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Question Modal -->
+    <div id="question-modal" class="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-2xl modal-content">
+             <div class="flex justify-between items-start mb-5">
+                <h3 class="text-lg font-semibold text-gray-800" id="question-modal-title">Add Question</h3>
+                 <button type="button" class="cancel-modal-btn text-gray-400 hover:text-gray-700 transition-all -mt-1 -mr-1 p-1 rounded-full focus:ring-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <form id="question-form">
+                <input type="hidden" id="question-branch-id">
+                <input type="hidden" id="question-semester-id">
+                <input type="hidden" id="question-subject-id">
+                <input type="hidden" id="question-edit-id">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4 mb-4">
+                    <div>
+                        <label for="question-year" class="block text-sm font-medium text-gray-700 mb-1">Year <span class="text-red-500">*</span></label>
+                        <input type="number" id="question-year" name="year"
+                            class="w-full p-2.5 border border-gray-300 rounded-md focus:border-primary-500 outline-none transition-all text-sm"
+                            required min="1990" max="2099">
+                    </div>
+                    <div>
+                        <label for="question-qNumber" class="block text-sm font-medium text-gray-700 mb-1">Question Number <span class="text-red-500">*</span></label>
+                        <input type="text" id="question-qNumber" name="qNumber" placeholder="e.g., Q1a, 2b, Sec A Q3"
+                            class="w-full p-2.5 border border-gray-300 rounded-md focus:border-primary-500 outline-none transition-all text-sm"
+                            required>
+                    </div>
+                    <div>
+                        <label for="question-chapter" class="block text-sm font-medium text-gray-700 mb-1">Chapter/Module</label>
+                        <input type="text" id="question-chapter" name="chapter" placeholder="e.g., Module 4, Unit 2"
+                            class="w-full p-2.5 border border-gray-300 rounded-md focus:border-primary-500 outline-none transition-all text-sm">
+                    </div>
+                    <div>
+                        <label for="question-marks" class="block text-sm font-medium text-gray-700 mb-1">Marks <span class="text-red-500">*</span></label>
+                        <input type="number" id="question-marks" name="marks" step="0.5"
+                            class="w-full p-2.5 border border-gray-300 rounded-md focus:border-primary-500 outline-none transition-all text-sm"
+                            required min="0">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="question-type" class="block text-sm font-medium text-gray-700 mb-1">Question Type <span class="text-red-500">*</span></label>
+                        <select id="question-type" name="type"
+                            class="w-full p-2.5 border border-gray-300 rounded-md focus:border-primary-500 outline-none transition-all text-sm bg-white"
+                            required>
+                            <option value="">-- Select Type --</option>
+                            <optgroup label="Common Types">
+                                <option value="MCQ">MCQ</option>
+                                <option value="Short Answer">Short Answer</option>
+                                <option value="Long Answer">Long Answer</option>
+                                <option value="Explanation">Explanation</option>
+                            </optgroup>
+                            <optgroup label="Technical Types">
+                                <option value="Code Snippet">Code Snippet</option>
+                                <option value="Explanation with Code">Explanation with Code</option>
+                                <option value="Algorithm">Algorithm</option>
+                                <option value="Algorithm Explanation">Algorithm Explanation</option>
+                                <option value="SQL Query">SQL Query</option>
+                                <option value="Block Diagram and Explanation">Block Diagram and Explanation</option>
+                            </optgroup>
+                            <optgroup label="Academic Types">
+                                <option value="Problem Solving">Problem Solving</option>
+                                <option value="Proof">Proof</option>
+                                <option value="Definition">Definition</option>
+                                <option value="Definition and Explanation">Definition and Explanation</option>
+                                <option value="Definition and List">Definition and List</option>
+                                <option value="List">List</option>
+                                <option value="Comparison">Comparison</option>
+                                <option value="Differentiate">Differentiate</option>
+                                <option value="Design">Design</option>
+                                <option value="Derivation">Derivation</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-5">
+                    <label for="question-text" class="block text-sm font-medium text-gray-700 mb-1">Question Text <span class="text-red-500">*</span></label>
+                    <textarea id="question-text" name="text" rows="5"
+                        class="w-full p-2.5 border border-gray-300 rounded-md focus:border-primary-500 outline-none transition-all text-sm"
+                        required></textarea>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-3">
+                    <button type="button" class="cancel-modal-btn px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md font-medium text-sm transition-all">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-md font-medium text-sm transition-all">Save Question</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Toast (Hidden by default) -->
+    <div id="success-toast"
+        class="fixed bottom-5 right-5 flex items-center bg-green-600 text-white px-5 py-3 rounded-lg shadow-lg transform translate-y-12 opacity-0 transition-all duration-300 ease-out z-50 hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2.5" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span id="toast-message" class="text-sm font-medium">Item saved successfully!</span>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // --- Initial Data ---
+            let dataSet = { branches: [] }; // Initialize with empty branches array
+
+            // --- Utility Functions ---
+            function showToast(message) {
+                $('#toast-message').text(message);
+                const toast = $('#success-toast');
+                // Reset classes before showing
+                toast.addClass('hidden translate-y-12 opacity-0');
+                // Show and animate
+                toast.removeClass('hidden');
+                // Use a slight delay before starting the animation to ensure CSS is applied
+                setTimeout(() => {
+                    toast.removeClass('translate-y-12 opacity-0')
+                         .addClass('translate-y-0 opacity-100');
+                }, 50); // Small delay
+
+                // Hide after timeout
+                setTimeout(() => {
+                    toast.removeClass('translate-y-0 opacity-100')
+                         .addClass('translate-y-12 opacity-0');
+                    // Add hidden class after transition ends
+                    setTimeout(() => {
+                        toast.addClass('hidden');
+                    }, 300); // Match transition duration
+                }, 3000); // Toast visible for 3 seconds
+            }
+
+            function closeModal(modalId) {
+                const modal = $(`#${modalId}`);
+                modal.addClass('hidden');
+                 // Clear forms on close
+                 $(`#${modalId} form`).trigger('reset');
+                 $(`#${modalId} input[type=hidden]`).val(''); // Clear hidden fields too
+                 // Remove potential validation styles if any were added
+                 $(`#${modalId} form input, #${modalId} form select, #${modalId} form textarea`).removeClass('border-red-500');
+            }
+
+            function generateQuestionId(subjectId, year, qNumber) {
+                // Simple unique ID generator for questions within a subject
+                 const cleanQNumber = qNumber.replace(/[^a-zA-Z0-9-_]/g, '').replace(/\s+/g, '-'); // Clean and replace spaces
+                return `${subjectId}_${year}_${cleanQNumber || 'noQNum'}`; // Add fallback if qNumber is empty after cleaning
+            }
+
+             // --- Data Validation ---
+             function isValidId(id) {
+                // Basic check: not empty, no spaces, maybe other rules
+                return id && /^[a-zA-Z0-9_-]+$/.test(id);
+             }
+
+
+            // --- Data Manipulation Functions ---
+            function findBranch(branchId) {
+                 return dataSet.branches?.find(b => b.id === branchId);
+            }
+
+            function findSemester(branchId, semesterId) {
+                const branch = findBranch(branchId);
+                return branch ? branch.semesters?.find(s => s.id === semesterId) : null;
+            }
+
+            function findSubject(branchId, semesterId, subjectId) {
+                const semester = findSemester(branchId, semesterId);
+                return semester ? semester.subjects?.find(sub => sub.id === subjectId) : null;
+            }
+
+            function findQuestion(branchId, semesterId, subjectId, questionId) {
+                const subject = findSubject(branchId, semesterId, subjectId);
+                return subject ? subject.questions?.find(q => q.questionId === questionId) : null;
+            }
+
+            // --- Rendering Functions ---
+            function renderData() {
+                const branchList = $('#branch-list');
+                branchList.empty(); // Clear existing list
+
+                if (!dataSet.branches || dataSet.branches.length === 0) {
+                    $('#empty-state').removeClass('hidden');
+                    $('#branch-list').addClass('hidden'); // Hide the list area too
+                } else {
+                    $('#empty-state').addClass('hidden');
+                    $('#branch-list').removeClass('hidden'); // Show the list area
+                    dataSet.branches.sort((a,b) => a.name.localeCompare(b.name)); // Sort branches alphabetically
+
+                    dataSet.branches.forEach(branch => {
+                        const branchHtml = `
+                            <div class="branch-item group/branch" data-id="${branch.id}">
+                                <div class="flex justify-between items-center mb-1">
+                                    <div class="flex-1 min-w-0 mr-2">
+                                        <h3 class="text-base font-semibold text-gray-700 truncate">${branch.name}</h3>
+                                        <span class="text-xs text-gray-500 font-mono block">ID: ${branch.id}</span>
+                                    </div>
+                                    <div class="action-buttons flex-shrink-0 opacity-0 group-hover/branch:opacity-100 transition-opacity duration-150">
+                                        <button class="add-semester-btn tooltip text-primary-600 hover:bg-primary-100" data-branch-id="${branch.id}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" /></svg>
+                                            <span class="tooltip-text">Add Semester</span>
+                                        </button>
+                                        <button class="edit-branch-btn tooltip text-yellow-600 hover:bg-yellow-100" data-id="${branch.id}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                            <span class="tooltip-text">Edit Branch</span>
+                                        </button>
+                                        <button class="delete-branch-btn tooltip text-red-600 hover:bg-red-100" data-id="${branch.id}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                            <span class="tooltip-text">Delete Branch</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="semester-list ml-2 mt-1 space-y-1"></div> 
+                            </div>
+                        `;
+                        const $branchElement = $(branchHtml);
+                        branchList.append($branchElement);
+
+                        const semesterList = $branchElement.find('.semester-list');
+                        if (branch.semesters && branch.semesters.length > 0) {
+                             branch.semesters.sort((a,b) => a.number - b.number); // Sort semesters numerically
+                             branch.semesters.forEach(semester => {
+                                const semesterHtml = `
+                                    <div class="semester-item group/semester" data-id="${semester.id}">
+                                        <div class="flex justify-between items-center mb-0.5">
+                                            <div class="flex-1 min-w-0 mr-2">
+                                                <h4 class="font-medium text-sm text-gray-600 truncate">Semester ${semester.number}</h4>
+                                                <span class="text-xs text-gray-500 font-mono block">ID: ${semester.id}</span>
+                                            </div>
+                                            <div class="action-buttons flex-shrink-0 opacity-0 group-hover/semester:opacity-100 transition-opacity duration-150">
+                                                <button class="add-subject-btn tooltip text-primary-500 hover:bg-primary-100" data-branch-id="${branch.id}" data-semester-id="${semester.id}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" /></svg>
+                                                     <span class="tooltip-text">Add Subject</span>
+                                                </button>
+                                                <button class="edit-semester-btn tooltip text-yellow-500 hover:bg-yellow-100" data-branch-id="${branch.id}" data-id="${semester.id}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                                    <span class="tooltip-text">Edit Semester</span>
+                                                </button>
+                                                <button class="delete-semester-btn tooltip text-red-500 hover:bg-red-100" data-branch-id="${branch.id}" data-id="${semester.id}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                                    <span class="tooltip-text">Delete Semester</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="subject-list ml-2 mt-1 space-y-1"></div>
+                                    </div>
+                                `;
+                                const $semesterElement = $(semesterHtml);
+                                semesterList.append($semesterElement);
+
+                                const subjectList = $semesterElement.find('.subject-list');
+                                if (semester.subjects && semester.subjects.length > 0) {
+                                    semester.subjects.sort((a,b) => a.name.localeCompare(b.name)); // Sort subjects alphabetically
+                                    semester.subjects.forEach(subject => {
+                                        const subjectHtml = `
+                                            <div class="subject-item group/subject" data-id="${subject.id}">
+                                                <div class="flex justify-between items-center mb-0.5">
+                                                    <div class="flex-1 min-w-0 mr-2">
+                                                        <h5 class="text-sm text-gray-600 font-medium truncate">${subject.name} <span class="ml-1 text-xs bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded font-mono">${subject.code}</span></h5>
+                                                        <span class="text-xs text-gray-500 font-mono block">ID: ${subject.id}</span>
+                                                    </div>
+                                                    <div class="action-buttons flex-shrink-0 opacity-0 group-hover/subject:opacity-100 transition-opacity duration-150">
+                                                        <button class="add-question-btn tooltip text-primary-500 hover:bg-primary-100" data-branch-id="${branch.id}" data-semester-id="${semester.id}" data-subject-id="${subject.id}">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" /></svg>
+                                                             <span class="tooltip-text">Add Question</span>
+                                                        </button>
+                                                        <button class="edit-subject-btn tooltip text-yellow-500 hover:bg-yellow-100" data-branch-id="${branch.id}" data-semester-id="${semester.id}" data-id="${subject.id}">
+                                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                                             <span class="tooltip-text">Edit Subject</span>
+                                                        </button>
+                                                        <button class="delete-subject-btn tooltip text-red-500 hover:bg-red-100" data-branch-id="${branch.id}" data-semester-id="${semester.id}" data-id="${subject.id}">
+                                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                                             <span class="tooltip-text">Delete Subject</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="question-list ml-2 mt-1 space-y-1"></div>
+                                            </div>
+                                        `;
+                                        const $subjectElement = $(subjectHtml);
+                                        subjectList.append($subjectElement);
+
+                                        const questionList = $subjectElement.find('.question-list');
+                                        if (subject.questions && subject.questions.length > 0) {
+                                            subject.questions.sort((a, b) => { // Sort questions by year, then qNumber
+                                                if (a.year !== b.year) return b.year - a.year; // Desc year
+                                                return a.qNumber.localeCompare(b.qNumber, undefined, { numeric: true, sensitivity: 'base' }); // Natural sort for Q1, Q1a, Q2 etc.
+                                            });
+                                            subject.questions.forEach(question => {
+                                                const questionHtml = `
+                                                    <div class="question-item group/question !pl-4" data-id="${question.questionId}"> 
+                                                        <div class="flex justify-between items-start">
+                                                            <div class="flex-1 mr-2 text-sm text-gray-700 leading-relaxed">
+                                                                <p>${question.text.replace(/\n/g, '<br>')}</p> {/* Render newlines */}
+                                                                <div class="text-xs text-gray-500 mt-1.5 space-x-1.5 flex flex-wrap gap-y-1">
+                                                                    <span class="badge bg-blue-100 text-blue-700">${question.year}</span>
+                                                                    <span class="badge bg-green-100 text-green-700">${question.qNumber}</span>
+                                                                    <span class="badge bg-purple-100 text-purple-700">${question.type}</span>
+                                                                    <span class="badge bg-yellow-100 text-yellow-700">${question.marks} Mark${question.marks !== 1 ? 's': ''}</span>
+                                                                    ${question.chapter ? `<span class="badge bg-indigo-100 text-indigo-700">${question.chapter}</span>` : ''}
+                                                                     <span class="badge bg-gray-100 text-gray-600 font-mono !text-[10px] !px-1" title="${question.questionId}">ID: ...${question.questionId.slice(-8)}</span> 
+                                                                </div>
+                                                            </div>
+                                                            <div class="action-buttons flex-shrink-0 opacity-0 group-hover/question:opacity-100 transition-opacity duration-150">
+                                                                <button class="edit-question-btn tooltip text-yellow-500 hover:bg-yellow-100" data-branch-id="${branch.id}" data-semester-id="${semester.id}" data-subject-id="${subject.id}" data-id="${question.questionId}">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                                                    <span class="tooltip-text">Edit Question</span>
+                                                                </button>
+                                                                <button class="delete-question-btn tooltip text-red-500 hover:bg-red-100" data-branch-id="${branch.id}" data-semester-id="${semester.id}" data-subject-id="${subject.id}" data-id="${question.questionId}">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                                                    <span class="tooltip-text">Delete Question</span>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                `;
+                                                questionList.append(questionHtml);
+                                            });
+                                        } else {
+                                            questionList.append('<p class="text-xs text-gray-400 italic px-1 py-2">No questions yet.</p>');
+                                        }
+                                    });
+                                } else {
+                                    subjectList.append('<p class="text-xs text-gray-400 italic px-1 py-2">No subjects yet.</p>');
+                                }
+                            });
+                        } else {
+                            semesterList.append('<p class="text-xs text-gray-400 italic px-1 py-2">No semesters yet.</p>');
+                        }
+                    });
+                }
+
+                updateJsonPreview();
+                updateStats();
+            }
+
+
+            function updateJsonPreview() {
+                // Create a deep copy to sort for preview without modifying original data order (optional)
+                // const previewData = JSON.parse(JSON.stringify(dataSet));
+                // Optionally sort previewData here if needed
+
+                const jsonString = JSON.stringify(dataSet, null, 2); // Pretty print
+                $('#json-output').text(jsonString || '{}'); // Show empty object if null/undefined
+                // Note: Syntax highlighting would require a library like Prism.js or Highlight.js
+            }
+
+            function updateStats() {
+                let branchCount = 0;
+                let semesterCount = 0;
+                let subjectCount = 0;
+                let questionCount = 0;
+
+                if (dataSet.branches) {
+                    branchCount = dataSet.branches.length;
+                    dataSet.branches.forEach(branch => {
+                        if (branch.semesters) {
+                            semesterCount += branch.semesters.length;
+                            branch.semesters.forEach(semester => {
+                                if (semester.subjects) {
+                                    subjectCount += semester.subjects.length;
+                                    semester.subjects.forEach(subject => {
+                                        if (subject.questions) {
+                                            questionCount += subject.questions.length;
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+
+                $('#stat-branches').text(branchCount);
+                $('#stat-semesters').text(semesterCount);
+                $('#stat-subjects').text(subjectCount);
+                $('#stat-questions').text(questionCount);
+            }
+
+            // --- Event Handlers ---
+
+            // Modal Cancel Buttons
+            $('.cancel-modal-btn').on('click', function () {
+                const modalId = $(this).closest('.fixed').attr('id');
+                closeModal(modalId);
+            });
+
+            // --- Branch Handlers ---
+            $('#add-branch-btn, #empty-add-branch-btn').on('click', function () {
+                $('#branch-modal-title').text('Add New Branch');
+                $('#branch-form').trigger('reset');
+                $('#branch-edit-id').val('');
+                $('#branch-modal').removeClass('hidden');
+                $('#branch-id').focus();
+            });
+
+            $('#branch-form').on('submit', function (e) {
+                e.preventDefault();
+                const branchId = $('#branch-id').val().trim();
+                const branchName = $('#branch-name').val().trim();
+                const editId = $('#branch-edit-id').val();
+
+                if (!isValidId(branchId) || !branchName) {
+                    alert('Please provide a valid Branch ID (no spaces) and Branch Name.');
+                    if (!isValidId(branchId)) $('#branch-id').addClass('border-red-500'); else $('#branch-id').removeClass('border-red-500');
+                    if (!branchName) $('#branch-name').addClass('border-red-500'); else $('#branch-name').removeClass('border-red-500');
+                    return;
+                }
+                 $('#branch-id, #branch-name').removeClass('border-red-500');
+
+
+                if (editId) { // Editing Branch
+                    const branch = findBranch(editId);
+                    if (branch) {
+                        if (branchId !== editId && findBranch(branchId)) {
+                            alert(`Error: Branch with ID '${branchId}' already exists.`);
+                            $('#branch-id').addClass('border-red-500');
+                            return;
+                        }
+                        // Update potentially linked data if ID changes (complex, maybe disallow ID edit or handle cascade)
+                        // For now, just update:
+                        branch.id = branchId; // WARNING: This might break links if not handled carefully elsewhere
+                        branch.name = branchName;
+                        showToast('Branch updated successfully!');
+                    }
+                } else { // Adding New Branch
+                    if (findBranch(branchId)) {
+                        alert(`Error: Branch with ID '${branchId}' already exists.`);
+                         $('#branch-id').addClass('border-red-500');
+                        return;
+                    }
+                    if (!dataSet.branches) { dataSet.branches = []; } // Ensure branches array exists
+                    dataSet.branches.push({
+                        id: branchId,
+                        name: branchName,
+                        semesters: []
+                    });
+                    showToast('Branch added successfully!');
+                }
+
+                closeModal('branch-modal');
+                renderData();
+            });
+
+            $('#branch-list').on('click', '.edit-branch-btn', function () {
+                const branchId = $(this).data('id');
+                const branch = findBranch(branchId);
+                if (branch) {
+                    $('#branch-modal-title').text(`Edit Branch: ${branch.name}`);
+                    $('#branch-edit-id').val(branch.id);
+                    $('#branch-id').val(branch.id);
+                    $('#branch-name').val(branch.name);
+                    $('#branch-modal').removeClass('hidden');
+                    $('#branch-name').focus();
+                     $('#branch-id, #branch-name').removeClass('border-red-500'); // Clear validation on open
+                }
+            });
+
+            $('#branch-list').on('click', '.delete-branch-btn', function () {
+                const branchId = $(this).data('id');
+                const branch = findBranch(branchId);
+                if (branch && confirm(`DELETE Branch: "${branch.name}"?\n\nThis will permanently delete this branch and ALL its semesters, subjects, and questions.`)) {
+                    dataSet.branches = dataSet.branches.filter(b => b.id !== branchId);
+                    renderData();
+                    showToast(`Branch "${branch.name}" deleted.`);
+                }
+            });
+
+            // --- Semester Handlers ---
+            $('#branch-list').on('click', '.add-semester-btn', function () {
+                 const branchId = $(this).data('branch-id');
+                 const branch = findBranch(branchId);
+                 if (!branch) return;
+                 $('#semester-modal-title').text(`Add Semester to ${branch.name}`);
+                 $('#semester-form').trigger('reset');
+                 $('#semester-branch-id').val(branchId);
+                 $('#semester-edit-id').val('');
+                 $('#semester-modal').removeClass('hidden');
+                 $('#semester-id').focus();
+             });
+
+             $('#semester-form').on('submit', function (e) {
+                 e.preventDefault();
+                 const branchId = $('#semester-branch-id').val();
+                 const semesterId = $('#semester-id').val().trim();
+                 const semesterNumberInput = $('#semester-number').val();
+                 const editId = $('#semester-edit-id').val();
+                 const branch = findBranch(branchId);
+
+                 if (!branch) return; // Should not happen normally
+
+                 const semesterNumber = parseInt(semesterNumberInput, 10);
+
+                 if (!isValidId(semesterId) || isNaN(semesterNumber) || semesterNumber < 1) {
+                     alert('Please provide a valid Semester ID (no spaces) and a positive Semester Number.');
+                     if (!isValidId(semesterId)) $('#semester-id').addClass('border-red-500'); else $('#semester-id').removeClass('border-red-500');
+                     if (isNaN(semesterNumber) || semesterNumber < 1) $('#semester-number').addClass('border-red-500'); else $('#semester-number').removeClass('border-red-500');
+                     return;
+                 }
+                 $('#semester-id, #semester-number').removeClass('border-red-500');
+
+                 if (editId) { // Editing Semester
+                     const semester = findSemester(branchId, editId);
+                     if (semester) {
+                         if (semesterId !== editId && findSemester(branchId, semesterId)) {
+                             alert(`Error: Semester with ID '${semesterId}' already exists in this branch.`);
+                             $('#semester-id').addClass('border-red-500');
+                             return;
+                         }
+                         semester.id = semesterId; // Handle ID change implications if necessary
+                         semester.number = semesterNumber;
+                         showToast('Semester updated successfully!');
+                     }
+                 } else { // Adding New Semester
+                     if (findSemester(branchId, semesterId)) {
+                         alert(`Error: Semester with ID '${semesterId}' already exists in this branch.`);
+                         $('#semester-id').addClass('border-red-500');
+                         return;
+                     }
+                      if (!branch.semesters) { branch.semesters = []; } // Ensure semesters array exists
+                     branch.semesters.push({
+                         id: semesterId,
+                         number: semesterNumber,
+                         subjects: []
+                     });
+                     showToast('Semester added successfully!');
+                 }
+
+                 closeModal('semester-modal');
+                 renderData();
+             });
+
+             $('#branch-list').on('click', '.edit-semester-btn', function () {
+                 const branchId = $(this).data('branch-id');
+                 const semesterId = $(this).data('id');
+                 const semester = findSemester(branchId, semesterId);
+                 const branch = findBranch(branchId);
+                 if (semester && branch) {
+                     $('#semester-modal-title').text(`Edit Semester ${semester.number} (in ${branch.name})`);
+                     $('#semester-branch-id').val(branchId);
+                     $('#semester-edit-id').val(semester.id);
+                     $('#semester-id').val(semester.id);
+                     $('#semester-number').val(semester.number);
+                     $('#semester-modal').removeClass('hidden');
+                     $('#semester-id').focus(); // Focus on ID first maybe
+                      $('#semester-id, #semester-number').removeClass('border-red-500');
+                 }
+             });
+
+             $('#branch-list').on('click', '.delete-semester-btn', function () {
+                 const branchId = $(this).data('branch-id');
+                 const semesterId = $(this).data('id');
+                 const branch = findBranch(branchId);
+                 const semester = findSemester(branchId, semesterId);
+                 if (branch && semester && confirm(`DELETE Semester ${semester.number} (ID: ${semesterId})?\n\nThis will permanently delete this semester and ALL its subjects and questions.`)) {
+                     branch.semesters = branch.semesters.filter(s => s.id !== semesterId);
+                     renderData();
+                     showToast(`Semester ${semester.number} deleted.`);
+                 }
+             });
+
+             // --- Subject Handlers ---
+             $('#branch-list').on('click', '.add-subject-btn', function () {
+                 const branchId = $(this).data('branch-id');
+                 const semesterId = $(this).data('semester-id');
+                 const semester = findSemester(branchId, semesterId);
+                 if (!semester) return;
+                 $('#subject-modal-title').text(`Add Subject to Semester ${semester.number}`);
+                 $('#subject-form').trigger('reset');
+                 $('#subject-branch-id').val(branchId);
+                 $('#subject-semester-id').val(semesterId);
+                 $('#subject-edit-id').val('');
+                 $('#subject-modal').removeClass('hidden');
+                 $('#subject-id').focus();
+             });
+
+            $('#subject-form').on('submit', function (e) {
+                 e.preventDefault();
+                 const branchId = $('#subject-branch-id').val();
+                 const semesterId = $('#subject-semester-id').val();
+                 const subjectId = $('#subject-id').val().trim();
+                 const subjectName = $('#subject-name').val().trim();
+                 const subjectCode = $('#subject-code').val().trim();
+                 const editId = $('#subject-edit-id').val();
+                 const semester = findSemester(branchId, semesterId);
+
+                 if (!semester) return;
+
+                 if (!isValidId(subjectId) || !subjectName || !subjectCode) {
+                     alert('Please provide a valid Subject ID (no spaces), Subject Name, and Subject Code.');
+                     if (!isValidId(subjectId)) $('#subject-id').addClass('border-red-500'); else $('#subject-id').removeClass('border-red-500');
+                     if (!subjectName) $('#subject-name').addClass('border-red-500'); else $('#subject-name').removeClass('border-red-500');
+                     if (!subjectCode) $('#subject-code').addClass('border-red-500'); else $('#subject-code').removeClass('border-red-500');
+                     return;
+                 }
+                 $('#subject-id, #subject-name, #subject-code').removeClass('border-red-500');
+
+                 if (editId) { // Editing Subject
+                     const subject = findSubject(branchId, semesterId, editId);
+                     if (subject) {
+                         if (subjectId !== editId && findSubject(branchId, semesterId, subjectId)) {
+                             alert(`Error: Subject with ID '${subjectId}' already exists in this semester.`);
+                              $('#subject-id').addClass('border-red-500');
+                             return;
+                         }
+                         subject.id = subjectId; // Handle ID change implications
+                         subject.name = subjectName;
+                         subject.code = subjectCode;
+                         showToast('Subject updated successfully!');
+                     }
+                 } else { // Adding New Subject
+                     if (findSubject(branchId, semesterId, subjectId)) {
+                         alert(`Error: Subject with ID '${subjectId}' already exists in this semester.`);
+                         $('#subject-id').addClass('border-red-500');
+                         return;
+                     }
+                     if (!semester.subjects) { semester.subjects = []; } // Ensure subjects array exists
+                     semester.subjects.push({
+                         id: subjectId,
+                         name: subjectName,
+                         code: subjectCode,
+                         questions: []
+                     });
+                     showToast('Subject added successfully!');
+                 }
+
+                 closeModal('subject-modal');
+                 renderData();
+             });
+
+             $('#branch-list').on('click', '.edit-subject-btn', function () {
+                 const branchId = $(this).data('branch-id');
+                 const semesterId = $(this).data('semester-id');
+                 const subjectId = $(this).data('id');
+                 const subject = findSubject(branchId, semesterId, subjectId);
+                 const semester = findSemester(branchId, semesterId);
+                 if (subject && semester) {
+                     $('#subject-modal-title').text(`Edit Subject: ${subject.name}`);
+                     $('#subject-branch-id').val(branchId);
+                     $('#subject-semester-id').val(semesterId);
+                     $('#subject-edit-id').val(subject.id);
+                     $('#subject-id').val(subject.id);
+                     $('#subject-name').val(subject.name);
+                     $('#subject-code').val(subject.code);
+                     $('#subject-modal').removeClass('hidden');
+                     $('#subject-name').focus();
+                      $('#subject-id, #subject-name, #subject-code').removeClass('border-red-500');
+                 }
+             });
+
+             $('#branch-list').on('click', '.delete-subject-btn', function () {
+                 const branchId = $(this).data('branch-id');
+                 const semesterId = $(this).data('semester-id');
+                 const subjectId = $(this).data('id');
+                 const semester = findSemester(branchId, semesterId);
+                 const subject = findSubject(branchId, semesterId, subjectId);
+                 if (semester && subject && confirm(`DELETE Subject: "${subject.name}" (Code: ${subject.code})?\n\nThis will permanently delete this subject and ALL its questions.`)) {
+                     semester.subjects = semester.subjects.filter(sub => sub.id !== subjectId);
+                     renderData();
+                     showToast(`Subject "${subject.name}" deleted.`);
+                 }
+             });
+
+             // --- Question Handlers ---
+             $('#branch-list').on('click', '.add-question-btn', function () {
+                 const branchId = $(this).data('branch-id');
+                 const semesterId = $(this).data('semester-id');
+                 const subjectId = $(this).data('subject-id');
+                 const subject = findSubject(branchId, semesterId, subjectId);
+                 if (!subject) return;
+                 $('#question-modal-title').text(`Add Question to ${subject.name}`);
+                 $('#question-form').trigger('reset');
+                 $('#question-branch-id').val(branchId);
+                 $('#question-semester-id').val(semesterId);
+                 $('#question-subject-id').val(subjectId);
+                 $('#question-edit-id').val('');
+                 // Set current year as default
+                 $('#question-year').val(new Date().getFullYear());
+                 $('#question-modal').removeClass('hidden');
+                 $('#question-year').focus();
+             });
+
+            $('#question-form').on('submit', function (e) {
+                 e.preventDefault();
+                 const branchId = $('#question-branch-id').val();
+                 const semesterId = $('#question-semester-id').val();
+                 const subjectId = $('#question-subject-id').val();
+                 const editId = $('#question-edit-id').val(); // This is questionId for edits
+
+                 const yearInput = $('#question-year').val();
+                 const qNumber = $('#question-qNumber').val().trim();
+                 const chapter = $('#question-chapter').val().trim(); // Optional field
+                 const marksInput = $('#question-marks').val();
+                 const type = $('#question-type').val();
+                 const text = $('#question-text').val().trim();
+
+                 const subject = findSubject(branchId, semesterId, subjectId);
+                 if (!subject) return;
+
+                 // --- Validation ---
+                 let isValid = true;
+                 const year = parseInt(yearInput, 10);
+                 const marks = parseFloat(marksInput);
+
+                 if (isNaN(year) || year < 1990 || year > 2099) {
+                     $('#question-year').addClass('border-red-500'); isValid = false;
+                 } else { $('#question-year').removeClass('border-red-500'); }
+
+                 if (!qNumber) {
+                     $('#question-qNumber').addClass('border-red-500'); isValid = false;
+                 } else { $('#question-qNumber').removeClass('border-red-500'); }
+
+                 if (isNaN(marks) || marks < 0) {
+                     $('#question-marks').addClass('border-red-500'); isValid = false;
+                 } else { $('#question-marks').removeClass('border-red-500'); }
+
+                 if (!type) {
+                     $('#question-type').addClass('border-red-500'); isValid = false;
+                 } else { $('#question-type').removeClass('border-red-500'); }
+
+                 if (!text) {
+                     $('#question-text').addClass('border-red-500'); isValid = false;
+                 } else { $('#question-text').removeClass('border-red-500'); }
+
+                 if (!isValid) {
+                     alert('Please fill all required (*) fields correctly.');
+                     return;
+                 }
+                 // --- End Validation ---
+
+
+                 const generatedQuestionId = generateQuestionId(subjectId, year, qNumber);
+
+                 if (editId) { // Editing Question
+                     const question = findQuestion(branchId, semesterId, subjectId, editId);
+                     if (question) {
+                         // Check if changing year/qNumber creates a conflict
+                         if (generatedQuestionId !== editId && findQuestion(branchId, semesterId, subjectId, generatedQuestionId)) {
+                             alert(`Error: Updating this question results in a duplicate Question ID ('${generatedQuestionId}') based on Year and Question Number. Please adjust Year or Q#.`);
+                             $('#question-year, #question-qNumber').addClass('border-red-500');
+                             return;
+                         }
+                         question.questionId = generatedQuestionId; // Update ID if year/qNumber changed
+                         question.year = year;
+                         question.qNumber = qNumber;
+                         question.chapter = chapter || null; // Store null if empty
+                         question.marks = marks;
+                         question.type = type;
+                         question.text = text;
+                         showToast('Question updated successfully!');
+                     }
+                 } else { // Adding New Question
+                     if (findQuestion(branchId, semesterId, subjectId, generatedQuestionId)) {
+                          alert(`Error: A question with the combination of Year (${year}) and Question Number ('${qNumber}') already exists in this subject (Generated ID: '${generatedQuestionId}').`);
+                          $('#question-year, #question-qNumber').addClass('border-red-500');
+                          return;
+                     }
+                      if (!subject.questions) { subject.questions = []; } // Ensure questions array exists
+                     subject.questions.push({
+                         questionId: generatedQuestionId,
+                         year: year,
+                         qNumber: qNumber,
+                         chapter: chapter || null, // Store null if empty
+                         marks: marks,
+                         type: type,
+                         text: text
+                     });
+                     showToast('Question added successfully!');
+                 }
+
+                 closeModal('question-modal');
+                 renderData();
+             });
+
+             $('#branch-list').on('click', '.edit-question-btn', function () {
+                 const branchId = $(this).data('branch-id');
+                 const semesterId = $(this).data('semester-id');
+                 const subjectId = $(this).data('subject-id');
+                 const questionId = $(this).data('id');
+                 const question = findQuestion(branchId, semesterId, subjectId, questionId);
+                 const subject = findSubject(branchId, semesterId, subjectId);
+
+                 if (question && subject) {
+                     $('#question-modal-title').text(`Edit Question (in ${subject.name})`);
+                     $('#question-branch-id').val(branchId);
+                     $('#question-semester-id').val(semesterId);
+                     $('#question-subject-id').val(subjectId);
+                     $('#question-edit-id').val(question.questionId);
+
+                     $('#question-year').val(question.year);
+                     $('#question-qNumber').val(question.qNumber);
+                     $('#question-chapter').val(question.chapter || ''); // Handle null
+                     $('#question-marks').val(question.marks);
+                     $('#question-type').val(question.type);
+                     $('#question-text').val(question.text);
+
+                     $('#question-modal').removeClass('hidden');
+                     $('#question-text').focus(); // Focus text first for editing
+                     // Clear potential validation borders
+                     $('#question-form input, #question-form select, #question-form textarea').removeClass('border-red-500');
+                 }
+             });
+
+             $('#branch-list').on('click', '.delete-question-btn', function () {
+                 const branchId = $(this).data('branch-id');
+                 const semesterId = $(this).data('semester-id');
+                 const subjectId = $(this).data('subject-id');
+                 const questionId = $(this).data('id');
+                 const subject = findSubject(branchId, semesterId, subjectId);
+                 const question = findQuestion(branchId, semesterId, subjectId, questionId);
+
+
+                 if (subject && question && confirm(`DELETE Question:\n\n"${question.text.substring(0, 80)}..."\n(Year: ${question.year}, Q#: ${question.qNumber})\n\nAre you sure?`)) {
+                    subject.questions = subject.questions.filter(q => q.questionId !== questionId);
+                    renderData();
+                    showToast('Question deleted successfully!');
+                }
+             });
+
+
+            // --- JSON/Export Buttons ---
+            $('#copy-json-btn').on('click', function () {
+                const jsonText = $('#json-output').text();
+                 if (!jsonText || jsonText === '{}') {
+                    showToast('Nothing to copy.');
+                    return;
+                }
+                navigator.clipboard.writeText(jsonText).then(() => {
+                    showToast('JSON copied to clipboard!');
+                    const btn = $(this);
+                    const originalHtml = btn.html();
+                    btn.html('<svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg> Copied!');
+                    btn.prop('disabled', true);
+                    setTimeout(() => {
+                        btn.html(originalHtml);
+                        btn.prop('disabled', false);
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy JSON: ', err);
+                    showToast('Error copying JSON.');
+                });
+            });
+
+            $('#format-json-btn').on('click', function () {
+                updateJsonPreview(); // Re-formats the JSON
+                showToast('JSON formatted.');
+            });
+
+            $('#export-json-btn').on('click', function () {
+                 if (!dataSet.branches || dataSet.branches.length === 0) {
+                    showToast('Nothing to export.');
+                    return;
+                }
+                try {
+                    const jsonString = JSON.stringify(dataSet, null, 2);
+                    const blob = new Blob([jsonString], { type: 'application/json;charset=utf-8' });
+                    const timestamp = new Date().toISOString().slice(0, 19).replace(/[-T:]/g, ''); // YYYYMMDDHHMMSS
+                    const filename = `question-bank_${timestamp}.json`;
+
+                    // Use FileSaver.js if available (more robust), otherwise fallback
+                    if (typeof saveAs !== 'undefined') {
+                        saveAs(blob, filename);
+                    } else {
+                        // Fallback method
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.style.display = 'none';
+                        a.href = url;
+                        a.download = filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        a.remove();
+                    }
+                    showToast('JSON file export initiated.');
+                } catch (error) {
+                    console.error('Error exporting JSON:', error);
+                    showToast('Error exporting JSON file.');
+                }
+            });
+
+            // --- Load/Save (Placeholder - integrate with local storage or backend) ---
+            function loadData() {
+                // Example using localStorage:
+                const savedData = localStorage.getItem('questionBankData');
+                if (savedData) {
+                    try {
+                        dataSet = JSON.parse(savedData);
+                        if (!dataSet.branches) dataSet.branches = []; // Ensure structure
+                         console.log("Data loaded from localStorage");
+                    } catch (e) {
+                        console.error("Error parsing localStorage data:", e);
+                        dataSet = { branches: [] }; // Reset on error
+                    }
+                } else {
+                    dataSet = { branches: [] }; // Default empty structure
+                }
+                 // Ensure nested arrays exist after loading potentially old data
+                 dataSet.branches?.forEach(b => {
+                    b.semesters = b.semesters || [];
+                    b.semesters.forEach(s => {
+                        s.subjects = s.subjects || [];
+                         s.subjects.forEach(sub => {
+                            sub.questions = sub.questions || [];
+                        });
+                    });
+                });
+            }
+
+            function saveData() {
+                 // Example using localStorage:
+                 try {
+                    localStorage.setItem('questionBankData', JSON.stringify(dataSet));
+                     // console.log("Data saved to localStorage"); // Optional: avoid console spam
+                 } catch (e) {
+                    console.error("Error saving data to localStorage:", e);
+                    showToast("Error saving data!");
+                 }
+            }
+
+             // Auto-save on data change (debounce this in a real app for performance)
+             const originalRenderData = renderData; // Keep original function
+             renderData = function() { // Wrap renderData
+                 originalRenderData.apply(this, arguments); // Call original
+                 saveData(); // Save after rendering updates
+             };
+
+
+            // --- Initial Load ---
+            loadData(); // Load data first
+            renderData(); // Then render it
+
+        });
+    </script>
+
+   
+</body>
+
+</html>

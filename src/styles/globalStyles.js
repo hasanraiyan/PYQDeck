@@ -75,6 +75,8 @@ export const globalStyles = StyleSheet.create({
   listContentContainer: { // Padding for FlatList content
     paddingHorizontal: 10, // Slightly reduced horizontal padding for lists
     paddingBottom: 30, // Ample space at the bottom
+    paddingLeft:10,
+    paddingRight:10,
     // paddingTop should be added per-screen to account for header
   },
   activityIndicatorContainer: { // Centered loading indicator
@@ -146,14 +148,13 @@ export const globalStyles = StyleSheet.create({
   listItem: {
     backgroundColor: Colors.surface,
     borderRadius: 14,
-    // Remove padding here, it will be handled by inner content view if needed
-    // paddingVertical: 18,
-    paddingHorizontal: 20, // Keep horizontal padding for overall item spacing
-    paddingTop: 18, // Add padding top for content
-    paddingBottom: 12, // Reduced padding bottom to accommodate progress bar visually
-    marginVertical: 6, // Adjusted vertical margin slightly
-    marginHorizontal: 0, // Keep horizontal margin 0
-    // Removed flexDirection, justifyContent, alignItems - these apply to the content view now
+    paddingVertical: 18,
+    paddingHorizontal: 20,
+    marginVertical: 4,
+    marginHorizontal: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -161,28 +162,50 @@ export const globalStyles = StyleSheet.create({
     elevation: 3,
     borderWidth: 1,
     borderColor: Colors.border,
-    // Add overflow hidden if necessary, but shouldn't be needed with border radius
   },
 
   // --- Cards (QuestionCard) ---
   card: {
-    backgroundColor: Colors.cardBackground, // White background
-    borderRadius: 10, // More rounded corners than list items
-    padding: 16, // Standard padding
-    marginBottom: 16, // Spacing below card
-    marginHorizontal: 10, // Spacing from screen edges
-    borderWidth: 1,
-    borderColor: Colors.border,
+    backgroundColor: Colors.cardBackground,
+    borderRadius: 16,
+    padding: 24,
+    marginBottom: 16,
+    marginHorizontal: 16,
+    borderWidth: 0,
     shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 5,
-    elevation: 3, // Android shadow
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 16,
+    elevation: 8,
+    overflow: 'hidden',
+    transform: [{ scale: 1 }],
   },
-  cardCompleted: { // Style modifier for completed cards
-    borderLeftWidth: 5, // Prominent indicator border
-    borderLeftColor: Colors.completedIndicator, // Use success color
-    paddingLeft: 11, // Adjust inner padding to maintain alignment (padding - borderLeftWidth)
+  cardPressed: {
+    transform: [{ scale: 0.98 }],
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+  },
+  cardInner: {
+    borderRadius: 12,
+    padding: 16,
+    backgroundColor: Colors.surface,
+    borderWidth: 1,
+    borderColor: Colors.border + '20',
+  },
+  cardGradient: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    borderRadius: 16,
+  },
+  cardCompleted: {
+    borderLeftWidth: 6,
+    borderLeftColor: Colors.success,
+    shadowColor: Colors.success,
+    shadowOpacity: 0.2,
+    shadowRadius: 16,
   },
 
   // --- Question Card Specific Layouts ---

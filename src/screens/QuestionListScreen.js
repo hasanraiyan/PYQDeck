@@ -4,7 +4,7 @@ import { View, Text, FlatList, ActivityIndicator, StyleSheet, Platform } from 'r
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 
 import { globalStyles, Colors } from '../styles/globalStyles'; // Use updated styles/colors
-import { loadCompletedQuestions, toggleQuestionCompletion } from '../utils/storage';
+import { loadCompletedQuestions, toggleQuestionCompletion, saveQuestionNote } from '../utils/storage';
 import QuestionCard from '../components/QuestionCard'; // Import the enhanced QuestionCard
 
 const QuestionListScreen = ({ navigation, route }) => {
@@ -153,14 +153,22 @@ const QuestionListScreen = ({ navigation, route }) => {
   // --- Render Logic ---
 
   // Memoized render function for FlatList items
-  const renderItem = useCallback(({ item }) => (
-      <QuestionCard
-          question={item}
-          // Check completion status safely
-          isCompleted={item?.questionId ? completedQuestions.has(item.questionId) : false}
-          onToggleCompletion={handleToggleCompletion} // Pass the memoized handler
-      />
-  ), [completedQuestions, handleToggleCompletion]); // Dependencies for memoization
+  const handleNoteSave = useCallback(async (questionId, noteText) => {
+    try {
+        await saveQuestionNote(questionId, noteText);
+    } catch (error) {
+        console.error('Failed to save note:', error);
+    }
+}, []);
+
+const renderItem = useCallback(({ item }) => (
+    <QuestionCard
+        question={item}
+        isCompleted={item?.questionId ? completedQuestions.has(item.questionId) : false}
+        onToggleCompletion={handleToggleCompletion}
+        onNoteSave={handleNoteSave}
+    />
+), [completedQuestions, handleToggleCompletion, handleNoteSave]); // Dependencies for memoization
 
   // Loading State UI
   if (isLoading) {
