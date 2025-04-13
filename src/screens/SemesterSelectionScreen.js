@@ -1,62 +1,74 @@
 // src/screens/SemesterSelectionScreen.js
-import React, { useMemo } from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import React, { useMemo, useCallback } from 'react';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons'; // Added FontAwesome5
 import { globalStyles, Colors } from '../styles/globalStyles'; // Use updated styles/colors
 import * as Animatable from 'react-native-animatable';
 
 const SemesterSelectionScreen = ({ navigation, route }) => {
   const { branchId, allBranchesData, branchName } = route.params;
 
-  // Find the selected branch data
+  // Find the selected branch data using useMemo for efficiency
   const selectedBranch = useMemo(() => {
     // Added safety check for allBranchesData being potentially undefined/null
     return (allBranchesData || [])?.find(b => b.id === branchId);
   }, [allBranchesData, branchId]);
 
-  // Update header title dynamically using branchName passed from previous screen
-  React.useLayoutEffect(() => {
-    navigation.setOptions({ title: branchName || 'Select Semester' });
-  }, [navigation, branchName]);
+  // Header title is set globally by AppNavigator using branchName
 
-  const handlePress = (semester) => {
+  // Handle navigation when a semester is pressed
+  const handlePress = useCallback((semester) => {
      navigation.navigate('SubjectSelection', {
          branchId: branchId,
          semesterId: semester.id,
-         semesterName: `Semester ${semester.number}`, // Pass name for header
+         // Pass a user-friendly semester name for the next screen's header
+         semesterName: `Semester ${semester.number}`,
          allBranchesData: allBranchesData // Pass full data along
      });
-  };
+  }, [navigation, branchId, allBranchesData]); // Dependencies for useCallback
 
-  // Render semester item using globalStyles.listItem
-  const renderSemester = ({ item, index }) => (
+  // Render each semester item
+  const renderSemester = useCallback(({ item, index }) => (
     <Animatable.View
       animation="fadeInUp"
-      duration={400}
-      delay={index * 80}
+      duration={350}
+      delay={index * 70}
       useNativeDriver
     >
       <TouchableOpacity
-        style={globalStyles.listItem} // Use themed list item style
+        style={globalStyles.listItem} // Use consistent global list item style
         onPress={() => handlePress(item)}
-        activeOpacity={0.7}
+        activeOpacity={0.75}
       >
-        <Text style={globalStyles.listItemText}>Semester {item.number}</Text>
+        {/* Icon Container */}
+        <View style={styles.iconContainer}>
+          {/* Use a relevant icon, e.g., numbered list or school */}
+          <FontAwesome5 name="layer-group" size={18} color={Colors.accent} />
+        </View>
+
+        {/* Text Container */}
+        <View style={styles.textContainer}>
+          <Text style={globalStyles.listItemText}>Semester {item.number}</Text>
+           {/* Optional: Display number of subjects */}
+           {/* <Text style={globalStyles.listItemSubtitle}>{item.subjects?.length || 0} Subjects</Text> */}
+        </View>
+
+        {/* Chevron Icon */}
         <MaterialIcons
             name="chevron-right"
-            size={26}
-            color={Colors.textSecondary} // Use secondary text color for chevron
+            size={24}
+            color={Colors.textSecondary} // Use secondary text color
         />
       </TouchableOpacity>
     </Animatable.View>
-  );
+  ), [handlePress]); // Pass handler to dependency array
 
-  // Loading/Error State if branch data is missing (should be less likely if navigation is correct)
+  // Display if branch data is somehow missing
   if (!selectedBranch) {
       return (
-          <View style={globalStyles.activityIndicatorContainer}>
-            <MaterialIcons name="error-outline" size={48} color={Colors.danger} style={{ marginBottom: 15 }}/>
-            <Text style={globalStyles.textSecondary}>Branch data not found.</Text>
+          <View style={globalStyles.emptyListContainer}>
+            <MaterialIcons name="error-outline" size={48} color={Colors.danger} style={globalStyles.emptyListIcon}/>
+            <Text style={globalStyles.emptyListText}>Branch data not found.</Text>
             {/* Optionally add a button to go back */}
           </View>
       );
@@ -65,13 +77,15 @@ const SemesterSelectionScreen = ({ navigation, route }) => {
   return (
     <View style={globalStyles.container}>
        <FlatList
-          data={selectedBranch?.semesters || []}
+          // Sort semesters numerically before rendering
+          data={(selectedBranch?.semesters || []).sort((a, b) => a.number - b.number)}
           renderItem={renderSemester}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={[globalStyles.contentContainer, { paddingTop: 15 }]} // Add padding below header
-          ListEmptyComponent={
+          keyExtractor={(item) => item.id.toString()} // Ensure key is string
+          // Add padding top to avoid content going under the header
+          contentContainerStyle={[globalStyles.listContentContainer, { paddingTop: 15 }]}
+          ListEmptyComponent={ // Consistent empty state display
              <View style={globalStyles.emptyListContainer}>
-                <MaterialIcons name="school" size={48} color={Colors.textSecondary} style={{marginBottom: 15}}/>
+                <MaterialIcons name="school" size={48} color={Colors.textSecondary} style={globalStyles.emptyListIcon}/>
                 <Text style={globalStyles.emptyListText}>No semesters found for this branch.</Text>
               </View>
           }
@@ -83,5 +97,23 @@ const SemesterSelectionScreen = ({ navigation, route }) => {
     </View>
   );
 };
+
+// Local styles for SemesterSelectionScreen
+const styles = StyleSheet.create({
+  iconContainer: { // Copied from BranchSelection for consistency
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: Colors.accent + '1A',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 15,
+  },
+  textContainer: { // Copied from BranchSelection for consistency
+    flex: 1,
+    justifyContent: 'center',
+  },
+});
+
 
 export default SemesterSelectionScreen;

@@ -8,187 +8,160 @@ import {
   ActivityIndicator,
   RefreshControl,
   StyleSheet,
-  StatusBar // Keep StatusBar import if needed for focus effects
+  StatusBar // Keep for useFocusEffect
 } from 'react-native';
 import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import * as Animatable from 'react-native-animatable';
 import { useFocusEffect } from '@react-navigation/native';
 import { globalStyles, Colors } from '../styles/globalStyles'; // Import global styles and colors
 
-// Get screen dimensions (might still be useful for responsive layouts if needed)
-// import { Dimensions } from 'react-native';
-// const { width, height } = Dimensions.get('window');
-
 const BranchSelectionScreen = ({ navigation, route }) => {
-  const [branches, setBranches] = useState(route.params?.allBranchesData || []);
-  const [isLoading, setIsLoading] = useState(!route.params?.allBranchesData);
+  const { allBranchesData } = route.params; // Expect data to be passed via initialParams
+  const [branches, setBranches] = useState(allBranchesData || []);
+  // isLoading is less critical if data is passed via params, but keep for potential future async fetch
+  const [isLoading, setIsLoading] = useState(!allBranchesData);
   const [refreshing, setRefreshing] = useState(false);
 
-  // Function to fetch branches (remains the same logic)
+  // Function to fetch branches (if needed in the future)
   const fetchBranches = useCallback(async () => {
-    // In a real app, this would be an API call
-    setIsLoading(true); // Show loader during fetch simulation
+    // Example: Simulate fetch or get from params again
+    setIsLoading(true);
     try {
-      // Simulate API call delay
-      // await new Promise(resolve => setTimeout(resolve, 500));
-      const data = route.params?.allBranchesData; // Replace with actual fetch if needed
-      if (data) {
-        setBranches(data);
-      } else {
-        // Handle case where data is not passed correctly
-        console.warn("Branch data not found in route params.");
-        setBranches([]);
-      }
+      // const data = await someApiCall(); // Replace with actual fetch if needed
+      const data = route.params?.allBranchesData;
+      setBranches(data || []);
     } catch (error) {
       console.error('Error fetching branches:', error);
-      setBranches([]); // Set empty on error
+      setBranches([]);
     } finally {
       setIsLoading(false);
-      setRefreshing(false); // Ensure refreshing is stopped
+      setRefreshing(false);
     }
-  }, [route.params?.allBranchesData]); // Depend on the data prop
+  }, [route.params?.allBranchesData]);
 
-  // Initial fetch if data wasn't passed directly or is empty
+  // Initial load check (in case params somehow fail)
   useEffect(() => {
     if (!branches.length && !isLoading) {
       fetchBranches();
+    } else if (branches.length && isLoading) {
+      setIsLoading(false); // Ensure loading is false if data is already present
     }
   }, [fetchBranches, branches.length, isLoading]);
 
-
-  // Set status bar style and header on focus
+  // Set status bar style on focus (optional, depends on desired effect)
   useFocusEffect(
     useCallback(() => {
-      StatusBar.setBarStyle('dark-content'); // Dark content for light background
-
-      // Header is now configured globally in AppNavigator, but can override here if needed
-      // navigation.setOptions({ title: 'Select Branch' });
-
-      return () => {
-        // Cleanup if needed
-      };
-    }, [navigation])
+      StatusBar.setBarStyle('dark-content'); // Match the light theme header
+      // Header is configured globally in AppNavigator
+      return () => {}; // Cleanup if needed
+    }, [])
   );
 
-  // Handle pull-to-refresh
+  // Handle pull-to-refresh (optional, useful if data can change)
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    await fetchBranches();
-    // setRefreshing(false); // Already handled in fetchBranches finally block
+    await fetchBranches(); // Refetch data
   }, [fetchBranches]);
 
-  // Handle branch selection
+  // Handle branch selection navigation
   const handlePress = useCallback((branch) => {
     navigation.navigate('SemesterSelection', {
       branchId: branch.id,
       branchName: branch.name,
-      allBranchesData: route.params?.allBranchesData // Pass the original full data
+      allBranchesData: route.params?.allBranchesData // Pass the original full data down
     });
   }, [navigation, route.params?.allBranchesData]);
 
-  // Branch icon mapping (keep using FontAwesome5 or switch to MaterialCommunityIcons etc.)
+  // Map branch names to relevant FontAwesome5 icons
   const getBranchIcon = (branchName) => {
     const name = branchName.toLowerCase();
     if (name.includes('computer') || name.includes('it') || name.includes('software')) return 'laptop-code';
     if (name.includes('electronic') || name.includes('communication')) return 'microchip';
     if (name.includes('mechanical')) return 'cogs';
-    if (name.includes('civil')) return 'building';
+    if (name.includes('electrical')) return 'bolt'; // Added electrical
+    if (name.includes('civil')) return 'hard-hat'; // Changed icon
     if (name.includes('chemical')) return 'flask';
     return 'graduation-cap'; // Default icon
   };
 
-  // Render each branch item using globalStyles.listItem
+  // Render each branch item using consistent styling
   const renderBranch = useCallback(({ item, index }) => (
     <Animatable.View
       animation="fadeInUp"
-      duration={400} // Faster animation
-      delay={index * 80} // Shorter delay
-      useNativeDriver
+      duration={350} // Slightly faster animation
+      delay={index * 70} // Shorter delay
+      useNativeDriver // Improve animation performance
     >
       <TouchableOpacity
         style={globalStyles.listItem} // Use the global list item style
         onPress={() => handlePress(item)}
-        activeOpacity={0.7} // Standard active opacity
+        activeOpacity={0.75} // Standard active opacity feedback
       >
-        {/* Icon Container */}
+        {/* Icon Container with background */}
         <View style={styles.iconContainer}>
           <FontAwesome5
             name={getBranchIcon(item.name)}
-            size={22} // Slightly smaller icon
+            size={20} // Standardized icon size
             color={Colors.accent} // Use accent color for icon
           />
         </View>
 
         {/* Text Container */}
         <View style={styles.textContainer}>
-          <Text style={globalStyles.listItemText}>{item.name}</Text>
-          {/* Optional: Add description if available */}
-          {/* {item.description && (
-            <Text style={[globalStyles.textSecondary, { fontSize: 12 }]} numberOfLines={1}>
-              {item.description}
-            </Text>
-          )} */}
+          <Text style={globalStyles.listItemText} numberOfLines={2}>{item.name}</Text>
+          {/* Optional: Add subtitle if available */}
+          {/* <Text style={globalStyles.listItemSubtitle}>Optional subtitle</Text> */}
         </View>
 
-        {/* Arrow Icon */}
+        {/* Chevron Icon */}
         <MaterialIcons
           name="chevron-right"
-          size={26}
+          size={24} // Standardized chevron size
           color={Colors.textSecondary} // Use secondary text color for chevron
         />
       </TouchableOpacity>
     </Animatable.View>
   ), [handlePress]); // Dependency on handlePress
 
-  // Loading state
+  // Loading state display
   if (isLoading) {
     return (
       <View style={globalStyles.activityIndicatorContainer}>
         <ActivityIndicator size="large" color={Colors.accent} />
-        <Text style={[globalStyles.textSecondary, { marginTop: 10 }]}>Loading branches...</Text>
+        <Text style={globalStyles.loadingText}>Loading branches...</Text>
       </View>
     );
   }
 
-  // Main content
+  // Main content display
   return (
     <View style={globalStyles.container}>
         <FlatList
           data={branches}
           renderItem={renderBranch}
           keyExtractor={(item) => item.id.toString()}
-          contentContainerStyle={[globalStyles.contentContainer, styles.listContainer]} // Combine global and local styles
+          // Add padding top to avoid content going under the header
+          contentContainerStyle={[globalStyles.listContentContainer, { paddingTop: 15 }]}
           showsVerticalScrollIndicator={false}
-          ListEmptyComponent={
-            <Animatable.View
-              animation="fadeIn"
-              duration={500}
-              style={globalStyles.emptyListContainer}
-            >
-              <FontAwesome5
-                name="exclamation-circle"
-                size={48}
-                color={Colors.warning}
-                style={{ marginBottom: 15 }}
-              />
+          ListEmptyComponent={ // Consistent empty state display
+            <Animatable.View animation="fadeIn" duration={500} style={globalStyles.emptyListContainer}>
+              <FontAwesome5 name="exclamation-circle" size={48} color={Colors.textSecondary} style={globalStyles.emptyListIcon} />
               <Text style={globalStyles.emptyListText}>No branches found.</Text>
-              <TouchableOpacity
-                style={[globalStyles.button, styles.retryButton]} // Use global button style
-                onPress={fetchBranches}
-              >
-                <Text style={globalStyles.buttonText}>Try Again</Text>
-              </TouchableOpacity>
+              {/* Optional: Add a retry button if fetching is possible */}
+              {/* <TouchableOpacity style={[globalStyles.button, styles.retryButton]} onPress={fetchBranches}>
+                 <Text style={globalStyles.buttonText}>Try Again</Text>
+              </TouchableOpacity> */}
             </Animatable.View>
           }
-          refreshControl={
+          refreshControl={ // Optional pull-to-refresh control
             <RefreshControl
               refreshing={refreshing}
               onRefresh={onRefresh}
-              colors={[Colors.accent]} // Spinner color
-              tintColor={Colors.accent} // iOS spinner color
+              colors={[Colors.accent]} // Spinner color for Android
+              tintColor={Colors.accent} // Spinner color for iOS
             />
           }
-          // Performance optimizations (optional but good practice)
+          // Performance optimizations
           initialNumToRender={10}
           maxToRenderPerBatch={10}
           windowSize={11}
@@ -197,28 +170,26 @@ const BranchSelectionScreen = ({ navigation, route }) => {
   );
 };
 
-// Local styles specific to this screen (keep minimal)
+// Local styles specific to this screen (Keep minimal, rely on global styles)
 const styles = StyleSheet.create({
-  listContainer: {
-    paddingTop: 15, // Add padding below the solid header
-  },
-  iconContainer: {
-    width: 40, // Smaller icon background
+  iconContainer: { // Consistent styling for the icon background circle
+    width: 40,
     height: 40,
-    borderRadius: 20,
+    borderRadius: 20, // Make it circular
     backgroundColor: Colors.accent + '1A', // Very light accent background
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 15, // Spacing between icon and text
   },
   textContainer: {
-    flex: 1, // Allow text to take remaining space
+    flex: 1, // Allow text to take remaining space and wrap if needed
+    justifyContent: 'center', // Center text vertically if needed
   },
-  retryButton: {
-    marginTop: 20,
-    backgroundColor: Colors.accent, // Use accent color for retry button
-  },
-  // Remove styles related to gradient, background image, old theme
+  // retryButton: { // Style for retry button if added
+  //   marginTop: 20,
+  //   backgroundColor: Colors.accent, // Use accent color
+  //   paddingHorizontal: 30,
+  // },
 });
 
 export default BranchSelectionScreen;
