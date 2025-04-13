@@ -1,6 +1,6 @@
 // FILE: src/components/QuestionCard.js
-import React, { useMemo } from 'react';
-import { View, Text, Switch, StyleSheet, Platform, TouchableOpacity, Linking } from 'react-native';
+import React, { useMemo, useState } from 'react';
+import { View, Text, Switch, StyleSheet, Platform, TouchableOpacity, Linking, Image, ActivityIndicator } from 'react-native';
 import SyntaxHighlighter from 'react-native-syntax-highlighter';
 import { prism } from 'react-syntax-highlighter/dist/esm/styles/prism'; // Light theme suitable for our background
 import * as Animatable from 'react-native-animatable';
@@ -11,9 +11,10 @@ import { globalStyles, Colors } from '../styles/globalStyles'; // Use updated st
 // Regex remains the same
 const CODE_BLOCK_REGEX = /```(\w+)?\s*\n([\s\S]*?)\n?```/g;
 const QUESTION_ID_REGEX = /^(Q\d+[a-z]?\s*:)\s*/i;
+const IMAGE_REGEX = /!\[([^\]]*)\]\(([^\)]+)\)/g;
 
 const QuestionCard = React.memo(({ question, isCompleted, onToggleCompletion }) => {
-
+    const [imageLoading, setImageLoading] = useState(false);
     // Parsing logic remains the same - memoized for performance
     const parsedContent = useMemo(() => {
         if (!question?.text) return [{ type: 'text', content: 'Question text missing.' }];
@@ -74,7 +75,7 @@ const QuestionCard = React.memo(({ question, isCompleted, onToggleCompletion }) 
 
         // Open default browser with Google search query (more general than just ChatGPT)
         // Alternatively, use the ChatGPT link if preferred: `https://chatgpt.com/search?q=${searchQuery}`
-        const url = `https://www.google.com/search?q=${searchQuery}`;
+        const url = `https://chatgpt.com/search?q=${searchQuery}`;
         Linking.canOpenURL(url).then(supported => {
             if (supported) {
                 Linking.openURL(url);
@@ -126,6 +127,41 @@ const QuestionCard = React.memo(({ question, isCompleted, onToggleCompletion }) 
             <View style={globalStyles.questionBody}>
                 {parsedContent.map((part, index) => {
                     if (part.type === 'text') {
+                        // Parse and render images within text
+                        const imageMatches = Array.from(part.content.matchAll(IMAGE_REGEX));
+                        if (imageMatches.length > 0) {
+                            return (
+                                <View key={`text-${index}`}>
+                                    {part.content.split(IMAGE_REGEX).map((textSegment, i) => {
+                                        if (i % 3 === 0) {
+                                            return (
+                                                <Text key={`text-segment-${i}`} style={globalStyles.text} selectable>
+                                                    {textSegment}
+                                                </Text>
+                                            );
+                                        } else if (i % 3 === 2) {                                            return (
+                                                <View key={`image-container-${i}`} style={styles.imageContainer}>
+                                                    <Image
+                                                        key={`image-${i}`}
+                                                        source={{ uri: imageMatches[Math.floor(i / 3)][2] }}
+                                                        style={styles.questionImage}
+                                                        resizeMode="contain"
+                                                        onLoadStart={() => setImageLoading(true)}
+                                                        onLoadEnd={() => setImageLoading(false)}
+                                                    />
+                                                    {imageLoading && (
+                                                        <View style={styles.skeletonLoader}>
+                                                            <ActivityIndicator size="small" color={Colors.textSecondary} />
+                                                        </View>
+                                                    )}
+                                                </View>
+                                            );
+                                        }
+                                        return null;
+                                    })}
+                                </View>
+                            );
+                        }
                         return (
                             <Text key={`text-${index}`} style={globalStyles.text} selectable>
                                 {part.content}
@@ -205,7 +241,28 @@ const QuestionCard = React.memo(({ question, isCompleted, onToggleCompletion }) 
 
 // Local styles specific to QuestionCard, enhancing or overriding global ones
 const styles = StyleSheet.create({
-    metaText: { // Style for Year - Q#, making it slightly smaller
+    imageContainer: {
+        position: 'relative',
+    },
+    skeletonLoader: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.surface,
+  },
+  questionImage: {
+    width: '100%',
+    height: 200,
+    borderRadius: 8,
+    backgroundColor: Colors.surface,
+  },
+  
+
+    metaText: { // Style for Year - Q#, making it slightly smaller,
         fontSize: 13,
         fontWeight: '500',
         color: Colors.textSecondary,

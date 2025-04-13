@@ -359,7 +359,7 @@
                   "year": 2023,
                   "qNumber": "Q2a",
                   "chapter": "Module 1: Basic Circuits",
-                  "text": "Use Kirchhoff's laws (KCL and KVL) to find the current flowing through the 5 Ohm resistor in the given circuit. (Assume a circuit diagram is provided).",
+                  "text": "Use Kirchhoff's laws (KCL and KVL) to find the current flowing through the 5 Ohm resistor in the given circuit.\n\n![Circuit Diagram](https://image.pollinations.ai/prompt/Circuit%20diagram%20with%20resistors%20and%20voltage%20source%20for%20applying%20Kirchhoff's%20laws)\n(Assume the diagram is provided)",
                   "type": "Problem Solving",
                   "marks": 6
                 },
@@ -368,7 +368,7 @@
                   "year": 2021,
                   "qNumber": "Q3",
                   "chapter": "Module 2: Network Theorems",
-                  "text": "Find the Norton equivalent circuit for the network shown across terminals A-B. (Assume a circuit diagram is provided).",
+                  "text": "Find the Norton equivalent circuit for the network shown across terminals A-B.\n\n![Network Diagram](https://image.pollinations.ai/prompt/Electrical%20network%20diagram%20with%20resistors%20and%20sources%20for%20Norton%20equivalent%20circuit%20analysis?height=200&width=300&nol)\n(Assume the diagram is provided)",
                   "type": "Problem Solving",
                   "marks": 7
                 },
@@ -557,7 +557,7 @@
                   "year": 2021,
                   "qNumber": "Q4a",
                   "chapter": "Module 4: Radio Receivers",
-                  "text": "Draw the block diagram of a superheterodyne receiver and explain the function of each block.",
+                  "text": "Draw the block diagram of a superheterodyne receiver and explain the function of each block.\n\n![Superheterodyne Receiver Block Diagram](https://image.pollinations.ai/prompt/Block%20diagram%20of%20a%20superheterodyne%20radio%20receiver%20showing%20RF%20amplifier%2C%20mixer%2C%20local%20oscillator%2C%20IF%20amplifier%2C%20detector%2C%20audio%20amplifier)",
                   "type": "Block Diagram and Explanation",
                   "marks": 8
                 },
@@ -591,7 +591,7 @@
                   "year": 2022,
                   "qNumber": "Q2a",
                   "chapter": "Module 2: Transfer Function and Block Diagrams",
-                  "text": "Find the overall transfer function C(s)/R(s) for the given block diagram using block diagram reduction techniques. (Assume diagram is provided).",
+                  "text": "Find the overall transfer function C(s)/R(s) for the given block diagram using block diagram reduction techniques.\n\n![Control System Block Diagram](https://image.pollinations.ai/prompt/Control%20system%20block%20diagram%20with%20summing%20points%2C%20blocks%20G(s)%20and%20H(s)%2C%20input%20R(s)%20and%20output%20C(s)%20suitable%20for%20block%20diagram%20reduction)\n(Assume the diagram is provided)",
                   "type": "Problem Solving",
                   "marks": 7
                 },
