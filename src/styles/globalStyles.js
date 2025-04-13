@@ -146,13 +146,14 @@ export const globalStyles = StyleSheet.create({
   listItem: {
     backgroundColor: Colors.surface,
     borderRadius: 14,
-    paddingVertical: 18,
-    paddingHorizontal: 20,
-    marginVertical: 4,
-    marginHorizontal: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    // Remove padding here, it will be handled by inner content view if needed
+    // paddingVertical: 18,
+    paddingHorizontal: 20, // Keep horizontal padding for overall item spacing
+    paddingTop: 18, // Add padding top for content
+    paddingBottom: 12, // Reduced padding bottom to accommodate progress bar visually
+    marginVertical: 6, // Adjusted vertical margin slightly
+    marginHorizontal: 0, // Keep horizontal margin 0
+    // Removed flexDirection, justifyContent, alignItems - these apply to the content view now
     shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -160,6 +161,7 @@ export const globalStyles = StyleSheet.create({
     elevation: 3,
     borderWidth: 1,
     borderColor: Colors.border,
+    // Add overflow hidden if necessary, but shouldn't be needed with border radius
   },
 
   // --- Cards (QuestionCard) ---

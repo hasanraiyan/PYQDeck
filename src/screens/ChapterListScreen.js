@@ -3,17 +3,16 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
 import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import * as Animatable from 'react-native-animatable';
+import { useFocusEffect } from '@react-navigation/native'; // Import useFocusEffect
 import { globalStyles, Colors } from '../styles/globalStyles';
+import { loadCompletedQuestions } from '../utils/storage'; // Import loading function
 
 const ChapterListScreen = ({ navigation, route }) => {
   const { branchId, semesterId, subjectId, subjectName, allBranchesData } = route.params;
   const [isLoading, setIsLoading] = useState(true);
-  const [chapters, setChapters] = useState([]);
-
-  // Set dynamic title (already handled by AppNavigator config, but keep for potential overrides)
-  // React.useLayoutEffect(() => {
-  //   navigation.setOptions({ title: `${subjectName || 'Subject'} - Chapters` });
-  // }, [navigation, subjectName]);
+  const [chaptersWithData, setChaptersWithData] = useState([]); // Renamed state
+  const [completedQuestions, setCompletedQuestions] = useState(new Set()); // State for completion data
+  const [isCompletionLoading, setIsCompletionLoading] = useState(true); // Separate loading for completion
 
   // Extract subject data using useMemo for efficiency
   const subject = useMemo(() => {
@@ -22,39 +21,90 @@ const ChapterListScreen = ({ navigation, route }) => {
     return semester?.subjects?.find(sub => sub.id === subjectId);
   }, [branchId, semesterId, subjectId, allBranchesData]);
 
-  // Extract, process, and sort chapters when subject data changes
+  // Load completed questions when the screen focuses
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
+      setIsCompletionLoading(true); // Indicate start of loading completion data
+
+      const fetchCompleted = async () => {
+        try {
+          const completedSet = await loadCompletedQuestions(subjectId);
+          if (isActive) {
+            setCompletedQuestions(completedSet);
+          }
+        } catch (error) {
+          console.error("Failed to load completed questions in ChapterListScreen:", error);
+          if (isActive) {
+            setCompletedQuestions(new Set()); // Reset on error
+          }
+        } finally {
+          if (isActive) {
+            setIsCompletionLoading(false); // Finish loading completion data
+          }
+        }
+      };
+
+      fetchCompleted();
+
+      return () => {
+        isActive = false; // Cleanup function
+      };
+    }, [subjectId]) // Dependency: subjectId
+  );
+
+  // Extract, process, calculate progress, and sort chapters when subject or completion data changes
   useEffect(() => {
-    setIsLoading(true);
+    // Wait for both subject data and completion status to load
+    if (!subject || isCompletionLoading) {
+        setIsLoading(true); // Keep main loading indicator true
+        return;
+    }
+
+    setIsLoading(true); // Start processing
     if (subject && Array.isArray(subject.questions)) {
-      // Use a Map to store chapter names and their counts efficiently
+      // Use a Map to aggregate data per chapter efficiently
       const chapterMap = new Map();
       subject.questions.forEach(q => {
-          const chapterName = q.chapter || 'Uncategorized';
-          chapterMap.set(chapterName, (chapterMap.get(chapterName) || 0) + 1);
+          if (q.questionId) { // Ensure questionId exists
+            const chapterName = q.chapter || 'Uncategorized'; // Handle uncategorized
+            const isCompleted = completedQuestions.has(q.questionId);
+            const currentData = chapterMap.get(chapterName) || { totalCount: 0, completedCount: 0 };
+
+            chapterMap.set(chapterName, {
+                totalCount: currentData.totalCount + 1,
+                completedCount: currentData.completedCount + (isCompleted ? 1 : 0)
+            });
+          }
       });
 
-      // Convert Map entries to an array of objects
-      const chaptersArray = Array.from(chapterMap.entries()).map(([name, count]) => ({
-          chapter: name,
-          count: count,
-          // Clean name for sorting and display
-          displayName: name.replace(/^Module\s*\d+[:\-]?\s*/i, '').trim() || name,
-      }));
+      // Convert Map entries to an array of objects and calculate progress
+      const chaptersArray = Array.from(chapterMap.entries()).map(([name, counts]) => {
+          const progress = counts.totalCount > 0
+              ? Math.round((counts.completedCount / counts.totalCount) * 100)
+              : 0;
+          return {
+              chapter: name,
+              displayName: name.replace(/^Module\s*\d+[:\-]?\s*/i, '').trim() || name,
+              totalCount: counts.totalCount,
+              completedCount: counts.completedCount,
+              progress: progress,
+          };
+      });
 
-      // Sort chapters: Handle "Uncategorized" specifically, then sort others alphanumerically
+      // Sort chapters (Uncategorized last, then alphanumeric)
       chaptersArray.sort((a, b) => {
-          if (a.chapter === 'Uncategorized') return 1; // Push Uncategorized to the end
-          if (b.chapter === 'Uncategorized') return -1;
-          // Use localeCompare for robust alphanumeric sorting (handles "Module 1", "Module 10")
-          return a.chapter.localeCompare(b.chapter, undefined, { numeric: true, sensitivity: 'base' });
+        if (a.chapter === 'Uncategorized') return 1;
+        if (b.chapter === 'Uncategorized') return -1;
+        return a.chapter.localeCompare(b.chapter, undefined, { numeric: true, sensitivity: 'base' });
       });
 
-      setChapters(chaptersArray);
+      setChaptersWithData(chaptersArray);
     } else {
-      setChapters([]); // Set empty if no subject or questions
+      setChaptersWithData([]); // Set empty if no subject or questions
     }
-    setIsLoading(false);
-  }, [subject]); // Rerun effect if the subject data changes
+    setIsLoading(false); // Finish processing
+  }, [subject, completedQuestions, isCompletionLoading]); // Rerun when subject or completion data changes
 
   // Handle navigation when a chapter is pressed
   const handleChapterPress = useCallback((chapterData) => {
@@ -64,9 +114,7 @@ const ChapterListScreen = ({ navigation, route }) => {
       subjectId,
       subjectName,
       allBranchesData,
-      // Pass the selected chapter as a preset filter
       presetFilters: { years: [], chapters: [chapterData.chapter] },
-      // Optionally set a more specific header title for the QuestionList screen
       headerTitle: chapterData.displayName || chapterData.chapter,
     });
   }, [navigation, branchId, semesterId, subjectId, subjectName, allBranchesData]);
@@ -76,7 +124,7 @@ const ChapterListScreen = ({ navigation, route }) => {
     const name = chapterName.toLowerCase();
     if (name.includes('module')) return 'book-open';
     if (name.includes('intro') || name.includes('basic')) return 'layer-group';
-    if (name.includes('advanc')) return 'brain'; // Matches advanced, advance etc.
+    if (name.includes('advanc')) return 'brain';
     if (name.includes('practic') || name.includes('lab') || name.includes('implem')) return 'tools';
     if (name.includes('theor')) return 'lightbulb';
     if (name === 'uncategorized') return 'question-circle';
@@ -87,10 +135,10 @@ const ChapterListScreen = ({ navigation, route }) => {
     if (name.includes('tree') || name.includes('graph')) return 'project-diagram';
     if (name.includes('sort') || name.includes('search')) return 'search';
     if (name.includes('stack') || name.includes('queue')) return 'stream';
-    return 'bookmark'; // Default icon
+    return 'bookmark';
   };
 
-  // Render each chapter item in the list
+  // Render each chapter item in the list, including progress bar
   const renderChapterItem = useCallback(({ item, index }) => {
     return (
       <Animatable.View
@@ -104,32 +152,44 @@ const ChapterListScreen = ({ navigation, route }) => {
           onPress={() => handleChapterPress(item)}
           activeOpacity={0.75}
         >
-          {/* Icon */}
-          <View style={styles.iconContainer}>
-            <FontAwesome5
-              name={getChapterIcon(item.chapter)}
-              size={20}
-              color={Colors.accent}
-            />
+          {/* Content Container */}
+          <View style={styles.itemContent}>
+             {/* Icon */}
+             <View style={styles.iconContainer}>
+               <FontAwesome5
+                 name={getChapterIcon(item.chapter)}
+                 size={20}
+                 color={Colors.accent}
+               />
+             </View>
+             {/* Text Content (Chapter Name and Count) */}
+             <View style={styles.textContainer}>
+               <Text style={globalStyles.listItemText} numberOfLines={2}>{item.displayName}</Text>
+               {/* Display Count and Completed */}
+               <Text style={globalStyles.listItemSubtitle}>
+                   {item.completedCount} / {item.totalCount} Completed
+                </Text>
+             </View>
+             {/* Chevron */}
+             <MaterialIcons
+               name="chevron-right"
+               size={24}
+               color={Colors.textSecondary}
+             />
           </View>
-          {/* Text Content (Chapter Name and Count) */}
-          <View style={styles.textContainer}>
-            <Text style={globalStyles.listItemText} numberOfLines={2}>{item.displayName}</Text>
-            <Text style={globalStyles.listItemSubtitle}>{item.count} question{item.count !== 1 ? 's' : ''}</Text>
+
+          {/* Progress Bar Container */}
+          <View style={styles.progressBarContainer}>
+            {/* Progress Indicator */}
+            <View style={[styles.progressBarIndicator, { width: `${item.progress}%` }]} />
           </View>
-          {/* Chevron */}
-          <MaterialIcons
-            name="chevron-right"
-            size={24}
-            color={Colors.textSecondary}
-          />
         </TouchableOpacity>
       </Animatable.View>
     );
   }, [handleChapterPress]); // Dependency injection
 
   // Loading state display
-  if (isLoading) {
+  if (isLoading) { // Use the main isLoading state
     return (
       <View style={globalStyles.activityIndicatorContainer}>
         <ActivityIndicator size="large" color={Colors.accent} />
@@ -141,21 +201,20 @@ const ChapterListScreen = ({ navigation, route }) => {
   return (
     <View style={globalStyles.container}>
       <FlatList
-        data={chapters}
+        data={chaptersWithData}
         renderItem={renderChapterItem}
         keyExtractor={(item) => item.chapter} // Use original chapter name as key
-        // Add padding top to avoid content going under the header
         contentContainerStyle={[globalStyles.listContentContainer, { paddingTop: 15 }]}
-        ListEmptyComponent={ // Consistent empty state
+        ListEmptyComponent={
           <View style={globalStyles.emptyListContainer}>
             <FontAwesome5 name="book-reader" size={48} color={Colors.textSecondary} style={globalStyles.emptyListIcon} />
             <Text style={globalStyles.emptyListText}>No chapters found for this subject.</Text>
           </View>
         }
-        // Performance optimizations
         initialNumToRender={12}
         maxToRenderPerBatch={10}
         windowSize={11}
+        extraData={completedQuestions} // Ensure list re-renders if completion changes
       />
     </View>
   );
@@ -163,7 +222,13 @@ const ChapterListScreen = ({ navigation, route }) => {
 
 // Local styles for this screen
 const styles = StyleSheet.create({
-  iconContainer: { // Copied from BranchSelection for consistency
+  itemContent: { // Wrap original content to place progress bar below
+      flexDirection: 'row',
+      alignItems: 'center',
+      width: '100%', // Take full width
+      marginBottom: 8, // Space between content and progress bar
+  },
+  iconContainer: {
     width: 40,
     height: 40,
     borderRadius: 20,
@@ -172,9 +237,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 15,
   },
-  textContainer: { // Copied from BranchSelection for consistency
+  textContainer: {
     flex: 1,
     justifyContent: 'center',
+  },
+  progressBarContainer: {
+    height: 6, // Height of the progress bar track
+    backgroundColor: Colors.disabledBg, // Light grey background for the track
+    borderRadius: 3, // Rounded corners for the track
+    width: '100%', // Take full width of the list item
+    overflow: 'hidden', // Ensure indicator stays within bounds
+  },
+  progressBarIndicator: {
+    height: '100%', // Take full height of the container
+    backgroundColor: Colors.success, // Green color for progress
+    borderRadius: 3, // Rounded corners for the indicator
+    // Width is set dynamically inline
   },
 });
 

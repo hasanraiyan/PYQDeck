@@ -1,14 +1,18 @@
 // src/screens/YearListScreen.js
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
-import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons'; // Added FontAwesome5
+import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import * as Animatable from 'react-native-animatable';
+import { useFocusEffect } from '@react-navigation/native'; // Import useFocusEffect
 import { globalStyles, Colors } from '../styles/globalStyles';
+import { loadCompletedQuestions } from '../utils/storage'; // Import loading function
 
 const YearListScreen = ({ navigation, route }) => {
   const { branchId, semesterId, subjectId, subjectName, allBranchesData } = route.params;
   const [isLoading, setIsLoading] = useState(true);
-  const [yearsWithCounts, setYearsWithCounts] = useState([]);
+  const [yearsWithData, setYearsWithData] = useState([]); // Renamed state
+  const [completedQuestions, setCompletedQuestions] = useState(new Set()); // State for completion data
+  const [isCompletionLoading, setIsCompletionLoading] = useState(true); // Separate loading for completion
 
   // Header title is set globally by AppNavigator
 
@@ -19,30 +23,85 @@ const YearListScreen = ({ navigation, route }) => {
     return semester?.subjects?.find(sub => sub.id === subjectId);
   }, [branchId, semesterId, subjectId, allBranchesData]);
 
-  // Extract, count, and sort years when subject data changes
+  // Load completed questions when the screen focuses
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
+      setIsCompletionLoading(true); // Indicate start of loading completion data
+
+      const fetchCompleted = async () => {
+        try {
+          const completedSet = await loadCompletedQuestions(subjectId);
+          if (isActive) {
+            setCompletedQuestions(completedSet);
+          }
+        } catch (error) {
+          console.error("Failed to load completed questions in YearListScreen:", error);
+          if (isActive) {
+            setCompletedQuestions(new Set()); // Reset on error
+          }
+        } finally {
+          if (isActive) {
+            setIsCompletionLoading(false); // Finish loading completion data
+          }
+        }
+      };
+
+      fetchCompleted();
+
+      return () => {
+        isActive = false; // Cleanup function to prevent state update on unmounted component
+      };
+    }, [subjectId]) // Dependency: subjectId
+  );
+
+  // Extract, count, calculate progress, and sort years when subject data or completion data changes
   useEffect(() => {
-    setIsLoading(true);
+    // Wait for both subject data and completion status to load
+    if (!subject || isCompletionLoading) {
+        setIsLoading(true); // Keep main loading indicator true until everything is ready
+        return;
+    }
+
+    setIsLoading(true); // Start processing
     if (subject && Array.isArray(subject.questions)) {
-      // Use a Map to count questions per year efficiently
+      // Use a Map to aggregate data per year efficiently
       const yearMap = new Map();
       subject.questions.forEach(q => {
-          if (q.year) { // Only count questions with a valid year
-            yearMap.set(q.year, (yearMap.get(q.year) || 0) + 1);
+          if (q.year && q.questionId) { // Ensure year and questionId exist
+            const year = q.year;
+            const isCompleted = completedQuestions.has(q.questionId);
+            const currentData = yearMap.get(year) || { totalCount: 0, completedCount: 0 };
+
+            yearMap.set(year, {
+                totalCount: currentData.totalCount + 1,
+                completedCount: currentData.completedCount + (isCompleted ? 1 : 0)
+            });
           }
       });
 
-      // Convert Map entries to an array of objects
-      const yearsArray = Array.from(yearMap.entries()).map(([year, count]) => ({ year, count }));
+      // Convert Map entries to an array of objects and calculate progress
+      const yearsArray = Array.from(yearMap.entries()).map(([year, counts]) => {
+          const progress = counts.totalCount > 0
+              ? Math.round((counts.completedCount / counts.totalCount) * 100)
+              : 0;
+          return {
+              year,
+              totalCount: counts.totalCount,
+              completedCount: counts.completedCount,
+              progress: progress,
+          };
+      });
 
       // Sort years in descending order (newest first)
       yearsArray.sort((a, b) => b.year - a.year);
 
-      setYearsWithCounts(yearsArray);
+      setYearsWithData(yearsArray);
     } else {
-      setYearsWithCounts([]); // Set empty if no subject or questions
+      setYearsWithData([]); // Set empty if no subject or questions
     }
-    setIsLoading(false);
-  }, [subject]); // Rerun effect if the subject data changes
+    setIsLoading(false); // Finish processing
+  }, [subject, completedQuestions, isCompletionLoading]); // Rerun when subject or completion data changes
 
   // Handle navigation when a year is pressed
   const handleYearPress = useCallback((yearData) => {
@@ -52,14 +111,12 @@ const YearListScreen = ({ navigation, route }) => {
       subjectId,
       subjectName,
       allBranchesData,
-      // Pass the selected year as a preset filter
       presetFilters: { years: [yearData.year], chapters: [] },
-      // Optionally set a more specific header title for the QuestionList screen
       headerTitle: `${subjectName} - ${yearData.year}`,
     });
   }, [navigation, branchId, semesterId, subjectId, subjectName, allBranchesData]);
 
-  // Render each year item in the list
+  // Render each year item in the list, including progress bar
   const renderYearItem = useCallback(({ item, index }) => (
     <Animatable.View
       animation="fadeInUp"
@@ -72,27 +129,39 @@ const YearListScreen = ({ navigation, route }) => {
         onPress={() => handleYearPress(item)}
         activeOpacity={0.75}
       >
-        {/* Icon */}
-        <View style={styles.iconContainer}>
-          <FontAwesome5 name="calendar-check" size={20} color={Colors.accent} />
+        {/* Content Container */}
+        <View style={styles.itemContent}>
+          {/* Icon */}
+          <View style={styles.iconContainer}>
+            <FontAwesome5 name="calendar-check" size={20} color={Colors.accent} />
+          </View>
+          {/* Text Content (Year and Count) */}
+          <View style={styles.textContainer}>
+            <Text style={globalStyles.listItemText}>{item.year}</Text>
+            {/* Display Count and Completed */}
+            <Text style={globalStyles.listItemSubtitle}>
+                {item.completedCount} / {item.totalCount} Completed
+            </Text>
+          </View>
+          {/* Chevron */}
+          <MaterialIcons
+            name="chevron-right"
+            size={24}
+            color={Colors.textSecondary}
+          />
         </View>
-        {/* Text Content (Year and Count) */}
-        <View style={styles.textContainer}>
-          <Text style={globalStyles.listItemText}>{item.year}</Text>
-          <Text style={globalStyles.listItemSubtitle}>{item.count} question{item.count !== 1 ? 's' : ''}</Text>
+
+        {/* Progress Bar Container */}
+        <View style={styles.progressBarContainer}>
+          {/* Progress Indicator */}
+          <View style={[styles.progressBarIndicator, { width: `${item.progress}%` }]} />
         </View>
-        {/* Chevron */}
-        <MaterialIcons
-          name="chevron-right"
-          size={24}
-          color={Colors.textSecondary}
-        />
       </TouchableOpacity>
     </Animatable.View>
   ), [handleYearPress]); // Dependency injection
 
   // Loading state display
-  if (isLoading) {
+  if (isLoading) { // Use the main isLoading state which waits for completion data too
     return (
       <View style={globalStyles.activityIndicatorContainer}>
         <ActivityIndicator size="large" color={Colors.accent} />
@@ -104,21 +173,20 @@ const YearListScreen = ({ navigation, route }) => {
   return (
     <View style={globalStyles.container}>
       <FlatList
-        data={yearsWithCounts}
+        data={yearsWithData}
         renderItem={renderYearItem}
         keyExtractor={(item) => item.year.toString()} // Use year as key
-        // Add padding top to avoid content going under the header
         contentContainerStyle={[globalStyles.listContentContainer, { paddingTop: 15 }]}
-        ListEmptyComponent={ // Consistent empty state
+        ListEmptyComponent={
           <View style={globalStyles.emptyListContainer}>
             <FontAwesome5 name="calendar-day" size={48} color={Colors.textSecondary} style={globalStyles.emptyListIcon} />
             <Text style={globalStyles.emptyListText}>No questions found by year</Text>
           </View>
         }
-        // Performance optimizations
         initialNumToRender={10}
         maxToRenderPerBatch={10}
         windowSize={11}
+        extraData={completedQuestions} // Ensure list re-renders if completion changes
       />
     </View>
   );
@@ -126,7 +194,13 @@ const YearListScreen = ({ navigation, route }) => {
 
 // Local styles for YearListScreen
 const styles = StyleSheet.create({
-  iconContainer: { // Copied from BranchSelection for consistency
+  itemContent: { // Wrap original content to place progress bar below
+      flexDirection: 'row',
+      alignItems: 'center',
+      width: '100%', // Take full width
+      marginBottom: 8, // Space between content and progress bar
+  },
+  iconContainer: {
     width: 40,
     height: 40,
     borderRadius: 20,
@@ -135,11 +209,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 15,
   },
-  textContainer: { // Copied from BranchSelection for consistency
+  textContainer: {
     flex: 1,
     justifyContent: 'center',
   },
+  progressBarContainer: {
+    height: 6, // Height of the progress bar track
+    backgroundColor: Colors.disabledBg, // Light grey background for the track
+    borderRadius: 3, // Rounded corners for the track
+    width: '100%', // Take full width of the list item
+    overflow: 'hidden', // Ensure indicator stays within bounds
+  },
+  progressBarIndicator: {
+    height: '100%', // Take full height of the container
+    backgroundColor: Colors.success, // Green color for progress
+    borderRadius: 3, // Rounded corners for the indicator
+    // Width is set dynamically inline
+  },
 });
-
 
 export default YearListScreen;
