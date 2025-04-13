@@ -74,7 +74,7 @@ export const globalStyles = StyleSheet.create({
   },
   listContentContainer: { // Padding for FlatList content
     paddingHorizontal: 10, // Slightly reduced horizontal padding for lists
-    paddingBottom: 30, // Ample space at the bottom
+    paddingBottom: 10, // Ample space at the bottom
     paddingLeft:10,
     paddingRight:10,
     // paddingTop should be added per-screen to account for header

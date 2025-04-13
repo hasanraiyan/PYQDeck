@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: Colors.surface, // Use surface color (white)
-    // padding: 20,
+    padding: 10,
     marginBottom: 18, // Space between cards
     borderRadius: 12, // Rounded corners
     borderWidth: 1,
