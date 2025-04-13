@@ -1,70 +1,69 @@
 // src/screens/SplashScreen.js
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated, Dimensions } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Animatable from 'react-native-animatable';
-import { Colors } from '../styles/globalStyles';
+import { Colors } from '../styles/globalStyles'; // Import new colors
 
 const { width, height } = Dimensions.get('window');
 
 const SplashScreen = ({ onFinish }) => {
-  // Animation values
-  const fadeAnim = new Animated.Value(0);
-  const scaleAnim = new Animated.Value(0.9);
+  // Use useRef for animation values to avoid recreation on re-renders
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(0.8)).current; // Start slightly smaller
 
   useEffect(() => {
-    // Start animations when component mounts
+    // Entrance animations
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 800,
+        duration: 900, // Slightly longer fade-in
         useNativeDriver: true,
       }),
       Animated.spring(scaleAnim, {
         toValue: 1,
-        friction: 7,
-        tension: 40,
+        friction: 5, // Adjust spring properties
+        tension: 60,
         useNativeDriver: true,
       })
     ]).start();
 
-    // Set timeout to trigger navigation after splash screen
+    // Timeout to start fade-out and trigger finish callback
     const timer = setTimeout(() => {
-      // Fade out animation
       Animated.timing(fadeAnim, {
         toValue: 0,
-        duration: 500,
+        duration: 500, // Faster fade-out
         useNativeDriver: true,
       }).start(() => {
-        // Call the onFinish callback when animation completes
-        if (onFinish) onFinish();
+        if (onFinish) onFinish(); // Call callback after fade-out completes
       });
-    }, 2500); // Show splash for 2.5 seconds
+    }, 2200); // Total splash duration approx 2.2s + 0.5s fade-out
 
-    // Clear timeout on unmount
+    // Cleanup timeout on unmount
     return () => clearTimeout(timer);
-  }, []);
+  }, [fadeAnim, scaleAnim, onFinish]); // Include dependencies
 
   return (
-    <LinearGradient
-      colors={[Colors.gradientStart, Colors.gradientEnd]}
-      style={styles.container}
-    >
-      <Animated.View 
+    // Use a standard View with the surface color (white)
+    <View style={styles.container}>
+      <Animated.View
         style={[styles.content, {
           opacity: fadeAnim,
           transform: [{ scale: scaleAnim }]
         }]}
       >
-        <Animatable.View animation="pulse" iterationCount="infinite" duration={2000}>
+        {/* Use Animatable for the icon pulse */}
+        <Animatable.View animation="pulse" easing="ease-out" iterationCount="infinite" duration={1800}>
+          {/* Use Accent color for the main icon */}
           <MaterialCommunityIcons name="cards-outline" size={80} color={Colors.accent} />
         </Animatable.View>
-        
+
+        {/* App Name - Use Primary Text color */}
         <Text style={styles.appName}>PYQDeck</Text>
+        {/* Tagline - Use Secondary Text color */}
         <Text style={styles.tagline}>Master Your Exams</Text>
       </Animated.View>
-    </LinearGradient>
+    </View>
   );
 };
 
@@ -73,23 +72,22 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: Colors.surface, // White background
   },
   content: {
     alignItems: 'center',
     justifyContent: 'center',
   },
   appName: {
-    fontSize: 42,
+    fontSize: 40, // Slightly smaller font size
     fontWeight: 'bold',
-    color: Colors.textPrimary,
-    marginTop: 20,
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 4,
+    color: Colors.textPrimary, // Dark text color
+    marginTop: 25, // Increased margin
+    // Remove text shadow for a flatter look
   },
   tagline: {
-    fontSize: 18,
-    color: Colors.textSecondary,
+    fontSize: 17, // Slightly smaller font size
+    color: Colors.textSecondary, // Medium gray text color
     marginTop: 8,
   },
 });

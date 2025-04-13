@@ -1,9 +1,8 @@
 // src/components/FilterModal.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Modal, View, Text, Pressable, ScrollView, StyleSheet, Platform } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-// Import UPDATED globalStyles and Colors
-import { globalStyles, Colors } from '../styles/globalStyles';
+import { globalStyles, Colors } from '../styles/globalStyles'; // Import updated styles/colors
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Animatable from 'react-native-animatable';
 
@@ -13,17 +12,19 @@ const Checkbox = React.memo(({ label, value, onValueChange, textStyle }) => (
         onPress={() => onValueChange(!value)}
         style={({ pressed }) => [
             globalStyles.filterOption, // Use global style for layout
-            { opacity: pressed ? 0.6 : 1 }
+            styles.checkboxPressable, // Local style for press feedback
+            { opacity: pressed ? 0.7 : 1 }
         ]}
         accessibilityLabel={`Filter by ${label}`}
         accessibilityRole="checkbox"
         accessibilityState={{ checked: value }}
+        android_ripple={{ color: Colors.accent + '20' }} // Ripple effect
     >
         <MaterialCommunityIcons
             name={value ? 'checkbox-marked' : 'checkbox-blank-outline'}
             size={24}
-            // Use Modal specific primary/secondary text colors
-            color={value ? Colors.modalPrimaryButton : Colors.modalTextSecondary}
+            // Use Accent color for checked state, secondary modal text for unchecked
+            color={value ? Colors.accent : Colors.modalTextSecondary}
         />
         {(typeof label === 'string' || typeof label === 'number') && label !== '' ? (
              // Use textStyle from props OR default modal text style
@@ -42,15 +43,15 @@ const FilterModal = ({
 }) => {
     const [selectedYears, setSelectedYears] = useState(new Set(currentFilters.years));
     const [selectedChapters, setSelectedChapters] = useState(new Set(currentFilters.chapters));
-    const insets = useSafeAreaInsets();
+    const insets = useSafeAreaInsets(); // Get safe area insets
 
-    // Sync local state if filters change from parent
+    // Sync local state if currentFilters prop changes externally
     useEffect(() => {
         setSelectedYears(new Set(currentFilters.years));
         setSelectedChapters(new Set(currentFilters.chapters));
     }, [currentFilters]);
 
-    // Toggle handlers
+    // Toggle handlers (remain the same)
     const handleYearToggle = (year) => {
         setSelectedYears(prev => {
              const newSet = new Set(prev);
@@ -66,7 +67,7 @@ const FilterModal = ({
         });
     };
 
-    // Action handlers
+    // Action handlers (remain the same logic)
     const handleReset = () => {
         setSelectedYears(new Set());
         setSelectedChapters(new Set());
@@ -83,9 +84,14 @@ const FilterModal = ({
       onClose(); // Close modal after applying filters
     };
 
+    // Sort years descending, chapters ascending
+    const sortedYears = useMemo(() => [...availableYears].sort((a, b) => b - a), [availableYears]);
+    const sortedChapters = useMemo(() => [...availableChapters].sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })), [availableChapters]);
+
+
     return (
         <Modal
-            animationType="slide"
+            animationType="slide" // Standard slide-up animation
             transparent={true}
             visible={isVisible}
             onRequestClose={onClose} // Handle Android back button
@@ -93,14 +99,18 @@ const FilterModal = ({
             {/* Semi-transparent dark backdrop */}
             <Pressable style={styles.modalBackdrop} onPress={onClose} />
 
-            {/* Position modal at the bottom */}
+            {/* Modal content positioned at the bottom */}
             <View style={styles.modalContentWrapper} pointerEvents="box-none">
-                {/* Actual modal content with light background */}
-                <View style={[globalStyles.modalContent, { paddingBottom: insets.bottom + 15 }]}>
+                {/* Actual modal content using global style */}
+                <Animatable.View
+                    animation="slideInUp" // Animate modal appearance
+                    duration={400}
+                    style={[globalStyles.modalContent, { paddingBottom: insets.bottom + 15 }]} // Adjust padding for safe area
+                 >
                     {/* Modal Header */}
                     <View style={globalStyles.modalHeader}>
                         <Text style={globalStyles.modalTitle}>Filters</Text>
-                        <Pressable onPress={onClose} hitSlop={10}>
+                        <Pressable onPress={onClose} hitSlop={15} style={({pressed}) => ({ opacity: pressed ? 0.5 : 1})}>
                             <MaterialCommunityIcons name="close" size={26} color={Colors.modalTextSecondary} />
                         </Pressable>
                     </View>
@@ -108,10 +118,10 @@ const FilterModal = ({
                     {/* Scrollable filter options */}
                     <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
                         {/* Year Filters */}
-                        {availableYears.length > 0 && (
+                        {sortedYears.length > 0 && (
                           <>
-                              <Text style={[styles.filterSectionTitle, { color: Colors.modalPrimaryButton }]}>Filter by Year</Text>
-                              {availableYears.map((year, index) => (
+                              <Text style={styles.filterSectionTitle}>Filter by Year</Text>
+                              {sortedYears.map((year, index) => (
                                 <Animatable.View key={`year-${year}`} animation="fadeInLeft" duration={300} delay={index * 50} useNativeDriver>
                                   <Checkbox
                                       label={String(year)}
@@ -123,12 +133,13 @@ const FilterModal = ({
                           </>
                         )}
                         {/* Chapter Filters */}
-                        {availableChapters.length > 0 && (
+                        {sortedChapters.length > 0 && (
                             <>
-                                <Text style={[styles.filterSectionTitle, { color: Colors.modalPrimaryButton, marginTop: 20 }]}>Filter by Chapter</Text>
-                                {availableChapters.map((chapter, index) => (
-                                    <Animatable.View key={`chapter-${chapter}`} animation="fadeInLeft" duration={300} delay={index * 50 + (availableYears.length * 50)} useNativeDriver>
+                                <Text style={[styles.filterSectionTitle, { marginTop: 20 }]}>Filter by Chapter</Text>
+                                {sortedChapters.map((chapter, index) => (
+                                    <Animatable.View key={`chapter-${chapter}`} animation="fadeInLeft" duration={300} delay={index * 50 + (sortedYears.length * 50)} useNativeDriver>
                                         <Checkbox
+                                            // Clean up chapter name display
                                             label={chapter?.replace(/^Module\s*\d+:\s*/i, '') || chapter || 'Uncategorized'}
                                             value={selectedChapters.has(chapter)}
                                             onValueChange={() => handleChapterToggle(chapter)}
@@ -141,31 +152,34 @@ const FilterModal = ({
                         <View style={styles.scrollSpacer} />
                     </ScrollView>
 
-                    {/* Modal Footer */}
-                    <View style={[styles.modalActions, { borderTopColor: Colors.modalBorder }]}>
+                    {/* Modal Footer Actions */}
+                    <View style={styles.modalActions}>
+                        {/* Reset Button */}
                         <Pressable
                            onPress={handleReset}
                            style={({ pressed }) => [
-                               styles.actionButton, styles.resetButton,
-                               { backgroundColor: Colors.modalSurface, borderColor: Colors.modalSecondaryButtonBorder },
+                               styles.actionButton, // Base layout
+                               styles.resetButton, // Specific border/bg
                                { opacity: pressed ? 0.7 : 1 }
                            ]}
+                           android_ripple={{ color: Colors.modalSecondaryButtonBorder + '50' }}
                          >
-                            <Text style={[styles.resetButtonText, { color: Colors.modalSecondaryButtonText }]}>Reset All</Text>
+                            <Text style={styles.resetButtonText}>Reset All</Text>
                         </Pressable>
+                        {/* Apply Button */}
                         <Pressable
                             onPress={handleApply}
                             style={({ pressed }) => [
                                 globalStyles.button, // Use global button base
-                                { backgroundColor: Colors.modalPrimaryButton }, // Override background
-                                styles.applyButton, // Local layout adjustments
+                                styles.applyButton, // Override background/layout adjustments
                                 { opacity: pressed ? 0.7 : 1 }
                             ]}
+                            android_ripple={{ color: Colors.surface + 'AA' }}
                          >
                             <Text style={globalStyles.buttonText}>Apply Filters</Text>
                         </Pressable>
                     </View>
-                </View>
+                </Animatable.View>
             </View>
         </Modal>
     );
@@ -175,33 +189,36 @@ const FilterModal = ({
 const styles = StyleSheet.create({
    modalBackdrop: {
        flex: 1,
-       backgroundColor: 'rgba(0,0,0,0.5)',
+       backgroundColor: Colors.modalBackdrop, // Use defined backdrop color
    },
     modalContentWrapper: {
         position: 'absolute',
         bottom: 0,
         left: 0,
         right: 0,
+        // Prevent wrapper from blocking touches to backdrop
     },
     scrollView: {
-      maxHeight: Platform.OS === 'ios' ? 400 : 350, // Limit scroll height
+      maxHeight: Platform.OS === 'ios' ? 350 : 300, // Slightly reduce max height
       flexGrow: 0, // Don't let it expand indefinitely
+      marginBottom: 10, // Add space before action buttons
     },
     filterSectionTitle: {
-        fontSize: 17,
+        fontSize: 16, // Slightly smaller title
         fontWeight: '600',
+        color: Colors.modalTextPrimary, // Use modal primary text
         marginBottom: 8,
         paddingBottom: 6,
         borderBottomWidth: 1,
-        borderBottomColor: Colors.modalBorder,
+        borderBottomColor: Colors.modalBorder, // Use modal border color
     },
      modalActions: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginTop: 15,
         paddingTop: 15,
         borderTopWidth: 1,
+        borderTopColor: Colors.modalBorder, // Use modal border color
     },
     actionButton: { // Base style for modal buttons
         paddingVertical: 10,
@@ -209,23 +226,30 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         alignItems: 'center',
         justifyContent: 'center',
-        borderWidth: 1, // Both buttons have border in this design
+        borderWidth: 1.5, // Slightly thicker border for reset button
     },
-     resetButton: {
-       // Specific colors set inline using Colors.modal...
-   },
+    resetButton: {
+       borderColor: Colors.modalSecondaryButtonBorder, // Use defined border color
+       backgroundColor: Colors.modalSurface, // White background
+    },
    resetButtonText: {
        fontWeight: '500',
-       // Specific color set inline using Colors.modal...
+       color: Colors.modalSecondaryButtonText, // Use defined text color
+       fontSize: 15,
    },
    applyButton: {
-       flex: 1, // Allow Apply button to take more space if needed
+       flex: 1, // Allow Apply button to take more space
        marginLeft: 12,
        borderWidth: 0, // Apply button uses primary bg, no border needed
+       backgroundColor: Colors.modalPrimaryButton, // Use defined primary button color
+       paddingVertical: 11, // Match height slightly better
    },
-    scrollSpacer: {
-        height: 15, // Space at bottom of scroll
-    },
+   checkboxPressable: {
+       paddingVertical: 2, // Reduce vertical padding inside the checkbox row itself
+   },
+   scrollSpacer: {
+       height: 15, // Space at bottom of scroll
+   },
 });
 
 export default FilterModal;

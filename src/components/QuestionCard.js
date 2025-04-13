@@ -2,76 +2,53 @@
 import React, { useMemo } from 'react';
 import { View, Text, Switch, StyleSheet, Platform } from 'react-native';
 import SyntaxHighlighter from 'react-native-syntax-highlighter';
-import { okaidia } from 'react-syntax-highlighter/dist/esm/styles/prism';
+// --- CHANGE HERE: Import a light theme like 'prism' ---
+import { prism } from 'react-syntax-highlighter/dist/esm/styles/prism'; // Or try vs, ghcolors, etc.
 import * as Animatable from 'react-native-animatable';
 
 import { globalStyles, Colors } from '../styles/globalStyles'; // Use updated styles/colors
 
-// Regex to find code blocks, handling optional language identifier
+// Regex remains the same
 const CODE_BLOCK_REGEX = /```(\w+)?\s*\n([\s\S]*?)\n?```/g;
-
-// Regex to find and remove leading question identifiers like "Q1a:", "Q5:", etc.
 const QUESTION_ID_REGEX = /^(Q\d+[a-z]?\s*:)\s*/i;
 
 const QuestionCard = React.memo(({ question, isCompleted, onToggleCompletion }) => {
 
+    // Parsing logic remains the same
     const parsedContent = useMemo(() => {
         if (!question?.text) return [{ type: 'text', content: 'Question text missing.' }];
-
         const parts = [];
         let lastIndex = 0;
         let match;
-        const sourceText = question.text; // Work with a copy
-
+        const sourceText = question.text;
         while ((match = CODE_BLOCK_REGEX.exec(sourceText)) !== null) {
-            // Text before code block
             if (match.index > lastIndex) {
                 const textPart = sourceText.substring(lastIndex, match.index).trim();
-                // Remove leading Q number identifier if present
                 const cleanedTextPart = textPart.replace(QUESTION_ID_REGEX, '');
-                if (cleanedTextPart) { // Only push if there's actual text content
-                    parts.push({ type: 'text', content: cleanedTextPart });
-                }
+                if (cleanedTextPart) parts.push({ type: 'text', content: cleanedTextPart });
             }
-            // Code block
-            const language = match[1] || 'cpp'; // Default language if not specified
+            const language = match[1] || 'cpp';
             const codeContent = match[2].trim();
-            if (codeContent) { // Only push if there's code
-                parts.push({ type: 'code', language: language, content: codeContent });
-            }
+            if (codeContent) parts.push({ type: 'code', language: language, content: codeContent });
             lastIndex = CODE_BLOCK_REGEX.lastIndex;
         }
-
-        // Remaining text after last code block
         if (lastIndex < sourceText.length) {
             const remainingText = sourceText.substring(lastIndex).trim();
-             const cleanedRemainingText = remainingText.replace(QUESTION_ID_REGEX, '');
-            if (cleanedRemainingText) {
-                parts.push({ type: 'text', content: cleanedRemainingText });
-            }
+            const cleanedRemainingText = remainingText.replace(QUESTION_ID_REGEX, '');
+            if (cleanedRemainingText) parts.push({ type: 'text', content: cleanedRemainingText });
         }
-
-        // Handle cases where the entire input was just the question identifier (show nothing)
-        if (parts.length === 0 && sourceText.match(QUESTION_ID_REGEX)) {
-            // Explicitly return empty or a placeholder if desired
-             // return [{ type: 'text', content: '[Empty Question Body]' }];
-        }
-        // Handle cases where there were no code blocks at all
+        if (parts.length === 0 && sourceText.match(QUESTION_ID_REGEX)) { /* No content */ }
         else if (parts.length === 0 && lastIndex === 0) {
-             const cleanedFullText = sourceText.trim().replace(QUESTION_ID_REGEX, '');
-             if (cleanedFullText) {
-                 parts.push({ type: 'text', content: cleanedFullText });
-             }
+            const cleanedFullText = sourceText.trim().replace(QUESTION_ID_REGEX, '');
+            if (cleanedFullText) parts.push({ type: 'text', content: cleanedFullText });
         }
-
-         // If after all processing, parts is still empty, show a placeholder
-         if (parts.length === 0) {
+        if (parts.length === 0) {
             return [{ type: 'text', content: '[Question content appears empty or is only formatting]' }];
-         }
-
+        }
         return parts;
-    }, [question?.text]); // Depend only on question text
+    }, [question?.text]);
 
+    // Toggle handler remains the same
     const handleToggle = () => {
          if (question?.questionId) {
             onToggleCompletion(question.questionId);
@@ -80,54 +57,57 @@ const QuestionCard = React.memo(({ question, isCompleted, onToggleCompletion }) 
          }
     };
 
-    // Render null if the question object itself is somehow invalid (optional safety)
-    if (!question) {
+    // Render null check
+    if (!question || !question.questionId) {
+        console.warn("Rendering null for invalid question object:", question);
         return null;
     }
 
     return (
         <Animatable.View
             animation="fadeIn"
-            duration={500}
-            useNativeDriver // Recommended for performance
-            // Use globalStyles.card, check completed status for different bg
-            style={[globalStyles.card, isCompleted ? { backgroundColor: Colors.completedBg } : {}]}
+            duration={300}
+            useNativeDriver
+            style={[
+                globalStyles.card,
+                isCompleted ? globalStyles.cardCompleted : {}
+            ]}
         >
+             {/* Header Section */}
              <View style={globalStyles.questionHeader}>
                  <View style={globalStyles.questionHeaderLeft}>
-                    <Text style={[globalStyles.textSecondary, { fontSize: 13 }]}>
-                        {question?.year || 'N/A'} - {question?.qNumber || '?'}
+                    <Text style={[globalStyles.textSecondary, { fontSize: 13, fontWeight: '500' }]}>
+                        {question.year || 'N/A'} - {question.qNumber || '?'}
                     </Text>
                  </View>
                  <View style={globalStyles.questionHeaderRight}>
-                    {question?.chapter && typeof question.chapter === 'string' && (
-                         <Text style={globalStyles.tag} numberOfLines={2}>
-                            {question.chapter.replace(/^Module\s*\d+:\s*/i, '')}
+                    {question.chapter && typeof question.chapter === 'string' && (
+                         <Text style={globalStyles.tag} numberOfLines={1}>
+                            {question.chapter.replace(/^Module\s*\d+:\s*/i, '').trim()}
                          </Text>
                     )}
                  </View>
             </View>
 
+            {/* Body Section (Text and Code) */}
             <View style={globalStyles.questionBody}>
                 {parsedContent.map((part, index) => {
                     if (part.type === 'text') {
                         return <Text key={`text-${index}`} style={globalStyles.text} selectable>{part.content}</Text>;
                     } else if (part.type === 'code') {
                         return (
-                            <View key={`code-${index}`} style={{ marginVertical: 5 }}>
+                            <View key={`code-${index}`} style={styles.codeContainer}>
                                 <SyntaxHighlighter
                                     language={part.language || 'cpp'}
-                                    style={okaidia} // Keep okaidia dark theme
-                                    customStyle={globalStyles.codeBlockStyle}
-                                    codeTagProps={{ style: globalStyles.codeTextStyle }}
+                                    // --- CHANGE HERE: Use the imported light theme ---
+                                    style={prism}
+                                    customStyle={globalStyles.codeBlockStyle} // Background, padding, border
+                                    codeTagProps={{ style: globalStyles.codeTextStyle }} // Base font settings
                                     highlighter="prism"
-                                    PreTag={View} // Use View directly
-                                    CodeTag={Text} // Use Text directly
-                                    // Hiding line numbers for cleaner look on mobile
+                                    PreTag={View}
+                                    CodeTag={Text}
                                     showLineNumbers={false}
-                                    // Ensure lines wrap
                                     wrapLines={true}
-                                    // lineProps={{style: { flexWrap: 'wrap' }}} // Might be needed for aggressive wrapping
                                 >
                                     {part.content}
                                 </SyntaxHighlighter>
@@ -138,34 +118,52 @@ const QuestionCard = React.memo(({ question, isCompleted, onToggleCompletion }) 
                 })}
             </View>
 
+            {/* Footer Section (Tags and Switch) */}
             <View style={globalStyles.questionFooter}>
                 <View style={globalStyles.questionFooterLeft}>
-                   {question?.type && typeof question.type === 'string' && (
-                        <Text style={[globalStyles.tag, { backgroundColor: Colors.accent + '20', color: Colors.accent, borderColor: Colors.accent + '40' }]}>
-                            Type: {question.type}
+                   {question.type && typeof question.type === 'string' && (
+                        <Text style={[globalStyles.tag, styles.footerTag]}>
+                           {question.type}
                         </Text>
                    )}
-                   {(question?.marks !== null && question?.marks !== undefined && question.marks !== '') && (
-                        <Text style={[globalStyles.tag, { backgroundColor: Colors.accent + '20', color: Colors.accent, borderColor: Colors.accent + '40' }]}>
-                            Marks: {question.marks}
+                   {(question.marks !== null && question.marks !== undefined && question.marks !== '') && (
+                        <Text style={[globalStyles.tag, styles.footerTag]}>
+                            {question.marks} Marks
                         </Text>
                    )}
                 </View>
-
                  <View style={globalStyles.completionContainer}>
                    <Switch
-                     trackColor={{ false: Colors.disabled + '80', true: Colors.success + 'aa' }}
-                     thumbColor={isCompleted ? Colors.success : Colors.textSecondary} // Use lighter thumb for off state
-                     ios_backgroundColor={Colors.disabled + '80'}
+                     trackColor={{ false: Colors.disabledBg, true: Colors.success + 'B3' }}
+                     thumbColor={isCompleted ? Colors.success : Colors.surface}
+                     ios_backgroundColor={Colors.disabledBg}
                      onValueChange={handleToggle}
                      value={isCompleted}
                      disabled={!question?.questionId}
-                     style={{ transform: [{ scaleX: 0.9 }, { scaleY: 0.9 }] }} // Slightly smaller switch
+                     style={styles.switchStyle}
                     />
                  </View>
             </View>
         </Animatable.View>
     );
+});
+
+// Local styles specific to QuestionCard (remain the same)
+const styles = StyleSheet.create({
+    codeContainer: {
+        marginVertical: 8,
+    },
+    footerTag: {
+         backgroundColor: Colors.textSecondary + '1A',
+         color: Colors.textSecondary,
+         borderColor: Colors.textSecondary + '30',
+         fontSize: 10,
+         paddingVertical: 3,
+         paddingHorizontal: 8,
+    },
+    switchStyle: {
+         transform: [{ scaleX: 0.85 }, { scaleY: 0.85 }]
+    }
 });
 
 export default QuestionCard;

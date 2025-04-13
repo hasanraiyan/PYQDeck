@@ -1,6 +1,6 @@
 // src/screens/QuestionListScreen.js
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { View, Text, FlatList, ActivityIndicator, Pressable } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator, Pressable, StyleSheet, Platform } from 'react-native';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 
 import { globalStyles, Colors } from '../styles/globalStyles'; // Use updated styles/colors
@@ -9,7 +9,7 @@ import QuestionCard from '../components/QuestionCard';
 import FilterModal from '../components/FilterModal';
 
 const QuestionListScreen = ({ navigation, route }) => {
-  const { subjectId, branchId, semesterId, allBranchesData } = route.params;
+  const { subjectId, branchId, semesterId, allBranchesData, subjectName } = route.params;
 
   // State Management
   const [allQuestions, setAllQuestions] = useState([]);
@@ -19,35 +19,43 @@ const QuestionListScreen = ({ navigation, route }) => {
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [activeFilters, setActiveFilters] = useState({ years: [], chapters: [] });
 
-  // Memoized selectors
+  // Memoized selector for subject (more robust check)
   const subject = useMemo(() => {
       const branch = (allBranchesData || [])?.find(b => b.id === branchId);
-      const semester = branch?.semesters.find(s => s.id === semesterId);
-      return semester?.subjects.find(sub => sub.id === subjectId);
+      const semester = branch?.semesters?.find(s => s.id === semesterId);
+      return semester?.subjects?.find(sub => sub.id === subjectId);
   }, [branchId, semesterId, subjectId, allBranchesData]);
 
+  // Memoized available years and chapters (no changes needed)
   const availableYears = useMemo(() => {
       if (!allQuestions || allQuestions.length === 0) return [];
       const years = new Set(allQuestions.map(q => q.year).filter(Boolean));
-      return Array.from(years).sort((a, b) => b - a);
+      return Array.from(years).sort((a, b) => b - a); // Descending sort
   }, [allQuestions]);
 
    const availableChapters = useMemo(() => {
       if (!allQuestions || allQuestions.length === 0) return [];
       const chapters = new Set(allQuestions.map(q => q.chapter || 'Uncategorized').filter(Boolean));
-      return Array.from(chapters).sort();
+      // Optional: Improve sorting for chapters like "Module 1", "Module 10"
+      return Array.from(chapters).sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
   }, [allQuestions]);
 
   // --- Effects ---
+  // Effect to initialize data and load completed status
   useEffect(() => {
       const initialize = async () => {
           setIsLoading(true);
           if (subject) {
-              navigation.setOptions({ title: subject.name || 'Questions' });
+              navigation.setOptions({ title: subject.name || subjectName || 'Questions' });
               const questions = Array.isArray(subject.questions) ? subject.questions : [];
               setAllQuestions(questions);
-              const completed = await loadCompletedQuestions(subjectId);
-              setCompletedQuestions(completed);
+              try {
+                 const completed = await loadCompletedQuestions(subjectId);
+                 setCompletedQuestions(completed);
+              } catch (error) {
+                  console.error("Failed to load completed questions:", error);
+                  setCompletedQuestions(new Set()); // Default to empty set on error
+              }
           } else {
               setAllQuestions([]);
               navigation.setOptions({ title: 'Subject Not Found' });
@@ -56,39 +64,78 @@ const QuestionListScreen = ({ navigation, route }) => {
            setIsLoading(false);
       };
       initialize();
-  }, [subject, navigation, subjectId]);
+      // Reset filters when subject changes (optional, good practice)
+      setActiveFilters({ years: [], chapters: [] });
+  }, [subject, navigation, subjectId, subjectName]); // Add subjectName dependency
 
+   // Effect to apply filters and sort questions
    useEffect(() => {
+      // Guard against running before data is loaded or if data is invalid
       if (isLoading || !Array.isArray(allQuestions)) return;
+
       let result = [...allQuestions];
-      // Filtering logic
+
+      // Apply Year Filters
       if (activeFilters.years.length > 0) {
           const yearSet = new Set(activeFilters.years);
-          result = result.filter(q => yearSet.has(q.year));
+          result = result.filter(q => q.year && yearSet.has(q.year));
       }
+      // Apply Chapter Filters
        if (activeFilters.chapters.length > 0) {
           const chapterSet = new Set(activeFilters.chapters);
           result = result.filter(q => chapterSet.has(q.chapter || 'Uncategorized'));
       }
-      // Sorting logic
-       result.sort((a, b) => {
-           if (a.year !== b.year) return (b.year || 0) - (a.year || 0);
-           return (a.qNumber || '').localeCompare(b.qNumber || '');
+
+      // Sort questions: By Year (desc), then by Question Number (asc)
+      result.sort((a, b) => {
+           // Handle potential null/undefined years
+           const yearA = a.year || 0;
+           const yearB = b.year || 0;
+           if (yearA !== yearB) return yearB - yearA; // Sort descending by year
+
+           // Sort by qNumber, handling potential variations like "Q1a", "Q10"
+           const qNumA = a.qNumber || '';
+           const qNumB = b.qNumber || '';
+           return qNumA.localeCompare(qNumB, undefined, { numeric: true, sensitivity: 'base' });
        });
+
       setFilteredQuestions(result);
-  }, [allQuestions, activeFilters, isLoading]);
+
+  }, [allQuestions, activeFilters, isLoading]); // Dependencies
 
   // --- Callbacks ---
+  // Toggle completion status
    const handleToggleCompletion = useCallback(async (questionId) => {
-      if (!questionId) return; // Guard against missing ID
-      const updatedCompletedSet = await toggleQuestionCompletion(subjectId, questionId);
-      setCompletedQuestions(new Set(updatedCompletedSet));
-  }, [subjectId]); // Dependency only on subjectId
+      if (!questionId || !subjectId) {
+          console.warn("Cannot toggle completion: Missing questionId or subjectId");
+          return;
+      }
+      // Optimistic UI update (optional but improves perceived performance)
+      const currentSet = new Set(completedQuestions);
+      let optimisticSet = new Set(currentSet);
+      if (optimisticSet.has(questionId)) {
+          optimisticSet.delete(questionId);
+      } else {
+          optimisticSet.add(questionId);
+      }
+      setCompletedQuestions(optimisticSet);
 
+      // Perform async storage update
+      try {
+          const updatedCompletedSet = await toggleQuestionCompletion(subjectId, questionId);
+          // Update state with the actual result from storage (in case of error)
+          setCompletedQuestions(new Set(updatedCompletedSet));
+      } catch (error) {
+          console.error("Failed to toggle completion status in storage:", error);
+          // Revert to original state if storage update fails
+          setCompletedQuestions(currentSet);
+      }
+  }, [subjectId, completedQuestions]); // Dependency on subjectId and completedQuestions state
+
+  // Apply filters from modal
   const handleApplyFilters = useCallback((newFilters) => {
       setActiveFilters(newFilters);
-      // FilterModal now closes itself on Apply/Reset
-      // setFilterModalVisible(false);
+      // FilterModal now closes itself
   }, []);
 
   // --- Header Button ---
@@ -97,30 +144,33 @@ const QuestionListScreen = ({ navigation, route }) => {
       headerRight: () => (
         <Pressable
             onPress={() => setFilterModalVisible(true)}
-            hitSlop={15}
-            style={({ pressed }) => [
-                { marginRight: 15, opacity: pressed ? 0.6 : 1 }
-            ]}
+            hitSlop={15} // Increase touch area
+            style={({ pressed }) => [styles.headerButton, { opacity: pressed ? 0.6 : 1 }]}
+            android_ripple={{ color: Colors.accent + '30', borderless: true }} // Ripple effect
         >
-          <MaterialCommunityIcons name="filter-variant" size={28} color={Colors.textPrimary} />
+          <MaterialCommunityIcons
+              name="filter-variant"
+              size={26} // Slightly smaller icon to fit better
+              color={Colors.accent} // Use Accent color for the filter icon
+          />
         </Pressable>
       ),
-      // Disable headerLargeTitle on iOS if needed
-      // headerLargeTitle: false,
       });
-  }, [navigation]);
+  }, [navigation]); // Re-run only if navigation changes
 
   // --- Render Logic ---
+  // Render individual question card
   const renderItem = useCallback(({ item }) => (
       <QuestionCard
           question={item}
-          isCompleted={completedQuestions.has(item.questionId)}
+          // Ensure isCompleted check handles potential undefined questionId safely
+          isCompleted={item?.questionId ? completedQuestions.has(item.questionId) : false}
           onToggleCompletion={handleToggleCompletion}
       />
   ), [completedQuestions, handleToggleCompletion]); // Correct dependencies
 
   // Loading State
-  if (isLoading && !subject) {
+  if (isLoading) { // Show loader while fetching initial subject data
       return (
          <View style={globalStyles.activityIndicatorContainer}>
             <ActivityIndicator size="large" color={Colors.accent} />
@@ -128,12 +178,13 @@ const QuestionListScreen = ({ navigation, route }) => {
       );
   }
 
-  // Error State
-  if (!isLoading && !subject) {
+  // Error State: Subject data could not be loaded
+  if (!subject && !isLoading) {
        return (
             <View style={globalStyles.activityIndicatorContainer}>
                 <MaterialIcons name="error-outline" size={48} color={Colors.danger} style={{ marginBottom: 15 }}/>
                 <Text style={globalStyles.textSecondary}>Subject data could not be loaded.</Text>
+                {/* Optionally add a button to go back */}
             </View>
        );
   }
@@ -144,25 +195,36 @@ const QuestionListScreen = ({ navigation, route }) => {
         <FlatList
           data={filteredQuestions}
           renderItem={renderItem}
-          keyExtractor={(item) => item.questionId || `q-${Math.random()}`} // Ensure key exists
-           // Add padding for transparent header + extra space at bottom
-          contentContainerStyle={{ paddingTop: 90, paddingBottom: 30, paddingHorizontal: 15 }} // Adjust paddingTop
+          keyExtractor={(item) => item?.questionId || `q-${Math.random()}`} // Robust key extractor
+          contentContainerStyle={[globalStyles.contentContainer, styles.listContentContainer]} // Adjusted paddingTop
           ListEmptyComponent={
               <View style={globalStyles.emptyListContainer}>
-                 <MaterialCommunityIcons name="text-box-search-outline" size={48} color={Colors.textSecondary} />
+                 <MaterialCommunityIcons name="text-box-search-outline" size={52} color={Colors.textSecondary} />
                  <Text style={globalStyles.emptyListText}>
-                    {allQuestions.length === 0
+                    {allQuestions.length === 0 // Check if there were questions initially
                         ? "No questions found for this subject."
-                        : "No questions match the current filters."
+                        : "No questions match the current filters." // Message when filters yield no results
                     }
                  </Text>
+                 {/* Optionally add a 'Clear Filters' button here if filters are active and list is empty */}
+                 {activeFilters.years.length > 0 || activeFilters.chapters.length > 0 ? (
+                    <Pressable
+                       style={[globalStyles.button, styles.clearFiltersButton]}
+                       onPress={() => setActiveFilters({ years: [], chapters: [] })}
+                     >
+                        <Text style={globalStyles.buttonText}>Clear Filters</Text>
+                    </Pressable>
+                 ) : null}
               </View>
            }
-          initialNumToRender={8}
-          maxToRenderPerBatch={8}
+          // Performance Optimizations
+          initialNumToRender={5} // Render fewer items initially
+          maxToRenderPerBatch={5}
           windowSize={10}
+          removeClippedSubviews={Platform.OS === 'android'} // Can improve Android performance
         />
 
+        {/* Filter Modal */}
         <FilterModal
            isVisible={filterModalVisible}
            onClose={() => setFilterModalVisible(false)}
@@ -174,5 +236,20 @@ const QuestionListScreen = ({ navigation, route }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+    listContentContainer: {
+        paddingTop: 15, // Padding below header
+    },
+    headerButton: {
+        marginRight: 15,
+        padding: 5, // Add padding for easier pressing
+        borderRadius: 20, // Make it circular for ripple effect
+    },
+    clearFiltersButton: {
+        marginTop: 20,
+        backgroundColor: Colors.accentSecondary, // Use a secondary accent color
+    }
+});
 
 export default QuestionListScreen;

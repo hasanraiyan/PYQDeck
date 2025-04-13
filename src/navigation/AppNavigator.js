@@ -1,6 +1,6 @@
 // src/navigation/AppNavigator.js
 import React from 'react';
-// Removed NavigationContainer import as it's in App.js
+import { StyleSheet } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import BranchSelectionScreen from '../screens/BranchSelectionScreen';
@@ -13,35 +13,33 @@ import { Colors } from '../styles/globalStyles'; // Use updated Colors
 
 const Stack = createNativeStackNavigator();
 
-// Helper function can remain the same if needed, but screens now primarily use route.params
-// const getScreenProps = (route, screenName) => { ... };
-
 const AppNavigator = () => {
   return (
       <Stack.Navigator
         initialRouteName="BranchSelection"
         screenOptions={{
           headerStyle: {
-            backgroundColor: Colors.transparent, // Make header background transparent
+            backgroundColor: Colors.surface, // Use white surface for header background
           },
-          headerTintColor: Colors.textPrimary, // Light color for title and back button
+          headerTintColor: Colors.textPrimary, // Dark color for title and back button
           headerTitleStyle: {
             fontWeight: 'bold',
             fontSize: 18,
+            color: Colors.textPrimary, // Ensure title color is explicitly set
           },
           headerBackTitleVisible: false,
-          headerTransparent: true, // Crucial for the gradient background to show through
-          headerShadowVisible: false, // Hide the default shadow/border under the header
+          // headerTransparent: false, // Default is false, explicitly remove/set false
+          headerShadowVisible: true, // Show a subtle shadow/border below the header
           animation: 'slide_from_right',
           contentStyle: {
-             backgroundColor: Colors.transparent, // Make screen content area transparent too
+             backgroundColor: Colors.background, // Main app background color for screen content area
           },
         }}
       >
         <Stack.Screen
           name="BranchSelection"
           component={BranchSelectionScreen}
-          // Pass initial data via initialParams if needed directly
+          // Pass initial data via initialParams
            initialParams={{ allBranchesData: fullData.branches }}
            options={{ title: 'Select Branch' }}
         />
