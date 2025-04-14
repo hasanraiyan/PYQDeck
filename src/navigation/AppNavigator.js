@@ -35,7 +35,7 @@ function AppNavigator() {
         <Stack.Screen
           name="Branches"
           component={BranchListScreen}
-          options={{ title: 'Select Branch' }}
+          options={{ title: 'Select Branch', headerShown: false }}
         />
         <Stack.Screen
           name="Semesters"
