@@ -82,8 +82,6 @@ const QuestionItem = React.memo(
             [item.text]
         );
 
-        
-        
 
         const handleCopy = useCallback(() => onCopy(plainText), [onCopy, plainText]);
         const handleSearch = useCallback(() => onSearch(plainText), [onSearch, plainText]);
@@ -249,9 +247,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        
-        paddingTop: 8,
-        paddingBottom: 0,
         paddingHorizontal: 15,
     },
     metaTagsContainer: {
@@ -349,7 +344,7 @@ const styles = StyleSheet.create({
     },
     askAiButtonText: {
         color: COLORS.surface,
-        
+        marginLeft: 4,
         fontSize: 13,
         fontWeight: '600',
          
