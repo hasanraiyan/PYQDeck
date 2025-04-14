@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
     View,
@@ -31,15 +30,12 @@ const ListItemCard = React.memo(
                 style={[
                     styles.card,
                     isItemDisabled ? styles.cardDisabled : {},
-                    showProgress ? styles.cardWithProgress : {},
                 ]}
                 onPress={onPress}
                 disabled={isItemDisabled}
                 activeOpacity={0.65}
             >
-                { }
                 <View style={styles.cardTopRow}>
-                    { }
                     {iconName && (
                         <View
                             style={[
@@ -55,15 +51,17 @@ const ListItemCard = React.memo(
                             />
                         </View>
                     )}
-                    { }
-                    <View style={styles.cardContent}>
-                        { }
+                    <View style={[
+                        styles.cardContent,
+                        iconName ? { paddingLeft: 0 } : {}
+                    ]}>
                         <Text
                             style={[
                                 styles.cardTitle,
                                 isItemDisabled ? styles.cardTextDisabled : {},
+                                !subtitle ? { marginBottom: 0 } : {}
                             ]}
-                            numberOfLines={2}
+                            numberOfLines={1}
                         >
                             {title}
                         </Text>
@@ -78,8 +76,10 @@ const ListItemCard = React.memo(
                                 {subtitle}
                             </Text>
                         )}
+                        
+                        {/* Progress indicator removed from here */}
                     </View>
-                    { }
+                    
                     {!isItemDisabled && (
                         <View style={styles.cardChevronContainer}>
                             <Ionicons
@@ -89,24 +89,24 @@ const ListItemCard = React.memo(
                             />
                         </View>
                     )}
-                    {isItemDisabled &&
-                        !hasData && (
-                            <View style={styles.cardChevronContainer}>
-                                <Text style={styles.noDataText}>No Data</Text>
-                            </View>
-                        )}
+                    {isItemDisabled && !hasData && (
+                        <View style={styles.cardChevronContainer}>
+                            <Text style={styles.noDataText}>No Data</Text>
+                        </View>
+                    )}
                 </View>
-
-                { }
+                
+                {/* Progress bar as bottom border */}
                 {showProgress && (
-                    <View style={styles.progressBarContainer}>
-                        <View
+                    <View style={styles.progressBorderContainer}>
+                        <View 
                             style={[
-                                styles.progressBarIndicator,
-                                { width: `${Math.max(0, Math.min(100, progress))}%` },
+                                styles.progressBorderIndicator,
+                                { width: `${Math.max(0, Math.min(100, progress))}%` }
                             ]}
-                        />
-                        <Text style={styles.progressText}>{`${Math.round(progress)}% Done`}</Text>
+                        >
+                            <Text style={styles.progressText}>{`${Math.round(progress)}%`}</Text>
+                        </View>
                     </View>
                 )}
             </TouchableOpacity>
@@ -117,17 +117,15 @@ const ListItemCard = React.memo(
 const styles = StyleSheet.create({
     card: {
         backgroundColor: COLORS.surface,
-        borderRadius: 10,
-        marginBottom: 12,
-        overflow: Platform.OS === 'ios' ? 'visible' : 'hidden',
+        borderRadius: 8,
+        marginBottom: 10,
+        overflow: 'hidden', // Changed to always hidden for the border progress
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.15,
         shadowRadius: 2.0,
         elevation: 2,
-    },
-    cardWithProgress: {
-        paddingBottom: 5,
+        position: 'relative', // Added for absolute positioning of progress border
     },
     cardTopRow: {
         flexDirection: 'row',
@@ -140,16 +138,17 @@ const styles = StyleSheet.create({
         shadowOpacity: 0,
     },
     cardIconContainer: {
-        padding: 14,
+        padding: 12,
         alignItems: 'center',
         justifyContent: 'center',
-        width: 55,
+        width: 48,
     },
     cardIconContainerDisabled: {},
     cardContent: {
         flex: 1,
-        paddingVertical: 14,
-        paddingHorizontal: 16,
+        paddingVertical: 12,
+        paddingRight: 8,
+        paddingLeft: 16,
     },
     cardTitle: {
         fontSize: 16,
@@ -160,12 +159,13 @@ const styles = StyleSheet.create({
     cardSubtitle: {
         fontSize: 13,
         color: COLORS.textSecondary,
+        marginBottom: 5,
     },
     cardTextDisabled: {
         color: COLORS.disabled,
     },
     cardChevronContainer: {
-        paddingHorizontal: 12,
+        paddingHorizontal: 10,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -175,26 +175,24 @@ const styles = StyleSheet.create({
         color: COLORS.disabled,
         fontWeight: '500',
     },
-    progressBarContainer: {
-        height: 8,
+    progressBorderContainer: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: 3,
         backgroundColor: COLORS.progressBarBackground,
-        marginHorizontal: 16,
-        marginTop: 8,
-        marginBottom: 5,
-        borderRadius: 4,
-        overflow: 'hidden',
-        flexDirection: 'row',
-        alignItems: 'center',
     },
-    progressBarIndicator: {
+    progressBorderIndicator: {
         height: '100%',
         backgroundColor: COLORS.secondary,
-        borderRadius: 4,
+        position: 'relative',
     },
     progressText: {
         position: 'absolute',
-        left: 6,
-        fontSize: 10,
+        right: 4,
+        bottom: 3,
+        fontSize: 9,
         fontWeight: '600',
         color: COLORS.surface,
         textShadowColor: 'rgba(0, 0, 0, 0.5)',
