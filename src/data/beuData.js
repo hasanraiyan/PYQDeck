@@ -36,7 +36,7 @@ const beuData = {
                   year: 2021,
                   qNumber: 'Misc1',
                   chapter: null,
-                  text: 'What is the purpose of the `main` function in C++?\n\n```cpp\n#include<iostream>\nint main(){\nstd::cout<<"Hello, World!"<<std::endl;\nreturn 0;\n}\n```',
+                  text: 'What is the purpose of the `main` function in C++?\n\n```cpp\n#include<iostream>\nint main(){\nstd::cout<<"Hello, World!"<<std::endl;\nreturn 0;\n}\n```\n   ![image](https://image.pollinations.ai/prompt/moon)',
                   type: 'Explanation',
                   marks: 5
                 },
