@@ -8,6 +8,7 @@ import {
     View,
     Text,
     ActivityIndicator,
+    StatusBar
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS, DEFAULT_BRANCH_ICON } from '../constants';
@@ -140,7 +141,7 @@ const BranchListScreen = ({ navigation }) => {
                     : 'No questions yet';
 
             return (
-                <View style={{paddingHorizontal: 10}}>
+                <View style={{ paddingHorizontal: 10 }}>
                     <ListItemCard
                         title={branch.name}
                         subtitle={subtitle}
@@ -174,16 +175,14 @@ const BranchListScreen = ({ navigation }) => {
     const ListHeader = () => (
         <>
             { }
-            <LinearGradient
-                colors={[COLORS.primaryLight, COLORS.primary]}
+            <View
                 style={styles.gradientHeader}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}>
+                >
                 <Text style={styles.headerTitle}>Welcome to PYQDeck!</Text>
                 <Text style={styles.headerSubtitle}>
                     Your Pocket Guide to Past Questions
                 </Text>
-            </LinearGradient>
+            </View>
 
             { }
             <View style={styles.resumeSection}>
@@ -199,7 +198,7 @@ const BranchListScreen = ({ navigation }) => {
                         <ListItemCard
 
                             title={`${lastJourney.subjectName}`}
-                            subtitle={`(${lastJourney.semesterName}, ${lastJourney.branchName})`}
+                            subtitle={`${lastJourney.semesterName}  ${lastJourney.branchName}`}
                             onPress={handleResumeJourney}
                             iconName="play-forward-outline"
                             iconSet="Ionicons"
@@ -241,6 +240,10 @@ const BranchListScreen = ({ navigation }) => {
 
     return (
         <SafeAreaView style={styles.screen}>
+            <StatusBar
+                barStyle="light-content"
+                backgroundColor={COLORS.primaryLight}
+            />
             <FlatList
                 data={branches}
                 renderItem={renderBranchItem}
@@ -267,10 +270,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingTop: Platform.OS === 'ios' ? 50 : 30,
         paddingBottom: 25,
-
-
-
-
+        backgroundColor: COLORS.primaryLight
     },
     headerTitle: {
         fontSize: 26,

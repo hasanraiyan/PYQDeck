@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { StyleSheet, View, SafeAreaView, Platform } from 'react-native';
+import { StyleSheet, View, SafeAreaView, Platform, StatusBar } from 'react-native';
 import { COLORS } from '../constants';
 import {
     findData,
@@ -15,8 +15,6 @@ import EmptyState from '../components/EmptyState';
 
 const OrganizationSelectionScreen = ({ route, navigation }) => {
     const { branchId, semId, subjectId } = route.params;
-
-
     const {
         branch,
         semester,
@@ -108,6 +106,10 @@ const OrganizationSelectionScreen = ({ route, navigation }) => {
 
     return (
         <SafeAreaView style={styles.screen}>
+            <StatusBar
+                barStyle="dark-content"
+                backgroundColor={COLORS.surface}
+            />
             <View style={styles.listContentContainer}>
                 { }
                 <ListItemCard
