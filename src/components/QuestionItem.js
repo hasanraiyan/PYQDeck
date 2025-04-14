@@ -174,29 +174,27 @@ const parseMarkdownContent = (text) => {
 
 const markdownStyles = StyleSheet.create({
   body: {
-    fontSize: 15,
-    lineHeight: 23,
+    fontSize: 17,
+    lineHeight: 25,
     color: COLORS.text,
+    fontWeight: '400',
   },
   code_block: {
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
     backgroundColor: COLORS.disabledBackground,
-    padding: 10,
-    borderRadius: 4,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    fontFamily: Platform.OS === 'ios' ? 'Courier New' : 'monospace',
+    borderRadius: 8,
+    padding: 8,
     fontSize: 14,
-    color: COLORS.textSecondary,
-    marginVertical: 5,
+    color: COLORS.text,
   },
   code_inline: {
     backgroundColor: COLORS.disabledBackground,
     paddingHorizontal: 4,
     paddingVertical: 1,
     borderRadius: 3,
-    fontFamily: Platform.OS === 'ios' ? 'Courier New' : 'monospace',
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
     fontSize: 14,
-    color: COLORS.textSecondary,
+    color: COLORS.text,
   },
   bullet_list: {
     marginLeft: 10,
@@ -263,7 +261,7 @@ const QuestionItem = React.memo(
     }, [onAskAI, item]);
 
     return (
-      <View style={styles.questionCard}>
+      <View style={styles.container}>
         <View style={styles.metaRow}>
           <View style={styles.metaTagsContainer}>
             {item.year && (
@@ -401,106 +399,114 @@ const QuestionItem = React.memo(
 );
 
 const styles = StyleSheet.create({
-  questionCard: {
+  container: {
     backgroundColor: COLORS.surface,
-    borderRadius: 12,
-    marginBottom: 14,
-    overflow: Platform.OS === 'ios' ? 'visible' : 'hidden',
+    borderRadius: 18,
+    marginVertical: 10,
+    marginHorizontal: 8,
+    paddingHorizontal: 16,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.18,
-    shadowRadius: 2.5,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.13,
+    shadowRadius: 8,
+    elevation: 4,
   },
-  // Image component styles
   imageContainer: {
-    width: maxImageWidth,
-    marginVertical: 16,
-    alignSelf: 'center',
-    borderRadius: 8,
+    borderRadius: 14,
     overflow: 'hidden',
-    backgroundColor: COLORS.disabledBackground,
+    marginVertical: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
-  },
-  loadingContainer: {
-    width: maxImageWidth,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
-    backgroundColor: COLORS.disabledBackground,
-  },
-  errorContainer: {
-    width: maxImageWidth,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 235, 235, 0.5)',
-    borderWidth: 1,
-    borderColor: COLORS.error,
-    borderRadius: 8,
-    padding: 16,
-  },
-  errorText: {
-    color: COLORS.error,
-    marginTop: 8,
-    fontSize: 14,
-    textAlign: 'center',
+    shadowOpacity: 0.16,
+    shadowRadius: 6,
+    elevation: 3,
+    backgroundColor: COLORS.surface,
   },
   imageTouchable: {
-    position: 'relative',
+    borderRadius: 14,
+    overflow: 'hidden',
   },
   questionImage: {
-    width: maxImageWidth,
-    resizeMode: 'contain',
-    borderRadius: 8,
+    width: '100%',
+    borderRadius: 14,
+    backgroundColor: COLORS.disabledBackground,
+    marginBottom: 0,
   },
   imageOverlay: {
     position: 'absolute',
-    bottom: 8,
     right: 8,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    bottom: 8,
+    backgroundColor: COLORS.primary + 'cc',
     borderRadius: 16,
-    padding: 6,
+    padding: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  // Modal styles
+  loadingContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.disabledBackground,
+    borderRadius: 14,
+  },
+  errorContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.error + '22',
+    borderRadius: 14,
+  },
+  errorText: {
+    color: COLORS.error,
+    fontSize: 13,
+    marginTop: 4,
+  },
   modalContainer: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.95)',
-    justifyContent: 'space-between',
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    paddingTop: Platform.OS === 'ios' ? 50 : 30,
-    paddingRight: 20,
-    paddingBottom: 10,
-  },
-  closeButton: {
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    borderRadius: 20,
-    padding: 8,
-  },
-  modalImageContainer: {
-    flex: 1,
+    backgroundColor: '#000a',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  modalHeader: {
+    width: '100%',
+    alignItems: 'flex-end',
+    padding: 16,
+  },
+  closeButton: {
+    backgroundColor: COLORS.primary,
+    borderRadius: 20,
+    padding: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modalImageContainer: {
+    width: '90%',
+    height: '60%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 18,
+    overflow: 'hidden',
+    backgroundColor: COLORS.surface,
+    marginBottom: 10,
   },
   fullScreenImage: {
     width: '100%',
     height: '100%',
+    borderRadius: 18,
+    backgroundColor: COLORS.disabledBackground,
   },
   modalFooter: {
-    padding: 16,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    padding: 10,
+    alignItems: 'center',
+    width: '100%',
   },
   imageCaption: {
-    color: COLORS.surface,
+    color: COLORS.textSecondary,
     fontSize: 14,
     textAlign: 'center',
-    fontWeight: '500',
+    marginTop: 2,
+  },
+  markdownContainer: {
+    marginTop: 8,
+    marginBottom: 8,
   },
   metaRow: {
     flexDirection: 'row',
@@ -563,10 +569,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     flexShrink: 1,
     marginLeft: 4,
-  },
-  markdownContainer: {
-    paddingVertical: 15,
-    paddingHorizontal: 15,
   },
   actionsRow: {
     flexDirection: 'row',

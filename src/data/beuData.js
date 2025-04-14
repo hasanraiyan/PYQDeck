@@ -1,12 +1,12 @@
-
-
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'; // Example import
 
 const beuData = {
   branches: [
     {
       id: 'it',
-      name: 'Information Technology',
-
+      // Updated Name based on Code 106
+      name: 'INFORMATION TECHNOLOGY',
+      // Icon check: 'laptop-outline' is a valid Ionicons name.
       icon: { set: 'Ionicons', name: 'laptop-outline' },
       semesters: [
         {
@@ -17,7 +17,6 @@ const beuData = {
               id: 'it301',
               name: 'Object-Oriented Programming Using C++',
               code: 'IT301',
-
               modules: [
                 { id: 'm1', name: 'Module 1: Introduction to C++ and OOP' },
                 { id: 'm2', name: 'Module 2: Control Structures, Functions, and Pointers' },
@@ -27,7 +26,6 @@ const beuData = {
                 { id: 'm6', name: 'Module 6: Exception Handling and STL' }
               ],
               questions: [
-
                 { questionId: 'it301_2019_1a', year: 2019, qNumber: 'Q1a', chapter: 'Module 3: Classes and Data Abstraction', text: 'Which feature allows open recursion among the following?\n\n*   (i) Use of `this` pointer\n*   (ii) Use of pointers\n*   (iii) Use of pass by value\n*   (iv) Use of parameterized constructor', type: 'MCQ', marks: 2 },
                 { questionId: 'it301_2019_1b', year: 2019, qNumber: 'Q1b', chapter: 'Module 4: Overloading, Templates and Inheritance', text: 'If same message is passed to objects of several different classes and all of those can respond in a different way, what is this feature called?\n\n*   (i) Inheritance\n*   (ii) Overloading\n*   (iii) Polymorphism\n*   (iv) Overriding', type: 'MCQ', marks: 2 },
                 { questionId: 'it301_2021_3a', year: 2021, qNumber: 'Q3a', chapter: 'Module 1: Introduction to C++ and OOP', text: 'Explain the difference between procedural programming and object-oriented programming.', type: 'Explanation', marks: 7 },
@@ -43,7 +41,6 @@ const beuData = {
                 { questionId: 'it301_2019_2a', year: 2019, qNumber: 'Q2a', chapter: 'Module 1: Introduction to C++ and OOP', text: 'What is Object-oriented Programming (OOP)? Write the basic concepts of OOP (e.g., Encapsulation, Abstraction, Inheritance, Polymorphism).', type: 'Explanation', marks: 7 },
                 { questionId: 'it301_2019_2b', year: 2019, qNumber: 'Q2b', chapter: 'Module 3: Classes and Data Abstraction', text: 'What do you mean by class and object? Give a simple example.', type: 'Explanation with Example', marks: 7 },
                 { questionId: 'it301_2019_9a', year: 2019, qNumber: 'Q9a', chapter: 'Module 4: Overloading, Templates and Inheritance', text: 'With the help of an example program, differentiate between Function Overloading and Function Overriding.', type: 'Differentiate with Example', marks: 7 },
-
                 { questionId: 'it301_2020_1c', year: 2020, qNumber: 'Q1c', chapter: 'Module 3: Classes and Data Abstraction', text: 'What is a constructor in C++?\n\n* (i) A function to destroy objects\n* (ii) A special member function to initialize objects\n* (iii) A data member of a class\n* (iv) A global function', type: 'MCQ', marks: 2 },
                 { questionId: 'it301_2020_1d', year: 2020, qNumber: 'Q1d', chapter: 'Module 4: Overloading, Templates and Inheritance', text: 'Which operator cannot be overloaded in C++?\n\n* (i) `+`\n* (ii) `::` (Scope Resolution)\n* (iii) `[]` (Array Subscript)\n* (iv) `()` (Function Call)', type: 'MCQ', marks: 2 },
                 { questionId: 'it301_2022_3b', year: 2022, qNumber: 'Q3b', chapter: 'Module 3: Classes and Data Abstraction', text: 'Explain the concept of data hiding (encapsulation) in C++. How is it achieved?', type: 'Explanation', marks: 7 },
@@ -74,11 +71,9 @@ const beuData = {
                 { id: 'm7', name: 'Module 7: Hashing' }
               ],
               questions: [
-
                 { questionId: 'it302_2021_1a', year: 2021, qNumber: 'Q1a', chapter: 'Module 1: Analysis of Algorithms & Arrays', text: 'What is the time complexity (Big-O notation) of Linear Search in the worst case?\n\n* (i) O(1)\n* (ii) O(log n)\n* (iii) O(n)\n* (iv) O(n^2)', type: 'MCQ', marks: 2 },
                 { questionId: 'it302_2022_6a', year: 2022, qNumber: 'Q6a', chapter: 'Module 4: Trees', text: 'Define a Binary Search Tree (BST). Construct a BST for the following sequence of numbers: `50, 30, 70, 20, 40, 60, 80`.', type: 'Definition & Problem', marks: 7 },
                 { questionId: 'it302_2022_7a', year: 2022, qNumber: 'Q7a', chapter: 'Module 5: Graphs', text: 'Explain Depth First Search (DFS) algorithm with an example.', type: 'Explanation with Example', marks: 7 },
-
                 { questionId: 'it302_2020_1b', year: 2020, qNumber: 'Q1b', chapter: 'Module 2: Stacks & Queues', text: 'Pushing an element onto a full stack results in?\n\n* (i) Stack Underflow\n* (ii) Stack Overflow\n* (iii) Pop operation\n* (iv) No change', type: 'MCQ', marks: 2 },
                 { questionId: 'it302_2020_1c', year: 2020, qNumber: 'Q1c', chapter: 'Module 3: Linked Lists', text: 'In a singly linked list, each node contains:\n\n* (i) Only data\n* (ii) Only pointer to next node\n* (iii) Data and pointer to next node\n* (iv) Data and pointer to previous node', type: 'MCQ', marks: 2 },
                 { questionId: 'it302_2021_2a', year: 2021, qNumber: 'Q2a', chapter: 'Module 1: Analysis of Algorithms & Arrays', text: 'Explain Asymptotic Notations (Big-O, Big-Omega, Big-Theta) used for analyzing algorithm efficiency.', type: 'Explanation', marks: 7 },
@@ -114,7 +109,6 @@ const beuData = {
                 { id: 'm5', name: 'Module 5: XML & AJAX' },
               ],
               questions: [
-
                 { questionId: 'it401_2023_1a', year: 2023, qNumber: 'Q1a', chapter: 'Module 1: HTML & CSS', text: 'Which HTML tag is used to create a hyperlink?\n\n* (i) `<link>`\n* (ii) `<a>`\n* (iii) `<hlink>`\n* (iv) `<url>`', type: 'MCQ', marks: 2 },
                 { questionId: 'it401_2023_1b', year: 2023, qNumber: 'Q1b', chapter: 'Module 1: HTML & CSS', text: 'Which CSS property is used to change the text color of an element?\n\n* (i) `font-color`\n* (ii) `text-color`\n* (iii) `color`\n* (iv) `font-style`', type: 'MCQ', marks: 2 },
                 { questionId: 'it401_2022_2a', year: 2022, qNumber: 'Q2a', chapter: 'Module 1: HTML & CSS', text: 'Explain the difference between `<div>` and `<span>` tags in HTML.', type: 'Explanation', marks: 5 },
@@ -142,9 +136,7 @@ const beuData = {
                 { id: 'm6', name: 'Module 6: Indexing & Hashing' }
               ],
               questions: [
-
                 { questionId: 'it402_2023_1a', year: 2023, qNumber: 'Q1a', chapter: 'Module 1: Introduction & ER Model', text: 'What is a DBMS? List two advantages over traditional file systems.', type: 'Definition & List', marks: 4 },
-
                 { questionId: 'it402_2022_1b', year: 2022, qNumber: 'Q1b', chapter: 'Module 1: Introduction & ER Model', text: 'What is a Primary Key in a relational database?\n\n* (i) A key used for encryption\n* (ii) A unique identifier for a record in a table\n* (iii) A key that links two tables\n* (iv) A non-unique attribute', type: 'MCQ', marks: 2 },
                 { questionId: 'it402_2022_1c', year: 2022, qNumber: 'Q1c', chapter: 'Module 2: Relational Model & Algebra', text: 'Which relational algebra operation selects tuples that satisfy a given predicate?\n\n* (i) Projection (Π)\n* (ii) Selection (σ)\n* (iii) Union (∪)\n* (iv) Cartesian Product (×)', type: 'MCQ', marks: 2 },
                 { questionId: 'it402_2023_2a', year: 2023, qNumber: 'Q2a', chapter: 'Module 1: Introduction & ER Model', text: 'Explain the different components of an E-R (Entity-Relationship) Diagram with symbols.', type: 'Explanation', marks: 7 },
@@ -160,17 +152,16 @@ const beuData = {
             },
           ],
         },
-
-
+        // Add other semesters for IT if needed...
       ],
     },
-
     {
       id: 'cse',
-      name: 'Computer Science & Engineering',
+      // Updated Name based on Code 105
+      name: 'COMPUTER SCIENCE & ENGINEERING',
+      // Icon check: 'desktop-classic' is a valid MaterialCommunityIcons name.
       icon: { set: 'MaterialCommunityIcons', name: 'desktop-classic' },
       semesters: [
-
         {
           id: 'cse_sem3',
           number: 3,
@@ -187,15 +178,17 @@ const beuData = {
                 { questionId: 'cs302_2023_3a', year: 2023, qNumber: 'Q3a', chapter: 'Module 3: Combinational Logic', text: 'Design a Full Adder circuit using basic logic gates.', type: 'Design', marks: 7 },
               ]
             },
-
+            // Add other subjects for CSE Sem 3 if needed...
           ],
         },
-
+        // Add other semesters for CSE if needed...
       ]
     },
     {
       id: 'ece',
-      name: 'Electronics & Comm. Engg.',
+      // Updated Name based on Code 104
+      name: 'ELECTRONICS & COMMUNICATION ENGINEERING',
+      // Icon check: 'integrated-circuit-chip' is a valid MaterialCommunityIcons name.
       icon: { set: 'MaterialCommunityIcons', name: 'integrated-circuit-chip' },
       semesters: [
         {
@@ -212,13 +205,22 @@ const beuData = {
                 { questionId: 'ec302_2023_2a', year: 2023, qNumber: 'Q2a', chapter: 'Module 2: Diodes', text: 'Explain the working principle of a P-N junction diode under forward and reverse bias conditions.', type: 'Explanation', marks: 7 },
               ]
             },
-
+            // Add other subjects for ECE Sem 3 if needed...
           ],
         },
-
+        // Add other semesters for ECE if needed...
       ]
     },
 
+    {
+      id: 'ce', // Or 'civil'
+      name: 'CIVIL ENGINEERING',
+      icon: { set: 'MaterialCommunityIcons', name: 'office-building' }, // Example icon
+      semesters: [
+        // ... semesters and subjects for Civil ...
+      ]
+    },
+    
   ],
 };
 
