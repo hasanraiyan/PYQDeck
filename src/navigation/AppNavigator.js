@@ -27,7 +27,7 @@ function AppNavigator() {
             ...(Platform.OS === 'android' && { elevation: 2 }),
           },
           headerTintColor: COLORS.text,
-          headerTitleStyle: { fontWeight: '600', fontSize: 18 },
+          headerTitleStyle: { fontWeight: '400', fontSize: 18 },
           headerBackTitleVisible: false,
           headerShadowVisible: Platform.OS === 'ios',
         }}

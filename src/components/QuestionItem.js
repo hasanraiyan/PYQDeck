@@ -1,4 +1,4 @@
-// src/components/QuestionItem.js
+
 import React, { useMemo, useCallback } from 'react';
 import {
   View,
@@ -10,11 +10,11 @@ import {
 } from 'react-native';
 import { COLORS, UNCAT_CHAPTER_NAME } from '../constants';
 import { formatQuestionText, getQuestionPlainText } from '../helpers/helpers';
-import Icon from './Icon'; // Import the generic Icon component
+import Icon from './Icon'; 
 
 const QuestionItem = React.memo(
   ({ item, isCompleted, onToggleComplete, onCopy, onSearch, onAskAI }) => {
-    // Memoize derived data for performance
+    
     const formattedText = useMemo(
       () => formatQuestionText(item.text),
       [item.text]
@@ -24,10 +24,9 @@ const QuestionItem = React.memo(
       [item.text]
     );
 
-    // Memoize callbacks
+    
     const handleCopy = useCallback(() => onCopy(plainText), [onCopy, plainText]);
     const handleSearch = useCallback(() => onSearch(plainText), [onSearch, plainText]);
-    const handleAskAI = useCallback(() => onAskAI(plainText), [onAskAI, plainText]);
     const handleToggle = useCallback(
       () => onToggleComplete(item.questionId, !isCompleted),
       [onToggleComplete, item.questionId, isCompleted]
@@ -35,7 +34,7 @@ const QuestionItem = React.memo(
 
     return (
       <View style={styles.questionCard}>
-        {/* Meta Info: Tags and Completion Switch */}
+        {}
         <View style={styles.metaRow}>
           <View style={styles.metaTagsContainer}>
             {item.year && (
@@ -69,8 +68,8 @@ const QuestionItem = React.memo(
               isCompleted
                 ? COLORS.completedThumb
                 : Platform.OS === 'android'
-                ? COLORS.surface
-                : null
+                  ? COLORS.surface
+                  : null
             }
             ios_backgroundColor={COLORS.disabledBackground}
             onValueChange={handleToggle}
@@ -79,7 +78,7 @@ const QuestionItem = React.memo(
           />
         </View>
 
-        {/* Chapter Info */}
+        {}
         {item.chapter && (
           <View style={styles.chapterRow}>
             <Icon
@@ -109,13 +108,13 @@ const QuestionItem = React.memo(
           </View>
         )}
 
-        {/* Question Text */}
+        {}
         <Text style={styles.questionTextContent}>{formattedText}</Text>
 
-        {/* Action Buttons */}
+        {}
         <View style={styles.actionsRow}>
           <View style={styles.actionsLeft}>
-            {/* Google Search */}
+            {}
             <TouchableOpacity
               onPress={handleSearch}
               style={styles.iconButton}
@@ -127,7 +126,7 @@ const QuestionItem = React.memo(
                 color={COLORS.textSecondary}
               />
             </TouchableOpacity>
-            {/* Copy to Clipboard */}
+            {}
             <TouchableOpacity
               onPress={handleCopy}
               style={styles.iconButton}
@@ -140,10 +139,10 @@ const QuestionItem = React.memo(
               />
             </TouchableOpacity>
           </View>
-          {/* Ask AI Button */}
+          {}
           <TouchableOpacity
             style={styles.askAiButton}
-            onPress={handleAskAI}
+            onPress={onAskAI} 
             activeOpacity={0.8}
             accessibilityLabel="Ask AI (e.g., ChatGPT)">
             <Icon
@@ -160,6 +159,7 @@ const QuestionItem = React.memo(
     );
   }
 );
+
 
 const styles = StyleSheet.create({
   questionCard: {
@@ -219,18 +219,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 15,
-    paddingVertical: 4,
+    paddingVertical: 8,
     backgroundColor: '#fafafa',
   },
   chapterIcon: {
-    marginRight: 8,
   },
   chapterText: {
     fontSize: 13,
     color: COLORS.textSecondary,
     fontWeight: '500',
     flexShrink: 1,
-    marginLeft: 4,
+    marginLeft: 8,
   },
   questionTextContent: {
     paddingVertical: 15,
@@ -243,7 +242,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 8,
+    paddingVertical: 4,
     paddingHorizontal: 15,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: COLORS.border,
@@ -260,30 +259,31 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: COLORS.primary,
-    paddingVertical: 7,
+    paddingVertical: 5,
     paddingHorizontal: 14,
     borderRadius: 15,
     shadowColor: '#000',
-    justifyContent:'center',
-    alignItems: 'center',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 1.5,
     elevation: 3,
   },
   askAiButtonIcon: {
+    display: 'flex', 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    width: 20,
+    height: 20,
     marginRight: 6,
-
   },
   askAiButtonText: {
+    display: 'flex', 
+    alignItems: 'center', 
+    justifyContent: 'center', 
     color: COLORS.surface,
+    marginLeft: 4,
     fontSize: 13,
     fontWeight: '600',
-    marginLeft: 4,
-    display: 'flex',
-    justifyContent:'center',
-    alignItems: 'center',
-    flexDirection: 'row',
   },
 });
 

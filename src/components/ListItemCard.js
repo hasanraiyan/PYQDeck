@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0,
     },
     cardIconContainer: {
-        padding: 12,
+        padding: 4,
         alignItems: 'center',
         justifyContent: 'center',
         width: 48,

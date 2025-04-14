@@ -30,7 +30,7 @@ import {
     setQuestionCompleted,
     copyToClipboard,
     searchGoogle,
-    askAI,
+    askAI as askAIHelper, // Renamed import
     debounce,
     getQuestionPlainText,
 } from '../helpers/helpers';
@@ -175,13 +175,33 @@ const QuestionListScreen = ({ route, navigation }) => {
         (text) => copyToClipboard(text, displayFeedback),
         [displayFeedback]
     );
+
+    // handleSearch still uses plain text for better search results
     const handleSearch = useCallback(
-        (text) => searchGoogle(text, displayFeedback),
+        (plainText) => searchGoogle(plainText, displayFeedback),
         [displayFeedback]
     );
+
+    // This function now creates the detailed prompt and calls the helper
     const handleAskAI = useCallback(
-        (text) => askAI(text, displayFeedback),
-        [displayFeedback]
+        (item) => { // Takes the full item object
+            if (!subjectData || !item) {
+                displayFeedback('Could not prepare AI prompt.');
+                return;
+            }
+
+            // Construct the detailed prompt
+            let prompt = `Help me with this question:\n\n`;
+            prompt += `Subject: ${subjectData.code || subjectData.name}\n`;
+            if (item.chapter && item.chapter !== UNCAT_CHAPTER_NAME) prompt += `Chapter: ${item.chapter}\n`;
+            if (item.year) prompt += `Year: ${item.year}\n`;
+            if (item.qNumber) prompt += `Question Number: ${item.qNumber}\n`;
+            if (item.marks != null) prompt += `Marks: ${item.marks}\n`;
+            prompt += `\n---\nQuestion Text:\n${item.text}\n---`; // Use original item.text
+
+            askAIHelper(prompt, displayFeedback); // Call the helper with the full prompt
+        },
+        [subjectData, displayFeedback] // Depends on subjectData and displayFeedback
     );
 
     const processedQuestions = useMemo(() => {
@@ -189,6 +209,7 @@ const QuestionListScreen = ({ route, navigation }) => {
 
         let filtered = [...questions];
 
+        // Filtering based on organization mode
         if (organizationMode === 'year' && selectedYear != null) {
             filtered = filtered.filter((q) => q.year === selectedYear);
         } else if (organizationMode === 'chapter' && selectedChapter) {
@@ -201,6 +222,7 @@ const QuestionListScreen = ({ route, navigation }) => {
             }
         }
 
+        // Filtering based on search query
         const query = debouncedSearchQuery.trim().toLowerCase();
         if (query) {
             filtered = filtered.filter((q) => {
@@ -217,6 +239,7 @@ const QuestionListScreen = ({ route, navigation }) => {
             });
         }
 
+        // Filtering based on completion status
         if (filterCompleted !== 'all') {
             const requiredStatus = filterCompleted === 'completed';
             filtered = filtered.filter(
@@ -224,6 +247,7 @@ const QuestionListScreen = ({ route, navigation }) => {
             );
         }
 
+        // Sorting logic
         if (organizationMode === 'all') {
             switch (sortBy) {
                 case 'year_asc':
@@ -234,9 +258,11 @@ const QuestionListScreen = ({ route, navigation }) => {
                     break;
                 case 'default':
                 default:
+                    // Default sort: newest year first, then by question number
                     filtered.sort((a, b) => {
                         const yearDiff = (b.year || 0) - (a.year || 0);
                         if (yearDiff !== 0) return yearDiff;
+                        // Natural sort for question numbers (e.g., Q1a, Q2, Q10)
                         return (a.qNumber || '').localeCompare(b.qNumber || '', undefined, {
                             numeric: true,
                             sensitivity: 'base',
@@ -245,6 +271,7 @@ const QuestionListScreen = ({ route, navigation }) => {
                     break;
             }
         } else {
+            // If filtered by year or chapter, sort only by question number
             filtered.sort((a, b) =>
                 (a.qNumber || '').localeCompare(b.qNumber || '', undefined, {
                     numeric: true,
@@ -265,6 +292,7 @@ const QuestionListScreen = ({ route, navigation }) => {
         selectedChapter,
     ]);
 
+    // Pass a function to onAskAI that calls handleAskAI with the specific item
     const renderQuestionItem = useCallback(
         ({ item }) => (
             <QuestionItem
@@ -273,15 +301,15 @@ const QuestionListScreen = ({ route, navigation }) => {
                 onToggleComplete={handleToggleComplete}
                 onCopy={handleCopy}
                 onSearch={handleSearch}
-                onAskAI={handleAskAI}
+                onAskAI={() => handleAskAI(item)} // Pass the specific item to the handler
             />
         ),
-        [
+        [ // Dependencies for renderQuestionItem callback
             completionStatus,
-            handleToggleComplete,
-            handleCopy,
-            handleSearch,
-            handleAskAI,
+            handleToggleComplete, // Needed for isCompleted updates
+            handleCopy,           // Needed for copy button
+            handleSearch,         // Needed for search button
+            handleAskAI           // Needed for ask AI button
         ]
     );
 
@@ -291,6 +319,7 @@ const QuestionListScreen = ({ route, navigation }) => {
     const noQuestionsInitiallyForSubject = questions.length === 0;
     const noResultsAfterFilter = !noQuestionsInitiallyForSubject && processedQuestions.length === 0;
 
+    // Determine the appropriate empty state message
     let listEmptyMessage = 'No questions available for this subject.';
     if (noResultsAfterFilter) {
         if (organizationMode === 'year') {
@@ -321,6 +350,7 @@ const QuestionListScreen = ({ route, navigation }) => {
                 </View>
             )}
 
+            {/* Search and Filter Controls */}
             <View style={styles.controlsContainer}>
                 <View style={styles.searchContainer}>
                     <Ionicons
@@ -350,6 +380,7 @@ const QuestionListScreen = ({ route, navigation }) => {
                         horizontal
                         showsHorizontalScrollIndicator={false}
                         contentContainerStyle={styles.controlsScroll}>
+                        {/* Sort Controls (only show if viewing 'all') */}
                         {organizationMode === 'all' && (
                             <>
                                 <Text style={styles.controlLabel}>Sort:</Text>
@@ -399,6 +430,7 @@ const QuestionListScreen = ({ route, navigation }) => {
                             </>
                         )}
 
+                        {/* Filter Controls */}
                         <Text style={styles.controlLabel}>Filter:</Text>
                         <TouchableOpacity
                             onPress={() => setFilterCompleted('all')}
@@ -448,6 +480,7 @@ const QuestionListScreen = ({ route, navigation }) => {
                 )}
             </View>
 
+            {/* Question List */}
             <FlatList
                 data={processedQuestions}
                 renderItem={renderQuestionItem}
@@ -457,13 +490,14 @@ const QuestionListScreen = ({ route, navigation }) => {
                 initialNumToRender={7}
                 maxToRenderPerBatch={10}
                 windowSize={21}
-                removeClippedSubviews={Platform.OS === 'android'}
-                getItemLayout={null}
+                removeClippedSubviews={Platform.OS === 'android'} // Optimization for Android
+                getItemLayout={null} // Consider using if item height is fixed/predictable
             />
         </SafeAreaView>
     );
 };
 
+// Styles remain the same as provided previously
 const styles = StyleSheet.create({
     screen: {
         flex: 1,
