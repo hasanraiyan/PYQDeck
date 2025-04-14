@@ -610,4 +610,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default QuestionItem;
+const MemoizedQuestionItem = React.memo(QuestionItem);
+export default MemoizedQuestionItem;
