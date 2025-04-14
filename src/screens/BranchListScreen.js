@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import {
     StyleSheet,
@@ -9,7 +8,8 @@ import {
     Text,
     ActivityIndicator,
     StatusBar,
-    TouchableOpacity
+    TouchableOpacity,
+    ScrollView
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS, DEFAULT_BRANCH_ICON } from '../constants';
@@ -20,6 +20,9 @@ import LoadingIndicator from '../components/LoadingIndicator';
 import ErrorMessage from '../components/ErrorMessage';
 import EmptyState from '../components/EmptyState';
 import Icon from '../components/Icon';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+
+const APP_VERSION = '2.0.3'; // Update as needed
 
 const BranchListScreen = ({ navigation }) => {
     const [branches, setBranches] = useState([]);
@@ -28,7 +31,7 @@ const BranchListScreen = ({ navigation }) => {
     const [error, setError] = useState(null);
     const [lastJourney, setLastJourney] = useState(null);
     const [isLoadingJourney, setIsLoadingJourney] = useState(true);
-    
+
     const handleDeveloperInfoPress = useCallback(() => {
         navigation.navigate('DeveloperInfo');
     }, [navigation]);
@@ -139,7 +142,6 @@ const BranchListScreen = ({ navigation }) => {
             const hasData = totalCount > 0;
             const branchIcon = branch.icon || DEFAULT_BRANCH_ICON;
 
-
             const subtitle = isLoadingData
                 ? 'Calculating progress...'
                 : hasData
@@ -166,7 +168,6 @@ const BranchListScreen = ({ navigation }) => {
         [handlePressBranch, completionStatus, isLoadingData]
     );
 
-
     const handleResumeJourney = useCallback(() => {
         if (lastJourney) {
             navigation.navigate('OrganizationSelection', {
@@ -177,36 +178,31 @@ const BranchListScreen = ({ navigation }) => {
         }
     }, [navigation, lastJourney]);
 
+    const FeatureHighlight = ({ icon, color, label }) => (
+        <View style={{ alignItems: 'center', marginHorizontal: 14 }}>
+            <View style={{ backgroundColor: color, borderRadius: 18, padding: 12, marginBottom: 4 }}>
+                <Ionicons name={icon} size={26} color="#fff" />
+            </View>
+            <Text style={{ fontSize: 13, color: COLORS.textSecondary, fontWeight: '600', textAlign: 'center' }}>{label}</Text>
+        </View>
+    );
 
     const ListHeader = () => (
         <>
-            { }
-            <View
-                style={styles.gradientHeader}
-                >
-                <View style={styles.headerTitleRow}>
-                    <View>
-                        <Text style={styles.headerTitle}>Welcome to PYQDeck!</Text>
-                        <Text style={styles.headerSubtitle}>
-                            Your Pocket Guide to Past Questions
-                        </Text>
-                    </View>
-                    <TouchableOpacity 
-                        onPress={handleDeveloperInfoPress}
-                        style={styles.infoButton}
-                        accessibilityLabel="Developer Information"
-                    >
-                        <Icon 
-                            iconSet="Ionicons" 
-                            name="information-circle-outline" 
-                            size={24} 
-                            color={COLORS.surface} 
-                        />
-                    </TouchableOpacity>
+            <View style={[styles.heroContainer, { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }]}>
+                <View style={styles.logoCircle}>
+                    <Ionicons name="school-outline" size={36} color="white" />
+                </View>
+                <View style={{ marginLeft: 14 }}>
+                    <Text style={styles.heroTitle}>PYQDeck</Text>
+                    <Text style={styles.heroTagline}>Your Personal Exam Prep Assistant</Text>
                 </View>
             </View>
-
-            { }
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.featuresScroll} contentContainerStyle={{ paddingHorizontal: 10, paddingBottom: 6, minWidth: 340 }}>
+                <FeatureHighlight icon="book-outline" color={COLORS.primary} label="Practice PYQs" />
+                <FeatureHighlight icon="flash-outline" color={COLORS.secondary} label="Instant AI Help" />
+                <FeatureHighlight icon="stats-chart-outline" color="#F7B731" label="Track Progress" />
+            </ScrollView>
             <View style={styles.resumeSection}>
                 {isLoadingJourney ? (
                     <ActivityIndicator
@@ -218,20 +214,17 @@ const BranchListScreen = ({ navigation }) => {
                     <>
                         <Text style={styles.sectionTitle}>Resume Last Session</Text>
                         <ListItemCard
-
                             title={`${lastJourney.subjectName}`}
                             subtitle={`${lastJourney.semesterName}  ${lastJourney.branchName}`}
                             onPress={handleResumeJourney}
                             iconName="play-forward-outline"
                             iconSet="Ionicons"
                             iconColor={COLORS.secondary}
-
                             style={styles.resumeCard}
                         />
                         <Text style={styles.sectionTitle}>Or select a branch:</Text>
                     </>
                 ) : (
-
                     !isLoadingData && branches.length > 0 && (
                         <Text style={styles.sectionTitle}>Select your branch to begin:</Text>
                     )
@@ -240,20 +233,15 @@ const BranchListScreen = ({ navigation }) => {
         </>
     );
 
-
-
-
     if (isLoadingJourney || (isLoadingData && branches.length === 0 && !error)) {
         return <LoadingIndicator />;
     }
 
     if (error) return <ErrorMessage message={error} />;
 
-
     if (!isLoadingData && branches.length === 0) {
         return (
             <SafeAreaView style={styles.screen}>
-                { }
                 <ListHeader />
                 <EmptyState message="No course data found. Please check back later." />
             </SafeAreaView>
@@ -263,8 +251,8 @@ const BranchListScreen = ({ navigation }) => {
     return (
         <SafeAreaView style={styles.screen}>
             <StatusBar
-                barStyle="light-content"
-                backgroundColor={COLORS.primaryLight}
+                barStyle="dark-content"
+                backgroundColor={COLORS.background}
             />
             <FlatList
                 data={branches}
@@ -276,9 +264,16 @@ const BranchListScreen = ({ navigation }) => {
                 initialNumToRender={10}
                 maxToRenderPerBatch={15}
                 windowSize={21}
+                ListFooterComponent={() => (
+                    <View style={styles.footerContainer}>
+                        <TouchableOpacity onPress={handleDeveloperInfoPress} style={styles.footerButton}>
+                            <Ionicons name="information-circle-outline" size={16} color={COLORS.textSecondary} />
+                            <Text style={styles.footerText}>About</Text>
+                        </TouchableOpacity>
+                        <Text style={styles.footerVersion}>v{APP_VERSION}</Text>
+                    </View>
+                )}
             />
-            { }
-            { }
         </SafeAreaView>
     );
 };
@@ -338,8 +333,74 @@ const styles = StyleSheet.create({
     resumeCard: {
     },
     listContentContainer: {
-        paddingBottom: Platform.OS === 'ios' ? 40 : 30,
-
+        paddingTop: 0,
+        paddingBottom: 0,
+    },
+    heroContainer: {
+        alignItems: 'center',
+        marginTop: 28,
+        marginBottom: 12,
+    },
+    logoCircle: {
+        width: 62,
+        height: 62,
+        borderRadius: 31,
+        backgroundColor: COLORS.primaryLight,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 8,
+        elevation: 3,
+        shadowColor: COLORS.primary,
+        shadowOpacity: 0.18,
+        shadowRadius: 6,
+        shadowOffset: { width: 0, height: 2 },
+    },
+    heroTitle: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: COLORS.primary,
+        marginBottom: 2,
+    },
+    heroTagline: {
+        fontSize: 15,
+        color: COLORS.textSecondary,
+        marginBottom: 8,
+        textAlign: 'center',
+    },
+    featuresScroll: {
+        marginBottom: 8,
+        marginTop: 3,
+    },
+    footerContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: COLORS.background,
+        borderTopWidth: 0.5,
+        borderTopColor: COLORS.border,
+        paddingVertical: 7,
+        paddingHorizontal: 0,
+    },
+    footerButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 2,
+        paddingHorizontal: 10,
+        borderRadius: 16,
+        backgroundColor: 'rgba(245,245,245,0.7)',
+        marginRight: 10,
+    },
+    footerText: {
+        marginLeft: 5,
+        color: COLORS.textSecondary,
+        fontSize: 12,
+        fontWeight: '500',
+    },
+    footerVersion: {
+        color: COLORS.textSecondary,
+        fontSize: 12,
+        fontWeight: '400',
+        marginLeft: 10,
     },
 });
 
