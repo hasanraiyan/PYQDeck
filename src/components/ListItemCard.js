@@ -105,7 +105,7 @@ const ListItemCard = React.memo(
                                 { width: `${Math.max(0, Math.min(100, progress))}%` }
                             ]}
                         >
-                            <Text style={styles.progressText}>{`${Math.round(progress)}%`}</Text>
+                            {/* <Text style={styles.progressText}>{`${Math.round(progress)}%`}</Text> */}
                         </View>
                     </View>
                 )}

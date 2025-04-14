@@ -13,6 +13,7 @@ import OrganizationSelectionScreen from '../screens/OrganizationSelectionScreen'
 import YearSelectionScreen from '../screens/YearSelectionScreen';
 import ChapterSelectionScreen from '../screens/ChapterSelectionScreen';
 import QuestionListScreen from '../screens/QuestionListScreen';
+import DeveloperInfoScreen from '../screens/DeveloperInfoScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -66,6 +67,11 @@ function AppNavigator() {
           name="Questions"
           component={QuestionListScreen}
           // Title set dynamically
+        />
+        <Stack.Screen
+          name="DeveloperInfo"
+          component={DeveloperInfoScreen}
+          options={{ title: 'Developer Information' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -8,7 +8,8 @@ import {
     View,
     Text,
     ActivityIndicator,
-    StatusBar
+    StatusBar,
+    TouchableOpacity
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS, DEFAULT_BRANCH_ICON } from '../constants';
@@ -18,6 +19,7 @@ import ListItemCard from '../components/ListItemCard';
 import LoadingIndicator from '../components/LoadingIndicator';
 import ErrorMessage from '../components/ErrorMessage';
 import EmptyState from '../components/EmptyState';
+import Icon from '../components/Icon';
 
 const BranchListScreen = ({ navigation }) => {
     const [branches, setBranches] = useState([]);
@@ -26,6 +28,10 @@ const BranchListScreen = ({ navigation }) => {
     const [error, setError] = useState(null);
     const [lastJourney, setLastJourney] = useState(null);
     const [isLoadingJourney, setIsLoadingJourney] = useState(true);
+    
+    const handleDeveloperInfoPress = useCallback(() => {
+        navigation.navigate('DeveloperInfo');
+    }, [navigation]);
 
     useEffect(() => {
         let isMounted = true;
@@ -178,10 +184,26 @@ const BranchListScreen = ({ navigation }) => {
             <View
                 style={styles.gradientHeader}
                 >
-                <Text style={styles.headerTitle}>Welcome to PYQDeck!</Text>
-                <Text style={styles.headerSubtitle}>
-                    Your Pocket Guide to Past Questions
-                </Text>
+                <View style={styles.headerTitleRow}>
+                    <View>
+                        <Text style={styles.headerTitle}>Welcome to PYQDeck!</Text>
+                        <Text style={styles.headerSubtitle}>
+                            Your Pocket Guide to Past Questions
+                        </Text>
+                    </View>
+                    <TouchableOpacity 
+                        onPress={handleDeveloperInfoPress}
+                        style={styles.infoButton}
+                        accessibilityLabel="Developer Information"
+                    >
+                        <Icon 
+                            iconSet="Ionicons" 
+                            name="information-circle-outline" 
+                            size={24} 
+                            color={COLORS.surface} 
+                        />
+                    </TouchableOpacity>
+                </View>
             </View>
 
             { }
@@ -262,6 +284,16 @@ const BranchListScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+    headerTitleRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+    },
+    infoButton: {
+        padding: 8,
+        borderRadius: 20,
+    },
     screen: {
         flex: 1,
         backgroundColor: COLORS.background,
