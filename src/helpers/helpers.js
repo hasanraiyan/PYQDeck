@@ -1,7 +1,8 @@
 
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Clipboard from 'expo-clipboard';
-import * as LinkingExpo from 'expo-linking';
+import * as LinkingExpo from 'expo-linking'; 
 import { ASYNC_STORAGE_PREFIX, UNCAT_CHAPTER_NAME } from '../constants';
 import beuData from '../data/beuData';
 
@@ -13,7 +14,7 @@ const LAST_JOURNEY_KEY = 'pyqdeck_lastJourney_v1';
 
 export const saveLastJourney = async (journeyData) => {
     try {
-
+        
         if (
             !journeyData ||
             !journeyData.branchId ||
@@ -25,7 +26,7 @@ export const saveLastJourney = async (journeyData) => {
         }
         const jsonValue = JSON.stringify(journeyData);
         await AsyncStorage.setItem(LAST_JOURNEY_KEY, jsonValue);
-
+        
     } catch (e) {
         console.error('Error saving last journey:', e);
     }
@@ -37,9 +38,15 @@ export const loadLastJourney = async () => {
         const jsonValue = await AsyncStorage.getItem(LAST_JOURNEY_KEY);
         if (jsonValue != null) {
             const journeyData = JSON.parse(jsonValue);
-
-
-            return journeyData;
+            
+            
+            if (journeyData.branchId && journeyData.semId && journeyData.subjectId) {
+                return journeyData;
+            } else {
+                console.warn('Loaded journey data is invalid:', journeyData);
+                await AsyncStorage.removeItem(LAST_JOURNEY_KEY); 
+                return null;
+            }
         }
         return null;
     } catch (e) {
@@ -57,25 +64,25 @@ export const findData = (path) => {
         const branch = beuData.branches.find((b) => b.id === branchId);
         if (!branch) return { error: 'Branch not found' };
 
-        if (!semId) return { branch };
+        if (!semId) return { branch }; 
         const semester = branch.semesters?.find((s) => s.id === semId);
         if (!semester) return { error: 'Semester not found' };
 
-        if (!subjectId) return { branch, semester };
+        if (!subjectId) return { branch, semester }; 
         const subject = semester.subjects?.find((sub) => sub.id === subjectId);
         if (!subject) return { error: 'Subject not found' };
 
-
+        
         const questions =
             subject.questions && Array.isArray(subject.questions)
-                ? [...subject.questions]
+                ? [...subject.questions] 
                 : [];
 
         return {
             branch,
             semester,
-            subject: { ...subject, questions },
-            questions,
+            subject: { ...subject, questions }, 
+            questions, 
         };
     } catch (e) {
         console.error('Error in findData:', e);
@@ -84,29 +91,59 @@ export const findData = (path) => {
 };
 
 
-export const formatQuestionText = (text) => {
-    if (!text) return '';
-    let formatted = text.replace(/```[\s\S]*?```/g, '\n[Code Block]\n');
-    formatted = formatted.replace(/^\s*[\*\-]\s+/gm, '\u2022 ');
-    return formatted.trim();
-};
+
+
 
 
 export const getQuestionPlainText = (text) => {
     if (!text) return '';
 
-    let plainText = text.replace(
-        /```(cpp|c|java|javascript|html|css|python)?\n([\s\S]*?)\n```/g,
-        '\n'
-    );
+    let plainText = text;
 
-    plainText = plainText.replace(/^\s*[\*\-]\s+/gm, '');
+    
+    plainText = plainText.replace(/```[\s\S]*?```/g, '\n[Code Snippet]\n'); 
+    plainText = plainText.replace(/^( {4,}|\t+).*/gm, '\n[Code Snippet]\n'); 
 
+    
+    plainText = plainText.replace(/`([^`]+)`/g, '$1');
+
+    
+    plainText = plainText.replace(/!\[.*?\]\(.*?\)/g, '[Image]');
+
+    
+    plainText = plainText.replace(/\[(.*?)\]\(.*?\)/g, '$1');
+
+    
     plainText = plainText.replace(/<[^>]*>/g, ' ');
 
+    
+    plainText = plainText.replace(/^#+\s+/gm, '');
+
+    
+    plainText = plainText.replace(/^>\s+/gm, '');
+
+    
+    plainText = plainText.replace(/^[ \t]*[-*_]{3,}[ \t]*$/gm, '');
+
+    
+    plainText = plainText.replace(/^\s*[\*\-\+]\s+/gm, ''); 
+    plainText = plainText.replace(/^\s*[0-9]+\.\s+/gm, ''); 
+
+    
+    plainText = plainText.replace(/([*_~]){1,3}(.*?)\1{1,3}/g, '$2');
+
+    
     plainText = plainText.replace(/\s+/g, ' ').trim();
+
+    
+    plainText = plainText.replace(/(\s|^)\[Code Snippet\](\s|$)/g, ' ').trim();
+    plainText = plainText.replace(/(\s|^)\[Image\](\s|$)/g, ' ').trim();
+
+
     return plainText;
 };
+
+
 
 
 export const isQuestionCompleted = async (questionId) => {
@@ -117,7 +154,7 @@ export const isQuestionCompleted = async (questionId) => {
         return value === 'true';
     } catch (e) {
         console.error('Error reading completion status:', e);
-        return false;
+        return false; 
     }
 };
 
@@ -126,7 +163,7 @@ export const setQuestionCompleted = async (questionId, isCompleted) => {
     try {
         await AsyncStorage.setItem(
             ASYNC_STORAGE_PREFIX + questionId,
-            isCompleted ? 'true' : 'false'
+            isCompleted ? 'true' : 'false' 
         );
     } catch (e) {
         console.error('Error saving completion status:', e);
@@ -142,32 +179,36 @@ export const loadCompletionStatuses = async (questionIds) => {
         );
         return {};
     }
+    if (questionIds.length === 0) return {}; 
+
     const keys = questionIds.map((id) => ASYNC_STORAGE_PREFIX + id);
     const statuses = {};
-    if (keys.length === 0) return statuses;
 
     try {
-
+        
         const storedValues = await AsyncStorage.multiGet(keys);
+        
         storedValues.forEach(([key, value]) => {
             if (key) {
-
+                
                 const questionId = key.replace(ASYNC_STORAGE_PREFIX, '');
-                statuses[questionId] = value === 'true';
+                statuses[questionId] = value === 'true'; 
             }
         });
     } catch (e) {
         console.error('Error loading bulk completion statuses:', e);
-
+        
+        
     }
     return statuses;
 };
 
 
 
-export const copyToClipboard = async (text, showFeedback = () => { }) => {
+
+export const copyToClipboard = async (text, showFeedback = () => {}) => {
     try {
-        await Clipboard.setStringAsync(text || '');
+        await Clipboard.setStringAsync(text || ''); 
         showFeedback('Question text copied!');
     } catch (e) {
         console.error('Clipboard copy error:', e);
@@ -176,7 +217,7 @@ export const copyToClipboard = async (text, showFeedback = () => { }) => {
 };
 
 
-export const openLink = async (url, showFeedback = () => { }) => {
+export const openLink = async (url, showFeedback = () => {}) => {
     try {
         const supported = await LinkingExpo.canOpenURL(url);
         if (supported) {
@@ -194,18 +235,20 @@ export const openLink = async (url, showFeedback = () => { }) => {
 
 export const searchGoogle = (query, showFeedback) => {
     const url = `https://google.com/search?q=${encodeURIComponent(
-        query || ''
+        query || '' 
     )}`;
     openLink(url, showFeedback);
 };
 
 
 export const askAI = (query, showFeedback) => {
-
-
+    
+    
     const url = `https://chatgpt.com/search?q=${encodeURIComponent(
-        query || ''
+        query || '' 
     )}`;
+    
+    
     openLink(url, showFeedback);
 };
 
@@ -213,15 +256,16 @@ export const askAI = (query, showFeedback) => {
 export const debounce = (func, wait) => {
     let timeout;
     return function executedFunction(...args) {
-        const context = this;
+        const context = this; 
         const later = () => {
             timeout = null;
-            func.apply(context, args);
+            func.apply(context, args); 
         };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
+        clearTimeout(timeout); 
+        timeout = setTimeout(later, wait); 
     };
 };
+
 
 
 
@@ -231,12 +275,12 @@ export const getUniqueYears = (questions) => {
     }
     const years = new Set();
     questions.forEach((q) => {
-
+        
         if (q.year != null && !isNaN(Number(q.year))) {
             years.add(Number(q.year));
         }
     });
-
+    
     return Array.from(years).sort((a, b) => b - a);
 };
 
@@ -248,32 +292,33 @@ export const getUniqueChapters = (questions) => {
     const chapters = new Set();
     let hasUncategorized = false;
     questions.forEach((q) => {
-
+        
         if (q.chapter && typeof q.chapter === 'string' && q.chapter.trim()) {
             chapters.add(q.chapter.trim());
         } else {
-            hasUncategorized = true;
+            hasUncategorized = true; 
         }
     });
 
-
+    
     const sortedChapters = Array.from(chapters).sort((a, b) => {
+        
         const matchA = a.match(/^Module\s+(\d+)/i);
         const matchB = b.match(/^Module\s+(\d+)/i);
         if (matchA && matchB) {
-
+            
             return parseInt(matchA[1], 10) - parseInt(matchB[1], 10);
         } else if (matchA) {
-            return -1;
+            return -1; 
         } else if (matchB) {
-            return 1;
+            return 1; 
         } else {
-
+            
             return a.localeCompare(b);
         }
     });
 
-
+    
     if (hasUncategorized) {
         sortedChapters.push(UNCAT_CHAPTER_NAME);
     }
