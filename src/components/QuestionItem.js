@@ -177,8 +177,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: 12,
-    paddingBottom: 8,
+    paddingVertical: 0,
     paddingHorizontal: 15,
   },
   metaTagsContainer: {
@@ -220,8 +219,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 15,
-    paddingVertical: 8,
-    marginTop: 4,
+    paddingVertical: 4,
     backgroundColor: '#fafafa',
   },
   chapterIcon: {
@@ -232,6 +230,7 @@ const styles = StyleSheet.create({
     color: COLORS.textSecondary,
     fontWeight: '500',
     flexShrink: 1,
+    marginLeft: 4,
   },
   questionTextContent: {
     paddingVertical: 15,
@@ -265,6 +264,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     borderRadius: 15,
     shadowColor: '#000',
+    justifyContent:'center',
+    alignItems: 'center',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 1.5,
@@ -272,11 +273,17 @@ const styles = StyleSheet.create({
   },
   askAiButtonIcon: {
     marginRight: 6,
+
   },
   askAiButtonText: {
     color: COLORS.surface,
     fontSize: 13,
     fontWeight: '600',
+    marginLeft: 4,
+    display: 'flex',
+    justifyContent:'center',
+    alignItems: 'center',
+    flexDirection: 'row',
   },
 });
 
