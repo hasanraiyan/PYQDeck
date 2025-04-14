@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useState } from 'react';
+import React, { useMemo, useCallback, useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,12 +9,168 @@ import {
   Image,
   Dimensions,
   ActivityIndicator,
+  Modal,
 } from 'react-native';
 import MarkdownDisplay from 'react-native-markdown-display';
 import { COLORS, UNCAT_CHAPTER_NAME } from '../constants';
 import { getQuestionPlainText } from '../helpers/helpers';
 import Icon from './Icon';
-import CustomImageRenderer from './FullScreenImageModal';
+
+// Custom Image View component to handle images in markdown
+const CustomImageView = ({ src, alt }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [imageHeight, setImageHeight] = useState(150);
+
+  // Pre-calculate image dimensions to maintain aspect ratio
+  useEffect(() => {
+    if (src && !hasError) {
+      Image.getSize(src, (width, height) => {
+        const aspectRatio = width / height;
+        const calculatedHeight = maxImageWidth / aspectRatio;
+        setImageHeight(Math.max(150, Math.min(calculatedHeight, 300)));
+      }, (error) => {
+        console.warn(`Failed to get image size: ${src}`, error);
+      });
+    }
+  }, [src, hasError]);
+
+  const handleImagePress = () => {
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+  };
+
+  return (
+    <View style={styles.imageContainer}>
+      {isLoading && (
+        <View style={[styles.loadingContainer, { height: imageHeight }]}>
+          <ActivityIndicator size="large" color={COLORS.primary} />
+        </View>
+      )}
+      {hasError ? (
+        <View style={[styles.errorContainer, { height: imageHeight }]}>
+          <Icon
+            iconSet="Ionicons"
+            name="image-outline"
+            size={40}
+            color={COLORS.error}
+          />
+          <Text style={styles.errorText}>Failed to load image</Text>
+        </View>
+      ) : (
+        <TouchableOpacity 
+          onPress={handleImagePress} 
+          activeOpacity={0.9}
+          style={styles.imageTouchable}
+        >
+          <Image
+            source={{ uri: src }}
+            style={[styles.questionImage, { height: imageHeight, opacity: isLoading ? 0 : 1 }]}
+            accessibilityLabel={alt || 'Question Image'}
+            onLoadEnd={() => {
+              // Add a small delay to prevent flickering
+              setTimeout(() => setIsLoading(false), 100);
+            }}
+            onError={(error) => {
+              console.warn(`Failed to load image: ${src}`, error.nativeEvent?.error);
+              setHasError(true);
+              setIsLoading(false);
+            }}
+          />
+          {!isLoading && (
+            <View style={styles.imageOverlay}>
+              <Icon 
+                iconSet="Ionicons" 
+                name="expand-outline" 
+                size={20} 
+                color={COLORS.surface} 
+              />
+            </View>
+          )}
+        </TouchableOpacity>
+      )}
+      <Modal visible={isModalVisible} transparent={true} animationType="fade">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalHeader}>
+            <TouchableOpacity style={styles.closeButton} onPress={handleCloseModal}>
+              <Icon iconSet="Ionicons" name="close" size={24} color={COLORS.surface} />
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity 
+            style={styles.modalImageContainer} 
+            onPress={handleCloseModal} 
+            activeOpacity={1}
+          >
+            <Image 
+              source={{ uri: src }} 
+              style={styles.fullScreenImage} 
+              resizeMode="contain"
+              accessibilityLabel={alt || 'Full Screen Image'}
+            />
+          </TouchableOpacity>
+          <View style={styles.modalFooter}>
+            <Text style={styles.imageCaption} numberOfLines={2}>
+              {alt || 'Image'}
+            </Text>
+          </View>
+        </View>
+      </Modal>
+    </View>
+  );
+};
+
+// Function to parse markdown content and extract image links
+const parseMarkdownContent = (text) => {
+  if (!text) return [{ type: 'text', content: '' }];
+  
+  const imageRegex = /!\[(.*?)\]\((.*?)\)/g;
+  const parts = [];
+  let lastIndex = 0;
+  let match;
+
+  while ((match = imageRegex.exec(text)) !== null) {
+    // Add text before the image
+    if (match.index > lastIndex) {
+      parts.push({
+        type: 'text',
+        content: text.substring(lastIndex, match.index)
+      });
+    }
+
+    // Add the image
+    parts.push({
+      type: 'image',
+      alt: match[1],
+      src: match[2]
+    });
+
+    lastIndex = match.index + match[0].length;
+  }
+
+  // Add remaining text after the last image
+  if (lastIndex < text.length) {
+    parts.push({
+      type: 'text',
+      content: text.substring(lastIndex)
+    });
+  }
+
+  // If no images were found, return the entire text
+  if (parts.length === 0) {
+    parts.push({
+      type: 'text',
+      content: text
+    });
+  }
+
+  return parts;
+}
+
+
 
 const markdownStyles = StyleSheet.create({
   body: {
@@ -86,6 +242,12 @@ const QuestionItem = React.memo(
   ({ item, isCompleted, onToggleComplete, onCopy, onSearch, onAskAI }) => {
     const plainText = useMemo(
       () => getQuestionPlainText(item.text),
+      [item.text]
+    );
+
+    // Parse markdown content to separate text and images
+    const parsedContent = useMemo(
+      () => parseMarkdownContent(item.text),
       [item.text]
     );
 
@@ -174,14 +336,20 @@ const QuestionItem = React.memo(
         )}
 
         <View style={styles.markdownContainer}>
-         
-          <MarkdownDisplay
-            style={markdownStyles}
-            renderers={{ image: CustomImageRenderer }}
-          >
-            {item.text}
-          </MarkdownDisplay>
-
+          {parsedContent.map((part, index) => {
+            if (part.type === 'image') {
+              return <CustomImageView key={index} src={part.src} alt={part.alt} />;
+            } else {
+              return (
+                <MarkdownDisplay
+                  key={index}
+                  style={markdownStyles}
+                >
+                  {part.content}
+                </MarkdownDisplay>
+              );
+            }
+          })}
         </View>
 
         <View style={styles.actionsRow}>
@@ -243,6 +411,96 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.18,
     shadowRadius: 2.5,
     elevation: 3,
+  },
+  // Image component styles
+  imageContainer: {
+    width: maxImageWidth,
+    marginVertical: 16,
+    alignSelf: 'center',
+    borderRadius: 8,
+    overflow: 'hidden',
+    backgroundColor: COLORS.disabledBackground,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  loadingContainer: {
+    width: maxImageWidth,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    backgroundColor: COLORS.disabledBackground,
+  },
+  errorContainer: {
+    width: maxImageWidth,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 235, 235, 0.5)',
+    borderWidth: 1,
+    borderColor: COLORS.error,
+    borderRadius: 8,
+    padding: 16,
+  },
+  errorText: {
+    color: COLORS.error,
+    marginTop: 8,
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  imageTouchable: {
+    position: 'relative',
+  },
+  questionImage: {
+    width: maxImageWidth,
+    resizeMode: 'contain',
+    borderRadius: 8,
+  },
+  imageOverlay: {
+    position: 'absolute',
+    bottom: 8,
+    right: 8,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderRadius: 16,
+    padding: 6,
+  },
+  // Modal styles
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.95)',
+    justifyContent: 'space-between',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    paddingTop: Platform.OS === 'ios' ? 50 : 30,
+    paddingRight: 20,
+    paddingBottom: 10,
+  },
+  closeButton: {
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    borderRadius: 20,
+    padding: 8,
+  },
+  modalImageContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  fullScreenImage: {
+    width: '100%',
+    height: '100%',
+  },
+  modalFooter: {
+    padding: 16,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+  },
+  imageCaption: {
+    color: COLORS.surface,
+    fontSize: 14,
+    textAlign: 'center',
+    fontWeight: '500',
   },
   metaRow: {
     flexDirection: 'row',
