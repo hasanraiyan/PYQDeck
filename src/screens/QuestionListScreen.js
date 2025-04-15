@@ -34,6 +34,7 @@ import {
     debounce,
     getQuestionPlainText,
     getSemesterPYQsFromSecureStore,
+    updateDailyStreak, // New import
 } from '../helpers/helpers';
 import LoadingIndicator from '../components/LoadingIndicator';
 import ErrorMessage from '../components/ErrorMessage';
@@ -161,9 +162,12 @@ const QuestionListScreen = ({ route, navigation }) => {
         }, 1500);
     }, []);
 
-    const handleToggleComplete = useCallback((questionId, newStatus) => {
+    const handleToggleComplete = useCallback(async (questionId, newStatus) => {
         setCompletionStatus((prev) => ({ ...prev, [questionId]: newStatus }));
         setQuestionCompleted(questionId, newStatus);
+        if (newStatus) {
+            await updateDailyStreak();
+        }
     }, []);
 
     const handleCopy = useCallback(

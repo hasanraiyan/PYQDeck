@@ -14,7 +14,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS, DEFAULT_BRANCH_ICON } from '../constants';
 import beuData from '../data/beuData';
-import { loadCompletionStatuses, loadLastJourney, saveSemesterPYQsToSecureStore, isSemesterPYQDownloaded } from '../helpers/helpers';
+import { loadCompletionStatuses, loadLastJourney, saveSemesterPYQsToSecureStore, isSemesterPYQDownloaded, getStreakInfo } from '../helpers/helpers';
 import ListItemCard from '../components/ListItemCard';
 import LoadingIndicator from '../components/LoadingIndicator';
 import ErrorMessage from '../components/ErrorMessage';
@@ -32,6 +32,9 @@ const BranchListScreen = ({ navigation }) => {
     const [lastJourney, setLastJourney] = useState(null);
     const [isLoadingJourney, setIsLoadingJourney] = useState(true);
     const [downloadStatus, setDownloadStatus] = useState({}); // { [branchId_semId]: 'idle'|'downloading'|'done'|'error' }
+    const [streak, setStreak] = useState(0);
+    const [todayCount, setTodayCount] = useState(0);
+    const [bestStreak, setBestStreak] = useState(0);
 
     const handleDeveloperInfoPress = useCallback(() => {
         navigation.navigate('DeveloperInfo');
@@ -101,6 +104,14 @@ const BranchListScreen = ({ navigation }) => {
         return () => {
             isMounted = false;
         };
+    }, []);
+
+    useEffect(() => {
+        getStreakInfo().then(({ streak, todayCount, bestStreak }) => {
+            setStreak(streak);
+            setTodayCount(todayCount);
+            setBestStreak(bestStreak);
+        });
     }, []);
 
     const handlePressBranch = useCallback(
@@ -215,6 +226,20 @@ const BranchListScreen = ({ navigation }) => {
                 </View>
             </View>
             
+            <View style={{ alignItems: 'center', marginVertical: 8 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2 }}>
+                    <Ionicons name="flame" size={22} color={streak > 0 ? '#FF9500' : COLORS.textSecondary} style={{ marginRight: 5 }} />
+                    <Text style={{ fontWeight: 'bold', fontSize: 17, color: streak > 0 ? '#FF9500' : COLORS.textSecondary }}>
+                        {streak > 0 ? `${streak}-day streak` : 'No streak yet'}
+                    </Text>
+                </View>
+                <Text style={{ color: COLORS.textSecondary, fontSize: 14 }}>
+                    Today: <Text style={{ color: COLORS.primary, fontWeight: 'bold' }}>{todayCount}</Text> solved
+                    {bestStreak > 0 && (
+                        <Text style={{ color: COLORS.secondary }}>   |   Best: {bestStreak} days</Text>
+                    )}
+                </Text>
+            </View>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.featuresScroll} contentContainerStyle={{ paddingHorizontal: 10, paddingBottom: 6, minWidth: 340, justifyContent: 'center', alignItems: 'center' }}>
                 <FeatureHighlight icon="book-outline" color={COLORS.primary} label="Practice PYQs" />
                 <FeatureHighlight icon="flash-outline" color={COLORS.secondary} label="Instant AI Help" />

@@ -261,6 +261,84 @@ export const getUniqueChapters = (questions) => {
     return sortedChapters;
 };
 
+// --- Streak & Daily Progress Helpers ---
+const STREAK_KEY = 'pyqdeck_streak';
+const STREAK_DATE_KEY = 'pyqdeck_streak_last_date';
+const STREAK_TODAY_COUNT_KEY = 'pyqdeck_streak_today_count';
+const STREAK_BEST_KEY = 'pyqdeck_streak_best';
+
+// Call this when a question is marked completed
+export const updateDailyStreak = async () => {
+    try {
+        const today = new Date();
+        const todayStr = today.toISOString().slice(0, 10); // YYYY-MM-DD
+        const lastDate = await AsyncStorage.getItem(STREAK_DATE_KEY);
+        let streak = parseInt(await AsyncStorage.getItem(STREAK_KEY), 10) || 0;
+        let bestStreak = parseInt(await AsyncStorage.getItem(STREAK_BEST_KEY), 10) || 0;
+        let todayCount = parseInt(await AsyncStorage.getItem(STREAK_TODAY_COUNT_KEY), 10) || 0;
+
+        if (lastDate === todayStr) {
+            todayCount += 1;
+        } else {
+            // Check if yesterday was the last active day
+            if (lastDate) {
+                const last = new Date(lastDate);
+                const diff = (today - last) / (1000 * 60 * 60 * 24);
+                if (diff === 1) {
+                    streak += 1;
+                } else {
+                    streak = 1;
+                }
+            } else {
+                streak = 1;
+            }
+            todayCount = 1;
+        }
+        if (streak > bestStreak) bestStreak = streak;
+        await AsyncStorage.setItem(STREAK_DATE_KEY, todayStr);
+        await AsyncStorage.setItem(STREAK_KEY, streak.toString());
+        await AsyncStorage.setItem(STREAK_TODAY_COUNT_KEY, todayCount.toString());
+        await AsyncStorage.setItem(STREAK_BEST_KEY, bestStreak.toString());
+        return { streak, todayCount, bestStreak };
+    } catch (e) {
+        console.error('Error updating streak:', e);
+        return null;
+    }
+};
+
+export const getStreakInfo = async () => {
+    try {
+        const streak = parseInt(await AsyncStorage.getItem(STREAK_KEY), 10) || 0;
+        const todayCount = parseInt(await AsyncStorage.getItem(STREAK_TODAY_COUNT_KEY), 10) || 0;
+        const bestStreak = parseInt(await AsyncStorage.getItem(STREAK_BEST_KEY), 10) || 0;
+        const lastDate = await AsyncStorage.getItem(STREAK_DATE_KEY);
+        return { streak, todayCount, bestStreak, lastDate };
+    } catch (e) {
+        return { streak: 0, todayCount: 0, bestStreak: 0, lastDate: null };
+    }
+};
+
+// Optionally, call this on app launch to auto-reset streak if user missed a day
+export const checkAndResetStreak = async () => {
+    try {
+        const today = new Date();
+        const todayStr = today.toISOString().slice(0, 10);
+        const lastDate = await AsyncStorage.getItem(STREAK_DATE_KEY);
+        if (lastDate && lastDate !== todayStr) {
+            const last = new Date(lastDate);
+            const diff = (today - last) / (1000 * 60 * 60 * 24);
+            if (diff > 1) {
+                await AsyncStorage.setItem(STREAK_KEY, '0');
+                await AsyncStorage.setItem(STREAK_TODAY_COUNT_KEY, '0');
+            } else if (diff === 1) {
+                await AsyncStorage.setItem(STREAK_TODAY_COUNT_KEY, '0');
+            }
+        }
+    } catch (e) {
+        console.error('Error checking/resetting streak:', e);
+    }
+};
+
 // --- PYQ Secure Store Utilities ---
 export const getPYQKey = (branchId, semId) => `PYQs_${branchId}_${semId}`;
 
