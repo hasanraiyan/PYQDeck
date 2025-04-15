@@ -21,6 +21,7 @@ const ListItemCard = React.memo(
         iconSet,
         iconColor = COLORS.textSecondary,
         progress,
+        rightElement,
     }) => {
         const isItemDisabled = disabled || !hasData;
         const showProgress = progress != null && progress >= 0 && hasData;
@@ -76,11 +77,11 @@ const ListItemCard = React.memo(
                                 {subtitle}
                             </Text>
                         )}
-                        
                         {/* Progress indicator removed from here */}
                     </View>
-                    
-                    {!isItemDisabled && (
+                    {/* --- NEW: Render rightElement if provided --- */}
+                    {rightElement}
+                    {!isItemDisabled && !rightElement && (
                         <View style={styles.cardChevronContainer}>
                             <Ionicons
                                 name="chevron-forward-outline"
@@ -95,7 +96,6 @@ const ListItemCard = React.memo(
                         </View>
                     )}
                 </View>
-                
                 {/* Progress bar as bottom border */}
                 {showProgress && (
                     <View style={styles.progressBorderContainer}>

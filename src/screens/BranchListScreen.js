@@ -14,7 +14,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS, DEFAULT_BRANCH_ICON } from '../constants';
 import beuData from '../data/beuData';
-import { loadCompletionStatuses, loadLastJourney } from '../helpers/helpers';
+import { loadCompletionStatuses, loadLastJourney, saveSemesterPYQsToSecureStore, isSemesterPYQDownloaded } from '../helpers/helpers';
 import ListItemCard from '../components/ListItemCard';
 import LoadingIndicator from '../components/LoadingIndicator';
 import ErrorMessage from '../components/ErrorMessage';
@@ -31,6 +31,7 @@ const BranchListScreen = ({ navigation }) => {
     const [error, setError] = useState(null);
     const [lastJourney, setLastJourney] = useState(null);
     const [isLoadingJourney, setIsLoadingJourney] = useState(true);
+    const [downloadStatus, setDownloadStatus] = useState({}); // { [branchId_semId]: 'idle'|'downloading'|'done'|'error' }
 
     const handleDeveloperInfoPress = useCallback(() => {
         navigation.navigate('DeveloperInfo');
@@ -109,6 +110,22 @@ const BranchListScreen = ({ navigation }) => {
         [navigation]
     );
 
+    const handleDownloadPYQs = async (branchId, semId) => {
+        const key = `${branchId}_${semId}`;
+        setDownloadStatus((prev) => ({ ...prev, [key]: 'downloading' }));
+        try {
+            // Find the branch and semester data
+            const branch = branches.find(b => b.id === branchId);
+            const semester = branch?.semesters?.find(s => s.id === semId);
+            if (!semester) throw new Error('Semester not found');
+            // Save to Secure Store
+            await saveSemesterPYQsToSecureStore(branchId, semId, semester);
+            setDownloadStatus((prev) => ({ ...prev, [key]: 'done' }));
+        } catch (e) {
+            setDownloadStatus((prev) => ({ ...prev, [key]: 'error' }));
+        }
+    };
+
     const renderBranchItem = useCallback(
         ({ item: branch }) => {
             let totalCount = 0;
@@ -149,7 +166,7 @@ const BranchListScreen = ({ navigation }) => {
                     : 'No questions yet';
 
             return (
-                <View style={{ paddingHorizontal: 10 }}>
+                <View style={{ paddingHorizontal: 10, marginBottom: 5 }}>
                     <ListItemCard
                         title={branch.name}
                         subtitle={subtitle}
@@ -162,10 +179,9 @@ const BranchListScreen = ({ navigation }) => {
                         progress={hasData ? (isLoadingData ? -1 : progress) : null}
                     />
                 </View>
-
             );
         },
-        [handlePressBranch, completionStatus, isLoadingData]
+        [handlePressBranch, completionStatus]
     );
 
     const handleResumeJourney = useCallback(() => {
@@ -275,6 +291,41 @@ const BranchListScreen = ({ navigation }) => {
                 )}
             />
         </SafeAreaView>
+    );
+};
+
+const SemesterDownloadButton = ({ branchId, semId, downloadStatus, handleDownloadPYQs }) => {
+    const key = `${branchId}_${semId}`;
+    const status = downloadStatus[key] || 'idle';
+    const [downloaded, setDownloaded] = React.useState(false);
+    React.useEffect(() => {
+        isSemesterPYQDownloaded(branchId, semId).then(setDownloaded);
+    }, [branchId, semId, status]);
+    return (
+        <TouchableOpacity
+            style={{
+                backgroundColor: downloaded ? COLORS.completed : COLORS.primaryLight,
+                paddingVertical: 6,
+                paddingHorizontal: 14,
+                borderRadius: 16,
+                marginLeft: 10,
+                flexDirection: 'row',
+                alignItems: 'center',
+                opacity: status === 'downloading' ? 0.6 : 1,
+            }}
+            disabled={status === 'downloading' || downloaded}
+            onPress={() => handleDownloadPYQs(branchId, semId)}
+        >
+            <Ionicons
+                name={downloaded ? 'checkmark-done-outline' : status === 'downloading' ? 'cloud-download-outline' : 'download-outline'}
+                size={18}
+                color={downloaded ? COLORS.surface : COLORS.surface}
+                style={{ marginRight: 6 }}
+            />
+            <Text style={{ color: COLORS.surface, fontWeight: '600' }}>
+                {downloaded ? 'Downloaded' : status === 'downloading' ? 'Downloading...' : 'Download PYQs'}
+            </Text>
+        </TouchableOpacity>
     );
 };
 

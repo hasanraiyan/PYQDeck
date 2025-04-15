@@ -33,6 +33,7 @@ import {
     askAI as askAIHelper, // Renamed import
     debounce,
     getQuestionPlainText,
+    getSemesterPYQsFromSecureStore,
 } from '../helpers/helpers';
 import LoadingIndicator from '../components/LoadingIndicator';
 import ErrorMessage from '../components/ErrorMessage';
@@ -82,78 +83,72 @@ const QuestionListScreen = ({ route, navigation }) => {
         setQuestions([]);
         if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
 
-        const {
-            subject,
-            questions: fetchedQuestions,
-            error: dataError,
-        } = findData({ branchId, semId, subjectId });
-
-        if (dataError) {
-            if (isMounted) {
-                setError(dataError);
-                setSubjectData(null);
-                setLoading(false);
-            }
-        } else if (subject) {
-            if (isMounted) {
-                setSubjectData(subject);
-                const validQuestions = Array.isArray(fetchedQuestions)
-                    ? fetchedQuestions
-                    : [];
-                setQuestions(validQuestions);
-
-                let screenTitle = subject.name || 'Questions';
-                if (organizationMode === 'year' && selectedYear != null) {
-                    screenTitle = `${subject.name} (${selectedYear})`;
-                } else if (organizationMode === 'chapter' && selectedChapter) {
-                    const chapterDisplay =
-                        selectedChapter === UNCAT_CHAPTER_NAME
-                            ? 'Uncategorized'
-                            : selectedChapter;
-                    screenTitle = `${subject.code || subject.name} (${chapterDisplay})`;
-                }
-                navigation.setOptions({ title: screenTitle });
-
-                if (validQuestions.length > 0) {
-                    const questionIds = validQuestions.map((q) => q.questionId);
-                    loadCompletionStatuses(questionIds)
-                        .then((statuses) => {
-                            if (isMounted) {
-                                setCompletionStatus(statuses);
-                                setLoading(false);
-                            }
-                        })
-                        .catch((err) => {
-                            console.error('Error loading completion statuses:', err);
-                            if (isMounted) {
-                                setError('Failed to load completion status.');
-                                setLoading(false);
-                            }
-                        });
+        // --- NEW: Try Secure Store first for semester data ---
+        const tryLoadPYQs = async () => {
+            let semesterData = null;
+            try {
+                semesterData = await getSemesterPYQsFromSecureStore(branchId, semId);
+            } catch {}
+            let subject = null;
+            let fetchedQuestions = [];
+            let dataError = null;
+            if (semesterData && semesterData.subjects) {
+                subject = semesterData.subjects.find(sub => sub.id === subjectId);
+                if (!subject) {
+                    dataError = 'Subject not found in downloaded data.';
                 } else {
-                    if (isMounted) setLoading(false);
+                    fetchedQuestions = Array.isArray(subject.questions) ? subject.questions : [];
+                }
+            } else {
+                // Fallback to beuData.js
+                const fallback = findData({ branchId, semId, subjectId });
+                subject = fallback.subject;
+                fetchedQuestions = fallback.questions;
+                dataError = fallback.error;
+            }
+            if (dataError) {
+                if (isMounted) {
+                    setError(dataError);
+                    setSubjectData(null);
+                    setLoading(false);
+                }
+            } else if (subject) {
+                if (isMounted) {
+                    setSubjectData(subject);
+                    setQuestions(fetchedQuestions);
+                    let screenTitle = subject.name || 'Questions';
+                    if (organizationMode === 'year' && selectedYear != null) {
+                        screenTitle = `${subject.name} (${selectedYear})`;
+                    } else if (organizationMode === 'chapter' && selectedChapter) {
+                        const chapterDisplay =
+                            selectedChapter === UNCAT_CHAPTER_NAME
+                                ? 'Uncategorized'
+                                : selectedChapter;
+                        screenTitle = `${subject.code || subject.name} (${chapterDisplay})`;
+                    }
+                    navigation.setOptions({ title: screenTitle });
+                    if (fetchedQuestions.length > 0) {
+                        const questionIds = fetchedQuestions.map((q) => q.questionId);
+                        loadCompletionStatuses(questionIds)
+                            .then((statuses) => {
+                                if (isMounted) {
+                                    setCompletionStatus(statuses);
+                                }
+                            })
+                            .finally(() => {
+                                if (isMounted) setLoading(false);
+                            });
+                    } else {
+                        setLoading(false);
+                    }
                 }
             }
-        } else {
-            if (isMounted) {
-                setError('Could not load subject details.');
-                setLoading(false);
-            }
-        }
-
+        };
+        tryLoadPYQs();
         return () => {
             isMounted = false;
-            if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
         };
-    }, [
-        branchId,
-        semId,
-        subjectId,
-        navigation,
-        organizationMode,
-        selectedYear,
-        selectedChapter,
-    ]);
+    }, [branchId, semId, subjectId, organizationMode, selectedYear, selectedChapter, navigation]);
 
     const displayFeedback = useCallback((message) => {
         if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
