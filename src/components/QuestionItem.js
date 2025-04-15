@@ -14,6 +14,7 @@ import {
 import MarkdownDisplay from 'react-native-markdown-display';
 import { COLORS, UNCAT_CHAPTER_NAME } from '../constants';
 import { getQuestionPlainText } from '../helpers/helpers';
+import { toggleBookmark, isQuestionBookmarked } from '../helpers/bookmarkHelpers';
 import Icon from './Icon';
 import { Share, Alert } from 'react-native';
 
@@ -250,6 +251,20 @@ const QuestionItem = React.memo(
       [item.text]
     );
 
+    const [bookmarked, setBookmarked] = useState(false);
+    useEffect(() => {
+      let mounted = true;
+      isQuestionBookmarked(item.questionId).then((res) => {
+        if (mounted) setBookmarked(res);
+      });
+      return () => { mounted = false; };
+    }, [item.questionId]);
+
+    const handleBookmark = useCallback(async () => {
+      const newState = await toggleBookmark(item.questionId);
+      setBookmarked(newState);
+    }, [item.questionId]);
+
     const handleCopy = useCallback(() => onCopy(plainText), [onCopy, plainText]);
     const handleSearch = useCallback(() => onSearch(plainText), [onSearch, plainText]);
     const handleToggle = useCallback(
@@ -292,6 +307,14 @@ const QuestionItem = React.memo(
               </View>
             )}
           </View>
+          <TouchableOpacity onPress={handleBookmark} style={styles.bookmarkButton} accessibilityLabel={bookmarked ? 'Remove Bookmark' : 'Add Bookmark'}>
+            <Icon
+              iconSet="Ionicons"
+              name={bookmarked ? 'bookmark' : 'bookmark-outline'}
+              size={22}
+              color={bookmarked ? COLORS.primary : COLORS.textSecondary}
+            />
+          </TouchableOpacity>
           <Switch
             trackColor={{
               false: COLORS.disabledBackground,
@@ -491,14 +514,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 15,
+    // paddingHorizontal: 15,
   },
   metaTagsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'center',
     flexShrink: 1,
-    marginRight: 10,
+    // marginRight: 10,
   },
   tag: {
     borderRadius: 12,
@@ -554,7 +577,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 4,
-    paddingHorizontal: 15,
+    // paddingHorizontal: 15,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: COLORS.border,
   },
@@ -586,6 +609,10 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
     marginLeft: 4,
+  },
+  bookmarkButton: {
+    marginHorizontal: 8,
+    padding: 2,
   },
 });
 

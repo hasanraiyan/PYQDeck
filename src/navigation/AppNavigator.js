@@ -14,6 +14,7 @@ import YearSelectionScreen from '../screens/YearSelectionScreen';
 import ChapterSelectionScreen from '../screens/ChapterSelectionScreen';
 import QuestionListScreen from '../screens/QuestionListScreen';
 import DeveloperInfoScreen from '../screens/DeveloperInfoScreen';
+import BookmarksScreen from '../screens/BookmarksScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -67,6 +68,11 @@ function AppNavigator() {
           name="Questions"
           component={QuestionListScreen}
           // Title set dynamically
+        />
+        <Stack.Screen
+          name="Bookmarks"
+          component={BookmarksScreen}
+          options={{ title: 'Bookmarked Questions' }}
         />
         <Stack.Screen
           name="DeveloperInfo"

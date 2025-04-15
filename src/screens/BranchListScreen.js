@@ -205,6 +205,10 @@ const BranchListScreen = ({ navigation }) => {
         }
     }, [navigation, lastJourney]);
 
+    const handleOpenBookmarks = useCallback(() => {
+        navigation.navigate('Bookmarks');
+    }, [navigation]);
+
     const FeatureHighlight = ({ icon, color, label }) => (
         <View style={{ alignItems: 'center', marginHorizontal: 14 }}>
             <View style={{ backgroundColor: color, borderRadius: 18, padding: 12, marginBottom: 4 }}>
@@ -262,6 +266,15 @@ const BranchListScreen = ({ navigation }) => {
                             iconName="play-forward-outline"
                             iconSet="Ionicons"
                             iconColor={COLORS.secondary}
+                            style={styles.resumeCard}
+                        />
+                        <ListItemCard
+                            title="Bookmarked Questions"
+                            subtitle="View all your bookmarked questions"
+                            onPress={handleOpenBookmarks}
+                            iconName="bookmark-outline"
+                            iconSet="Ionicons"
+                            iconColor={COLORS.primary}
                             style={styles.resumeCard}
                         />
                         <Text style={styles.sectionTitle}>Or select a branch:</Text>
