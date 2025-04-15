@@ -1,6 +1,6 @@
 // src/screens/SemesterListScreen.js
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { StyleSheet, FlatList, SafeAreaView, Platform, StatusBar, TouchableOpacity, Text, ActivityIndicator, View } from 'react-native';
+import { StyleSheet, FlatList, SafeAreaView, Platform, StatusBar, TouchableOpacity, Text, ActivityIndicator, View, Alert } from 'react-native';
 import { COLORS } from '../constants';
 import { findData, loadCompletionStatuses, saveSemesterPYQsToSecureStore, isSemesterPYQDownloaded } from '../helpers/helpers'; // Import download helpers
 import ListItemCard from '../components/ListItemCard';
@@ -172,7 +172,20 @@ const SemesterListScreen = ({ route, navigation }) => {
     // --- Navigation Handler ---
     const handlePressSemester = useCallback(
         (semId) => {
-            navigation.navigate('Subjects', { branchId, semId });
+            // Only allow navigation if the semester is downloaded
+            isSemesterPYQDownloaded(branchId, semId).then((downloaded) => {
+                if (downloaded) {
+                    navigation.navigate('Subjects', { branchId, semId });
+                } else {
+                    // Optionally show a message to the user
+                    if (Platform.OS === 'web') {
+                        alert('Please download this semester first.');
+                    } else {
+                        // Use native alert
+                        Alert.alert('Download Required', 'Please download this semester before proceeding.');
+                    }
+                }
+            });
         },
         [navigation, branchId]
     );

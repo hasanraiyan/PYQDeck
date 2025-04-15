@@ -15,6 +15,7 @@ import MarkdownDisplay from 'react-native-markdown-display';
 import { COLORS, UNCAT_CHAPTER_NAME } from '../constants';
 import { getQuestionPlainText } from '../helpers/helpers';
 import Icon from './Icon';
+import { Share, Alert } from 'react-native';
 
 // Custom Image View component to handle images in markdown
 const CustomImageView = ({ src, alt }) => {
@@ -260,29 +261,34 @@ const QuestionItem = React.memo(
       onAskAI(item);
     }, [onAskAI, item]);
 
+    // --- SHARE AS TEXT (Expo Go Safe) ---
+    const handleShareText = async () => {
+      try {
+        await Share.share({
+          message: plainText,
+        });
+      } catch (e) {
+        Alert.alert('Error', 'Could not share the question.');
+      }
+    };
+
     return (
       <View style={styles.container}>
         <View style={styles.metaRow}>
           <View style={styles.metaTagsContainer}>
             {item.year && (
               <View style={[styles.tag, styles.tagYear]}>
-                <Text style={[styles.tagText, { color: COLORS.tagYearText }]}>
-                  {item.year}
-                </Text>
+                <Text style={[styles.tagText, { color: COLORS.tagYearText }]}> {item.year} </Text>
               </View>
             )}
             {item.qNumber && (
               <View style={[styles.tag, styles.tagQNum]}>
-                <Text style={[styles.tagText, { color: COLORS.tagQNumText }]}>
-                  {item.qNumber}
-                </Text>
+                <Text style={[styles.tagText, { color: COLORS.tagQNumText }]}> {item.qNumber} </Text>
               </View>
             )}
             {item.marks != null && (
               <View style={[styles.tag, styles.tagMarks]}>
-                <Text style={[styles.tagText, { color: COLORS.tagMarksText }]}>
-                  {item.marks} Marks
-                </Text>
+                <Text style={[styles.tagText, { color: COLORS.tagMarksText }]}> {item.marks} Marks </Text>
               </View>
             )}
           </View>
@@ -295,8 +301,8 @@ const QuestionItem = React.memo(
               isCompleted
                 ? COLORS.completedThumb
                 : Platform.OS === 'android'
-                  ? COLORS.surface
-                  : null
+                ? COLORS.surface
+                : null
             }
             ios_backgroundColor={COLORS.disabledBackground}
             onValueChange={handleToggle}
@@ -304,35 +310,17 @@ const QuestionItem = React.memo(
             style={styles.completionSwitch}
           />
         </View>
-
         {item.chapter ? (
           <View style={styles.chapterRow}>
-            <Icon
-              iconSet="Ionicons"
-              name="layers-outline"
-              size={16}
-              color={COLORS.chapterIcon}
-              style={styles.chapterIcon}
-            />
-            <Text style={styles.chapterText} numberOfLines={1}>
-              {item.chapter}
-            </Text>
+            <Icon iconSet="Ionicons" name="layers-outline" size={16} color={COLORS.chapterIcon} style={styles.chapterIcon} />
+            <Text style={styles.chapterText} numberOfLines={1}> {item.chapter} </Text>
           </View>
         ) : (
           <View style={styles.chapterRow}>
-            <Icon
-              iconSet="Ionicons"
-              name="help-circle-outline"
-              size={16}
-              color={COLORS.textSecondary}
-              style={styles.chapterIcon}
-            />
-            <Text style={[styles.chapterText, { fontStyle: 'italic' }]}>
-              {UNCAT_CHAPTER_NAME}
-            </Text>
+            <Icon iconSet="Ionicons" name="help-circle-outline" size={16} color={COLORS.textSecondary} style={styles.chapterIcon} />
+            <Text style={[styles.chapterText, { fontStyle: 'italic' }]}> {UNCAT_CHAPTER_NAME} </Text>
           </View>
         )}
-
         <View style={styles.markdownContainer}>
           {parsedContent.map((part, index) => {
             if (part.type === 'image') {
@@ -349,7 +337,6 @@ const QuestionItem = React.memo(
             }
           })}
         </View>
-
         <View style={styles.actionsRow}>
           <View style={styles.actionsLeft}>
             <TouchableOpacity
@@ -357,24 +344,22 @@ const QuestionItem = React.memo(
               style={styles.iconButton}
               accessibilityLabel="Search question on Google"
             >
-              <Icon
-                iconSet="FontAwesome"
-                name="google"
-                size={20}
-                color={COLORS.textSecondary}
-              />
+              <Icon iconSet="FontAwesome" name="google" size={20} color={COLORS.textSecondary} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={handleCopy}
               style={styles.iconButton}
               accessibilityLabel="Copy question text"
             >
-              <Icon
-                iconSet="Ionicons"
-                name="copy-outline"
-                size={22}
-                color={COLORS.textSecondary}
-              />
+              <Icon iconSet="Ionicons" name="copy-outline" size={22} color={COLORS.textSecondary} />
+            </TouchableOpacity>
+            {/* --- SHARE AS TEXT BUTTON --- */}
+            <TouchableOpacity
+              onPress={handleShareText}
+              style={styles.iconButton}
+              accessibilityLabel="Share question as text"
+            >
+              <Icon iconSet="Ionicons" name="share-social-outline" size={22} color={COLORS.textSecondary} />
             </TouchableOpacity>
           </View>
           <TouchableOpacity
@@ -383,13 +368,7 @@ const QuestionItem = React.memo(
             activeOpacity={0.8}
             accessibilityLabel="Ask AI (e.g., ChatGPT)"
           >
-            <Icon
-              iconSet="MaterialCommunityIcons"
-              name="robot-outline"
-              size={16}
-              color={COLORS.surface}
-              style={styles.askAiButtonIcon}
-            />
+            <Icon iconSet="MaterialCommunityIcons" name="robot-outline" size={16} color={COLORS.surface} style={styles.askAiButtonIcon} />
             <Text style={styles.askAiButtonText}>Ask AI</Text>
           </TouchableOpacity>
         </View>
