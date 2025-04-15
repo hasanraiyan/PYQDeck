@@ -214,7 +214,8 @@ const BranchListScreen = ({ navigation }) => {
                     <Text style={styles.heroTagline}>Your Personal Exam Prep Assistant</Text>
                 </View>
             </View>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.featuresScroll} contentContainerStyle={{ paddingHorizontal: 10, paddingBottom: 6, minWidth: 340 }}>
+            
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.featuresScroll} contentContainerStyle={{ paddingHorizontal: 10, paddingBottom: 6, minWidth: 340, justifyContent: 'center', alignItems: 'center' }}>
                 <FeatureHighlight icon="book-outline" color={COLORS.primary} label="Practice PYQs" />
                 <FeatureHighlight icon="flash-outline" color={COLORS.secondary} label="Instant AI Help" />
                 <FeatureHighlight icon="stats-chart-outline" color="#F7B731" label="Track Progress" />
@@ -420,7 +421,7 @@ const styles = StyleSheet.create({
     },
     featuresScroll: {
         marginBottom: 8,
-        marginTop: 3,
+        marginTop: 3,      
     },
     footerContainer: {
         flexDirection: 'row',
