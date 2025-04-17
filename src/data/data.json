@@ -4068,8 +4068,1345 @@
               "id": "cse_100313",
               "name": "OBJECT ORIENTED PROGRAMMING USING C++",
               "code": "100313",
-              "modules": [],
-              "questions": []
+              "modules": [
+                {
+                  "id": "m1",
+                  "name": "Module 1: Introduction to C++",
+                  "description": "Object Oriented Technology, Advantages of OOP, Input- output in C++, Tokens, Keywords, Identifiers, Data Types C++, Derives data types. The void data type, Type Modifiers, Typecasting, Constant, Operator, Precedence of Operators, Strings.",
+                  "lectures": 3
+                },
+                {
+                  "id": "m2",
+                  "name": "Module 2: Control Structures and Functions",
+                  "description": "Decision making statements like if-else, Nested if-else, goto, break, continue, switch case, Loop statement like for loop, nested for loop, while loop, do-while loop. Parts of Function, User- defined Functions, Value- Returning Functions, void Functions, Value Parameters, Function overloading, Virtual Functions.",
+                  "lectures": 6
+                },
+                {
+                  "id": "m3",
+                  "name": "Module 3: Classes and Data Abstraction",
+                  "description": "Structure in C++, Class, Build- in Operations on Classes, Assignment Operator and Classes, Class Scope, Reference parameters and Class Objects (Variables), Member functions, Accessor and Mutator Functions, Constructors, default Constructor, Destructors.",
+                  "lectures": 15
+                },
+                {
+                  "id": "m4",
+                  "name": "Module 4: Overloading, Templates and Inheritance",
+                  "description": "Operator Overloading, Function Overloading, Function Templates, Class Templates. Single and Multiple Inheritance, virtual Base class, Abstract Class, Pointer and Inheritance, Overloading Member Function.",
+                  "lectures": 10
+                },
+                {
+                  "id": "m5",
+                  "name": "Module 5: Pointers, Arrays and Exception Handling",
+                  "description": "Void Pointers, Pointer to Class, Pointer to Object, Void Pointer, Arrays. The keywords try, throw and catch. Creating own Exception Classes, Exception Handling Techniques (Terminate the Program, Fix the Error and Continue, Log the Error and Continue), Stack Unwinding.",
+                  "lectures": 11
+                }
+              ],
+              "questions": [
+                {
+                  "questionId": "cse_100313_2019_Q1a",
+                  "year": 2019,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "Which feature allows open recursion among the following?\n(i) Use of this pointer\n(ii) Use of pointers\n(iii) Use of pass by value\n(iv) Use of parameterized constructor",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2019_Q1b",
+                  "year": 2019,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "If same message is passed to objects of several different classes and all of those can respond in a different way, what is this feature called?\n(i) Inheritance\n(ii) Overloading\n(iii) Polymorphism\n(iv) Overriding",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2019_Q1c",
+                  "year": 2019,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "Which among the following is wrong?\n(i) class student{}; student s;\n(ii) abstract class student{}; student s;\n(iii) abstract class student{} s[50000000];\n(iv) abstract class student{}; class toppers: public student{ }; topper t;",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2019_Q1d",
+                  "year": 2019,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "If two classes combine some private data members and provides public member functions to access and manipulate those data members, where is abstraction used?\n(i) Using private access specifier for data members\n(ii) Using class concept with both data members and member functions\n(iii) Using public member functions to access and manipulate the data members\n(iv) Data is not sufficient to decide what is being used",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2019_Q1e",
+                  "year": 2019,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "Which class/set of classes can illustrate polymorphism in the following code\n```cpp\nabstract class student? {\npublic: int marks;\n  calc_grade();\n};\nclass topper: public student {\npublic: calc_grade() { return 10; }\n};\nclass average: public student {\npublic: calc_grade() { return 20; }\n};\nclass failed{int marks;};\n```\n(i) Only class student can show polymorphism\n(ii) Only class student and topper together can show polymorphism\n(iii) All class students, topper and average together can show polymorphism\n(iv) Class failed should also inherit class student for this code to work for polymorphism",
+                  "type": "MCQ_Code",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2019_Q1f",
+                  "year": 2019,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 5: Pointers, Arrays and Exception Handling",
+                  "text": "Consider the following code and select the correct option:\n```cpp\nclass student {\n  int marks;\npublic:\n  int* fun() {\n    return & marks;\n  }\n};\nmain() {\n  student s;\n  int *ptr = s. fun(); \n  return 0;\n}\n```\n(i) This code is good to go\n(ii) This code may result in undesirable conditions\n(iii) This code will generate error\n(iv) This code violates encapsulation",
+                  "type": "MCQ_Code",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2019_Q1g",
+                  "year": 2019,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "Which among the following is correct for the class defined below?\n```cpp\nclass student {\n  int marks;\npublic:\n  student() {}\n  student(int x) { marks = x; }\n};\nmain() {\n  student s1(100);\n  student s2(); \n  student s3 = 100; \n  return 0;\n}\n```\n(i) Object s3, syntax error\n(ii) Only object s1 and s2 will be created\n(iii) Program runs and all objects are created\n(iv) Program will give compile-time error",
+                  "type": "MCQ_Code",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2019_Q1h",
+                  "year": 2019,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "Does constructor overloading include different return types for constructors to be overloaded?\n(i) Yes, if return types are different, signature becomes different\n(ii) Yes, because return types can differentiate two functions\n(iii) No, return type can't differentiate two functions\n(iv) No, constructors doesn't have any return type",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2019_Q1i",
+                  "year": 2019,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "Which constructor will be called from the object created in the code below?\n```cpp\nclass A {\n  int i;\npublic:\n  A() {\n    i=0; cout << i;\n  }\n  A(int x = 0) {\n    i = x; cout << i;\n  }\n};\nA obj1;\n```\n(i) Default constructor\n(ii) Parameterized constructor\n(iii) Compile-time error\n(iv) Run-time error",
+                  "type": "MCQ_Code",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2019_Q1j",
+                  "year": 2019,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "When an object is passed to a function, its copy is made in the function and then\n(i) the destructor of the copy is called when function is returned\n(ii) the destructor is never called in this case\n(iii) the destructor is called but it is always implicit\n(iv) the destructor must be user defined",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2019_Q2a",
+                  "year": 2019,
+                  "qNumber": "Q2a",
+                  "chapter": "Module 1: Introduction to C++",
+                  "text": "What is Object-oriented Programming (OOP)? Write the basic concepts of OOP.",
+                  "type": "Explanation",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2019_Q2b",
+                  "year": 2019,
+                  "qNumber": "Q2b",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "What do you mean by class and object?",
+                  "type": "Explanation",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2019_Q3a",
+                  "year": 2019,
+                  "qNumber": "Q3a",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "With an example, explain the terms 'constructor' and 'destructor'.",
+                  "type": "Explanation with Example",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2019_Q3b",
+                  "year": 2019,
+                  "qNumber": "Q3b",
+                  "chapter": "Module 2: Control Structures and Functions",
+                  "text": "With an example, explain what virtual function is.",
+                  "type": "Explanation with Example",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2019_Q4a",
+                  "year": 2019,
+                  "qNumber": "Q4a",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "What do you mean by polymorphism?",
+                  "type": "Explanation",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2019_Q4b",
+                  "year": 2019,
+                  "qNumber": "Q4b",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "With an example, differentiate between run-time and compile-time polymorphism.",
+                  "type": "Differentiate with Example",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2019_Q5a",
+                  "year": 2019,
+                  "qNumber": "Q5a",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "What is friend function?",
+                  "type": "Explanation",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2019_Q5b",
+                  "year": 2019,
+                  "qNumber": "Q5b",
+                  "chapter": "Module 2: Control Structures and Functions",
+                  "text": "What is pure virtual function?",
+                  "type": "Explanation",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2019_Q6a",
+                  "year": 2019,
+                  "qNumber": "Q6a",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "What is abstract class? Write a program to illustrate. Also outline the advantages of abstract class.",
+                  "type": "Explanation with Code & Advantages",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2019_Q6b",
+                  "year": 2019,
+                  "qNumber": "Q6b",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "Differentiate between abstract class and interface.",
+                  "type": "Differentiate",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2019_Q7",
+                  "year": 2019,
+                  "qNumber": "Q7",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "What are various types of inheritance, shown in the following figure? ![Image shows Single, Multiple, Hierarchical Inheritance diagrams](https://mtjwwpxkwpaagqsnfbks.supabase.co/storage/v1/object/public/images//cse_100313_2019_Q7.png)",
+                  "type": "Explanation with Diagram",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100313_2019_Q8a",
+                  "year": 2019,
+                  "qNumber": "Q8a",
+                  "chapter": "Module 5: Pointers, Arrays and Exception Handling",
+                  "text": "What is an exception? What do you mean by exception handling?",
+                  "type": "Explanation",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2019_Q8b",
+                  "year": 2019,
+                  "qNumber": "Q8b",
+                  "chapter": "Module 5: Pointers, Arrays and Exception Handling",
+                  "text": "Explain the keywords: try, catch and throw.",
+                  "type": "Explanation",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2019_Q9a",
+                  "year": 2019,
+                  "qNumber": "Q9a",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "With the help of an example program, differentiate between the following: Overloading vs. Overriding",
+                  "type": "Differentiate with Example",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2019_Q9b",
+                  "year": 2019,
+                  "qNumber": "Q9b",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "With the help of an example program, differentiate between the following: Early binding vs. Late binding",
+                  "type": "Differentiate with Example",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2020_Q1a",
+                  "year": 2020,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 1: Introduction to C++",
+                  "text": "Write the name of the function in C++ used for opening a file for input only.",
+                  "type": "Short Answer",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2020_Q1b",
+                  "year": 2020,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "What is the purpose of using a derived class?",
+                  "type": "Explanation",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2020_Q1c",
+                  "year": 2020,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "Is there any difference between public protection and private protection?",
+                  "type": "Comparison",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2020_Q1d",
+                  "year": 2020,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "How does abstract class differ from interface?",
+                  "type": "Differentiate",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2020_Q1e",
+                  "year": 2020,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 5: Pointers, Arrays and Exception Handling",
+                  "text": "What is the role of catch block in the exception handling?",
+                  "type": "Explanation",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2020_Q1f",
+                  "year": 2020,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 2: Control Structures and Functions",
+                  "text": "Is it possible to return more than one value from a function? Explain with a small example.",
+                  "type": "Explanation with Example",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2020_Q1g",
+                  "year": 2020,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "What are the mutator functions? Give an example.",
+                  "type": "Explanation with Example",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2020_Q1h",
+                  "year": 2020,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "Discuss the role of default constructor when an object of a class is created.",
+                  "type": "Explanation",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2020_Q1i",
+                  "year": 2020,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "Write a small code which illustrates the concept of multiple inheritance.",
+                  "type": "Code",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2020_Q1j",
+                  "year": 2020,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "Differentiate between compile-time polymorphism and run-time polymorphism.",
+                  "type": "Differentiate",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2020_Q2a",
+                  "year": 2020,
+                  "qNumber": "Q2a",
+                  "chapter": "Module 1: Introduction to C++",
+                  "text": "Write a language program in C++ which accepts the user's first and last name and print them in reverse order with a space between them.",
+                  "type": "Code",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2020_Q2b",
+                  "year": 2020,
+                  "qNumber": "Q2b",
+                  "chapter": "Module 2: Control Structures and Functions",
+                  "text": "Create the equivalent of a four-function calculator. The program should ask the user to enter a number, an operator and another number. (Use floating point.) It should then carry out the specified arithmetical operation : adding, subtracting, multiplying or dividing the two numbers. Use a switch statement to select the operation. Finally, display the result. When it finishes the calculation, the program should ask whether the user wants to do another calculation. The response can be 'y' or 'n'.",
+                  "type": "Code",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2020_Q3a",
+                  "year": 2020,
+                  "qNumber": "Q3a",
+                  "chapter": "Module 5: Pointers, Arrays and Exception Handling",
+                  "text": "Use a single-subscripted array to solve the following problem : Read in 20 numbers, each of which is between 10 and 100, inclusive. As each number is read, print it only if it is not a duplicate of a number already read. Provide for the 'worst case' in which all 20 numbers are different. Use the smallest possible array to solve this problem.",
+                  "type": "Problem/Code",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2020_Q3b",
+                  "year": 2020,
+                  "qNumber": "Q3b",
+                  "chapter": "Module 5: Pointers, Arrays and Exception Handling",
+                  "text": "Write a program in C++ to read text file and display count of character in file.",
+                  "type": "Code",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2020_Q4a",
+                  "year": 2020,
+                  "qNumber": "Q4a",
+                  "chapter": "Module 2: Control Structures and Functions",
+                  "text": "What is the main advantage of passing arguments by reference? When do we need to use default arguments in a function?",
+                  "type": "Explanation",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2020_Q4b",
+                  "year": 2020,
+                  "qNumber": "Q4b",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "What do you mean by dynamic binding? How is it useful in OOP?",
+                  "type": "Explanation",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2020_Q5a",
+                  "year": 2020,
+                  "qNumber": "Q5a",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "What is constructor? Write a program in C++ to find the area of the circle using constructor.",
+                  "type": "Explanation & Code",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2020_Q5b",
+                  "year": 2020,
+                  "qNumber": "Q5b",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "Define a class to represent a bank account. Include the following members:\nData members:\n1. Name of the depositor\n2. Account number\n3. Type of account\n4. Balance amount in the account\n\nMember functions:\n1. To assign initial values\n2. To deposit an amount\n3. To withdraw an amount after checking the balance\n4. To display name and balance\nWrite a main program which handles 10 customers.",
+                  "type": "Code",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2020_Q6a",
+                  "year": 2020,
+                  "qNumber": "Q6a",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "What do you mean by dynamic initialization of objects? Why do we need to do this? How is dynamic initialization of objects achieved?",
+                  "type": "Explanation",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2020_Q6b",
+                  "year": 2020,
+                  "qNumber": "Q6b",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "Write a C++ program to define a class string and use overloaded == operator to compare two strings.",
+                  "type": "Code",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2020_Q7a",
+                  "year": 2020,
+                  "qNumber": "Q7a",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "Some programmers prefer not to use protected access because it breaks the encapsulation of the base class. Discuss the relative merits of using protected access vs. insisting on using private access in base classes.",
+                  "type": "Discussion",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2020_Q7b",
+                  "year": 2020,
+                  "qNumber": "Q7b",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "Write a C++ program to demonstrate example of hierarchical inheritance to get square and cube of a number.",
+                  "type": "Code",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2020_Q8a",
+                  "year": 2020,
+                  "qNumber": "Q8a",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "We knew that a private member of a base class is not inheritable. Is it anyway possible for the objects of a derived class to access the private members of the base class? If yes, how?",
+                  "type": "Explanation",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2020_Q8b",
+                  "year": 2020,
+                  "qNumber": "Q8b",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "Write a program that uses a function template called max to determine the largest of three arguments. Test the program using integer, character and floating-point number pairs.",
+                  "type": "Code",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2020_Q9a",
+                  "year": 2020,
+                  "qNumber": "Q9a",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "Describe the relationship between class templates and inheritance. Why is it appropriate to call a class template a parameterized type?",
+                  "type": "Explanation",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2020_Q9b",
+                  "year": 2020,
+                  "qNumber": "Q9b",
+                  "chapter": "Module 5: Pointers, Arrays and Exception Handling",
+                  "text": "Write a program that demonstrates how certain exception types are not allowed to be thrown.",
+                  "type": "Code",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2021_Q1a",
+                  "year": 2021,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 1: Introduction to C++",
+                  "text": "How will you take input in C++?",
+                  "type": "Short Answer",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2021_Q1b",
+                  "year": 2021,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "How will you define a constructor in a C++ class?",
+                  "type": "Short Answer",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2021_Q1c",
+                  "year": 2021,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "What are accessor and mutator functions?",
+                  "type": "Explanation",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2021_Q1d",
+                  "year": 2021,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 5: Pointers, Arrays and Exception Handling",
+                  "text": "What is void pointer in C++? Elaborate with an example.",
+                  "type": "Explanation with Example",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2021_Q1e",
+                  "year": 2021,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 1: Introduction to C++",
+                  "text": "What is derived data type in C++?",
+                  "type": "Explanation",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2021_Q1f",
+                  "year": 2021,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "How will you implement runtime polymorphism in C++?",
+                  "type": "Explanation",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2021_Q1g",
+                  "year": 2021,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "When are virtual base classes necessary in C++?",
+                  "type": "Explanation",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2021_Q1h",
+                  "year": 2021,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "What are the differences between function overloading and function overriding?",
+                  "type": "Differentiate",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2021_Q1i",
+                  "year": 2021,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 5: Pointers, Arrays and Exception Handling",
+                  "text": "How will you throw an exception in C++? Elaborate with an example.",
+                  "type": "Explanation with Example",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2021_Q1j",
+                  "year": 2021,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 5: Pointers, Arrays and Exception Handling",
+                  "text": "Name two standard exceptions built in C++. When are they thrown?",
+                  "type": "Short Answer",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2021_Q2a",
+                  "year": 2021,
+                  "qNumber": "Q2a",
+                  "chapter": "Module 1: Introduction to C++",
+                  "text": "What are the advantages of object-oriented programming paradigm over procedural programming? Demonstrate the features of an object-oriented programming paradigm with their suitable implementations in C++.",
+                  "type": "Comparison & Explanation with Code",
+                  "marks": 6
+                },
+                {
+                  "questionId": "cse_100313_2021_Q2b",
+                  "year": 2021,
+                  "qNumber": "Q2b",
+                  "chapter": "Module 1: Introduction to C++",
+                  "text": "How will you define constants in C++? How will you access them? Elaborate with suitable examples.",
+                  "type": "Explanation with Example",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2021_Q2c",
+                  "year": 2021,
+                  "qNumber": "Q2c",
+                  "chapter": "Module 1: Introduction to C++",
+                  "text": "What is type modifier? Elaborate different types of modifiers in C++ with proper examples.",
+                  "type": "Explanation with Example",
+                  "marks": 4
+                },
+                {
+                  "questionId": "cse_100313_2021_Q2d",
+                  "year": 2021,
+                  "qNumber": "Q2d",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "Is it possible to have virtual constructor in C++? If yes, how will you implement it, and if no, why?",
+                  "type": "Explanation",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2021_Q3a",
+                  "year": 2021,
+                  "qNumber": "Q3a",
+                  "chapter": "Module 2: Control Structures and Functions",
+                  "text": "What do you mean by call by reference? What are the differences between call by value and call by reference? Show call by reference by implementing a function to swap the values of two numbers.",
+                  "type": "Explanation & Code",
+                  "marks": 5
+                },
+                {
+                  "questionId": "cse_100313_2021_Q3b",
+                  "year": 2021,
+                  "qNumber": "Q3b",
+                  "chapter": "Module 2: Control Structures and Functions",
+                  "text": "What do you mean by default arguments? Can you use functions with default arguments as an alternative to function overloading? Elaborate with suitable examples.",
+                  "type": "Explanation with Example",
+                  "marks": 5
+                },
+                {
+                  "questionId": "cse_100313_2021_Q3c",
+                  "year": 2021,
+                  "qNumber": "Q3c",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "What is a copy constructor? When will you need a copy constructor? How will you implement a copy constructor? Elaborate with suitable examples.",
+                  "type": "Explanation with Example",
+                  "marks": 4
+                },
+                {
+                  "questionId": "cse_100313_2021_Q4a",
+                  "year": 2021,
+                  "qNumber": "Q4a",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "What is 'this' pointer? How will you use 'this' pointer in C++? Elaborate with example.",
+                  "type": "Explanation with Example",
+                  "marks": 4
+                },
+                {
+                  "questionId": "cse_100313_2021_Q4b",
+                  "year": 2021,
+                  "qNumber": "Q4b",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "What are various access specifiers used in C++? Demonstrate each of them with suitable examples.",
+                  "type": "Explanation with Example",
+                  "marks": 5
+                },
+                {
+                  "questionId": "cse_100313_2021_Q4c",
+                  "year": 2021,
+                  "qNumber": "Q4c",
+                  "chapter": "Module 5: Pointers, Arrays and Exception Handling",
+                  "text": "How will you allocate dynamic memory in C++ other than malloc or calloc? How will you free the memory created using the method demonstrated? Demonstrate with suitable examples. What are the differences between malloc and the method you demonstrated?",
+                  "type": "Explanation with Example & Differentiate",
+                  "marks": 5
+                },
+                {
+                  "questionId": "cse_100313_2021_Q5a",
+                  "year": 2021,
+                  "qNumber": "Q5a",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "How do you overload operators in C++? Demonstrate with a suitable example, in which one unary operator and one binary operator will be overloaded.",
+                  "type": "Explanation with Example",
+                  "marks": 4
+                },
+                {
+                  "questionId": "cse_100313_2021_Q5b",
+                  "year": 2021,
+                  "qNumber": "Q5b",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "How will you overload the input operator >> and the output operator <<? Demonstrate with suitable examples.",
+                  "type": "Explanation with Example",
+                  "marks": 4
+                },
+                {
+                  "questionId": "cse_100313_2021_Q5c",
+                  "year": 2021,
+                  "qNumber": "Q5c",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "Demonstrate friend function and friend class with suitable examples.",
+                  "type": "Explanation with Example",
+                  "marks": 4
+                },
+                {
+                  "questionId": "cse_100313_2021_Q5d",
+                  "year": 2021,
+                  "qNumber": "Q5d",
+                  "chapter": "Module 1: Introduction to C++",
+                  "text": "What is namespace? How will you define a namespace in C++?",
+                  "type": "Explanation",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2021_Q6a",
+                  "year": 2021,
+                  "qNumber": "Q6a",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "What is virtual function? Why are they necessary? Demonstrate compile-time binding and late-time binding using suitable examples.",
+                  "type": "Explanation with Example",
+                  "marks": 5
+                },
+                {
+                  "questionId": "cse_100313_2021_Q6b",
+                  "year": 2021,
+                  "qNumber": "Q6b",
+                  "chapter": "Module 2: Control Structures and Functions",
+                  "text": "What is inline function? How do you declare and invoke an inline function in C++?",
+                  "type": "Explanation",
+                  "marks": 3
+                },
+                {
+                  "questionId": "cse_100313_2021_Q6c",
+                  "year": 2021,
+                  "qNumber": "Q6c",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "What is pure virtual function? Elaborate pure virtual function and abstract class with suitable examples.",
+                  "type": "Explanation with Example",
+                  "marks": 6
+                },
+                {
+                  "questionId": "cse_100313_2021_Q7a",
+                  "year": 2021,
+                  "qNumber": "Q7a",
+                  "chapter": "Module 5: Pointers, Arrays and Exception Handling",
+                  "text": "How will you declare a dynamic array in C++? Demonstrate. What is 'nothrow' keyword used for?",
+                  "type": "Explanation & Code",
+                  "marks": 3
+                },
+                {
+                  "questionId": "cse_100313_2021_Q7b",
+                  "year": 2021,
+                  "qNumber": "Q7b",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "Can you overload new and delete operators? If yes, demonstrate with a suitable example. If not, why?",
+                  "type": "Explanation with Example",
+                  "marks": 4
+                },
+                {
+                  "questionId": "cse_100313_2021_Q7c",
+                  "year": 2021,
+                  "qNumber": "Q7c",
+                  "chapter": "Module 5: Pointers, Arrays and Exception Handling",
+                  "text": "What is a reference? What are the differences between a pointer and a reference? Demonstrate with a suitable example of object pointer and object reference.",
+                  "type": "Explanation with Example",
+                  "marks": 4
+                },
+                {
+                  "questionId": "cse_100313_2021_Q7d",
+                  "year": 2021,
+                  "qNumber": "Q7d",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "What is diamond problem faced in multiple inheritance? How to deal with this problem in C++? Demonstrate with an example.",
+                  "type": "Explanation with Example",
+                  "marks": 3
+                },
+                {
+                  "questionId": "cse_100313_2021_Q8a",
+                  "year": 2021,
+                  "qNumber": "Q8a",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "What is template? In which scenario, using templates are advantageous? Demonstrate with suitable examples.",
+                  "type": "Explanation with Example",
+                  "marks": 3
+                },
+                {
+                  "questionId": "cse_100313_2021_Q8b",
+                  "year": 2021,
+                  "qNumber": "Q8b",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "How will you declare a function template? Demonstrate with suitable examples.",
+                  "type": "Explanation with Example",
+                  "marks": 4
+                },
+                {
+                  "questionId": "cse_100313_2021_Q8c",
+                  "year": 2021,
+                  "qNumber": "Q8c",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "How will you declare a class template? Demonstrate with suitable examples.",
+                  "type": "Explanation with Example",
+                  "marks": 4
+                },
+                {
+                  "questionId": "cse_100313_2021_Q8d",
+                  "year": 2021,
+                  "qNumber": "Q8d",
+                  "chapter": "Module 5: Pointers, Arrays and Exception Handling",
+                  "text": "How can you handle any type of exception in catch block in C++? Demonstrate with an example.",
+                  "type": "Explanation with Example",
+                  "marks": 3
+                },
+                {
+                  "questionId": "cse_100313_2021_Q9a",
+                  "year": 2021,
+                  "qNumber": "Q9a",
+                  "chapter": "Module 5: Pointers, Arrays and Exception Handling",
+                  "text": "How will you create your own exception class in C++? Demonstrate. What is the functionality of what() function in creating own exception class?",
+                  "type": "Explanation & Code",
+                  "marks": 5
+                },
+                {
+                  "questionId": "cse_100313_2021_Q9b",
+                  "year": 2021,
+                  "qNumber": "Q9b",
+                  "chapter": "Module 5: Pointers, Arrays and Exception Handling",
+                  "text": "How does stack unwinding work in C++? Demonstrate with a suitable example.",
+                  "type": "Explanation with Example",
+                  "marks": 5
+                },
+                {
+                  "questionId": "cse_100313_2021_Q9c",
+                  "year": 2021,
+                  "qNumber": "Q9c",
+                  "chapter": "Module 5: Pointers, Arrays and Exception Handling",
+                  "text": "Demonstrate nested try blocks in C++ with suitable example. Can an exception thrown by internal try block be caught by external catch clause? Can an exception thrown by external try block be caught by internal catch clause? In both cases, demonstrate with suitable examples.",
+                  "type": "Explanation with Example",
+                  "marks": 4
+                },
+                {
+                  "questionId": "cse_100313_2022_Q1a",
+                  "year": 2022,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "Which among the following best describes the inheritance?\n(i) copying the code already written\n(ii) using the code already written once.\n(iii) using already defined functions in programming language\n(iv) using the data and functions into derived segment.",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2022_Q1b",
+                  "year": 2022,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "Which of the following is not a type of class?\n(i) Abstract class\n(ii) Final class\n(iii) Start class\n(iv) String class",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2022_Q1c",
+                  "year": 2022,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "What is the default access specifier for data members or member functions declared within a class without any specifier in C++?\n(i) Private\n(ii) Protected\n(iii) Public\n(iv) Depends on compiler",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2022_Q1d",
+                  "year": 2022,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "Which of the following is not the member of class ?\n(i) Static function\n(ii) Friend function\n(iii) Constant function\n(iv) Virtual function",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2022_Q1e",
+                  "year": 2022,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "Which constructor will be called from the object created in the code below?\n```cpp\nClass A {\n  int i;\npublic:\n  A() {\n    i= 0;\n  }\n  A (int x = 0) {\n    i=x;\n  }\n};\nA obj1;\n```\n(i) Default constructor\n(ii) Parameterized constructor\n(iii) Compile time error\n(iv) Run-time error",
+                  "type": "MCQ_Code",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2022_Q1f",
+                  "year": 2022,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "To prevent any method from overriding, we declare the method as\n(i) Static\n(ii) const\n(iii) final\n(iv) None of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2022_Q1g",
+                  "year": 2022,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 5: Pointers, Arrays and Exception Handling",
+                  "text": "In C++ dynamic memory allocation is accomplished with the operator:\n(i) new\n(ii) this\n(iii) malloc\n(iv) delete",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2022_Q1h",
+                  "year": 2022,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "When a class serves as base class for many derived classes, the situation is called\n(i) polymorphism\n(ii) hierarchical inheritance\n(iii) hybrid inheritance\n(iv) multipath inheritance",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2022_Q1i",
+                  "year": 2022,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "For a method to be an interface between the outside world and a class, it must be declared\n(i) private\n(ii) protected\n(iii) public\n(iv) external",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2022_Q1j",
+                  "year": 2022,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "Which of the following statement is correct?\n(i) Base class pointer cannot point to derived class\n(ii) Derived class pointer cannot point to base class.\n(iii) Pointer to derived class cannot be created\n(iv) Pointer to base class cannot be created.",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2022_Q2a",
+                  "year": 2022,
+                  "qNumber": "Q2a",
+                  "chapter": "Module 5: Pointers, Arrays and Exception Handling",
+                  "text": "What are the advantages of using exception handling mechanism in a program? Explain the uses of try, throw and catch keywords using example.",
+                  "type": "Explanation with Example",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2022_Q2b",
+                  "year": 2022,
+                  "qNumber": "Q2b",
+                  "chapter": "Module 2: Control Structures and Functions",
+                  "text": "Write a C++ program to find the sum of the series 1+3+5+...+n.",
+                  "type": "Code",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2022_Q3a",
+                  "year": 2022,
+                  "qNumber": "Q3a",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "What is inheritance? Discuss different types of inheritance with examples.",
+                  "type": "Explanation with Example",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2022_Q3b",
+                  "year": 2022,
+                  "qNumber": "Q3b",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "What is operator overloading? Write a program in C++ to overload unary minus operator.",
+                  "type": "Explanation & Code",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2022_Q4a",
+                  "year": 2022,
+                  "qNumber": "Q4a",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "What is pure virtual function? Write a C++ program that prints 'BEU Patna' from inside a member function of a subclass overriding a pure virtual function.",
+                  "type": "Explanation & Code",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2022_Q4b",
+                  "year": 2022,
+                  "qNumber": "Q4b",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "Discuss why converting a base-class pointer to a derived-class pointer is considered dangerous by compiler.",
+                  "type": "Explanation",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2022_Q5a",
+                  "year": 2022,
+                  "qNumber": "Q5a",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "Differentiate between abstract class and interface with suitable examples.",
+                  "type": "Differentiate with Example",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2022_Q5b",
+                  "year": 2022,
+                  "qNumber": "Q5b",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "What is access modifier in C++? Differentiate between each type.",
+                  "type": "Explanation & Differentiate",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2022_Q6a",
+                  "year": 2022,
+                  "qNumber": "Q6a",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "Differentiate between a class and an object. Write an example (syntax) to define a class in C++.",
+                  "type": "Differentiate & Code",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2022_Q6b",
+                  "year": 2022,
+                  "qNumber": "Q6b",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "With an example, explain the terms constructor and destructor.",
+                  "type": "Explanation with Example",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2022_Q7a",
+                  "year": 2022,
+                  "qNumber": "Q7a",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "What is a friend function and what are its advantages? What are the guidelines that should be followed while using friend function?",
+                  "type": "Explanation",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2022_Q7b",
+                  "year": 2022,
+                  "qNumber": "Q7b",
+                  "chapter": "Module 5: Pointers, Arrays and Exception Handling",
+                  "text": "Explain dangling pointer with the help of an example.",
+                  "type": "Explanation with Example",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2022_Q8a",
+                  "year": 2022,
+                  "qNumber": "Q8a",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "Explain how base class member functions can be involved in a derived class if the derived class also has a member function with the same name.",
+                  "type": "Explanation",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2022_Q8b",
+                  "year": 2022,
+                  "qNumber": "Q8b",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "Create a class complex and implement the following:\n(i) Define suitable constructors and destructors\n(ii) Overload the operators + and -\n(iii) Write a friend function sum which adds the real and imaginary parts of a complex object.",
+                  "type": "Code",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2022_Q9a",
+                  "year": 2022,
+                  "qNumber": "Q9a",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "Write short notes on any two of the following: Polymorphism",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2022_Q9b",
+                  "year": 2022,
+                  "qNumber": "Q9b",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "Write short notes on any two of the following: Function Templates",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2022_Q9c",
+                  "year": 2022,
+                  "qNumber": "Q9c",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "Write short notes on any two of the following: Container class",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2022_Q9d",
+                  "year": 2022,
+                  "qNumber": "Q9d",
+                  "chapter": "Module 2: Control Structures and Functions",
+                  "text": "Write short notes on any two of the following: Inline function",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2023_Q1a",
+                  "year": 2023,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "To prevent any method from overriding we declare the method as\n(i) static\n(ii) final\n(iii) const\n(iv) None of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2023_Q1b",
+                  "year": 2023,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "Does constructor overloading include different return types for constructors to be overloaded?\n(i) yes, if return types are different, signature becomes different.\n(ii) yes, because return types can differentiate two functions.\n(iii) no, because return types cannot differentiate two functions\n(iv) no, constructors don't have any return type.",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2023_Q1c",
+                  "year": 2023,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "Which of the following type of class allows only one object of it to be created\n(i) Virtual Class\n(ii) Abstract class\n(iii) Singleton class\n(iv) Friend class",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2023_Q1d",
+                  "year": 2023,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 5: Pointers, Arrays and Exception Handling",
+                  "text": "What will happen if the exception is not caught in the program?\n(i) Error\n(ii) Program will execute\n(iii) Block of the code will not execute\n(iv) None of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2023_Q1e",
+                  "year": 2023,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 5: Pointers, Arrays and Exception Handling",
+                  "text": "In C++ dynamic memory allocation is accomplished with the operator\n(i) new\n(ii) melloc\n(iii) this\n(iv) allocate",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2023_Q1f",
+                  "year": 2023,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "Which of the following statement is correct?\n(i) base class pointer cannot point to derived class.\n(ii) derived class pointer cannot point to base class.\n(iii) pointer to derived class cannot be created.\n(iv) pointer to base class cannot be created.",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2023_Q1g",
+                  "year": 2023,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 2: Control Structures and Functions",
+                  "text": "You should make a function virtual if\n(i) every class that is derived from this class uses all the member functions from this class.\n(ii) every class that is derived from this class needs to redefine this function.\n(iii) that function is an operator.\n(iv) defined only in the derived classes.",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2023_Q1h",
+                  "year": 2023,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "The fields in a structure in C and a class in C++ are by default\n(i) public, protected\n(ii) protected, public\n(iii) private, private\n(iv) public, private",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2023_Q1i",
+                  "year": 2023,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "Class Dog: public X, public Y is an example of\n(i) multiple inheritance\n(ii) multilevel inheritance\n(iii) linear inheritance\n(iv) none of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2023_Q1j",
+                  "year": 2023,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 2: Control Structures and Functions",
+                  "text": "The compiler identifies a virtual function to be pure\n(i) by the presence of the keyword pure.\n(ii) by its location in the program.\n(iii) if it is equated to 0.\n(iv) none of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100313_2023_Q2a",
+                  "year": 2023,
+                  "qNumber": "Q2a",
+                  "chapter": "Module 1: Introduction to C++",
+                  "text": "Explain in brief the benefits of object-oriented programming over procedure oriented programming.",
+                  "type": "Explanation",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2023_Q2b",
+                  "year": 2023,
+                  "qNumber": "Q2b",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "With an example explain the terms constructor and destructor.",
+                  "type": "Explanation with Example",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2023_Q3a",
+                  "year": 2023,
+                  "qNumber": "Q3a",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "Explain different access specifiers and their scope used in C++.",
+                  "type": "Explanation",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2023_Q3b",
+                  "year": 2023,
+                  "qNumber": "Q3b",
+                  "chapter": "Module 2: Control Structures and Functions",
+                  "text": "What are the advantages of passing arguments by reference? Write a function called zeroSmaller() function that receives two integer arguments by reference and then sets smaller of the two numbers to zero. Add the code for main() function also from where zeroSmaller() is called.",
+                  "type": "Explanation & Code",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2023_Q4a",
+                  "year": 2023,
+                  "qNumber": "Q4a",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "Discuss why converting a base class pointer to a derived class pointer is considered dangerous by the compiler.",
+                  "type": "Explanation",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2023_Q4b",
+                  "year": 2023,
+                  "qNumber": "Q4b",
+                  "chapter": "Module 1: Introduction to C++",
+                  "text": "Write a C++ program to find a substring inside a string.",
+                  "type": "Code",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2023_Q5a",
+                  "year": 2023,
+                  "qNumber": "Q5a",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "Differentiate between abstract class and interface.",
+                  "type": "Differentiate",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2023_Q5b",
+                  "year": 2023,
+                  "qNumber": "Q5b",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "What is function template? Differentiate between template class and class template.",
+                  "type": "Explanation & Differentiate",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2023_Q6a",
+                  "year": 2023,
+                  "qNumber": "Q6a",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "What are the different forms of inheritance? Give an example for each.",
+                  "type": "Explanation with Example",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2023_Q6b",
+                  "year": 2023,
+                  "qNumber": "Q6b",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "What is a friend function? A friend function cannot be used to overload the assignment operator (=). Explain why?",
+                  "type": "Explanation",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2023_Q7a",
+                  "year": 2023,
+                  "qNumber": "Q7a",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "With the help of example programs, differentiate between Overloading and Overriding.",
+                  "type": "Differentiate with Example",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2023_Q7b",
+                  "year": 2023,
+                  "qNumber": "Q7b",
+                  "chapter": "Module 4: Overloading, Templates and Inheritance",
+                  "text": "Write an object oriented program in C++ to show the overloading of template function.",
+                  "type": "Code",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2023_Q8a",
+                  "year": 2023,
+                  "qNumber": "Q8a",
+                  "chapter": "Module 2: Control Structures and Functions",
+                  "text": "Write an object oriented program in C++ using function overloading to check whether the input data (either strings or integers) are palindrome or not, and display the results accordingly.",
+                  "type": "Code",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2023_Q8b",
+                  "year": 2023,
+                  "qNumber": "Q8b",
+                  "chapter": "Module 5: Pointers, Arrays and Exception Handling",
+                  "text": "What is the difference between error and exception? When do we use multiple catch handlers? Explain with suitable example.",
+                  "type": "Differentiate & Explanation with Example",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2023_Q9a",
+                  "year": 2023,
+                  "qNumber": "Q9a",
+                  "chapter": "Module 3: Classes and Data Abstraction",
+                  "text": "Write short notes on any two of the following: Copy constructor",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2023_Q9b",
+                  "year": 2023,
+                  "qNumber": "Q9b",
+                  "chapter": "Module 2: Control Structures and Functions",
+                  "text": "Write short notes on any two of the following: Pure virtual function",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2023_Q9c",
+                  "year": 2023,
+                  "qNumber": "Q9c",
+                  "chapter": "Module 5: Pointers, Arrays and Exception Handling",
+                  "text": "Write short notes on any two of the following: Object pointer",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100313_2023_Q9d",
+                  "year": 2023,
+                  "qNumber": "Q9d",
+                  "chapter": "Module 5: Pointers, Arrays and Exception Handling",
+                  "text": "Write short notes on any two of the following: Stack unwinding",
+                  "type": "Short Notes",
+                  "marks": 7
+                }
+              ]
             },
             {
               "id": "cse_100314",
