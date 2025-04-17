@@ -2742,7 +2742,7 @@
                   "year": 2020,
                   "qNumber": "Q4a",
                   "chapter": "Module 5: Memory and PLDs",
-                  "text": "Explain internal organization of 16x2 memory chips using suitable diagrams. Calculate the maximum rate at which data can be stored and read for a memory having following timing parameters: ![Table: TRD=70, Tdw=120, Trc=200, Twp=0, Twc=200 ns](https://mtjwwpxkwpaagqsnfbks.supabase.co/storage/v1/object/public/images//it_100305_2020_Q7a.png)",
+                  "text": "Explain internal organization of 16x2 memory chips using suitable diagrams. Calculate the maximum rate at which data can be stored and read for a memory having following timing parameters: ![Table: TRD=70, Tdw=120, Trc=200, Twp=0, Twc=200 ns](https://mtjwwpxkwpaagqsnfbks.supabase.co/storage/v1/object/public/images//it_100305_2020_Q4a.png)",
                   "type": "Explanation & Calculation",
                   "marks": 10
                 },
@@ -2796,7 +2796,7 @@
                   "year": 2020,
                   "qNumber": "Q7a",
                   "chapter": "Module 3: Sequential Circuits",
-                  "text": "On the following graph, inputs CLK and D are shown: ![Timing Diagram Provided](https://mtjwwpxkwpaagqsnfbks.supabase.co/storage/v1/object/public/images//it_106301_2023_Q7b.png). They are inputs to a D latch and a positive edge triggered D flip-flop. Assuming initial output 0, draw the output waveform for flip-flop and latch. Do the two outputs differ? If so, why?",
+                  "text": "On the following graph, inputs CLK and D are shown: ![Timing Diagram Provided](https://mtjwwpxkwpaagqsnfbks.supabase.co/storage/v1/object/public/images//it_100305_2020_Q7a.png). They are inputs to a D latch and a positive edge triggered D flip-flop. Assuming initial output 0, draw the output waveform for flip-flop and latch. Do the two outputs differ? If so, why?",
                   "type": "Problem/Analysis_Image",
                   "marks": 10
                 },
