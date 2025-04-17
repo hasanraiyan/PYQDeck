@@ -462,6 +462,519 @@
                   "text": "Write short notes on the following: AVL tree",
                   "type": "Short Notes",
                   "marks": 3.5
+                },
+                {
+                  "questionId": "it_100304_2021_Q1a",
+                  "year": 2021,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "What is the worst case run-time complexity of binary search algorithm?\n\n(i) O(n^2)\n(ii) O(n^log n)\n(iii) O(n^3)\n(iv) O(n)",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2021_Q1b",
+                  "year": 2021,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 2: Stacks and Queues",
+                  "text": "push() and pop() functions are found in\n\n(i) queues\n(ii) list\n(iii) stacks\n(iv) trees",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2021_Q1c",
+                  "year": 2021,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Binary search tree has average case run-time complexity of O(log n). What could be the worst case?\n\n(i) O(n)\n(ii) O(n^2)\n(iii) O(n^3)\n(iv) None of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2021_Q1d",
+                  "year": 2021,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "What will be the running-time of Dijkstra's single-source shortest path algorithm, if the graph G(V, E) is stored in the form of adjacency list and binary heap is used?\n\n(i) O(|V|^2)\n(ii) O(|V|log|V|)\n(iii) O(|E|+|V|log|V|)\n(iv) None of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2021_Q1e",
+                  "year": 2021,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 1: Introduction & Analysis",
+                  "text": "Tower of Hanoi is a classic example of\n\n(i) divide and conquer\n(ii) recursive approach\n(iii) (ii) but not (i)\n(iv) Both (i) and (ii)",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2021_Q1f",
+                  "year": 2021,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "If locality is a concern, you can use ___ to traverse the graph.\n\n(i) breadth-first search\n(ii) depth-first search\n(iii) either BFS or DFS\n(iv) None of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2021_Q1g",
+                  "year": 2021,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 2: Stacks and Queues",
+                  "text": "Which data structure is used for balancing of symbols?\n\n(i) Queue\n(ii) Stack\n(iii) Tree\n(iv) Graph",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2021_Q1h",
+                  "year": 2021,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Which data structure is most efficient to find the top 10 largest items out of 1 million items stored in file?\n\n(i) Min heap\n(ii) Max heap\n(iii) Binary search tree\n(iv) AVL tree",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2021_Q1i",
+                  "year": 2021,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "A data structure is required for storing a set of integers such that each of the following operations can be done in (log n) time, where n is the number of elements in the set:\n\n* Deletion of the smallest element\n* Insertion of an element if it is not already present in the set\nWhich of the following can be used?\n\n(i) A heap can be used but not a balanced binary search tree\n(ii) A balanced binary search tree can be used but not a heap\n(iii) Both balanced binary search tree and heap can be used\n(iv) Neither balanced binary search tree nor heap can be used",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2021_Q1j",
+                  "year": 2021,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "The most appropriate matching for the following pairs is\nX. Depth-first search  1. Heap\nY. Breadth-first search 2. Queue\nZ. Sorting              3. Stack\n\n(i) X-1, Y-2, Z-3\n(ii) X-3, Y-1, Z-2\n(iii) X-3, Y-2, Z-1\n(iv) X-2, Y-3, Z-1",
+                  "type": "MCQ_Matching",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2021_Q2a",
+                  "year": 2021,
+                  "qNumber": "Q2a",
+                  "chapter": "Module 3: Linked Lists",
+                  "text": "Josephus problem: A group of soldiers is surrounded by an overwhelming army. There is no hope of victory without reinforcements. There is only a single horse available for escape. The soldiers agree to a pact to determine which of them is to escape and summon help. They form a circle, and a number (n) and one of their names are picked from a hat. Beginning with the soldier whose name is picked, they begin to count clockwise around the circle. When the count reaches (n), that soldier is removed from the circle, and the count begins again with the next soldier. The eliminated soldier is no longer a part of the circle. The process continues until one soldier remains and takes the horse to summon help.\nSuppose n=3 and there are five soldiers who form a circle in the order A, B, C, D and E. Let the soldier to start with A, so C is eliminated first, then A gets eliminated second, then E at third, finally B gets eliminated. So D is the one who escapes with the horse.\nWrite a function in C which displays the names of every soldier in the order of their elimination and finally the name of the soldier left, using circular linked list. New list should not be created.",
+                  "type": "Problem/Code",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2021_Q2b",
+                  "year": 2021,
+                  "qNumber": "Q2b",
+                  "chapter": "Module 3: Linked Lists",
+                  "text": "Write a program in C to insert an element after an existing element in a doubly linked list.",
+                  "type": "Code",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2021_Q3a",
+                  "year": 2021,
+                  "qNumber": "Q3a",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Insert the following numbers, in the given sequence, in an empty AVL tree :\n 1, 26, 2, 25, 3, 24, 4, 23, 5\nDisplay the tree after every insertion. Also state the minimum number of nodes which are required to construct AVL tree of height 7 (note that the root is at level 0).",
+                  "type": "Problem & Analysis",
+                  "marks": 8
+                },
+                {
+                  "questionId": "it_100304_2021_Q3b",
+                  "year": 2021,
+                  "qNumber": "Q3b",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "Sort the following numbers in ascending order using heapsort. Show step-by-step analysis: 25, 57, 48, 37, 12, 92, 86, 33",
+                  "type": "Algorithm Application",
+                  "marks": 6
+                },
+                {
+                  "questionId": "it_100304_2021_Q4",
+                  "year": 2021,
+                  "qNumber": "Q4",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Insert the following numbers, in the given sequence, in an empty B tree of order 5 and display the tree at every split :\n 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1\nNow delete the following elements from the tree, in the given sequence, and display the tree at every merge.",
+                  "type": "Problem",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100304_2021_Q5",
+                  "year": 2021,
+                  "qNumber": "Q5",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Insert the following numbers, in the given sequence, in an empty B+ tree of order 3 and display the tree at every split : \n10, 20, 30, 90, 80, 60, 70, 40, 50, 66, 16, 84, 21, 76\nNow delete the following elements from the tree, in the given sequence, and display the tree at every merge.",
+                  "type": "Problem",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100304_2021_Q6a",
+                  "year": 2021,
+                  "qNumber": "Q6a",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Construct the Huffman tree for data given in the table below :\nAlphabet | Frequency\n---------------------\nR | 5\nT | 6\nY | 2\nC | 16\nS | 3\nL | 60\nA | 8",
+                  "type": "Problem",
+                  "marks": 8
+                },
+                {
+                  "questionId": "it_100304_2021_Q6b",
+                  "year": 2021,
+                  "qNumber": "Q6b",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "Show at every step the contents of the hash table after inserting the keys in the order 23, 11, 4, 17, 84, 22, 33. The hash function is given as h(key) = key%11\nThe hash table has a space for 11 keys only. Resolve collision using-\n(i) linear probing;\n(ii) quadratic probing.",
+                  "type": "Problem",
+                  "marks": 6
+                },
+                {
+                  "questionId": "it_100304_2021_Q7a",
+                  "year": 2021,
+                  "qNumber": "Q7a",
+                  "chapter": "Module 1: Introduction & Analysis",
+                  "text": "Differentiate between the following: Abstract Data Type and Data Structure",
+                  "type": "Differentiate",
+                  "marks": 4
+                },
+                {
+                  "questionId": "it_100304_2021_Q7b",
+                  "year": 2021,
+                  "qNumber": "Q7b",
+                  "chapter": "Module 2: Stacks and Queues",
+                  "text": "Differentiate between the following: Stack and Queue",
+                  "type": "Differentiate",
+                  "marks": 5
+                },
+                {
+                  "questionId": "it_100304_2021_Q7c",
+                  "year": 2021,
+                  "qNumber": "Q7c",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Differentiate between the following: Depth-first search and Breadth-first search",
+                  "type": "Differentiate",
+                  "marks": 5
+                },
+                {
+                  "questionId": "it_100304_2021_Q8",
+                  "year": 2021,
+                  "qNumber": "Q8",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Explain in detail the Kruskal's and Prim's algorithms for constructing minimum spanning tree. For the weighted undirected graph given below, construct the minimum cost spanning tree for the given graph using Kruskal's algorithm and Prim's algorithm when the starting vertex is R1 :\n ![graph](https://mtjwwpxkwpaagqsnfbks.supabase.co/storage/v1/object/public/images//it_100304_2021_Q8.png)",
+                  "type": "Explanation & Problem",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100304_2021_Q9a",
+                  "year": 2021,
+                  "qNumber": "Q9a",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Define the following: Tree",
+                  "type": "Definition",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2021_Q9b",
+                  "year": 2021,
+                  "qNumber": "Q9b",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Define the following: Binary tree",
+                  "type": "Definition",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2021_Q9c",
+                  "year": 2021,
+                  "qNumber": "Q9c",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Define the following: Strictly binary tree",
+                  "type": "Definition",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2021_Q9d",
+                  "year": 2021,
+                  "qNumber": "Q9d",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Define the following: Complete binary tree",
+                  "type": "Definition",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2021_Q9e",
+                  "year": 2021,
+                  "qNumber": "Q9e",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Define the following: Full binary tree",
+                  "type": "Definition",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2021_Q9f",
+                  "year": 2021,
+                  "qNumber": "Q9f",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Define the following: Min heap",
+                  "type": "Definition",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2021_Q9g",
+                  "year": 2021,
+                  "qNumber": "Q9g",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Define the following: Skew tree",
+                  "type": "Definition",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2022_Q1a",
+                  "year": 2022,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 2: Stacks and Queues",
+                  "text": "In a stack, if a user tries to remove an element from empty stack it is called:\n(i) underflow\n(ii) empty collection\n(iii) garbage collection\n(iv) overflow",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2022_Q1b",
+                  "year": 2022,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Consider the binary max-heap implemented using an array. Which one of the following array represents the heap:\n(i) 25, 12, 16, 13, 10, 8, 14\n(ii) 25, 12, 16, 13, 10, 8, 14\n(iii) 25, 14, 16, 13, 10, 8, 12\n(iv) 25, 14, 12, 13, 10, 8, 16",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2022_Q1c",
+                  "year": 2022,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "A hash function is defined as h(key) = key mod 7, with linear probing used to insert keys 44, 45, 79, 55, 91, 18, 63 into a table indexed from 0 to 6. What will be the location of key 18.\n(i) 3\n(ii) 4\n(iii) 5\n(iv) 6",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2022_Q1d",
+                  "year": 2022,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "If the number of values to be sorted is already partially sorted, then ______ sorting can be efficient.\n(i) merge\n(ii) insertion\n(iii) bubble\n(iv) selection",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2022_Q1e",
+                  "year": 2022,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "The time complexity of merge sort is:\n(i) O(n)\n(ii) O(logn)\n(iii) O(nlogn)\n(iv) O(n2)",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2022_Q1f",
+                  "year": 2022,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "State true or false:\nA: Binary search is used for searching in a sorted array.\nB: The time complexity of binary search is O(logn)\n(i) True, False\n(ii) False, True\n(iii) False, False\n(iv) True, True",
+                  "type": "MCQ_TrueFalse",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2022_Q1g",
+                  "year": 2022,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 3: Linked Lists",
+                  "text": "In a circular linked list organization, insertion of a record involves modification of\n(i) One pointer\n(ii) Two pointers\n(iii) More than two pointers\n(iv) No pointer",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2022_Q1h",
+                  "year": 2022,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Level order traversal of a rooted tree can be done by starting from the root and performing\n(i) pre-order traversal\n(ii) in-order traversal\n(iii) depth first search\n(iv) breadth first search",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2022_Q1i",
+                  "year": 2022,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 1: Introduction & Analysis",
+                  "text": "An Abstract Data Type (ADT) is\n(i) same as an abstract class\n(ii) a data type that cannot be instantiated\n(iii) a data type for which only the operations defined on it can be used, but none else\n(iv) all of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2022_Q1j",
+                  "year": 2022,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "How many distinct BSTs can be constructed with 3 distinct keys?\n(i) 4\n(ii) 5\n(iii) 6\n(iv) 9",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2022_Q2a",
+                  "year": 2022,
+                  "qNumber": "Q2a",
+                  "chapter": "Module 1: Introduction & Analysis",
+                  "text": "Explain different asymptotic notations (Big-O, Ω, Θ) used for comparing the time complexity of an algorithm with neat figures.",
+                  "type": "Explanation with Diagram",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2022_Q2b",
+                  "year": 2022,
+                  "qNumber": "Q2b",
+                  "chapter": "Module 1: Introduction & Analysis",
+                  "text": "The run time of an algorithm is represented by the recurrence relation T(n) = 2T(n/2) + n; n ≥ 2 and with boundary condition T(1) = 0. What is the time complexity (in terms of Θ notation).",
+                  "type": "Problem/Analysis",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2022_Q3a",
+                  "year": 2022,
+                  "qNumber": "Q3a",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Discuss pre-order, in-order and post-order traversal techniques of binary tree. Write a C function for non-recursive pre-order traversal.",
+                  "type": "Explanation & Code",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2022_Q3b",
+                  "year": 2022,
+                  "qNumber": "Q3b",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "The pre-order traversal sequence of a Binary Search Tree (BST) is 30, 20, 10, 15, 25, 23, 39, 35, 42. Write step by step process to derive the BST and find post-order traversal also.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2022_Q4a",
+                  "year": 2022,
+                  "qNumber": "Q4a",
+                  "chapter": "Module 2: Stacks and Queues",
+                  "text": "Consider a circular queue of capacity n-elements implemented with an array. Write C functions for insertion and deletion operations.",
+                  "type": "Code",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2022_Q4b",
+                  "year": 2022,
+                  "qNumber": "Q4b",
+                  "chapter": "Module 2: Stacks and Queues",
+                  "text": "Convert the given infix expression into postfix using stack: A + B / C * (D + E) - F. For each input symbol clearly mention the action taken and status of the stack during conversion.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2022_Q5a",
+                  "year": 2022,
+                  "qNumber": "Q5a",
+                  "chapter": "Module 3: Linked Lists",
+                  "text": "Write a C function to delete last node from a singly linked list.",
+                  "type": "Code",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2022_Q5b",
+                  "year": 2022,
+                  "qNumber": "Q5b",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Create a max-heap by inserting following keys in the given order. Show each insertion step with clear illustration: 25, 35, 18, 9, 46, 70, 48.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2022_Q6a",
+                  "year": 2022,
+                  "qNumber": "Q6a",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "Write an algorithm for merge sort and discuss space and time complexity.",
+                  "type": "Algorithm & Analysis",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2022_Q6b",
+                  "year": 2022,
+                  "qNumber": "Q6b",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "Define collision in hashing. Explain briefly different methodologies to resolve collision.",
+                  "type": "Definition & Explanation",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2022_Q7a",
+                  "year": 2022,
+                  "qNumber": "Q7a",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Write algorithm to count leaf nodes in a binary tree. What is the complexity of your algorithm?",
+                  "type": "Algorithm & Analysis",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2022_Q7b",
+                  "year": 2022,
+                  "qNumber": "Q7b",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Compare BFS and DFS traversal techniques for graph. Write an algorithm to perform BFS using queue.",
+                  "type": "Comparison & Algorithm",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2022_Q8a",
+                  "year": 2022,
+                  "qNumber": "Q8a",
+                  "chapter": "Module 1: Introduction & Analysis",
+                  "text": "Differentiate between system defined data types and abstract data types with suitable examples.",
+                  "type": "Differentiate with Example",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2022_Q8b",
+                  "year": 2022,
+                  "qNumber": "Q8b",
+                  "chapter": "Module 3: Linked Lists",
+                  "text": "What is doubly linked list? What are its applications? Explain how a node can be added as last node using appropriate pseudo code",
+                  "type": "Explanation & Algorithm",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2022_Q9a",
+                  "year": 2022,
+                  "qNumber": "Q9a",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Write short notes on any two of the following: AVL Rotations",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2022_Q9b",
+                  "year": 2022,
+                  "qNumber": "Q9b",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "Write short notes on any two of the following: Open Addressing & Chaining",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2022_Q9c",
+                  "year": 2022,
+                  "qNumber": "Q9c",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Write short notes on any two of the following: B-Tree",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2022_Q9d",
+                  "year": 2022,
+                  "qNumber": "Q9d",
+                  "chapter": "Module 2: Stacks and Queues",
+                  "text": "Write short notes on any two of the following: Priority Queue",
+                  "type": "Short Notes",
+                  "marks": 7
                 }
               ]
             },
