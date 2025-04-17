@@ -2583,15 +2583,1297 @@
               "id": "it_100314",
               "name": "TECHNICAL WRITING",
               "code": "100314",
-              "modules": [],
-              "questions": []
+              "modules": [
+                {
+                  "id": "m1",
+                  "name": "Module 1: Introduction",
+                  "description": "Fundamentals of Technical Writing: Need for Clear and Concise Technical Writing, Attributes of Technical Writing, Types of Technical Writing, Benefits of Technical Communication, Technical, Managerial and General Readers, Expressing versus Impressing, Correct use of Noun, Pronoun, Verb, Adjective, Adverbs, Tense and Punctuation.",
+                  "lectures": 10
+                },
+                {
+                  "id": "m2",
+                  "name": "Module 2: Performing Technical Studies",
+                  "description": "Types of Technical Studies, General Methodology- Proposing a Project, Gathering Background Information, Designing Test Plans, Performing Experiments, Reporting Results, Writing Strategy: Analysis of Readers, Scope of Writing, Purpose and Objective. Document Options: Document Hierarchy, Report Types and Selection. Elements of Report Writing: Style and Appearance, Writing Presentation, Language Skills, Writing Style: Elements of Technical Communication Style, Recommended Style, Learn to Prepare Effective Illustrations",
+                  "lectures": 10
+                },
+                {
+                  "id": "m3",
+                  "name": "Module 3: Formal Reports",
+                  "description": "The Outline and Introduction (Outline, Title, Front Matter, Writing the Introduction), Writing the Body (Writing a Procedure, Describing Mechanism/Machines/Processes, Writing Test Results, Writing the Discussion Section), Closure (Conclusions, Recommendation, References, Abstract, Back Matter, Report Distribution, Saving and Storing Reports). Elements of an Informal Report, Investigation Reports, Service Activity Log, Lab. Reports and Proposals. Typical Memo Reports.",
+                  "lectures": 10
+                },
+                {
+                  "id": "m4",
+                  "name": "Module 4: Review and Editing",
+                  "description": "Types of Review and Edit, Review and Editing Methodology, Examples of Reviews. Oral Presentations: Types of Oral Presentations, Preparation, Visual Aids, Impediments to Technical Writing, Maintaining Writing Skills, Measuring Report Results.",
+                  "lectures": 10
+                }
+              ],
+              "questions": [
+                {
+                  "questionId": "it_100314_2019_Q1a",
+                  "year": 2019,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Technical writing demands ___ use of language.\n(i) figurative\n(ii) poetic\n(iii) factual\n(iv) dramatic",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2019_Q1b",
+                  "year": 2019,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Which of these must be avoided in technical writing?\n(i) Facts\n(ii) Grammar\n(iii) Punctuation\n(iv) Personal feelings",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2019_Q1c",
+                  "year": 2019,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Which of the following words is used in technical writing?\n(i) Apex\n(ii) Top\n(iii) Slanting\n(iv) Bottom",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2019_Q1d",
+                  "year": 2019,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Which of the following is a technical word for slanting?\n(i) Lateral\n(ii) Sloping\n(iii) Tilting\n(iv) Bent",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2019_Q1e",
+                  "year": 2019,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Shortest document among technical written documents, known as\n(i) report\n(ii) Web site\n(iii) summary\n(iv) paragraph",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2019_Q1f",
+                  "year": 2019,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Which of the following is the external sound in the channels of communication?\n(i) Noise\n(ii) Semantic problems\n(iii) Cultural barriers\n(iv) Overcommunication",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2019_Q1g",
+                  "year": 2019,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Which of the following should not be avoided for effective communication?\n(i) Noise\n(ii) Planning\n(iii) Semantic problems\n(iv) Wrong assumptions",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2019_Q1h",
+                  "year": 2019,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 1: Introduction",
+                  "text": "___ are the problems arising from expression.\n(i) Cultural barriers\n(ii) Semantic problems\n(iii) Wrong assumptions\n(iv) Selecting perception",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2019_Q1i",
+                  "year": 2019,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Starting of resume, must have\n(i) job details\n(ii) career objective\n(iii) identification\n(iv) title",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2019_Q1j",
+                  "year": 2019,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Write four sentences on 'Tips to improve your technical writing skills'.",
+                  "type": "Short Answer",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2019_Q2a",
+                  "year": 2019,
+                  "qNumber": "Q2a",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Write in about 250 words on any one of the following: How to improve oral language skills?",
+                  "type": "Essay",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2019_Q2b",
+                  "year": 2019,
+                  "qNumber": "Q2b",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Write in about 250 words on any one of the following: Why are visual aids important?",
+                  "type": "Essay",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2019_Q3",
+                  "year": 2019,
+                  "qNumber": "Q3",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "What is editing and why do we need to edit and review our writing?",
+                  "type": "Explanation",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2019_Q4a",
+                  "year": 2019,
+                  "qNumber": "Q4a",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "Write notes on any two of the following: Types of literature review",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100314_2019_Q4b",
+                  "year": 2019,
+                  "qNumber": "Q4b",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Write notes on any two of the following: Informal report",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100314_2019_Q4c",
+                  "year": 2019,
+                  "qNumber": "Q4c",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Write notes on any two of the following: Project proposal",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100314_2019_Q4d",
+                  "year": 2019,
+                  "qNumber": "Q4d",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Write notes on any two of the following: Expository writing",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100314_2019_Q5",
+                  "year": 2019,
+                  "qNumber": "Q5",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "What are the basic components of a proposal?",
+                  "type": "Explanation",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2019_Q6",
+                  "year": 2019,
+                  "qNumber": "Q6",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "What are the basic principles of Formal Report Writing?",
+                  "type": "Explanation",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2019_Q7",
+                  "year": 2019,
+                  "qNumber": "Q7",
+                  "chapter": "Module 1: Introduction",
+                  "text": "How can I improve my English Language skills?",
+                  "type": "Explanation",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2019_Q8",
+                  "year": 2019,
+                  "qNumber": "Q8",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "What are different types of writing styles? Explain with examples.",
+                  "type": "Explanation with Example",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2019_Q9",
+                  "year": 2019,
+                  "qNumber": "Q9",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "In not more than 150 words, write about 'Oral Presentation'.",
+                  "type": "Short Notes",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2020_Q1a",
+                  "year": 2020,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Technical writing demands ___ use of language.\n(i) figurative\n(ii) poetic\n(iii) factual\n(iv) dramatic",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2020_Q1b",
+                  "year": 2020,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Which of the following must be avoided in technical writing?\n(i) Facts\n(ii) Grammar\n(iii) Punctuation\n(iv) Personal feelings",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2020_Q1c",
+                  "year": 2020,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "Familiar words must be used in technical writing.\n(i) True\n(ii) False",
+                  "type": "MCQ_TrueFalse",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2020_Q1d",
+                  "year": 2020,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Which of the following should be avoided in an e-mail?\n(i) Wrong e-mail address\n(ii) Subject line\n(iii) Smileys\n(iv) Rereading",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2020_Q1e",
+                  "year": 2020,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Which of the following does not provide free e-mail?\n(i) Hotmail\n(ii) Rediff\n(iii) WhatsApp\n(iv) Yahoo",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2020_Q1f",
+                  "year": 2020,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Which of the following is the easiest way of communication?\n(i) E-mail\n(ii) Telephone\n(iii) Fax\n(iv) Letter",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2020_Q1g",
+                  "year": 2020,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "What audience are least information needed?\n(i) Low-tech audience\n(ii) Lay audience\n(iii) High-tech audience\n(iv) All of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2020_Q1h",
+                  "year": 2020,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 1: Introduction",
+                  "text": "___ means to impart understanding of the message.\n(i) Encoding\n(ii) Receiver\n(iii) Decoding\n(iv) Feedback",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2020_Q1i",
+                  "year": 2020,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Which of the following must be avoided for effective communication?\n(i) Sharing of activity\n(ii) Listening\n(iii) Ambiguity\n(iv) Politeness",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2020_Q1j",
+                  "year": 2020,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Write four sentences on Expressing vs. Impressing.",
+                  "type": "Short Answer",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2020_Q2a",
+                  "year": 2020,
+                  "qNumber": "Q2a",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Write in about 250 words on any one of the following: Visual aids",
+                  "type": "Essay",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2020_Q2b",
+                  "year": 2020,
+                  "qNumber": "Q2b",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Write in about 250 words on any one of the following: Why is editing important?",
+                  "type": "Essay",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2020_Q3",
+                  "year": 2020,
+                  "qNumber": "Q3",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Differentiate between formal report and informal report.",
+                  "type": "Differentiate",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2020_Q4a",
+                  "year": 2020,
+                  "qNumber": "Q4a",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "Write notes on any two of the following: Writing styles",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100314_2020_Q4b",
+                  "year": 2020,
+                  "qNumber": "Q4b",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Write notes on any two of the following: General writing",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100314_2020_Q4c",
+                  "year": 2020,
+                  "qNumber": "Q4c",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Write notes on any two of the following: Types of editing",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100314_2020_Q4d",
+                  "year": 2020,
+                  "qNumber": "Q4d",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Write notes on any two of the following: Investigation report",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100314_2020_Q5",
+                  "year": 2020,
+                  "qNumber": "Q5",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "What is the difference between report and memo? Explain with examples.",
+                  "type": "Differentiate with Example",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2020_Q6",
+                  "year": 2020,
+                  "qNumber": "Q6",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "What are the major impediments to technical writing?",
+                  "type": "Explanation",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2020_Q7",
+                  "year": 2020,
+                  "qNumber": "Q7",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "What elements can you use to enhance your presentations?",
+                  "type": "Explanation",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2020_Q8",
+                  "year": 2020,
+                  "qNumber": "Q8",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "What are the editing techniques? Explain with examples.",
+                  "type": "Explanation with Example",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2020_Q9",
+                  "year": 2020,
+                  "qNumber": "Q9",
+                  "chapter": "Module 1: Introduction",
+                  "text": "In not more than 150 words, write about Benefits of Technical Writing.",
+                  "type": "Short Notes",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2021_Q1a",
+                  "year": 2021,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Public speaking is addressing a gathering.\n(i) True\n(ii) False",
+                  "type": "MCQ_TrueFalse",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2021_Q1b",
+                  "year": 2021,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Public speaking is only verbal activity.\n(i) True\n(ii) False",
+                  "type": "MCQ_TrueFalse",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2021_Q1c",
+                  "year": 2021,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Which of the following should be avoided for an effective speech?\n(i) Determination of the purpose\n(ii) Selection of message\n(iii) Lack of interest\n(iv) Selection of theme",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2021_Q1d",
+                  "year": 2021,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Which of the following should be avoided in an e-mail?\n(i) Wrong e-mail address\n(ii) Subject line\n(iii) Smileys\n(iv) Re-reading",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2021_Q1e",
+                  "year": 2021,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Which of the following do not provide free e-mail?\n(i) Hotmail\n(ii) Rediff\n(iii) WhatsApp\n(iv) Yahoo",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2021_Q1f",
+                  "year": 2021,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Which of the following factors is not required to determine the purpose of speech?\n(i) Providing information\n(ii) Discouragement\n(iii) Accepting ideas\n(iv) Entertainment",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2021_Q1g",
+                  "year": 2021,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "What audience are least information needed?\n(i) Low-tech audience\n(ii) Lay audience\n(iii) High-tech audience\n(iv) All of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2021_Q1h",
+                  "year": 2021,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Which of the following ingredients is not required for selection of theme?\n(i) Planning\n(ii) Disorganization\n(iii) Preparation\n(iv) Organization",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2021_Q1i",
+                  "year": 2021,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Which of the following must be avoided for effective communication?\n(i) Sharing of activity\n(ii) Listening\n(iii) Ambiguity\n(iv) Politeness",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2021_Q1j",
+                  "year": 2021,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "Write four sentences on Performing Experiments'.",
+                  "type": "Short Answer",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2021_Q2a",
+                  "year": 2021,
+                  "qNumber": "Q2a",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Write in about 250 words on any one of the following: Types of reviews",
+                  "type": "Essay",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2021_Q2b",
+                  "year": 2021,
+                  "qNumber": "Q2b",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Write in about 250 words on any one of the following: Types of editing",
+                  "type": "Essay",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2021_Q3",
+                  "year": 2021,
+                  "qNumber": "Q3",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Differentiate between formal letter and memos.",
+                  "type": "Differentiate",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2021_Q4a",
+                  "year": 2021,
+                  "qNumber": "Q4a",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "Write notes on any two of the following: Writing styles",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100314_2021_Q4b",
+                  "year": 2021,
+                  "qNumber": "Q4b",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "Write notes on any two of the following: Language skills",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100314_2021_Q4c",
+                  "year": 2021,
+                  "qNumber": "Q4c",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "Write notes on any two of the following: Types of technical studies",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100314_2021_Q4d",
+                  "year": 2021,
+                  "qNumber": "Q4d",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Write notes on any two of the following: Investigation report",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100314_2021_Q5",
+                  "year": 2021,
+                  "qNumber": "Q5",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "What are the elements of informal report? Explain with examples.",
+                  "type": "Explanation with Example",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2021_Q6",
+                  "year": 2021,
+                  "qNumber": "Q6",
+                  "chapter": "Module 1: Introduction",
+                  "text": "What are the main features of technical writing?",
+                  "type": "Explanation",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2021_Q7",
+                  "year": 2021,
+                  "qNumber": "Q7",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "How can you improve your oral presentation?",
+                  "type": "Explanation",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2021_Q8",
+                  "year": 2021,
+                  "qNumber": "Q8",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "What are the editing techniques? Explain with examples.",
+                  "type": "Explanation with Example",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2021_Q9",
+                  "year": 2021,
+                  "qNumber": "Q9",
+                  "chapter": "Module 1: Introduction",
+                  "text": "In not more than 150 words write about 'Upward Communication'.",
+                  "type": "Short Notes",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2022_Q1a",
+                  "year": 2022,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Which of the following must be avoided in technical writing?\n(i) Facts\n(ii) Grammar\n(iii) Punctuation\n(iv) Personal feelings",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2022_Q1b",
+                  "year": 2022,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Which of these must be avoided in technical writing?\n(i) Facts\n(ii) Grammar\n(iii) Punctuation\n(iv) Personal feelings",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2022_Q1c",
+                  "year": 2022,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "A memo report is\n(i) External and formal\n(ii) Internal and informal\n(iii) External and informal\n(iv) Internal and formal",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2022_Q1d",
+                  "year": 2022,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Which of the following should be avoided in an e-mail?\n(i) Wrong e-mail address\n(ii) Subject line\n(iii) Smileys\n(iv) Rereading",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2022_Q1e",
+                  "year": 2022,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Shortest documents among technical written documents, known as\n(i) Report\n(ii) Website\n(iii) Summary\n(iv) Paragraph",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2022_Q1f",
+                  "year": 2022,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Which off the following is the easiest way of communication?\n(i) E-mail\n(ii) Telephone\n(iii) Fax\n(iv) Letter",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2022_Q1g",
+                  "year": 2022,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 1: Introduction",
+                  "text": "We, us and our are example of\n(i) Contractions\n(ii) Pronoun\n(iii) Name usage\n(iv) Noun",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2022_Q1h",
+                  "year": 2022,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Which of the following must be avoided for effective communication?\n(i) Sharing of activity\n(ii) Listening\n(iii) Ambiguity\n(iv) Politeness",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2022_Q1i",
+                  "year": 2022,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 1: Introduction",
+                  "text": "___ are the problems arising from expression.\n(i) Cultural barriers\n(ii) Semantic problems\n(iii) Wrong assumptions\n(iv) Selecting perception",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2022_Q1j",
+                  "year": 2022,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Kinesics Stands for\n(i) Space language\n(ii) Time language\n(iii) Body language\n(iv) None of these",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2022_Q2a",
+                  "year": 2022,
+                  "qNumber": "Q2a",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Write in 250 words on \"Role and responsibility of engineers\".",
+                  "type": "Essay",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100314_2022_Q2b",
+                  "year": 2022,
+                  "qNumber": "Q2b",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Write in 250 words on \"Why is editing important\".",
+                  "type": "Essay",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100314_2022_Q3",
+                  "year": 2022,
+                  "qNumber": "Q3",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Differentiate between formal report and informal report.",
+                  "type": "Differentiate",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2022_Q4a_i",
+                  "year": 2022,
+                  "qNumber": "Q4a_i",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "Write notes on any two off the following: Writing Styles",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100314_2022_Q4a_ii",
+                  "year": 2022,
+                  "qNumber": "Q4a_ii",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "Write notes on any two off the following: Types of literature review",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100314_2022_Q4a_iii",
+                  "year": 2022,
+                  "qNumber": "Q4a_iii",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Write notes on any two off the following: Proof reading",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100314_2022_Q4a_iv",
+                  "year": 2022,
+                  "qNumber": "Q4a_iv",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Write notes on any two off the following: Technical Writing",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100314_2022_Q5",
+                  "year": 2022,
+                  "qNumber": "Q5",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "What is the difference between report and memo? Explain with examples.",
+                  "type": "Differentiate with Example",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2022_Q6",
+                  "year": 2022,
+                  "qNumber": "Q6",
+                  "chapter": "Module 1: Introduction",
+                  "text": "What is the relationship between social responsibility and ethics?",
+                  "type": "Explanation",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2022_Q7",
+                  "year": 2022,
+                  "qNumber": "Q7",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "What elements can you use to enhance your presentations?",
+                  "type": "Explanation",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2022_Q8",
+                  "year": 2022,
+                  "qNumber": "Q8",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "What are the editing techniques? Explain with examples.",
+                  "type": "Explanation with Example",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2022_Q9",
+                  "year": 2022,
+                  "qNumber": "Q9",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Describe verbal and non-verbal communication in details.",
+                  "type": "Explanation",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2023_Q1a",
+                  "year": 2023,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 1: Introduction",
+                  "text": "What attribute of technical writing ensures that the information is correct and reliable?\n(i) Clarity\n(ii) Conciseness\n(iii) Accuracy\n(iv) Readability",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2023_Q1b",
+                  "year": 2023,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Which of the following is an example of technical writing?\n(i) A short story\n(ii) A novel\n(iii) A scientific journal article\n(iv) A poem",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2023_Q1c",
+                  "year": 2023,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Why is clear and concise technical writing important?\n(i) To impress the readers with complex vocabulary\n(ii) To convey information accurately and efficiently\n(iii) To make the document look longer\n(iv) To confuse the readers",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2023_Q1d",
+                  "year": 2023,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Which of the following is NOT an attribute of technical writing?\n(i) Clarity\n(ii) Brevity\n(iii) Creativity\n(iv) Accuracy",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2023_Q1e",
+                  "year": 2023,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "What is the first step in the general methodology for performing technical studies?\n(i) Designing test plans\n(ii) Reporting results\n(iii) Proposing a project\n(iv) Performing experiments",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2023_Q1f",
+                  "year": 2023,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "Why is gathering background information important in technical studies?\n(i) To extend the length of the report\n(ii) To ensure the accuracy and relevance of the study\n(iii) To impress the audience with extensive research\n(iv) To avoid conducting any experiments",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2023_Q1g",
+                  "year": 2023,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "What is the primary purpose of an investigation report?\n(i) To propose a new project\n(ii) To document the findings of a specific inquiry or investigation\n(iii) To provide routine updates\n(iv) To offer service-related information",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2023_Q1h",
+                  "year": 2023,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Which of the following is characteristic of a typical memo report?\n(i) It is a formal document with strict structure\n(ii) It is a brief, informal report used for internal communication\n(iii) It includes extensive data analysis and graphs\n(iv) It is used exclusively for external communication",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2023_Q1i",
+                  "year": 2023,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "What is the first step in preparing for an oral presentation?\n(i) Creating visual aids\n(ii) Understanding the audience and purpose\n(iii) Writing the conclusion\n(iv) Designing handouts",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2023_Q1j",
+                  "year": 2023,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Which of the following is a common visual aid used in oral presentations?\n(i) Whiteboard\n(ii) PowerPoint slides\n(iii) Handouts\n(iv) All of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100314_2023_Q2a",
+                  "year": 2023,
+                  "qNumber": "Q2a",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Write in 250-300 words on any one of the following: Criteria for good technical writing.",
+                  "type": "Essay",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2023_Q2b",
+                  "year": 2023,
+                  "qNumber": "Q2b",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Write in 250-300 words on any one of the following: Oral Presentations.",
+                  "type": "Essay",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2023_Q3",
+                  "year": 2023,
+                  "qNumber": "Q3",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "What is the difference between formal and informal reports? Explain with examples.",
+                  "type": "Differentiate with Example",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2023_Q4",
+                  "year": 2023,
+                  "qNumber": "Q4",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Explain the importance of visual aids in oral presentations. What are some best practices for designing and using visual aids effectively?",
+                  "type": "Explanation",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2023_Q5",
+                  "year": 2023,
+                  "qNumber": "Q5",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "Explain the importance of understanding the analysis of readers, scope of writing, purpose, and objective when creating technical documents. Provide examples to illustrate your points.",
+                  "type": "Explanation with Example",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2023_Q6",
+                  "year": 2023,
+                  "qNumber": "Q6",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "You are a project engineer at a construction firm working on a new building project. Write a memo report to the project manager providing an update on the current status of the project, highlighting key milestones, any challenges faced, and proposed next steps.",
+                  "type": "Problem/Scenario",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2023_Q7",
+                  "year": 2023,
+                  "qNumber": "Q7",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "You are tasked with preparing a formal report on the feasibility of implementing a renewable energy project for your college campus. Draft a detailed formal report outlining the objectives, methodology, findings, and recommendations based on your study.",
+                  "type": "Problem/Scenario",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2023_Q8",
+                  "year": 2023,
+                  "qNumber": "Q8",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "What are the varied editing techniques? Explain with examples.",
+                  "type": "Explanation with Example",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100314_2023_Q9a",
+                  "year": 2023,
+                  "qNumber": "Q9a",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Write Short notes on any two of the following: Visual Aids",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100314_2023_Q9b",
+                  "year": 2023,
+                  "qNumber": "Q9b",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Write Short notes on any two of the following: Types of Reports",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100314_2023_Q9c",
+                  "year": 2023,
+                  "qNumber": "Q9c",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Write Short notes on any two of the following: Memo Reports",
+                  "type": "Short Notes",
+                  "marks": 7
+                }
+              ]
             },
             {
               "id": "it_106301",
               "name": "DISCRETE MATHEMATICS",
               "code": "106301",
-              "modules": [],
-              "questions": []
+              "modules": [
+                {
+                  "id": "m1",
+                  "name": "Module 1: Sets, Relation and Function",
+                  "description": "Operations and Laws of Sets, Cartesian Products, Binary Relation, Partial Ordering Relation, Equivalence Relation, Image of a Set, Sum and Product of Functions, Bijective functions, Inverse and Composite Function, Size of a Set, Finite and infinite Sets, Countable and uncountable Sets, Cantor’s diagonal argument and The Power Set theorem, Schroeder-Bernstein theorem.",
+                  "lectures": 6
+                },
+                {
+                  "id": "m2",
+                  "name": "Module 2: Mathematical Induction & Counting Techniques",
+                  "description": "The Well-Ordering Principle, Recursive definition, The Division algorithm: Prime Numbers, The Greatest Common Divisor: Euclidean Algorithm, The Fundamental Theorem of Arithmetic. Basic counting techniques-inclusion and exclusion, pigeon-hole principle, permutation and combination.",
+                  "lectures": 8
+                },
+                {
+                  "id": "m3",
+                  "name": "Module 3: Propositional Logic & Proof Techniques",
+                  "description": "Syntax, Semantics, Validity and Satisfiability, Basic Connectives and Truth Tables, Logical Equivalence: The Laws of Logic, Logical Implication, Rules of Inference, The use of Quantifiers. Proof Techniques: Some Terminology, Proof Methods and Strategies, Forward Proof, Proof by Contradiction, Proof by Contraposition, Proof of Necessity and Sufficiency.",
+                  "lectures": 8
+                },
+                {
+                  "id": "m4",
+                  "name": "Module 4: Algebraic Structures & Boolean Algebra",
+                  "description": "Algebraic Structures with one Binary Operation, Semi Groups, Monoids, Groups, Congruence Relation and Quotient Structures, Free and Cyclic Monoids and Groups, Permutation Groups, Substructures, Normal Subgroups, Algebraic Structures with two Binary Operation, Rings, Integral Domain and Fields. Boolean Algebra and Boolean Ring, Identities of Boolean Algebra, Duality, Representation of Boolean Function, Disjunctive and Conjunctive Normal Form",
+                  "lectures": 8
+                },
+                {
+                  "id": "m5",
+                  "name": "Module 5: Graphs and Trees",
+                  "description": "Graphs and their properties, Degree, Connectivity, Path, Cycle, Sub Graph, Isomorphism, Eulerian and Hamiltonian Walks, Graph Coloring, Coloring maps, Planar Graphs, Coloring Vertices, Coloring Edges, List Coloring, Perfect Graph, definition properties and Example, rooted trees, trees and sorting, weighted trees and prefix codes, Bi-connected component and Articulation Points, Shortest distances.",
+                  "lectures": 10
+                }
+              ],
+              "questions": [
+                {
+                  "questionId": "it_106301_2023_Q1a",
+                  "year": 2023,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 1: Sets, Relation and Function",
+                  "text": "If A = {1, 2, 5, 7} and B = {2, 4, 6} then find the number of proper subsets of AUB?\n(i) 127\n(ii) 64\n(iii) 63\n(iv) 32",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_106301_2023_Q1b",
+                  "year": 2023,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 2: Mathematical Induction & Counting Techniques",
+                  "text": "How many divisions are required to find the greatest common divisor of 34 and 55 using the Euclidean algorithm?\n(i) 8\n(ii) 34\n(iii) 1\n(iv) 55",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_106301_2023_Q1c",
+                  "year": 2023,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 2: Mathematical Induction & Counting Techniques",
+                  "text": "How many permutations of the letters A, B, C, D, E, F, G contain the string BCD?\n(i) 7\n(ii) 120\n(iii) 7\n(iv) 3",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_106301_2023_Q1d",
+                  "year": 2023,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 2: Mathematical Induction & Counting Techniques",
+                  "text": "In how many ways can a set of two positive integers less than 100 be chosen?\n(i) 2\n(ii) 100\n(iii) 9702\n(iv) 4851",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_106301_2023_Q1e",
+                  "year": 2023,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 3: Propositional Logic & Proof Techniques",
+                  "text": "Denoting student as s and exercise x, the correct expression for the statement \"some student has solved every exercise in the textbook of this course\" is \n[Here P(s, x) = student s has solved exercise x in the textbook of this course.]\n(i) ∃s∀x P(s,x)\n(ii) ∀x∃s P(s,x)\n(iii) ∃x∀s P(s,x)\n(iv) ∃s∃x P(s,x)",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_106301_2023_Q1f",
+                  "year": 2023,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 4: Algebraic Structures & Boolean Algebra",
+                  "text": "Any nonempty set S of 2x2 matrices of rational numbers under matrix multiplication form\n(i) Abelian group\n(ii) Group\n(iii) Semigroup\n(iv) Field",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_106301_2023_Q1g",
+                  "year": 2023,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 4: Algebraic Structures & Boolean Algebra",
+                  "text": "In Boolean Algebra, which two properties specify (x∧1 = x) and (x∧¬x = 0) respectively?\n(i) Identity law, complement law\n(ii) Idempotent law, complement law\n(iii) Identity law, idempotent law\n(iv) None of the choices",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_106301_2023_Q1h",
+                  "year": 2023,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 5: Graphs and Trees",
+                  "text": "In any undirected tree, the sum of degrees of all its n vertices as well as the number of its edges are respectively equal to\n(i) n, n-1\n(ii) n, n\n(iii) 2n, n-1\n(iv) 2n, 2n",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_106301_2023_Q1i",
+                  "year": 2023,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 5: Graphs and Trees",
+                  "text": "In the graph shown below, which of the following is a circuit?\n![Image of graph provided](https://mtjwwpxkwpaagqsnfbks.supabase.co/storage/v1/object/public/images//it_106301_2023_Q1i.png)\n(i) a, e, b, c, b\n(ii) c, b, d, a, e, c\n(iii) a, e, a, d, b, c, a\n(iv) e, b, a, d, b, e",
+                  "type": "MCQ_Image",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_106301_2023_Q1j",
+                  "year": 2023,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 5: Graphs and Trees",
+                  "text": "Are the following two graphs isomorphic?\n![Image of two graphs provided](https://mtjwwpxkwpaagqsnfbks.supabase.co/storage/v1/object/public/images//it_106301_2023_Q1j.png)\n(i) Yes\n(ii) No",
+                  "type": "MCQ_Image",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_106301_2023_Q2a",
+                  "year": 2023,
+                  "qNumber": "Q2a",
+                  "chapter": "Module 1: Sets, Relation and Function",
+                  "text": "Consider a function f: (0, 1) -> R, such that f(x) = (2x-1)/(2x(1-x)) where (0, 1) indicates the set of real numbers between 0 and 1 (excluding 0 and 1), and R denotes the set of real numbers. Show that f is a bijection function.",
+                  "type": "Proof",
+                  "marks": 9
+                },
+                {
+                  "questionId": "it_106301_2023_Q2b",
+                  "year": 2023,
+                  "qNumber": "Q2b",
+                  "chapter": "Module 1: Sets, Relation and Function",
+                  "text": "Consider Z+ as the set of positive integers. Consider any relation R on the set of ordered pairs of positive integers Z+ x Z+, such that (a, b)R(c, d), i.e., ((a, b), (c, d)) ∈ R, if and only if ad = bc, where a, b, c, d ∈ Z+. Determine whether R is an equivalence relation.",
+                  "type": "Proof",
+                  "marks": 5
+                },
+                {
+                  "questionId": "it_106301_2023_Q3a",
+                  "year": 2023,
+                  "qNumber": "Q3a",
+                  "chapter": "Module 2: Mathematical Induction & Counting Techniques",
+                  "text": "Prove by the principle of mathematical induction that 1.1! + 2.2! + ... + n.n! = (n + 1)! - 1, whenever n is a positive integer.",
+                  "type": "Proof",
+                  "marks": 8
+                },
+                {
+                  "questionId": "it_106301_2023_Q3b",
+                  "year": 2023,
+                  "qNumber": "Q3b",
+                  "chapter": "Module 2: Mathematical Induction & Counting Techniques",
+                  "text": "In an auditorium of 1000 people, some of them celebrate their birthday on same day. Answer the following questions using the generalized pigeonhole principle, considering 366 birthdays per year.\n(i) At least how many of them share a birthday?\n(ii) How many pigeons and pigeonholes are involved in solving the above problem?",
+                  "type": "Problem",
+                  "marks": 6
+                },
+                {
+                  "questionId": "it_106301_2023_Q4a",
+                  "year": 2023,
+                  "qNumber": "Q4a",
+                  "chapter": "Module 3: Propositional Logic & Proof Techniques",
+                  "text": "Let p, q, r, s represent the following propositions.\np: x ∈ {8,9,10,11,12}\nq: x is a composite number\nr: x is a perfect square.\ns: x is a prime number.\nFind the integer x from the set {8,9,10,11,12} which satisfies (¬p ∨ q) ∧ (¬r ∨ s) ∧ (¬s ∨ p).",
+                  "type": "Problem",
+                  "marks": 5
+                },
+                {
+                  "questionId": "it_106301_2023_Q4b",
+                  "year": 2023,
+                  "qNumber": "Q4b",
+                  "chapter": "Module 3: Propositional Logic & Proof Techniques",
+                  "text": "Prove by contradiction that √2 is an irrational number.",
+                  "type": "Proof",
+                  "marks": 9
+                },
+                {
+                  "questionId": "it_106301_2023_Q5a",
+                  "year": 2023,
+                  "qNumber": "Q5a",
+                  "chapter": "Module 4: Algebraic Structures & Boolean Algebra",
+                  "text": "Consider the set Q of rational numbers, and let * be the operation on Q defined by: a * b = a + b - ab, where a, b ∈ Q. Show that (Q, *) is a commutative semigroup.",
+                  "type": "Proof",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_106301_2023_Q5b",
+                  "year": 2023,
+                  "qNumber": "Q5b",
+                  "chapter": "Module 4: Algebraic Structures & Boolean Algebra",
+                  "text": "Consider the ring Z10 = {0,1,2,...,9} of integers modulo 10. Let f(x) = 2x^2 + 4x + 4. Find the roots of f(x) over Z10.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_106301_2023_Q6a",
+                  "year": 2023,
+                  "qNumber": "Q6a",
+                  "chapter": "Module 4: Algebraic Structures & Boolean Algebra",
+                  "text": "Determine the disjunctive normal form (i.e., sum-of-products expansion) and the conjunctive normal form (i.e., product-of-sums expansion) of the Boolean function F(x, y, z) = (x + z)y.",
+                  "type": "Problem",
+                  "marks": 10
+                },
+                {
+                  "questionId": "it_106301_2023_Q6b",
+                  "year": 2023,
+                  "qNumber": "Q6b",
+                  "chapter": "Module 5: Graphs and Trees",
+                  "text": "Find the chromatic number of the graph given in the adjacent figure? ![Image provided](https://mtjwwpxkwpaagqsnfbks.supabase.co/storage/v1/object/public/images//it_106301_2023_Q6b.png)",
+                  "type": "Problem_Image",
+                  "marks": 4
+                },
+                {
+                  "questionId": "it_106301_2023_Q7a",
+                  "year": 2023,
+                  "qNumber": "Q7a",
+                  "chapter": "Module 5: Graphs and Trees",
+                  "text": "Prove that one and only one path (i.e., a unique path) is present between every pair of vertices in any undirected tree.",
+                  "type": "Proof",
+                  "marks": 5
+                },
+                {
+                  "questionId": "it_106301_2023_Q7b",
+                  "year": 2023,
+                  "qNumber": "Q7b",
+                  "chapter": "Module 5: Graphs and Trees",
+                  "text": "For the adjacent tree given with vertex set V = {v1, v2, v3, v4, v5, v6}, determine the diameter, radius and center of that tree. ![Image provided](https://mtjwwpxkwpaagqsnfbks.supabase.co/storage/v1/object/public/images//it_106301_2023_Q7b.png)",
+                  "type": "Problem_Image",
+                  "marks": 9
+                },
+                {
+                  "questionId": "it_106301_2023_Q8",
+                  "year": 2023,
+                  "qNumber": "Q8",
+                  "chapter": "Module 5: Graphs and Trees",
+                  "text": "Determine the number of regions generated by any simple connected planar graph of n vertices and e edges. Show detailed justifications.",
+                  "type": "Proof/Explanation",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_106301_2023_Q9a",
+                  "year": 2023,
+                  "qNumber": "Q9a",
+                  "chapter": "Module 2: Mathematical Induction & Counting Techniques",
+                  "text": "Write short notes on any two of the following: GCD: Euclidean Algorithm",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_106301_2023_Q9b",
+                  "year": 2023,
+                  "qNumber": "Q9b",
+                  "chapter": "Module 3: Propositional Logic & Proof Techniques",
+                  "text": "Write short notes on any two of the following: Proof by contradiction",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_106301_2023_Q9c",
+                  "year": 2023,
+                  "qNumber": "Q9c",
+                  "chapter": "Module 4: Algebraic Structures & Boolean Algebra",
+                  "text": "Write short notes on any two of the following: Principle of Duality",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_106301_2023_Q9d",
+                  "year": 2023,
+                  "qNumber": "Q9d",
+                  "chapter": "Module 5: Graphs and Trees",
+                  "text": "Write short notes on any two of the following: Eulerian and Hamiltonian walk",
+                  "type": "Short Notes",
+                  "marks": 7
+                }
+              ]
             }
           ]
         }
@@ -5412,8 +6694,1015 @@
               "id": "cse_100314",
               "name": "TECHNICAL WRITING",
               "code": "100314",
-              "modules": [],
-              "questions": []
+              "modules": [
+                {
+                  "id": "m1",
+                  "name": "Module 1: Introduction",
+                  "description": "Fundamentals of Technical Writing: Need for Clear and Concise Technical Writing, Attributes of Technical Writing, Types of Technical Writing, Benefits of Technical Communication, Technical, Managerial and General Readers, Expressing versus Impressing, Correct use of Noun, Pronoun, Verb, Adjective, Adverbs, Tense and Punctuation.",
+                  "lectures": 10
+                },
+                {
+                  "id": "m2",
+                  "name": "Module 2: Performing Technical Studies",
+                  "description": "Types of Technical Studies, General Methodology- Proposing a Project, Gathering Background Information, Designing Test Plans, Performing Experiments, Reporting Results, Writing Strategy: Analysis of Readers, Scope of Writing, Purpose and Objective. Document Options: Document Hierarchy, Report Types and Selection. Elements of Report Writing: Style and Appearance, Writing Presentation, Language Skills, Writing Style: Elements of Technical Communication Style, Recommended Style, Learn to Prepare Effective Illustrations",
+                  "lectures": 10
+                },
+                {
+                  "id": "m3",
+                  "name": "Module 3: Formal Reports",
+                  "description": "The Outline and Introduction (Outline, Title, Front Matter, Writing the Introduction), Writing the Body (Writing a Procedure, Describing Mechanism/Machines/Processes, Writing Test Results, Writing the Discussion Section), Closure (Conclusions, Recommendation, References, Abstract, Back Matter, Report Distribution, Saving and Storing Reports). Elements of an Informal Report, Investigation Reports, Service Activity Log, Lab. Reports and Proposals. Typical Memo Reports.",
+                  "lectures": 10
+                },
+                {
+                  "id": "m4",
+                  "name": "Module 4: Review and Editing",
+                  "description": "Types of Review and Edit, Review and Editing Methodology, Examples of Reviews. Oral Presentations: Types of Oral Presentations, Preparation, Visual Aids, Impediments to Technical Writing, Maintaining Writing Skills, Measuring Report Results.",
+                  "lectures": 10
+                }
+              ],
+              "questions": [
+                {
+                  "questionId": "cse_100314_2019_Q1a",
+                  "year": 2019,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Technical writing demands ___ use of language.\n(i) figurative\n(ii) poetic\n(iii) factual\n(iv) dramatic",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2019_Q1b",
+                  "year": 2019,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Which of these must be avoided in technical writing?\n(i) Facts\n(ii) Grammar\n(iii) Punctuation\n(iv) Personal feelings",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2019_Q1c",
+                  "year": 2019,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Which of the following words is used in technical writing?\n(i) Apex\n(ii) Top\n(iii) Slanting\n(iv) Bottom",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2019_Q1d",
+                  "year": 2019,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Which of the following is a technical word for slanting?\n(i) Lateral\n(ii) Sloping\n(iii) Tilting\n(iv) Bent",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2019_Q1e",
+                  "year": 2019,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Shortest document among technical written documents, known as\n(i) report\n(ii) Web site\n(iii) summary\n(iv) paragraph",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2019_Q1f",
+                  "year": 2019,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Which of the following is the external sound in the channels of communication?\n(i) Noise\n(ii) Semantic problems\n(iii) Cultural barriers\n(iv) Overcommunication",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2019_Q1g",
+                  "year": 2019,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Which of the following should not be avoided for effective communication?\n(i) Noise\n(ii) Planning\n(iii) Semantic problems\n(iv) Wrong assumptions",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2019_Q1h",
+                  "year": 2019,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 1: Introduction",
+                  "text": "___ are the problems arising from expression.\n(i) Cultural barriers\n(ii) Semantic problems\n(iii) Wrong assumptions\n(iv) Selecting perception",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2019_Q1i",
+                  "year": 2019,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Starting of resume, must have\n(i) job details\n(ii) career objective\n(iii) identification\n(iv) title",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2019_Q1j",
+                  "year": 2019,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Write four sentences on 'Tips to improve your technical writing skills'.",
+                  "type": "Short Answer",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2019_Q2a",
+                  "year": 2019,
+                  "qNumber": "Q2a",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Write in about 250 words on any one of the following: How to improve oral language skills?",
+                  "type": "Essay",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2019_Q2b",
+                  "year": 2019,
+                  "qNumber": "Q2b",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Write in about 250 words on any one of the following: Why are visual aids important?",
+                  "type": "Essay",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2019_Q3",
+                  "year": 2019,
+                  "qNumber": "Q3",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "What is editing and why do we need to edit and review our writing?",
+                  "type": "Explanation",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2019_Q4a",
+                  "year": 2019,
+                  "qNumber": "Q4a",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "Write notes on any two of the following: Types of literature review",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100314_2019_Q4b",
+                  "year": 2019,
+                  "qNumber": "Q4b",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Write notes on any two of the following: Informal report",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100314_2019_Q4c",
+                  "year": 2019,
+                  "qNumber": "Q4c",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Write notes on any two of the following: Project proposal",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100314_2019_Q4d",
+                  "year": 2019,
+                  "qNumber": "Q4d",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Write notes on any two of the following: Expository writing",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100314_2019_Q5",
+                  "year": 2019,
+                  "qNumber": "Q5",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "What are the basic components of a proposal?",
+                  "type": "Explanation",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2019_Q6",
+                  "year": 2019,
+                  "qNumber": "Q6",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "What are the basic principles of Formal Report Writing?",
+                  "type": "Explanation",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2019_Q7",
+                  "year": 2019,
+                  "qNumber": "Q7",
+                  "chapter": "Module 1: Introduction",
+                  "text": "How can I improve my English Language skills?",
+                  "type": "Explanation",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2019_Q8",
+                  "year": 2019,
+                  "qNumber": "Q8",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "What are different types of writing styles? Explain with examples.",
+                  "type": "Explanation with Example",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2019_Q9",
+                  "year": 2019,
+                  "qNumber": "Q9",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "In not more than 150 words, write about 'Oral Presentation'.",
+                  "type": "Short Notes",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2020_Q1a",
+                  "year": 2020,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Technical writing demands ___ use of language.\n(i) figurative\n(ii) poetic\n(iii) factual\n(iv) dramatic",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2020_Q1b",
+                  "year": 2020,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Which of the following must be avoided in technical writing?\n(i) Facts\n(ii) Grammar\n(iii) Punctuation\n(iv) Personal feelings",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2020_Q1c",
+                  "year": 2020,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "Familiar words must be used in technical writing.\n(i) True\n(ii) False",
+                  "type": "MCQ_TrueFalse",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2020_Q1d",
+                  "year": 2020,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Which of the following should be avoided in an e-mail?\n(i) Wrong e-mail address\n(ii) Subject line\n(iii) Smileys\n(iv) Rereading",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2020_Q1e",
+                  "year": 2020,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Which of the following does not provide free e-mail?\n(i) Hotmail\n(ii) Rediff\n(iii) WhatsApp\n(iv) Yahoo",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2020_Q1f",
+                  "year": 2020,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Which of the following is the easiest way of communication?\n(i) E-mail\n(ii) Telephone\n(iii) Fax\n(iv) Letter",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2020_Q1g",
+                  "year": 2020,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "What audience are least information needed?\n(i) Low-tech audience\n(ii) Lay audience\n(iii) High-tech audience\n(iv) All of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2020_Q1h",
+                  "year": 2020,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 1: Introduction",
+                  "text": "___ means to impart understanding of the message.\n(i) Encoding\n(ii) Receiver\n(iii) Decoding\n(iv) Feedback",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2020_Q1i",
+                  "year": 2020,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Which of the following must be avoided for effective communication?\n(i) Sharing of activity\n(ii) Listening\n(iii) Ambiguity\n(iv) Politeness",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2020_Q1j",
+                  "year": 2020,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Write four sentences on Expressing vs. Impressing.",
+                  "type": "Short Answer",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2020_Q2a",
+                  "year": 2020,
+                  "qNumber": "Q2a",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Write in about 250 words on any one of the following: Visual aids",
+                  "type": "Essay",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2020_Q2b",
+                  "year": 2020,
+                  "qNumber": "Q2b",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Write in about 250 words on any one of the following: Why is editing important?",
+                  "type": "Essay",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2020_Q3",
+                  "year": 2020,
+                  "qNumber": "Q3",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Differentiate between formal report and informal report.",
+                  "type": "Differentiate",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2020_Q4a",
+                  "year": 2020,
+                  "qNumber": "Q4a",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "Write notes on any two of the following: Writing styles",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100314_2020_Q4b",
+                  "year": 2020,
+                  "qNumber": "Q4b",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Write notes on any two of the following: General writing",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100314_2020_Q4c",
+                  "year": 2020,
+                  "qNumber": "Q4c",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Write notes on any two of the following: Types of editing",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100314_2020_Q4d",
+                  "year": 2020,
+                  "qNumber": "Q4d",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Write notes on any two of the following: Investigation report",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100314_2020_Q5",
+                  "year": 2020,
+                  "qNumber": "Q5",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "What is the difference between report and memo? Explain with examples.",
+                  "type": "Differentiate with Example",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2020_Q6",
+                  "year": 2020,
+                  "qNumber": "Q6",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "What are the major impediments to technical writing?",
+                  "type": "Explanation",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2020_Q7",
+                  "year": 2020,
+                  "qNumber": "Q7",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "What elements can you use to enhance your presentations?",
+                  "type": "Explanation",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2020_Q8",
+                  "year": 2020,
+                  "qNumber": "Q8",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "What are the editing techniques? Explain with examples.",
+                  "type": "Explanation with Example",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2020_Q9",
+                  "year": 2020,
+                  "qNumber": "Q9",
+                  "chapter": "Module 1: Introduction",
+                  "text": "In not more than 150 words, write about Benefits of Technical Writing.",
+                  "type": "Short Notes",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2021_Q1a",
+                  "year": 2021,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Public speaking is addressing a gathering.\n(i) True\n(ii) False",
+                  "type": "MCQ_TrueFalse",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2021_Q1b",
+                  "year": 2021,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Public speaking is only verbal activity.\n(i) True\n(ii) False",
+                  "type": "MCQ_TrueFalse",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2021_Q1c",
+                  "year": 2021,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Which of the following should be avoided for an effective speech?\n(i) Determination of the purpose\n(ii) Selection of message\n(iii) Lack of interest\n(iv) Selection of theme",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2021_Q1d",
+                  "year": 2021,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Which of the following should be avoided in an e-mail?\n(i) Wrong e-mail address\n(ii) Subject line\n(iii) Smileys\n(iv) Re-reading",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2021_Q1e",
+                  "year": 2021,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Which of the following do not provide free e-mail?\n(i) Hotmail\n(ii) Rediff\n(iii) WhatsApp\n(iv) Yahoo",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2021_Q1f",
+                  "year": 2021,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Which of the following factors is not required to determine the purpose of speech?\n(i) Providing information\n(ii) Discouragement\n(iii) Accepting ideas\n(iv) Entertainment",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2021_Q1g",
+                  "year": 2021,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "What audience are least information needed?\n(i) Low-tech audience\n(ii) Lay audience\n(iii) High-tech audience\n(iv) All of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2021_Q1h",
+                  "year": 2021,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Which of the following ingredients is not required for selection of theme?\n(i) Planning\n(ii) Disorganization\n(iii) Preparation\n(iv) Organization",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2021_Q1i",
+                  "year": 2021,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Which of the following must be avoided for effective communication?\n(i) Sharing of activity\n(ii) Listening\n(iii) Ambiguity\n(iv) Politeness",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2021_Q1j",
+                  "year": 2021,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "Write four sentences on Performing Experiments'.",
+                  "type": "Short Answer",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2021_Q2a",
+                  "year": 2021,
+                  "qNumber": "Q2a",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Write in about 250 words on any one of the following: Types of reviews",
+                  "type": "Essay",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2021_Q2b",
+                  "year": 2021,
+                  "qNumber": "Q2b",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Write in about 250 words on any one of the following: Types of editing",
+                  "type": "Essay",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2021_Q3",
+                  "year": 2021,
+                  "qNumber": "Q3",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Differentiate between formal letter and memos.",
+                  "type": "Differentiate",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2021_Q4a",
+                  "year": 2021,
+                  "qNumber": "Q4a",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "Write notes on any two of the following: Writing styles",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100314_2021_Q4b",
+                  "year": 2021,
+                  "qNumber": "Q4b",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "Write notes on any two of the following: Language skills",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100314_2021_Q4c",
+                  "year": 2021,
+                  "qNumber": "Q4c",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "Write notes on any two of the following: Types of technical studies",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100314_2021_Q4d",
+                  "year": 2021,
+                  "qNumber": "Q4d",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Write notes on any two of the following: Investigation report",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100314_2021_Q5",
+                  "year": 2021,
+                  "qNumber": "Q5",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "What are the elements of informal report? Explain with examples.",
+                  "type": "Explanation with Example",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2021_Q6",
+                  "year": 2021,
+                  "qNumber": "Q6",
+                  "chapter": "Module 1: Introduction",
+                  "text": "What are the main features of technical writing?",
+                  "type": "Explanation",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2021_Q7",
+                  "year": 2021,
+                  "qNumber": "Q7",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "How can you improve your oral presentation?",
+                  "type": "Explanation",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2021_Q8",
+                  "year": 2021,
+                  "qNumber": "Q8",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "What are the editing techniques? Explain with examples.",
+                  "type": "Explanation with Example",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2021_Q9",
+                  "year": 2021,
+                  "qNumber": "Q9",
+                  "chapter": "Module 1: Introduction",
+                  "text": "In not more than 150 words write about 'Upward Communication'.",
+                  "type": "Short Notes",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2022_Q1a",
+                  "year": 2022,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Which of the following must be avoided in technical writing?\n(i) Facts\n(ii) Grammar\n(iii) Punctuation\n(iv) Personal feelings",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2022_Q1b",
+                  "year": 2022,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Which of these must be avoided in technical writing?\n(i) Facts\n(ii) Grammar\n(iii) Punctuation\n(iv) Personal feelings",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2022_Q1c",
+                  "year": 2022,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "A memo report is\n(i) External and formal\n(ii) Internal and informal\n(iii) External and informal\n(iv) Internal and formal",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2022_Q1d",
+                  "year": 2022,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Which of the following should be avoided in an e-mail?\n(i) Wrong e-mail address\n(ii) Subject line\n(iii) Smileys\n(iv) Rereading",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2022_Q1e",
+                  "year": 2022,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Shortest documents among technical written documents, known as\n(i) Report\n(ii) Website\n(iii) Summary\n(iv) Paragraph",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2022_Q1f",
+                  "year": 2022,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Which off the following is the easiest way of communication?\n(i) E-mail\n(ii) Telephone\n(iii) Fax\n(iv) Letter",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2022_Q1g",
+                  "year": 2022,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 1: Introduction",
+                  "text": "We, us and our are example of\n(i) Contractions\n(ii) Pronoun\n(iii) Name usage\n(iv) Noun",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2022_Q1h",
+                  "year": 2022,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Which of the following must be avoided for effective communication?\n(i) Sharing of activity\n(ii) Listening\n(iii) Ambiguity\n(iv) Politeness",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2022_Q1i",
+                  "year": 2022,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 1: Introduction",
+                  "text": "___ are the problems arising from expression.\n(i) Cultural barriers\n(ii) Semantic problems\n(iii) Wrong assumptions\n(iv) Selecting perception",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2022_Q1j",
+                  "year": 2022,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Kinesics Stands for\n(i) Space language\n(ii) Time language\n(iii) Body language\n(iv) None of these",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2022_Q2a",
+                  "year": 2022,
+                  "qNumber": "Q2a",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Write in 250 words on \"Role and responsibility of engineers\".",
+                  "type": "Essay",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100314_2022_Q2b",
+                  "year": 2022,
+                  "qNumber": "Q2b",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Write in 250 words on \"Why is editing important\".",
+                  "type": "Essay",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100314_2022_Q3",
+                  "year": 2022,
+                  "qNumber": "Q3",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Differentiate between formal report and informal report.",
+                  "type": "Differentiate",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2022_Q4a_i",
+                  "year": 2022,
+                  "qNumber": "Q4a_i",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "Write notes on any two off the following: Writing Styles",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100314_2022_Q4a_ii",
+                  "year": 2022,
+                  "qNumber": "Q4a_ii",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "Write notes on any two off the following: Types of literature review",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100314_2022_Q4a_iii",
+                  "year": 2022,
+                  "qNumber": "Q4a_iii",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Write notes on any two off the following: Proof reading",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100314_2022_Q4a_iv",
+                  "year": 2022,
+                  "qNumber": "Q4a_iv",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Write notes on any two off the following: Technical Writing",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100314_2022_Q5",
+                  "year": 2022,
+                  "qNumber": "Q5",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "What is the difference between report and memo? Explain with examples.",
+                  "type": "Differentiate with Example",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2022_Q6",
+                  "year": 2022,
+                  "qNumber": "Q6",
+                  "chapter": "Module 1: Introduction",
+                  "text": "What is the relationship between social responsibility and ethics?",
+                  "type": "Explanation",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2022_Q7",
+                  "year": 2022,
+                  "qNumber": "Q7",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "What elements can you use to enhance your presentations?",
+                  "type": "Explanation",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2022_Q8",
+                  "year": 2022,
+                  "qNumber": "Q8",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "What are the editing techniques? Explain with examples.",
+                  "type": "Explanation with Example",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2022_Q9",
+                  "year": 2022,
+                  "qNumber": "Q9",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Describe verbal and non-verbal communication in details.",
+                  "type": "Explanation",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2023_Q1a",
+                  "year": 2023,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 1: Introduction",
+                  "text": "What attribute of technical writing ensures that the information is correct and reliable?\n(i) Clarity\n(ii) Conciseness\n(iii) Accuracy\n(iv) Readability",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2023_Q1b",
+                  "year": 2023,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Which of the following is an example of technical writing?\n(i) A short story\n(ii) A novel\n(iii) A scientific journal article\n(iv) A poem",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2023_Q1c",
+                  "year": 2023,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Why is clear and concise technical writing important?\n(i) To impress the readers with complex vocabulary\n(ii) To convey information accurately and efficiently\n(iii) To make the document look longer\n(iv) To confuse the readers",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2023_Q1d",
+                  "year": 2023,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Which of the following is NOT an attribute of technical writing?\n(i) Clarity\n(ii) Brevity\n(iii) Creativity\n(iv) Accuracy",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2023_Q1e",
+                  "year": 2023,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "What is the first step in the general methodology for performing technical studies?\n(i) Designing test plans\n(ii) Reporting results\n(iii) Proposing a project\n(iv) Performing experiments",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2023_Q1f",
+                  "year": 2023,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "Why is gathering background information important in technical studies?\n(i) To extend the length of the report\n(ii) To ensure the accuracy and relevance of the study\n(iii) To impress the audience with extensive research\n(iv) To avoid conducting any experiments",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2023_Q1g",
+                  "year": 2023,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "What is the primary purpose of an investigation report?\n(i) To propose a new project\n(ii) To document the findings of a specific inquiry or investigation\n(iii) To provide routine updates\n(iv) To offer service-related information",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2023_Q1h",
+                  "year": 2023,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Which of the following is characteristic of a typical memo report?\n(i) It is a formal document with strict structure\n(ii) It is a brief, informal report used for internal communication\n(iii) It includes extensive data analysis and graphs\n(iv) It is used exclusively for external communication",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2023_Q1i",
+                  "year": 2023,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "What is the first step in preparing for an oral presentation?\n(i) Creating visual aids\n(ii) Understanding the audience and purpose\n(iii) Writing the conclusion\n(iv) Designing handouts",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2023_Q1j",
+                  "year": 2023,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Which of the following is a common visual aid used in oral presentations?\n(i) Whiteboard\n(ii) PowerPoint slides\n(iii) Handouts\n(iv) All of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100314_2023_Q2a",
+                  "year": 2023,
+                  "qNumber": "Q2a",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Write in 250-300 words on any one of the following: Criteria for good technical writing.",
+                  "type": "Essay",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2023_Q2b",
+                  "year": 2023,
+                  "qNumber": "Q2b",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Write in 250-300 words on any one of the following: Oral Presentations.",
+                  "type": "Essay",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2023_Q3",
+                  "year": 2023,
+                  "qNumber": "Q3",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "What is the difference between formal and informal reports? Explain with examples.",
+                  "type": "Differentiate with Example",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2023_Q4",
+                  "year": 2023,
+                  "qNumber": "Q4",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Explain the importance of visual aids in oral presentations. What are some best practices for designing and using visual aids effectively?",
+                  "type": "Explanation",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2023_Q5",
+                  "year": 2023,
+                  "qNumber": "Q5",
+                  "chapter": "Module 2: Performing Technical Studies",
+                  "text": "Explain the importance of understanding the analysis of readers, scope of writing, purpose, and objective when creating technical documents. Provide examples to illustrate your points.",
+                  "type": "Explanation with Example",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2023_Q6",
+                  "year": 2023,
+                  "qNumber": "Q6",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "You are a project engineer at a construction firm working on a new building project. Write a memo report to the project manager providing an update on the current status of the project, highlighting key milestones, any challenges faced, and proposed next steps.",
+                  "type": "Problem/Scenario",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2023_Q7",
+                  "year": 2023,
+                  "qNumber": "Q7",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "You are tasked with preparing a formal report on the feasibility of implementing a renewable energy project for your college campus. Draft a detailed formal report outlining the objectives, methodology, findings, and recommendations based on your study.",
+                  "type": "Problem/Scenario",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2023_Q8",
+                  "year": 2023,
+                  "qNumber": "Q8",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "What are the varied editing techniques? Explain with examples.",
+                  "type": "Explanation with Example",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100314_2023_Q9a",
+                  "year": 2023,
+                  "qNumber": "Q9a",
+                  "chapter": "Module 4: Review and Editing",
+                  "text": "Write Short notes on any two of the following: Visual Aids",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100314_2023_Q9b",
+                  "year": 2023,
+                  "qNumber": "Q9b",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Write Short notes on any two of the following: Types of Reports",
+                  "type": "Short Notes",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100314_2023_Q9c",
+                  "year": 2023,
+                  "qNumber": "Q9c",
+                  "chapter": "Module 3: Formal Reports",
+                  "text": "Write Short notes on any two of the following: Memo Reports",
+                  "type": "Short Notes",
+                  "marks": 7
+                }
+              ]
             }
           ]
         }
