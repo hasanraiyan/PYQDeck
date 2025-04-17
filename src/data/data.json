@@ -264,6 +264,204 @@
                   "text": "Write short notes on the following: Balance factor",
                   "type": "Short Notes",
                   "marks": 3.5
+                },
+                {
+                  "questionId": "it_100304_2020_Q1a",
+                  "year": 2020,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 1: Introduction & Analysis",
+                  "text": "Which of the following is time complexity of the given code?\n```cpp\nint a = 0;\nfor (i = 0; i<N; i++) {\n  for (j = N; j>i; j--){\n    a = a + i + j;\n  }\n}\n```\n(i) O(N)\n(ii) O(N*log(N))\n(iii) O(N*Sqrt(N))\n(iv) O(N*N)",
+                  "type": "MCQ_Code",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2020_Q1b",
+                  "year": 2020,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 1: Introduction & Analysis",
+                  "text": "Which of the following is time complexity of the given code?\n```cpp\nint i, j, k = 0;\nfor (i = n/2; i<= n; i++) {\n  for (j = 2; j<= n; j = j*2) {\n    k = k + n/2;\n  }\n}\n```\n(i) O(N)\n(ii) O(N*log(N))\n(iii) O(N*Sqrt(N))\n(iv) O(N*N)",
+                  "type": "MCQ_Code",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2020_Q1c",
+                  "year": 2020,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 1: Introduction & Analysis",
+                  "text": "Which of the following cases does not exist in complexity theory?\n\n(i) Best case\n(ii) Worst case\n(iii) Average case\n(iv) Null case",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2020_Q1d",
+                  "year": 2020,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 1: Introduction & Analysis",
+                  "text": "The operation of processing each element in the list is known as\n\n(i) sorting\n(ii) merging\n(iii) inserting\n(iv) traversal",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2020_Q1e",
+                  "year": 2020,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 1: Introduction & Analysis",
+                  "text": "Arrays are best data structures\n\n(i) for relatively permanent collections of data\n(ii) for the size of the structure and the data in the structure are constantly changing\n(iii) Both (i) and (ii)\n(iv) None of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2020_Q1f",
+                  "year": 2020,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 1: Introduction & Analysis",
+                  "text": "Each array declaration needs not give, implicitly or explicitly the information about\n\n(i) the name of array\n(ii) the data type of array\n(iii) the first data from the set to be stored\n(iv) the index set of the array",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2020_Q1g",
+                  "year": 2020,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "In general, the binary search method needs not more than ______ comparisons.\n\n(i) [log2 n]-1\n(ii) [log2 n]+1\n(iii) [log2 n]\n(iv) [log2 n]+1",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2020_Q1h",
+                  "year": 2020,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "State True or False :\nA. Binary search is used for searching in a sorted array.\nB. The time complexity of binary search is O(log n).\n\n(i) True, False\n(ii) False, True\n(iii) False, False\n(iv) True, True",
+                  "type": "MCQ_TrueFalse",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2020_Q1i",
+                  "year": 2020,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Which of the following is non-linear data structure?\n\n(i) Stack\n(ii) Linked list\n(iii) String\n(iv) Tree",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2020_Q1j",
+                  "year": 2020,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 2: Stacks and Queues",
+                  "text": "Which is the correct output for the following sequence of operations?\npush(5)\npush(8)\npop\npush(2)\npush(5)\npop\npop\npop\npush(1)\npop\n\n(i) 8 5 2 5 1\n(ii) 8 5 5 2 1\n(iii) 8 2 5 5 1\n(iv) 8 1 2 5 5",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2020_Q2",
+                  "year": 2020,
+                  "qNumber": "Q2",
+                  "chapter": "Module 1: Introduction & Analysis",
+                  "text": "Analyse the time complexity of the given function and also write the recurrence relation of the function :\n```cpp\nint DoSomething (int n)\n{\n  if (n<= 2)\n    return 1;\n  else\n    return (DoSomething (floor(sqrt(n)))+n);\n}\n```",
+                  "type": "Analysis & RecurrenceRelation",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100304_2020_Q3",
+                  "year": 2020,
+                  "qNumber": "Q3",
+                  "chapter": "Module 2: Stacks and Queues",
+                  "text": "Consider the following postfix expression : 8 7 3 - / 6 2 5 4 + * + -\nThe above expression is evaluated using stack. Show the content of stack after each step.",
+                  "type": "Problem",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100304_2020_Q4",
+                  "year": 2020,
+                  "qNumber": "Q4",
+                  "chapter": "Module 1: Introduction & Analysis",
+                  "text": "What are the different notations for comparing the time complexity of an algorithm? Explain each of them with neat figures.",
+                  "type": "Explanation with Diagram",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100304_2020_Q5",
+                  "year": 2020,
+                  "qNumber": "Q5",
+                  "chapter": "Module 2: Stacks and Queues",
+                  "text": "Explain the queue and circular queue with examples. Also, write the differences between the two.",
+                  "type": "Explanation with Example & Differentiate",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100304_2020_Q6",
+                  "year": 2020,
+                  "qNumber": "Q6",
+                  "chapter": "Module 1: Introduction & Analysis",
+                  "text": "Let a and b be positive integers. Suppose a function F is defined recursively as follows:\nF(a, b) = { 0 if a<b; F(a-b, b)+1 if b<=a }\nFind the values of the following :\n(a) F(2, 3)\n(b) F(14, 3)",
+                  "type": "Problem",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100304_2020_Q7a",
+                  "year": 2020,
+                  "qNumber": "Q7a",
+                  "chapter": "Module 2: Stacks and Queues",
+                  "text": "Write the algorithm of prefix evaluation with example.",
+                  "type": "Algorithm with Example",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2020_Q7b",
+                  "year": 2020,
+                  "qNumber": "Q7b",
+                  "chapter": "Module 2: Stacks and Queues",
+                  "text": "Write prefix notation of the following infix notation : A+B*C+D",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2020_Q8",
+                  "year": 2020,
+                  "qNumber": "Q8",
+                  "chapter": "Module 2: Stacks and Queues",
+                  "text": "What do you mean by ADT? Explain the ADT stack with test cases for both pop and push.",
+                  "type": "Definition & Explanation",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100304_2020_Q9a",
+                  "year": 2020,
+                  "qNumber": "Q9a",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "Write short notes on the following: Hashing",
+                  "type": "Short Notes",
+                  "marks": 3.5
+                },
+                {
+                  "questionId": "it_100304_2020_Q9b",
+                  "year": 2020,
+                  "qNumber": "Q9b",
+                  "chapter": "Module 3: Linked Lists",
+                  "text": "Write short notes on the following: Circular linked list",
+                  "type": "Short Notes",
+                  "marks": 3.5
+                },
+                {
+                  "questionId": "it_100304_2020_Q9c",
+                  "year": 2020,
+                  "qNumber": "Q9c",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Write short notes on the following: Adjacency list",
+                  "type": "Short Notes",
+                  "marks": 3.5
+                },
+                {
+                  "questionId": "it_100304_2020_Q9d",
+                  "year": 2020,
+                  "qNumber": "Q9d",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Write short notes on the following: AVL tree",
+                  "type": "Short Notes",
+                  "marks": 3.5
                 }
               ]
             },
