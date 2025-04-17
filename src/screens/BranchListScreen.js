@@ -363,13 +363,7 @@ const BranchListScreen = ({ navigation }) => {
                 {renderFeatureHighlights()}
                 {renderBranchList()}
             </ScrollView>
-             <View style={styles.footerContainer}>
-                <TouchableOpacity onPress={handleDeveloperInfoPress} style={styles.footerButton}>
-                    <Ionicons name="information-circle-outline" size={16} color={COLORS.textSecondary} />
-                    <Text style={styles.footerText}>About</Text>
-                </TouchableOpacity>
-                <Text style={styles.footerVersion}>v{APP_VERSION}</Text>
-            </View>
+ 
         </SafeAreaView>
     );
 };
@@ -495,7 +489,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     branchListItem: {
-         marginBottom: 10, // Increased space between branch cards
+         marginBottom: 0,
     },
     footerContainer: {
         flexDirection: 'row',

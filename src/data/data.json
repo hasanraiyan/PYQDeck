@@ -1,0 +1,572 @@
+{
+    "branches": [
+      {
+        "id": "it",
+        "name": "INFORMATION TECHNOLOGY",
+        "icon": {
+          "set": "Ionicons",
+          "name": "laptop-outline"
+        },
+        "semesters": [
+          {
+            "id": "it_sem1",
+            "number": 1,
+            "subjects": [
+              {
+                "id": "it101",
+                "name": "Mathematics I",
+                "code": "BS101",
+                "modules": [],
+                "questions": [
+                  {
+                    "questionId": "it101_sem1_q1",
+                    "year": 2023,
+                    "qNumber": "Q1a",
+                    "chapter": "Module 1: Fundamentals",
+                    "text": "State a fundamental theorem or law covered in \"Mathematics I\". Explain its significance.",
+                    "type": "Explanation",
+                    "marks": 7
+                  }
+                ]
+              },
+              {
+                "id": "it102",
+                "name": "Physics I",
+                "code": "BS102",
+                "modules": [],
+                "questions": []
+              },
+              {
+                "id": "it103",
+                "name": "Chemistry",
+                "code": "BS103",
+                "modules": [],
+                "questions": []
+              },
+              {
+                "id": "it104",
+                "name": "Basic Electrical Engineering",
+                "code": "ES101",
+                "modules": [],
+                "questions": []
+              },
+              {
+                "id": "it105",
+                "name": "Engineering Workshop",
+                "code": "ES102",
+                "modules": [],
+                "questions": []
+              },
+              {
+                "id": "it106",
+                "name": "Communicative English",
+                "code": "HS101",
+                "modules": [],
+                "questions": []
+              }
+            ]
+          },
+          {
+            "id": "it_sem2",
+            "number": 2,
+            "subjects": [
+              {
+                "id": "it201",
+                "name": "Mathematics II",
+                "code": "BS201",
+                "modules": [],
+                "questions": [
+                  {
+                    "questionId": "it201_sem2_q1",
+                    "year": 2023,
+                    "qNumber": "Q1a",
+                    "chapter": "Module 1: Fundamentals",
+                    "text": "State a fundamental theorem or law covered in \"Mathematics II\". Explain its significance.",
+                    "type": "Explanation",
+                    "marks": 7
+                  }
+                ]
+              },
+              {
+                "id": "it202",
+                "name": "Physics II (Waves & Optics)",
+                "code": "BS202",
+                "modules": [],
+                "questions": []
+              },
+              {
+                "id": "it203",
+                "name": "Programming for Problem Solving (C)",
+                "code": "ES201",
+                "modules": [],
+                "questions": []
+              },
+              {
+                "id": "it204",
+                "name": "Basic Electronics Engineering",
+                "code": "ES202",
+                "modules": [],
+                "questions": []
+              },
+              {
+                "id": "it205",
+                "name": "Engineering Graphics & Design",
+                "code": "ES203",
+                "modules": [],
+                "questions": []
+              },
+              {
+                "id": "it206",
+                "name": "Environmental Science",
+                "code": "MC201",
+                "modules": [],
+                "questions": []
+              }
+            ]
+          },
+          {
+            "id": "it_sem3",
+            "number": 3,
+            "subjects": [
+              {
+                "id": "it301",
+                "name": "Object-Oriented Programming Using C++",
+                "code": "100313",
+                "modules": [
+                  {
+                    "id": "m1",
+                    "name": "Module 1: Introduction to C++ and OOP"
+                  },
+                  {
+                    "id": "m2",
+                    "name": "Module 2: Control Structures, Functions, and Pointers"
+                  },
+                  {
+                    "id": "m3",
+                    "name": "Module 3: Classes and Data Abstraction"
+                  },
+                  {
+                    "id": "m4",
+                    "name": "Module 4: Overloading, Templates and Inheritance"
+                  },
+                  {
+                    "id": "m5",
+                    "name": "Module 5: Virtual Functions, Polymorphism, and File I/O"
+                  },
+                  {
+                    "id": "m6",
+                    "name": "Module 6: Exception Handling and STL"
+                  }
+                ],
+                "questions": [
+                  {
+                    "questionId": "it301_2019_1a",
+                    "year": 2019,
+                    "qNumber": "Q1a",
+                    "chapter": "Module 3: Classes and Data Abstraction",
+                    "text": "Which feature allows open recursion among the following?\n\n*   (i) Use of `this` pointer\n*   (ii) Use of pointers\n*   (iii) Use of pass by value\n*   (iv) Use of parameterized constructor",
+                    "type": "MCQ",
+                    "marks": 2
+                  },
+                  {
+                    "questionId": "it301_2019_1b",
+                    "year": 2019,
+                    "qNumber": "Q1b",
+                    "chapter": "Module 4: Overloading, Templates and Inheritance",
+                    "text": "If same message is passed to objects of several different classes and all of those can respond in a different way, what is this feature called?\n\n*   (i) Inheritance\n*   (ii) Overloading\n*   (iii) Polymorphism\n*   (iv) Overriding",
+                    "type": "MCQ",
+                    "marks": 2
+                  },
+                  {
+                    "questionId": "it301_2021_3a",
+                    "year": 2021,
+                    "qNumber": "Q3a",
+                    "chapter": "Module 1: Introduction to C++ and OOP",
+                    "text": "Explain the difference between procedural programming and object-oriented programming.",
+                    "type": "Explanation",
+                    "marks": 7
+                  },
+                  {
+                    "questionId": "it301_2021_misc",
+                    "year": 2021,
+                    "qNumber": "Misc1",
+                    "chapter": null,
+                    "text": "What is the purpose of the `main` function in C++?\n\n```cpp\n#include<iostream>\nint main(){\nstd::cout<<\"Hello, World!\"<<std::endl;\nreturn 0;\n}\n```\n   ![image](https://image.pollinations.ai/prompt/moon)",
+                    "type": "Explanation",
+                    "marks": 5
+                  },
+                  {
+                    "questionId": "it301_2019_2a",
+                    "year": 2019,
+                    "qNumber": "Q2a",
+                    "chapter": "Module 1: Introduction to C++ and OOP",
+                    "text": "What is Object-oriented Programming (OOP)? Write the basic concepts of OOP (e.g., Encapsulation, Abstraction, Inheritance, Polymorphism).",
+                    "type": "Explanation",
+                    "marks": 7
+                  },
+                  {
+                    "questionId": "it301_2019_2b",
+                    "year": 2019,
+                    "qNumber": "Q2b",
+                    "chapter": "Module 3: Classes and Data Abstraction",
+                    "text": "What do you mean by class and object? Give a simple example.",
+                    "type": "Explanation with Example",
+                    "marks": 7
+                  },
+                  {
+                    "questionId": "it301_2019_9a",
+                    "year": 2019,
+                    "qNumber": "Q9a",
+                    "chapter": "Module 4: Overloading, Templates and Inheritance",
+                    "text": "With the help of an example program, differentiate between Function Overloading and Function Overriding.",
+                    "type": "Differentiate with Example",
+                    "marks": 7
+                  },
+                  {
+                    "questionId": "it301_2020_1c",
+                    "year": 2020,
+                    "qNumber": "Q1c",
+                    "chapter": "Module 3: Classes and Data Abstraction",
+                    "text": "What is a constructor in C++?\n\n* (i) A function to destroy objects\n* (ii) A special member function to initialize objects\n* (iii) A data member of a class\n* (iv) A global function",
+                    "type": "MCQ",
+                    "marks": 2
+                  },
+                  {
+                    "questionId": "it301_2020_1d",
+                    "year": 2020,
+                    "qNumber": "Q1d",
+                    "chapter": "Module 4: Overloading, Templates and Inheritance",
+                    "text": "Which operator cannot be overloaded in C++?\n\n* (i) `+`\n* (ii) `::` (Scope Resolution)\n* (iii) `[]` (Array Subscript)\n* (iv) `()` (Function Call)",
+                    "type": "MCQ",
+                    "marks": 2
+                  },
+                  {
+                    "questionId": "it301_2022_3b",
+                    "year": 2022,
+                    "qNumber": "Q3b",
+                    "chapter": "Module 3: Classes and Data Abstraction",
+                    "text": "Explain the concept of data hiding (encapsulation) in C++. How is it achieved?",
+                    "type": "Explanation",
+                    "marks": 7
+                  },
+                  {
+                    "questionId": "it301_2020_4a",
+                    "year": 2020,
+                    "qNumber": "Q4a",
+                    "chapter": "Module 4: Overloading, Templates and Inheritance",
+                    "text": "What is inheritance? Explain different types of inheritance supported in C++ with suitable diagrams.",
+                    "type": "Explanation with Diagram",
+                    "marks": 10
+                  },
+                  {
+                    "questionId": "it301_2021_5a",
+                    "year": 2021,
+                    "qNumber": "Q5a",
+                    "chapter": "Module 5: Virtual Functions, Polymorphism, and File I/O",
+                    "text": "What is a virtual function? Explain its role in achieving runtime polymorphism with a suitable C++ example.",
+                    "type": "Explanation with Example",
+                    "marks": 7
+                  },
+                  {
+                    "questionId": "it301_2022_6a",
+                    "year": 2022,
+                    "qNumber": "Q6a",
+                    "chapter": "Module 3: Classes and Data Abstraction",
+                    "text": "Explain the use of `static` data members and `static` member functions in C++ with an example.",
+                    "type": "Explanation with Example",
+                    "marks": 7
+                  },
+                  {
+                    "questionId": "it301_2018_7a",
+                    "year": 2018,
+                    "qNumber": "Q7a",
+                    "chapter": "Module 6: Exception Handling and STL",
+                    "text": "What is exception handling? Explain the use of `try`, `catch`, and `throw` keywords in C++ with a simple program.",
+                    "type": "Explanation with Example",
+                    "marks": 7
+                  },
+                  {
+                    "questionId": "it301_2019_8b",
+                    "year": 2019,
+                    "qNumber": "Q8b",
+                    "chapter": "Module 4: Overloading, Templates and Inheritance",
+                    "text": "What are templates in C++? Write a C++ template function to find the maximum of two numbers (of any type).",
+                    "type": "Explanation with Code",
+                    "marks": 7
+                  },
+                  {
+                    "questionId": "it301_2020_9b",
+                    "year": 2020,
+                    "qNumber": "Q9b",
+                    "chapter": "Module 5: Virtual Functions, Polymorphism, and File I/O",
+                    "text": "Explain different file opening modes in C++. Write a program to read data from a text file and display it on the console.",
+                    "type": "Explanation with Code",
+                    "marks": 7
+                  },
+                  {
+                    "questionId": "it301_2022_1e",
+                    "year": 2022,
+                    "qNumber": "Q1e",
+                    "chapter": "Module 3: Classes and Data Abstraction",
+                    "text": "A destructor is invoked automatically when:\n\n* (i) An object is created\n* (ii) An object is assigned to another\n* (iii) An object goes out of scope or is explicitly deleted\n* (iv) A static member is accessed",
+                    "type": "MCQ",
+                    "marks": 2
+                  },
+                  {
+                    "questionId": "it301_2018_2a",
+                    "year": 2018,
+                    "qNumber": "Q2a",
+                    "chapter": "Module 1: Introduction to C++ and OOP",
+                    "text": "List the fundamental data types available in C++.",
+                    "type": "List",
+                    "marks": 5
+                  },
+                  {
+                    "questionId": "it301_2021_6b",
+                    "year": 2021,
+                    "qNumber": "Q6b",
+                    "chapter": "Module 3: Classes and Data Abstraction",
+                    "text": "What is a friend function? What are its characteristics and why is it used?",
+                    "type": "Explanation",
+                    "marks": 7
+                  },
+                  {
+                    "questionId": "it301_2023_1f",
+                    "year": 2023,
+                    "qNumber": "Q1f",
+                    "chapter": "Module 4: Overloading, Templates and Inheritance",
+                    "text": "Which access specifier allows members to be accessed by derived classes but not outside?",
+                    "type": "MCQ",
+                    "marks": 2,
+                    "options": [
+                      "(i) private",
+                      "(ii) public",
+                      "(iii) protected",
+                      "(iv) friend"
+                    ]
+                  },
+                  {
+                    "questionId": "it301_2023_4a",
+                    "year": 2023,
+                    "qNumber": "Q4a",
+                    "chapter": "Module 5: Virtual Functions, Polymorphism, and File I/O",
+                    "text": "Explain the concept of abstract class and pure virtual function in C++.",
+                    "type": "Explanation",
+                    "marks": 7
+                  },
+                  {
+                    "questionId": "it301_2022_2a",
+                    "year": 2022,
+                    "qNumber": "Q2a",
+                    "chapter": "Module 2: Control Structures, Functions, and Pointers",
+                    "text": "Explain the difference between pass by value and pass by reference in C++ functions with examples.",
+                    "type": "Explanation with Example",
+                    "marks": 7
+                  },
+                  {
+                    "questionId": "it301_2020_3a",
+                    "year": 2020,
+                    "qNumber": "Q3a",
+                    "chapter": "Module 3: Classes and Data Abstraction",
+                    "text": "What is a copy constructor? When is it invoked? Provide an example.",
+                    "type": "Explanation with Example",
+                    "marks": 7
+                  },
+                  {
+                    "questionId": "it301_2021_4b",
+                    "year": 2021,
+                    "qNumber": "Q4b",
+                    "chapter": "Module 4: Overloading, Templates and Inheritance",
+                    "text": "Explain the concept of operator overloading. Overload the `+` operator for a class representing complex numbers.",
+                    "type": "Explanation with Code",
+                    "marks": 10
+                  },
+                  {
+                    "questionId": "it301_2018_5b",
+                    "year": 2018,
+                    "qNumber": "Q5b",
+                    "chapter": "Module 5: Virtual Functions, Polymorphism, and File I/O",
+                    "text": "What is the `this` pointer in C++? Explain its significance with an example.",
+                    "type": "Explanation with Example",
+                    "marks": 6
+                  },
+                  {
+                    "questionId": "it301_2023_7a",
+                    "year": 2023,
+                    "qNumber": "Q7a",
+                    "chapter": "Module 6: Exception Handling and STL",
+                    "text": "What is the Standard Template Library (STL)? Explain the role of containers, iterators, and algorithms in STL.",
+                    "type": "Explanation",
+                    "marks": 7
+                  },
+                  {
+                    "questionId": "it301_2023_7b",
+                    "year": 2023,
+                    "qNumber": "Q7b",
+                    "chapter": "Module 6: Exception Handling and STL",
+                    "text": "Write a C++ program using STL vectors to store integers, add elements, and print them.",
+                    "type": "Code",
+                    "marks": 7
+                  },
+                  {
+                    "questionId": "it301_2022_8a",
+                    "year": 2022,
+                    "qNumber": "Q8a",
+                    "chapter": "Module 4: Overloading, Templates and Inheritance",
+                    "text": "What is multiple inheritance? Explain the ambiguity problem associated with it and how it can be resolved in C++.",
+                    "type": "Explanation",
+                    "marks": 7
+                  },
+                  {
+                    "questionId": "it301_2021_1c",
+                    "year": 2021,
+                    "qNumber": "Q1c",
+                    "chapter": "Module 2: Control Structures, Functions, and Pointers",
+                    "text": "A pointer that does not point to any valid memory address is called?\n\n* (i) Void Pointer\n* (ii) Null Pointer\n* (iii) Wild Pointer\n* (iv) This Pointer",
+                    "type": "MCQ",
+                    "marks": 2
+                  },
+                  {
+                    "questionId": "it301_2020_5a",
+                    "year": 2020,
+                    "qNumber": "Q5a",
+                    "chapter": "Module 5: Virtual Functions, Polymorphism, and File I/O",
+                    "text": "Explain the difference between compile-time (static) polymorphism and run-time (dynamic) polymorphism.",
+                    "type": "Differentiate",
+                    "marks": 6
+                  },
+                  {
+                    "questionId": "it301_2023_6a",
+                    "year": 2023,
+                    "qNumber": "Q6a",
+                    "chapter": "Module 6: Exception Handling and STL",
+                    "text": "What happens if an exception is thrown but not caught by any `catch` block?",
+                    "type": "Explanation",
+                    "marks": 5
+                  },
+                  {
+                    "questionId": "it301_2019_4a",
+                    "year": 2019,
+                    "qNumber": "Q4a",
+                    "chapter": "Module 3: Classes and Data Abstraction",
+                    "text": "Explain the different access specifiers (`public`, `private`, `protected`) in C++ classes.",
+                    "type": "Explanation",
+                    "marks": 7
+                  }
+                ]
+              },
+              {
+                "id": "it302",
+                "name": "Data Structures & Algorithms",
+                "code": "100304",
+                "modules": [
+                  {
+                    "id": "m1",
+                    "name": "Module 1: Analysis of Algorithms & Arrays"
+                  },
+                  {
+                    "id": "m2",
+                    "name": "Module 2: Stacks & Queues"
+                  },
+                  {
+                    "id": "m3",
+                    "name": "Module 3: Linked Lists"
+                  },
+                  {
+                    "id": "m4",
+                    "name": "Module 4: Trees"
+                  },
+                  {
+                    "id": "m5",
+                    "name": "Module 5: Graphs"
+                  },
+                  {
+                    "id": "m6",
+                    "name": "Module 6: Sorting & Searching"
+                  },
+                  {
+                    "id": "m7",
+                    "name": "Module 7: Hashing"
+                  }
+                ],
+                "questions": [
+                  {
+                    "questionId": "it302_2021_1a",
+                    "year": 2021,
+                    "qNumber": "Q1a",
+                    "chapter": "Module 1: Analysis of Algorithms & Arrays",
+                    "text": "What is the time complexity (Big-O notation) of Linear Search in the worst case?\n\n* (i) O(1)\n* (ii) O(log n)\n* (iii) O(n)\n* (iv) O(n^2)",
+                    "type": "MCQ",
+                    "marks": 2
+                  },
+                  {
+                    "questionId": "it302_2022_6a",
+                    "year": 2022,
+                    "qNumber": "Q6a",
+                    "chapter": "Module 4: Trees",
+                    "text": "Define a Binary Search Tree (BST). Construct a BST for the following sequence of numbers: `50, 30, 70, 20, 40, 60, 80`.",
+                    "type": "Definition & Problem",
+                    "marks": 7
+                  },
+                  {
+                    "questionId": "it302_2022_7a",
+                    "year": 2022,
+                    "qNumber": "Q7a",
+                    "chapter": "Module 5: Graphs",
+                    "text": "Explain Depth First Search (DFS) algorithm with an example.",
+                    "type": "Explanation with Example",
+                    "marks": 7
+                  },
+                  {
+                    "questionId": "it302_2020_1b",
+                    "year": 2020,
+                    "qNumber": "Q1b",
+                    "chapter": "Module 2: Stacks & Queues",
+                    "text": "Pushing an element onto a full stack results in?\n\n* (i) Stack Underflow\n* (ii) Stack Overflow\n* (iii) Pop operation\n* (iv) No change",
+                    "type": "MCQ",
+                    "marks": 2
+                  },
+                  {
+                    "questionId": "it302_2020_1c",
+                    "year": 2020,
+                    "qNumber": "Q1c",
+                    "chapter": "Module 3: Linked Lists",
+                    "text": "In a singly linked list, each node contains:\n\n* (i) Only data\n* (ii) Only pointer to next node\n* (iii) Data and pointer to next node\n* (iv) Data and pointer to previous node",
+                    "type": "MCQ",
+                    "marks": 2
+                  },
+                  {
+                    "questionId": "it302_2021_2a",
+                    "year": 2021,
+                    "qNumber": "Q2a",
+                    "chapter": "Module 1: Analysis of Algorithms & Arrays",
+                    "text": "Explain Asymptotic Notations (Big-O, Big-Omega, Big-Theta) used for analyzing algorithm efficiency.",
+                    "type": "Explanation",
+                    "marks": 7
+                  },
+                  {
+                    "questionId": "it302_2021_3b",
+                    "year": 2021,
+                    "qNumber": "Q3b",
+                    "chapter": "Module 2: Stacks & Queues",
+                    "text": "Write algorithms for PUSH and POP operations on a stack implemented using an array.",
+                    "type": "Algorithm",
+                    "marks": 7
+                  },
+                  {
+                    "questionId": "it302_2020_4a",
+                    "year": 2020,
+                    "qNumber": "Q4a",
+                    "chapter": "Module 3: Linked Lists",
+                    "text": "What is a Doubly Linked List? Write an algorithm to insert a node at the beginning of the list.",
+                    "type": "Algorithm",
+                    "marks": 7
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
