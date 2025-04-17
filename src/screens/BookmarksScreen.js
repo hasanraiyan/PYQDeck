@@ -4,7 +4,7 @@ import { getBookmarkedQuestions } from '../helpers/bookmarkHelpers';
 import beuData from '../data/beuData';
 import QuestionItem from '../components/QuestionItem';
 import { COLORS } from '../constants';
-import { copyToClipboard, searchGoogle, askAI as askAIHelper, getQuestionPlainText } from '../helpers/helpers';
+import { copyToClipboard, searchGoogle, askAI as askAIHelper, getQuestionPlainText, loadCompletionStatuses, setQuestionCompleted } from '../helpers/helpers';
 
 function flattenQuestions(data) {
   // Robustly flatten all questions in the beuData tree
@@ -43,6 +43,15 @@ const BookmarksScreen = ({ navigation }) => {
     refreshBookmarks();
   }, []);
 
+  useEffect(() => {
+    // When bookmarkedIds change, fetch their completion statuses
+    if (bookmarkedIds.length > 0) {
+      loadCompletionStatuses(bookmarkedIds).then(setCompletionStatus);
+    } else {
+      setCompletionStatus({});
+    }
+  }, [bookmarkedIds]);
+
   const refreshBookmarks = useCallback(async () => {
     setLoading(true);
     const ids = await getBookmarkedQuestions();
@@ -64,9 +73,10 @@ const BookmarksScreen = ({ navigation }) => {
     }, 1500);
   }, []);
 
-  // Completion toggle (local only)
+  // Completion toggle (persisted)
   const handleToggleComplete = useCallback((questionId, newStatus) => {
     setCompletionStatus(prev => ({ ...prev, [questionId]: newStatus }));
+    setQuestionCompleted(questionId, newStatus);
   }, []);
 
   const handleCopy = useCallback(
