@@ -4,6 +4,7 @@ import { Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { COLORS } from '../constants';
+import CustomHeader from '../components/CustomHeader';
 
 // Import Screens
 import BranchListScreen from '../screens/BranchListScreen';
@@ -23,7 +24,23 @@ function AppNavigator() {
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="Branches"
-        screenOptions={{
+        screenOptions={({ navigation, route, options }) => ({
+          header: (props) => (
+            <CustomHeader
+              title={
+                options && options.title
+                  ? options.title
+                  : props.options && props.options.title
+                  ? props.options.title
+                  : props.scene && props.scene.route && props.scene.route.name
+                  ? props.scene.route.name
+                  : route.name
+              }
+              navigation={navigation}
+              canGoBack={navigation.canGoBack()}
+              rightComponent={options && options.headerRight ? options.headerRight() : null}
+            />
+          ),
           headerStyle: {
             backgroundColor: COLORS.surface,
             ...(Platform.OS === 'android' && { elevation: 2 }),
@@ -32,7 +49,7 @@ function AppNavigator() {
           headerTitleStyle: { fontWeight: '400', fontSize: 18 },
           headerBackTitleVisible: false,
           headerShadowVisible: Platform.OS === 'ios',
-        }}
+        })}
       >
         <Stack.Screen
           name="Branches"
