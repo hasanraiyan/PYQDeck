@@ -2837,13 +2837,490 @@
                   "marks": 8
                 },
                 {
-                  "questionId":"it_100305_2020_Q9b",
+                  "questionId": "it_100305_2020_Q9b",
                   "year": 2020,
-                  "qNumber":"Q9b",
-                  "chapter":"Module 1: Fundamentals and Logic Families",
-                  "text":"![image](https://mtjwwpxkwpaagqsnfbks.supabase.co/storage/v1/object/public/images//it_100305_2020_Q9b.png)",
+                  "qNumber": "Q9b",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
+                  "text": "![image](https://mtjwwpxkwpaagqsnfbks.supabase.co/storage/v1/object/public/images//it_100305_2020_Q9b.png)",
                   "type": "Explanation with Example",
                   "marks": 8
+                },
+                {
+                  "questionId": "it_100305_2021_Q1a",
+                  "year": 2021,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
+                  "text": "Perform the following : (3A2F)16 = (?)10",
+                  "type": "Problem",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2021_Q1b",
+                  "year": 2021,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 3: Sequential Circuits",
+                  "text": "A latch is an example of a/an\n(i) monostable multivibrator\n(ii) astable multivibrator\n(iii) bistable multivibrator\n(iv) 555 timer",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2021_Q1c",
+                  "year": 2021,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 2: Combinational Circuits",
+                  "text": "Define multiplexer and realize a three-input AND gate using a 4x1 multiplexer.",
+                  "type": "Definition & Realization",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2021_Q1d",
+                  "year": 2021,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 3: Sequential Circuits",
+                  "text": "The number of flip-flops in a synchronous counter is 4, then it can count from\n(i) 1 to 2^4\n(ii) 0 to 2^2\n(iii) 1 to 2x4\n(iv) 0 to 2^4 - 1",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2021_Q1e",
+                  "year": 2021,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
+                  "text": "A decimal number 6 in excess-3 code is written as ______. (Fill in the blank)",
+                  "type": "Fill_in_the_Blank",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2021_Q1f",
+                  "year": 2021,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
+                  "text": "Prove the following theorem of Boolean Algebra : (A + B)' = A' · B'",
+                  "type": "Proof",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2021_Q1g",
+                  "year": 2021,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 5: Memory and PLDs",
+                  "text": "The inputs in the PLD is given through\n(i) NAND\n(ii) NOR\n(iii) AND\n(iv) OR",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2021_Q1h",
+                  "year": 2021,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
+                  "text": "What is bus contention?",
+                  "type": "Definition",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2021_Q1i",
+                  "year": 2021,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
+                  "text": "Define high-level input current of a logic gate.",
+                  "type": "Definition",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2021_Q1j",
+                  "year": 2021,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 4: A/D and D/A Converters",
+                  "text": "Output of a 3-bit digital-to-analog converter is 20 mV when input is 010. What will be its output if input is 101?",
+                  "type": "Problem",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2021_Q2a",
+                  "year": 2021,
+                  "qNumber": "Q2a",
+                  "chapter": "Module 2: Combinational Circuits",
+                  "text": "Simplify the function F(A, B, C, D) = Σ m (0, 1, 2, 6, 7, 8, 15) and realize the circuit using NOR gates only.",
+                  "type": "Simplification & Realization",
+                  "marks": 4
+                },
+                {
+                  "questionId": "it_100305_2021_Q2b",
+                  "year": 2021,
+                  "qNumber": "Q2b",
+                  "chapter": "Module 2: Combinational Circuits",
+                  "text": "Simplify the function F(A, B, C, D) = ABC'D' + AB'C'D + A'BCD' and realize the circuit using NAND gates only.",
+                  "type": "Simplification & Realization",
+                  "marks": 4
+                },
+                {
+                  "questionId": "it_100305_2021_Q2c",
+                  "year": 2021,
+                  "qNumber": "Q2c",
+                  "chapter": "Module 2: Combinational Circuits",
+                  "text": "Design and obtain NAND-NAND realization of a combinational circuit that performs the following operation : Y = A^2 - 1 where Y is output binary number of appropriate length, A is a 3-bit 2's complement binary number and '-' represents subtraction.",
+                  "type": "Design & Realization",
+                  "marks": 6
+                },
+                {
+                  "questionId": "it_100305_2021_Q3a",
+                  "year": 2021,
+                  "qNumber": "Q3a",
+                  "chapter": "Module 2: Combinational Circuits",
+                  "text": "A combinational circuit has to generate BCD codes upon receiving valid excess-3 codes at its input. If any invalid input is received all the outputs of the circuit should be kept at 0. Design the circuit using NOR gates only.",
+                  "type": "Design",
+                  "marks": 6
+                },
+                {
+                  "questionId": "it_100305_2021_Q3b",
+                  "year": 2021,
+                  "qNumber": "Q3b",
+                  "chapter": "Module 2: Combinational Circuits",
+                  "text": "Design an arithmetic circuit with two select variables S1 and S0. The circuit generates the following arithmetic operations: ![Table provided showing F based on S1, S0, Cin](https://mtjwwpxkwpaagqsnfbks.supabase.co/storage/v1/object/public/images//it_100305_2021_Q3b.png). Given that A and B are binary words.",
+                  "type": "Design",
+                  "marks": 8
+                },
+                {
+                  "questionId": "it_100305_2021_Q4a",
+                  "year": 2021,
+                  "qNumber": "Q4a",
+                  "chapter": "Module 3: Sequential Circuits",
+                  "text": "What is race-around problem in J-K flipflop? How can it be eliminated? Why it is named race-around?",
+                  "type": "Explanation",
+                  "marks": 6
+                },
+                {
+                  "questionId": "it_100305_2021_Q4b",
+                  "year": 2021,
+                  "qNumber": "Q4b",
+                  "chapter": "Module 2: Combinational Circuits",
+                  "text": "Realize a 64x1 multiplexer using multiple 8x1 multiplexers only.",
+                  "type": "Realization",
+                  "marks": 4
+                },
+                {
+                  "questionId": "it_100305_2021_Q4c",
+                  "year": 2021,
+                  "qNumber": "Q4c",
+                  "chapter": "Module 2: Combinational Circuits",
+                  "text": "Realize a circuit using decoder that generates r's complement of a BCD digit.",
+                  "type": "Realization",
+                  "marks": 4
+                },
+                {
+                  "questionId": "it_100305_2021_Q5a",
+                  "year": 2021,
+                  "qNumber": "Q5a",
+                  "chapter": "Module 3: Sequential Circuits",
+                  "text": "The truth table for X-Y flip-flop is shown below. Design this flip-flop using S-R flip-flop and additional logic required: ![Truth Table Provided](https://mtjwwpxkwpaagqsnfbks.supabase.co/storage/v1/object/public/images//it_100305_2021_Q5a.png)",
+                  "type": "Design",
+                  "marks": 6
+                },
+                {
+                  "questionId": "it_100305_2021_Q5b",
+                  "year": 2021,
+                  "qNumber": "Q5b",
+                  "chapter": "Module 3: Sequential Circuits",
+                  "text": "Design a synchronous sequential circuit that generates an output Z = 1 whenever the string 0101 is scanned in the output. Overlapping strings are accepted :\n(i) Draw a state diagram.\n(ii) Realize the sequential circuit using T flip-flop.",
+                  "type": "Design",
+                  "marks": 8
+                },
+                {
+                  "questionId": "it_100305_2021_Q6a",
+                  "year": 2021,
+                  "qNumber": "Q6a",
+                  "chapter": "Module 3: Sequential Circuits",
+                  "text": "Design a mod-10 counter using J-K flip-flop. Incorporate in your design a provision to ensure that if an unused state occurs, the next clock pulse will reset the counter to Q2Q1Q0 = 0000.",
+                  "type": "Design",
+                  "marks": 6
+                },
+                {
+                  "questionId": "it_100305_2021_Q6b",
+                  "year": 2021,
+                  "qNumber": "Q6b",
+                  "chapter": "Module 3: Sequential Circuits",
+                  "text": "Design a sequential circuit using J-K flip-flop whose state diagram is shown in figure below : ![State Diagram Provided](https://mtjwwpxkwpaagqsnfbks.supabase.co/storage/v1/object/public/images//it_100305_2021_Q6b.png)",
+                  "type": "Design",
+                  "marks": 8
+                },
+                {
+                  "questionId": "it_100305_2021_Q7a",
+                  "year": 2021,
+                  "qNumber": "Q7a",
+                  "chapter": "Module 4: A/D and D/A Converters",
+                  "text": "An analog-to-digital converter has to be used to design digital multimeter. Suggest an appropriate analog-to-digital converter for this application along with justification. Draw the circuit diagram of suggested analog-to-digital converter and explain its operation.",
+                  "type": "Design & Explanation",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100305_2021_Q7b",
+                  "year": 2021,
+                  "qNumber": "Q7b",
+                  "chapter": "Module 4: A/D and D/A Converters",
+                  "text": "Draw the circuit diagram of a 4-bit R/2R digital-to-analog converter and obtain the expression of output. From the obtained expression, find out the value of LS bit and full-scale output.",
+                  "type": "Explanation & Analysis",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100305_2021_Q8a",
+                  "year": 2021,
+                  "qNumber": "Q8a",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
+                  "text": "Draw the circuit diagram of a TTL NAND gate with active pull-up output and explain its operation in detail.",
+                  "type": "Explanation with Diagram",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100305_2021_Q8b",
+                  "year": 2021,
+                  "qNumber": "Q8b",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
+                  "text": "Draw the circuit diagram of a CMOS NOR gate and explain its operation in detail.",
+                  "type": "Explanation with Diagram",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100305_2021_Q9a",
+                  "year": 2021,
+                  "qNumber": "Q9a",
+                  "chapter": "Module 5: Memory and PLDs",
+                  "text": "Draw the block diagram of a PLA and prepare a PLA program table for a combinational circuit defined by the following functions : F1=A'B + AC + A'BC'; F2 = (AC+AB + BC)'",
+                  "type": "Design",
+                  "marks": 8
+                },
+                {
+                  "questionId": "it_100305_2021_Q9b",
+                  "year": 2021,
+                  "qNumber": "Q9b",
+                  "chapter": "Module 5: Memory and PLDs",
+                  "text": "Differentiate between word capacity and word size. Design a 32x8 CAM chip using an 8x4 CAM chip.",
+                  "type": "Differentiate & Design",
+                  "marks": 6
+                },
+                {
+                  "questionId": "it_100305_2023_Q1a",
+                  "year": 2023,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
+                  "text": "Define binary logic?",
+                  "type": "Definition",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2023_Q1b",
+                  "year": 2023,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
+                  "text": "What are the characteristics of Digital Systems?",
+                  "type": "Explanation",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2023_Q1c",
+                  "year": 2023,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 2: Combinational Circuits",
+                  "text": "What is meant by Karnaugh map or K-Map method?",
+                  "type": "Explanation",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2023_Q1d",
+                  "year": 2023,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
+                  "text": "State De Morgan's theorem.",
+                  "type": "Statement",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2023_Q1e",
+                  "year": 2023,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 2: Combinational Circuits",
+                  "text": "Define de-multiplexer.",
+                  "type": "Definition",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2023_Q1f",
+                  "year": 2023,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
+                  "text": "Define Propagation Delay.",
+                  "type": "Definition",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2023_Q1g",
+                  "year": 2023,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 3: Sequential Circuits",
+                  "text": "What are the classifications of sequential circuits?",
+                  "type": "Explanation",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2023_Q1h",
+                  "year": 2023,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 5: Memory and PLDs",
+                  "text": "Define the Static RAM and Dynamic RAM.",
+                  "type": "Definition",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2023_Q1i",
+                  "year": 2023,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 5: Memory and PLDs",
+                  "text": "What are the different types of ROM?",
+                  "type": "Explanation",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2023_Q1j",
+                  "year": 2023,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 4: A/D and D/A Converters",
+                  "text": "Write down the drawback of weighted D/A converter.",
+                  "type": "Explanation",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2023_Q2a",
+                  "year": 2023,
+                  "qNumber": "Q2a",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
+                  "text": "Design the circuit by Using NAND gates F= ABC'+ DE+ AB'D'.",
+                  "type": "Design",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100305_2023_Q2b",
+                  "year": 2023,
+                  "qNumber": "Q2b",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
+                  "text": "Minimize Boolean expression of function F=XY+X(Y+Z) +Y(Y+Z).",
+                  "type": "Minimization",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100305_2023_Q3a",
+                  "year": 2023,
+                  "qNumber": "Q3a",
+                  "chapter": "Module 2: Combinational Circuits",
+                  "text": "Using K-map method, Reduce the following Boolean function F=Σm (0,2,3,6,7) + d(8,10,11,15) and obtain minimal SOP.",
+                  "type": "Minimization",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100305_2023_Q3b",
+                  "year": 2023,
+                  "qNumber": "Q3b",
+                  "chapter": "Module 2: Combinational Circuits",
+                  "text": "How will you design a full adder using two half adders and an OR gate.",
+                  "type": "Design",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100305_2023_Q4a",
+                  "year": 2023,
+                  "qNumber": "Q4a",
+                  "chapter": "Module 2: Combinational Circuits",
+                  "text": "Describe about multiplexer and Simplify the following function using 8x1 Mux F= Σ(0,1,3,4,8,9,15).",
+                  "type": "Explanation & Simplification",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100305_2023_Q4b",
+                  "year": 2023,
+                  "qNumber": "Q4b",
+                  "chapter": "Module 2: Combinational Circuits",
+                  "text": "Discuss about the purpose of decoder and Implement a full adder using decoder.",
+                  "type": "Explanation & Implementation",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100305_2023_Q5a",
+                  "year": 2023,
+                  "qNumber": "Q5a",
+                  "chapter": "Module 3: Sequential Circuits",
+                  "text": "Explain in detail about the pulse- triggered S-R Flip Flop with necessary diagrams.",
+                  "type": "Explanation with Diagram",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100305_2023_Q5b",
+                  "year": 2023,
+                  "qNumber": "Q5b",
+                  "chapter": "Module 3: Sequential Circuits",
+                  "text": "Determine the state table, characteristic table and an excitation table for D Flip Flop.",
+                  "type": "Derivation",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100305_2023_Q6a",
+                  "year": 2023,
+                  "qNumber": "Q6a",
+                  "chapter": "Module 3: Sequential Circuits",
+                  "text": "Examine a synchronous MOD-6 counter and explain the operation.",
+                  "type": "Explanation",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100305_2023_Q6b",
+                  "year": 2023,
+                  "qNumber": "Q6b",
+                  "chapter": "Module 3: Sequential Circuits",
+                  "text": "Design a J-K counter for the states 3, 4, 6, 7 and 3.",
+                  "type": "Design",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100305_2023_Q7a",
+                  "year": 2023,
+                  "qNumber": "Q7a",
+                  "chapter": "Module 3: Sequential Circuits",
+                  "text": "What do you mean by ripple counters? Explain the 4 bit ripple counter and also draw a timing diagram.",
+                  "type": "Explanation with Diagram",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100305_2023_Q7b",
+                  "year": 2023,
+                  "qNumber": "Q7b",
+                  "chapter": "Module 5: Memory and PLDs",
+                  "text": "Explain the PLA with the block diagram. Describe types of ROM in brief",
+                  "type": "Explanation with Diagram",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100305_2023_Q8a",
+                  "year": 2023,
+                  "qNumber": "Q8a",
+                  "chapter": "Module 2: Combinational Circuits",
+                  "text": "Design a full adder with truth table and logic gates.",
+                  "type": "Design",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100305_2023_Q8b",
+                  "year": 2023,
+                  "qNumber": "Q8b",
+                  "chapter": "Module 2: Combinational Circuits",
+                  "text": "What is combinational logic? What are its important features? Design a half adder logic using only NOR gate.",
+                  "type": "Explanation & Design",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100305_2023_Q9a",
+                  "year": 2023,
+                  "qNumber": "Q9a",
+                  "chapter": "Module 4: A/D and D/A Converters",
+                  "text": "What is a sample and hold circuit? Where it is used?",
+                  "type": "Explanation",
+                  "marks": 7
                 }
               ]
             },
