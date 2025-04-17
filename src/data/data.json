@@ -2569,8 +2569,283 @@
               "id": "it_100305",
               "name": "DIGITAL ELECTRONICS",
               "code": "100305",
-              "modules": [],
-              "questions": []
+              "modules": [
+                {
+                  "id": "m1",
+                  "name": "Module 1: Fundamentals and Logic Families",
+                  "description": "Digital signals, digital circuits, AND, OR, NOT, NAND, NOR and Exclusive-OR operations, Boolean algebra, examples of IC gates, number systems-binary, signed binary, octal hexadecimal number, binary arithmetic, one’s and two’s complements arithmetic, codes, error detecting and correcting codes, characteristics of digital ICs, digital logic families, TTL, Schottky TTL and CMOS logic, interfacing CMOS and TTL, Tri - state logic.",
+                  "lectures": 7
+                },
+                {
+                  "id": "m2",
+                  "name": "Module 2: Combinational Circuits",
+                  "description": "Standard representation for logic functions K-map representation, simplification of logic functions using K-map, minimization of logical functions. Don’t care conditions, Multiplexer, DeMultiplexer/Decoders, Adders, Subtractors, BCD arithmetic, carry look ahead adder, serial adder, ALU, elementary ALU design, popular MSI chips, digital comparator, parity checker/generator, code converters, priority encoders, decoders/drivers for display devices, Q-M method of function realization.",
+                  "lectures": 7
+                },
+                {
+                  "id": "m3",
+                  "name": "Module 3: Sequential Circuits",
+                  "description": "A 1-bit memory, the circuit properties of Bistable latch, the clocked SR flip flop, J- K, T and D types flip flops, application of flip flops, shift registers, applications of shift registers, serial to parallel converter, parallel to serial converter, ring counter, sequence generator, ripple (Asynchronous) counters, synchronous counters, counters design using flip flops, special counter ICs, asynchronous sequential counters, applications of counters.",
+                  "lectures": 7
+                },
+                {
+                  "id": "m4",
+                  "name": "Module 4: A/D and D/A Converters",
+                  "description": "Digital to analog converters: weighted resistor/converter, R-2RLadder D/A converter, specifications for D/A converters, examples of D/A converter ICs, sample and hold circuit, analog to digital converters: quantization and encoding, parallel comparator A/D converter, successive approximation A/D converter, counting A/D converter, dual slope A/D converter, A/D converter using Voltage to frequency and voltage to time conversion, specifications of A/D converters, example of A/D converter ICs.",
+                  "lectures": 7
+                },
+                {
+                  "id": "m5",
+                  "name": "Module 5: Memory and PLDs",
+                  "description": "Memory organization and operation, expanding memory size, classification and characteristics of memories, sequential memory, read only memory (ROM), read and write memory(RAM), content addressable memory (CAM), charge de coupled device memory (CCD), commonly used memory chips, ROM as a PLD, Programmable logic array (PLA), Programmable array logic (PAL), complex Programmable logic devices (CPLDs), Field Programmable Gate Array (FPGA).",
+                  "lectures": 7
+                }
+              ],
+              "questions": [
+                {
+                  "questionId": "it_100305_2020_Q1a",
+                  "year": 2020,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 5: Memory and PLDs",
+                  "text": "Dynamic RAM employs\n(i) capacitor or MOSFET\n(ii) FET or JFET\n(iii) capacitor or BJT\n(iv) BJT or MOS",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2020_Q1b",
+                  "year": 2020,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 4: A/D and D/A Converters",
+                  "text": "The resolution of a 10-bit AD converter for an input range of 10 V is approximately\n(i) 1 V\n(ii) 1 mV\n(iii) 10 mV\n(iv) 100 mV",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2020_Q1c",
+                  "year": 2020,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 5: Memory and PLDs",
+                  "text": "The evolution of PLD begins with\n(i) EROM\n(ii) RAM\n(iii) PROM\n(iv) EEPROM",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2020_Q1d",
+                  "year": 2020,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
+                  "text": "The parameter through which 16 distinct values can be represented is known as\n(i) bit\n(ii) byte\n(iii) word\n(iv) nibble",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2020_Q1e",
+                  "year": 2020,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 2: Combinational Circuits",
+                  "text": "The number of full and half adders required to add 16-bit number is\n(i) 8 HA, 8 FA\n(ii) 1 HA, 15 FA\n(iii) 16 HA, 0 FA\n(iv) 4 HA, 12 FA",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2020_Q1f",
+                  "year": 2020,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 4: A/D and D/A Converters",
+                  "text": "If we record any music in any recorder, such type of process is called\n(i) multiplexing\n(ii) encoding\n(iii) decoding\n(iv) demultiplexing",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2020_Q1g",
+                  "year": 2020,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 3: Sequential Circuits",
+                  "text": "The no. of D flip-flop required to form a 5-bit ring counter is\n(i) 3\n(ii) 4\n(iii) 5\n(iv) None of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2020_Q1h",
+                  "year": 2020,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 2: Combinational Circuits",
+                  "text": "An overflow is a/an\n(i) hardware problem\n(ii) software problem\n(iii) user-input problem\n(iv) input-output problem",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2020_Q1i",
+                  "year": 2020,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 2: Combinational Circuits",
+                  "text": "The systematic reduction of logic circuits is accomplished by\n(i) symbolic reduction\n(ii) TTL logic\n(iii) Boolean algebra\n(iv) truth table",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2020_Q1j",
+                  "year": 2020,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 3: Sequential Circuits",
+                  "text": "A latch is an example of a/an\n(i) monostable multivibrator\n(ii) astable multivibrator\n(iii) bistable multivibrator\n(iv) 555 time",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100305_2020_Q2a",
+                  "year": 2020,
+                  "qNumber": "Q2a",
+                  "chapter": "Module 2: Combinational Circuits",
+                  "text": "Design an excess-3 to BCD code converter using minimum number of NAND gates.",
+                  "type": "Design",
+                  "marks": 8
+                },
+                {
+                  "questionId": "it_100305_2020_Q2b",
+                  "year": 2020,
+                  "qNumber": "Q2b",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
+                  "text": "Prove the following: (A⊕B)' = A⊕B' A'⊕B",
+                  "type": "Proof",
+                  "marks": 3
+                },
+                {
+                  "questionId": "it_100305_2020_Q2c",
+                  "year": 2020,
+                  "qNumber": "Q2c",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
+                  "text": "Prove the following: A⊕B' = A'B' + AB",
+                  "type": "Proof",
+                  "marks": 3
+                },
+                {
+                  "questionId": "it_100305_2020_Q3",
+                  "year": 2020,
+                  "qNumber": "Q3",
+                  "chapter": "Module 3: Sequential Circuits",
+                  "text": "How can we implement preset and clear inputs in a flip-flop? Explain with the help of a diagram and list their uses.",
+                  "type": "Explanation with Diagram",
+                  "marks": 6
+                },
+                {
+                  "questionId": "it_100305_2020_Q3b",
+                  "year": 2020,
+                  "qNumber": "Q3b",
+                  "chapter": "Module 3: Sequential Circuits",
+                  "text": "Design a Mod 9 counter using T flip-flops.",
+                  "type": "Design",
+                  "marks": 8
+                },
+                {
+                  "questionId": "it_100305_2020_Q4a",
+                  "year": 2020,
+                  "qNumber": "Q4a",
+                  "chapter": "Module 5: Memory and PLDs",
+                  "text": "Explain internal organization of 16x2 memory chips using suitable diagrams. Calculate the maximum rate at which data can be stored and read for a memory having following timing parameters: ![Table: TRD=70, Tdw=120, Trc=200, Twp=0, Twc=200 ns](https://mtjwwpxkwpaagqsnfbks.supabase.co/storage/v1/object/public/images//it_100305_2020_Q7a.png)",
+                  "type": "Explanation & Calculation",
+                  "marks": 10
+                },
+                {
+                  "questionId": "it_100305_2020_Q4b",
+                  "year": 2020,
+                  "qNumber": "Q4b",
+                  "chapter": "Module 5: Memory and PLDs",
+                  "text": "Differentiate between Word Capacity and Word Size. Design a 16x8 CAM, using 8x2 CAM chips.",
+                  "type": "Differentiate & Design",
+                  "marks": 8
+                },
+                {
+                  "questionId": "it_100305_2020_Q5a",
+                  "year": 2020,
+                  "qNumber": "Q5a",
+                  "chapter": "Module 4: A/D and D/A Converters",
+                  "text": "Define resolution, linearity, accuracy and settling time of D/A converters. A typical D/A converter has a full-scale analog output of 10 V and accepts 6 binary bits as input. What will be the voltage corresponding to each analog step?",
+                  "type": "Definition & Calculation",
+                  "marks": 10
+                },
+                {
+                  "questionId": "it_100305_2020_Q5b",
+                  "year": 2020,
+                  "qNumber": "Q5b",
+                  "chapter": "Module 4: A/D and D/A Converters",
+                  "text": "Design a 3-bit parallel comparator A/D converter that provides output in 2's complement format.",
+                  "type": "Design",
+                  "marks": 8
+                },
+                {
+                  "questionId": "it_100305_2020_Q6a",
+                  "year": 2020,
+                  "qNumber": "Q6a",
+                  "chapter": "Module 2: Combinational Circuits",
+                  "text": "Design a BCD to 7-segment display decoder circuit using logic gates.",
+                  "type": "Design",
+                  "marks": 8
+                },
+                {
+                  "questionId": "it_100305_2020_Q6b",
+                  "year": 2020,
+                  "qNumber": "Q6b",
+                  "chapter": "Module 2: Combinational Circuits",
+                  "text": "Design full adder using the following:\n(i) 8:1 mux\n(ii) 4:1 mux",
+                  "type": "Design",
+                  "marks": 6
+                },
+                {
+                  "questionId": "it_100305_2020_Q7a",
+                  "year": 2020,
+                  "qNumber": "Q7a",
+                  "chapter": "Module 3: Sequential Circuits",
+                  "text": "On the following graph, inputs CLK and D are shown: ![Timing Diagram Provided](https://mtjwwpxkwpaagqsnfbks.supabase.co/storage/v1/object/public/images//it_106301_2023_Q7b.png). They are inputs to a D latch and a positive edge triggered D flip-flop. Assuming initial output 0, draw the output waveform for flip-flop and latch. Do the two outputs differ? If so, why?",
+                  "type": "Problem/Analysis_Image",
+                  "marks": 10
+                },
+                {
+                  "questionId": "it_100305_2020_Q7b",
+                  "year": 2020,
+                  "qNumber": "Q8c",
+                  "chapter": "Module 3: Sequential Circuits",
+                  "text": "Explain SIPO and SISO operations of shift register with relevant logic diagrams and truth tables.",
+                  "type": "Explanation with Diagram",
+                  "marks": 8
+                },
+                {
+                  "questionId": "it_100305_2020_Q8a",
+                  "year": 2020,
+                  "qNumber": "Q8a",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
+                  "text": "Identify the following logic functions implemented at F: ![CMOS Circuit Diagram (i) provided](https://mtjwwpxkwpaagqsnfbks.supabase.co/storage/v1/object/public/images//it_100305_2020_Q8a.png)",
+                  "type": "Analysis_Image",
+                  "marks": 3
+                },
+                {
+                  "questionId": "it_100305_2020_Q8b",
+                  "year": 2020,
+                  "qNumber": "Q8b",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
+                  "text": "Implement the following CMOS logics:\n(i) (AB(A+B))'\n(ii) (((CD) + B)A)'",
+                  "type": "Design",
+                  "marks": 8
+                },
+                {
+                  "questionId": "it_100305_2020_Q9a",
+                  "year": 2020,
+                  "qNumber": "Q9a",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
+                  "text": "What are weighted, non-weighted, cyclic and self-complementary codes? Explain each with examples.",
+                  "type": "Explanation with Example",
+                  "marks": 8
+                },
+                {
+                  "questionId":"it_100305_2020_Q9b",
+                  "year": 2020,
+                  "qNumber":"Q9b",
+                  "chapter":"Module 1: Fundamentals and Logic Families",
+                  "text":"![image](https://mtjwwpxkwpaagqsnfbks.supabase.co/storage/v1/object/public/images//it_100305_2020_Q9b.png)",
+                  "type": "Explanation with Example",
+                  "marks": 8
+                }
+              ]
             },
             {
               "id": "it_100311",
