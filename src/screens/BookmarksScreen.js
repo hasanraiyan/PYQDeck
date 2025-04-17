@@ -4,6 +4,7 @@ import { getBookmarkedQuestions } from '../helpers/bookmarkHelpers';
 import beuData from '../data/beuData';
 import QuestionItem from '../components/QuestionItem';
 import { COLORS } from '../constants';
+import { copyToClipboard, searchGoogle, askAI as askAIHelper, getQuestionPlainText } from '../helpers/helpers';
 
 function flattenQuestions(data) {
   // Robustly flatten all questions in the beuData tree
@@ -31,6 +32,11 @@ const BookmarksScreen = ({ navigation }) => {
   const [bookmarkedIds, setBookmarkedIds] = useState([]);
   const [allQuestions, setAllQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [completionStatus, setCompletionStatus] = useState({});
+  const [feedbackMessage, setFeedbackMessage] = useState('');
+  const [showFeedback, setShowFeedback] = useState(false);
+  // Feedback timer for showing messages
+  const feedbackTimerRef = React.useRef(null);
 
   useEffect(() => {
     setAllQuestions(flattenQuestions(beuData));
@@ -46,6 +52,40 @@ const BookmarksScreen = ({ navigation }) => {
 
   const bookmarkedQuestions = allQuestions.filter(q => bookmarkedIds.includes(q.questionId));
 
+  // Feedback display logic
+  const displayFeedback = useCallback((message) => {
+    if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
+    setFeedbackMessage(message);
+    setShowFeedback(true);
+    feedbackTimerRef.current = setTimeout(() => {
+      setShowFeedback(false);
+      setFeedbackMessage('');
+      feedbackTimerRef.current = null;
+    }, 1500);
+  }, []);
+
+  // Completion toggle (local only)
+  const handleToggleComplete = useCallback((questionId, newStatus) => {
+    setCompletionStatus(prev => ({ ...prev, [questionId]: newStatus }));
+  }, []);
+
+  const handleCopy = useCallback(
+    (text) => copyToClipboard(text, displayFeedback),
+    [displayFeedback]
+  );
+
+  const handleSearch = useCallback(
+    (plainText) => searchGoogle(plainText, displayFeedback),
+    [displayFeedback]
+  );
+
+  const handleAskAI = useCallback(
+    (item) => {
+      askAIHelper(item, displayFeedback);
+    },
+    [displayFeedback]
+  );
+
   if (loading) {
     return (
       <View style={styles.centered}><ActivityIndicator size="large" color={COLORS.primary} /></View>
@@ -60,17 +100,23 @@ const BookmarksScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      {/* Feedback message */}
+      {showFeedback && (
+        <View style={{ alignItems: 'center', marginBottom: 8 }}>
+          <Text style={{ color: COLORS.primary, fontSize: 15 }}>{feedbackMessage}</Text>
+        </View>
+      )}
       <FlatList
         data={bookmarkedQuestions}
         keyExtractor={item => item.questionId}
         renderItem={({ item }) => (
           <QuestionItem
             item={item}
-            isCompleted={false}
-            onToggleComplete={() => {}}
-            onCopy={() => {}}
-            onSearch={() => {}}
-            onAskAI={() => {}}
+            isCompleted={!!completionStatus[item.questionId]}
+            onToggleComplete={(questionId, newStatus) => handleToggleComplete(questionId, newStatus)}
+            onCopy={() => handleCopy(getQuestionPlainText(item.text))}
+            onSearch={() => handleSearch(getQuestionPlainText(item.text))}
+            onAskAI={() => handleAskAI(item)}
           />
         )}
         contentContainerStyle={{ padding: 16 }}
