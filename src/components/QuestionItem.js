@@ -520,7 +520,8 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     alignItems: 'center',
     flexShrink: 1,
-    marginRight: 10,
+    margin: 10,
+
   },
   tag: {
     borderRadius: 12,
