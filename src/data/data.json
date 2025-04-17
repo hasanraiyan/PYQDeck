@@ -1,7 +1,7 @@
 {
   "branches": [
     {
-      "id": "106",
+      "id": "it",
       "name": "INFORMATION TECHNOLOGY",
       "icon": {
         "set": "Ionicons",
@@ -13,42 +13,290 @@
           "number": 3,
           "subjects": [
             {
-              "id": "it_s3_dsa",
+              "id": "it_100304",
               "name": "DATA STRUCTURE & ALGORITHMS",
               "code": "100304",
-              "modules": [],
-              "questions": []
+              "modules": [
+                {
+                  "id": "m1",
+                  "name": "Module 1: Introduction & Analysis",
+                  "description": "Basic Terminologies: Elementary Data Organizations, Data Structure Operations: insertion, deletion, traversal etc.; Analysis of an Algorithm, Asymptotic Notations, Time-Space trade off.",
+                  "lectures": 4
+                },
+                {
+                  "id": "m2",
+                  "name": "Module 2: Stacks and Queues",
+                  "description": "ADT Stack and its operations: Algorithms and their complexity analysis, Applications of Stacks: Expression Conversion and evaluation – corresponding algorithms and complexity analysis. ADT queue, Types of Queue: Simple Queue, Circular Queue, Priority Queue; Operations on each Type of Queues: Algorithms and their analysis.",
+                  "lectures": 10
+                },
+                {
+                  "id": "m3",
+                  "name": "Module 3: Linked Lists",
+                  "description": "Singly linked lists: Representation in memory, Algorithms of several operations: Traversing, Searching, Insertion into, Deletion from linked list; Linked representation of Stack and Queue, Header nodes, doubly linked list: operations on it and algorithmic analysis; Circular Linked Lists: all operations their algorithms and the complexity analysis.",
+                  "lectures": 6
+                },
+                {
+                  "id": "m4",
+                  "name": "Module 4: Searching, Sorting and Hashing",
+                  "description": "Linear Search and Binary Search Techniques and their complexity analysis Objective and properties of different sorting algorithms: Selection Sort, Bubble Sort, Insertion Sort, Quick Sort, Merge Sort, Heap Sort; Performance and Comparison among all the methods, Hashing.",
+                  "lectures": 12
+                },
+                {
+                  "id": "m5",
+                  "name": "Module 5: Trees and Graphs",
+                  "description": "Trees: Basic Tree Terminologies, Different types of Trees: Binary Tree, Threaded Binary Tree, Binary Search Tree, AVL Tree; Tree operations on each of the trees and their algorithms with complexity analysis. Applications of Binary Trees. B Tree, B+ Tree: definitions, algorithms and analysis. Graph: Basic Terminologies and Representations, Graph search and traversal algorithms and complexity analysis.",
+                  "lectures": 8
+                }
+              ],
+              "questions": [
+                {
+                  "questionId": "it_100304_2019_Q1a",
+                  "year": 2019,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 3: Linked Lists",
+                  "text": "Which of the following points is/are true about linked list data structure when it is compared with array?\n\n(i) Arrays have better cache locality that can make them better in terms of performance.\n(ii) It is easy to insert and delete elements in linked list.\n(iii) The size of array has to be pre-decided, linked lists can change their size any time.\n(iv) All of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2019_Q1b",
+                  "year": 2019,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 3: Linked Lists",
+                  "text": "What is the functionality of the following code?\n```java\npublic void function (Node node) {\n  if(size == 0)\n    head = node;\n  else{\n    Node temp, cur;\n    for(cur = head;\n        (temp = cur.getNext())! = null; cur = temp);\n    cur.setNext(node);\n  }\n  size++;\n}\n```\n(i) Inserting a node at the beginning of the list\n(ii) Deleting a node at the beginning of the list\n(iii) Inserting a node at the end of the list\n(iv) Deleting a node at the end of the list",
+                  "type": "MCQ_Code",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2019_Q1c",
+                  "year": 2019,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 3: Linked Lists",
+                  "text": "What is the space complexity for deleting a linked list?\n\n(i) O(1)\n(ii) O(n)\n(iii) Either O(1) or O(n)\n(iv) O(log n)",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2019_Q1d",
+                  "year": 2019,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 3: Linked Lists",
+                  "text": "The situation when in a linked list START=NULL is\n\n(i) underflow\n(ii) overflow\n(iii) housefull\n(iv) saturated",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2019_Q1e",
+                  "year": 2019,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 3: Linked Lists",
+                  "text": "What would be the asymptotic time complexity to add a node at the end of singly linked list, if the pointer is initially pointing to the head of the list?\n\n(i) O(1)\n(ii) O(n)\n(iii) θ(n)\n(iv) θ(1)",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2019_Q1f",
+                  "year": 2019,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 3: Linked Lists",
+                  "text": "What kind of linked list is best to answer question like \"What is the item at position n\"?\n\n(i) Singly linked list\n(ii) Doubly linked list\n(iii) Circular linked list\n(iv) Array implementation of linked list",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2019_Q1g",
+                  "year": 2019,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 3: Linked Lists",
+                  "text": "A variation of linked list is circular linked list, in which the last node in the list points to first node of the list. One problem with this type of list is\n\n(i) it waste memory space since the pointer head already points to the first node and thus the list node does not need to point to the first node\n(ii) it is not possible to add a node at the end of the list\n(iii) it is difficult to traverse the list as the pointer of the last node is now not NULL\n(iv) All of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2019_Q1h",
+                  "year": 2019,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 3: Linked Lists",
+                  "text": "Each node in a linked list must contain at least\n\n(i) three fields\n(ii) two fields\n(iii) four fields\n(iv) five fields",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2019_Q1i",
+                  "year": 2019,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 3: Linked Lists",
+                  "text": "A linear list in which the last node points to the first node is\n\n(i) singly linked list\n(ii) circular linked list\n(iii) doubly linked list\n(iv) None of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2019_Q1j",
+                  "year": 2019,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 3: Linked Lists",
+                  "text": "In a linked list, insertion can be done as\n\n(i) beginning\n(ii) end\n(iii) middle\n(iv) All of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2019_Q2",
+                  "year": 2019,
+                  "qNumber": "Q2",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "What is a Hash Table, and what is the average case and worst-case time for each of its operations? How can we use this structure to find all anagrams in a dictionary?",
+                  "type": "Explanation & Application",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100304_2019_Q3",
+                  "year": 2019,
+                  "qNumber": "Q3",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Describe insertion in max heap tree with example from the following list of numbers: 33, 42, 67, 23, 44, 49, 74",
+                  "type": "Explanation with Example",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100304_2019_Q4",
+                  "year": 2019,
+                  "qNumber": "Q4",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "Sort the given values using quicksort and write time complexity of algorithm: 65, 70, 75, 80, 85, 60, 55, 50, 45",
+                  "type": "Algorithm Application & Analysis",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100304_2019_Q5a",
+                  "year": 2019,
+                  "qNumber": "Q5a",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Insert the following sequence of elements into an AVL tree, starting with an empty tree : 10, 20, 15, 25, 30, 16, 18, 19",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2019_Q5b",
+                  "year": 2019,
+                  "qNumber": "Q5b",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Delete 30 in the AVL tree that you got.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2019_Q6a",
+                  "year": 2019,
+                  "qNumber": "Q6a",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "Write algorithm for quicksort and mention time and space complexity in each case.",
+                  "type": "Algorithm & Analysis",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2019_Q6b",
+                  "year": 2019,
+                  "qNumber": "Q6b",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "Define collision in hashing. What are the different methodologies to resolve collision? Explain briefly.",
+                  "type": "Definition & Explanation",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2019_Q7",
+                  "year": 2019,
+                  "qNumber": "Q7",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Construct binary search tree and write pre- and post-order traversals of this tree. 8, 3, 1, 10, 6, 14, 4, 7, 13, 22, 5",
+                  "type": "Problem & Traversal",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100304_2019_Q8a",
+                  "year": 2019,
+                  "qNumber": "Q8a",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Write algorithm to count leaf node in binary tree and check whether tree is balanced or not.",
+                  "type": "Algorithm",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2019_Q8b",
+                  "year": 2019,
+                  "qNumber": "Q8b",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "Write a recursive and iterative version of insertion sort algorithm and mention time complexity.",
+                  "type": "Algorithm & Analysis",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2019_Q9a",
+                  "year": 2019,
+                  "qNumber": "Q9a",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Write short notes on the following: BFS",
+                  "type": "Short Notes",
+                  "marks": 3.5
+                },
+                {
+                  "questionId": "it_100304_2019_Q9b",
+                  "year": 2019,
+                  "qNumber": "Q9b",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Write short notes on the following: DFS",
+                  "type": "Short Notes",
+                  "marks": 3.5
+                },
+                {
+                  "questionId": "it_100304_2019_Q9c",
+                  "year": 2019,
+                  "qNumber": "Q9c",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Write short notes on the following: Binary search tree",
+                  "type": "Short Notes",
+                  "marks": 3.5
+                },
+                {
+                  "questionId": "it_100304_2019_Q9d",
+                  "year": 2019,
+                  "qNumber": "Q9d",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Write short notes on the following: Balance factor",
+                  "type": "Short Notes",
+                  "marks": 3.5
+                }
+              ]
             },
             {
-              "id": "it_s3_de",
+              "id": "it_100305",
               "name": "DIGITAL ELECTRONICS",
               "code": "100305",
               "modules": [],
               "questions": []
             },
             {
-              "id": "it_s3_math3",
+              "id": "it_100311",
               "name": "MATHEMATICS-III (DIFFERENTIAL CALCULUS)",
               "code": "100311",
               "modules": [],
               "questions": []
             },
             {
-              "id": "it_s3_oop",
+              "id": "it_100313",
               "name": "OBJECT ORIENTED PROGRAMMING USING C++",
               "code": "100313",
               "modules": [],
               "questions": []
             },
             {
-              "id": "it_s3_tw",
+              "id": "it_100314",
               "name": "TECHNICAL WRITING",
               "code": "100314",
               "modules": [],
               "questions": []
             },
             {
-              "id": "it_s3_dm",
+              "id": "it_106301",
               "name": "DISCRETE MATHEMATICS",
               "code": "106301",
               "modules": [],
@@ -59,7 +307,7 @@
       ]
     },
     {
-      "id": "101",
+      "id": "ce",
       "name": "CIVIL ENGINEERING",
       "icon": {
         "set": "MaterialCommunityIcons",
@@ -71,56 +319,56 @@
           "number": 3,
           "subjects": [
             {
-              "id": "ce_s3_bio",
+              "id": "ce_100301",
               "name": "BIOLOGY FOR ENGINEERS",
               "code": "100301",
               "modules": [],
               "questions": []
             },
             {
-              "id": "ce_s3_math3",
+              "id": "ce_100312",
               "name": "MATHEMATICS-III (PDE, PROBABILILTY AND STATISTICS)",
               "code": "100312",
               "modules": [],
               "questions": []
             },
             {
-              "id": "ce_s3_be",
+              "id": "ce_101302",
               "name": "BASIC ELECTRONICS",
               "code": "101302",
               "modules": [],
               "questions": []
             },
             {
-              "id": "ce_s3_cad",
+              "id": "ce_101303",
               "name": "COMPUTER AIDED CIVIL ENGINEERING DRAWING",
               "code": "101303",
               "modules": [],
               "questions": []
             },
             {
-              "id": "ce_s3_em",
+              "id": "ce_101304",
               "name": "ENGINEERING MECHANICS",
               "code": "101304",
               "modules": [],
               "questions": []
             },
             {
-              "id": "ce_s3_hum1",
+              "id": "ce_101305",
               "name": "HUMANITIES-I(EFFECTIVE TECHNICAL COMMUNICATION)",
               "code": "101305",
               "modules": [],
               "questions": []
             },
             {
-              "id": "ce_s3_ice",
+              "id": "ce_101306",
               "name": "INTRODUCTION TO CIVIL ENGINEERING",
               "code": "101306",
               "modules": [],
               "questions": []
             },
             {
-              "id": "ce_s3_sg",
+              "id": "ce_101308",
               "name": "SURVEYING & GEOMATICS",
               "code": "101308",
               "modules": [],
@@ -131,7 +379,7 @@
       ]
     },
     {
-      "id": "102",
+      "id": "me",
       "name": "MECHANICAL ENGINEERING",
       "icon": {
         "set": "MaterialCommunityIcons",
@@ -143,35 +391,35 @@
           "number": 3,
           "subjects": [
             {
-              "id": "me_s3_bio",
+              "id": "me_100301",
               "name": "BIOLOGY FOR ENGINEERS",
               "code": "100301",
               "modules": [],
               "questions": []
             },
             {
-              "id": "me_s3_bee",
+              "id": "me_100303",
               "name": "BASIC ELECTRONICS ENGINEERING",
               "code": "100303",
               "modules": [],
               "questions": []
             },
             {
-              "id": "me_s3_em",
+              "id": "me_100309",
               "name": "ENGINEERING MECHANICS",
               "code": "100309",
               "modules": [],
               "questions": []
             },
             {
-              "id": "me_s3_math3",
+              "id": "me_100312",
               "name": "MATHEMATICS-III (PDE, PROBABILILTY AND STATISTICS)",
               "code": "100312",
               "modules": [],
               "questions": []
             },
             {
-              "id": "me_s3_thermo",
+              "id": "me_102304",
               "name": "THERMODYNAMICS",
               "code": "102304",
               "modules": [],
@@ -182,7 +430,7 @@
       ]
     },
     {
-      "id": "103",
+      "id": "ee",
       "name": "ELECTRICAL ENGINEERING",
       "icon": {
         "set": "MaterialCommunityIcons",
@@ -194,35 +442,35 @@
           "number": 3,
           "subjects": [
             {
-              "id": "ee_s3_aec",
+              "id": "ee_100302",
               "name": "ANALOG ELECTRONIC CIRCUITS",
               "code": "100302",
               "modules": [],
               "questions": []
             },
             {
-              "id": "ee_s3_eca",
+              "id": "ee_100306",
               "name": "ELECTRICAL CIRCUIT ANALYSIS",
               "code": "100306",
               "modules": [],
               "questions": []
             },
             {
-              "id": "ee_s3_em1",
+              "id": "ee_100307",
               "name": "ELECTRICAL MACHINES - I",
               "code": "100307",
               "modules": [],
               "questions": []
             },
             {
-              "id": "ee_s3_emf",
+              "id": "ee_100308",
               "name": "ELECTROMAGNETIC FIELDS",
               "code": "100308",
               "modules": [],
               "questions": []
             },
             {
-              "id": "ee_s3_emech",
+              "id": "ee_100310",
               "name": "ENGINEERING MECHANICS",
               "code": "100310",
               "modules": [],
@@ -233,7 +481,7 @@
       ]
     },
     {
-      "id": "104",
+      "id": "ece",
       "name": "ELECTRONICS & COMMUNICATION ENGINEERING",
       "icon": {
         "set": "MaterialCommunityIcons",
@@ -245,42 +493,42 @@
           "number": 3,
           "subjects": [
             {
-              "id": "ece_s3_oop",
+              "id": "ece_100313",
               "name": "OBJECT ORIENTED PROGRAMMING USING C++",
               "code": "100313",
               "modules": [],
               "questions": []
             },
             {
-              "id": "ece_s3_be",
+              "id": "ece_104301",
               "name": "BASIC ELECTRONICS",
               "code": "104301",
               "modules": [],
               "questions": []
             },
             {
-              "id": "ece_s3_eem",
+              "id": "ece_104302",
               "name": "ELECTRICAL & ELECTRONIC MATERIAL",
               "code": "104302",
               "modules": [],
               "questions": []
             },
             {
-              "id": "ece_s3_math3",
+              "id": "ece_104303",
               "name": "MATHEMATICS-III",
               "code": "104303",
               "modules": [],
               "questions": []
             },
             {
-              "id": "ece_s3_nt",
+              "id": "ece_104304",
               "name": "NETWORK THEORY",
               "code": "104304",
               "modules": [],
               "questions": []
             },
             {
-              "id": "ece_s3_ss",
+              "id": "ece_104305",
               "name": "SIGNALS AND SYSTEMS",
               "code": "104305",
               "modules": [],
@@ -291,7 +539,7 @@
       ]
     },
     {
-      "id": "105",
+      "id": "cse",
       "name": "COMPUTER SCIENCE & ENGINEERING",
       "icon": {
         "set": "Ionicons",
@@ -303,35 +551,35 @@
           "number": 3,
           "subjects": [
             {
-              "id": "cse_s3_aec",
+              "id": "cse_100302",
               "name": "ANALOG ELECTRONIC CIRCUITS",
               "code": "100302",
               "modules": [],
               "questions": []
             },
             {
-              "id": "cse_s3_dsa",
+              "id": "cse_100304",
               "name": "DATA STRUCTURE & ALGORITHMS",
               "code": "100304",
               "modules": [],
               "questions": []
             },
             {
-              "id": "cse_s3_math3",
+              "id": "cse_100311",
               "name": "MATHEMATICS-III (DIFFERENTIAL CALCULUS)",
               "code": "100311",
               "modules": [],
               "questions": []
             },
             {
-              "id": "cse_s3_oop",
+              "id": "cse_100313",
               "name": "OBJECT ORIENTED PROGRAMMING USING C++",
               "code": "100313",
               "modules": [],
               "questions": []
             },
             {
-              "id": "cse_s3_tw",
+              "id": "cse_100314",
               "name": "TECHNICAL WRITING",
               "code": "100314",
               "modules": [],
@@ -342,7 +590,7 @@
       ]
     },
     {
-      "id": "107",
+      "id": "lt",
       "name": "LEATHER TECHNOLOGY ENGINEERING",
       "icon": {
         "set": "MaterialCommunityIcons",
@@ -350,38 +598,39 @@
       },
       "semesters": [
         {
+          "id": "lt_sem3",
           "number": 3,
           "subjects": [
             {
-              "id": "lt_s3_bee",
+              "id": "lt_100303",
               "name": "BASIC ELECTRONICS ENGINEERING",
               "code": "100303",
               "modules": [],
               "questions": []
             },
             {
-              "id": "lt_s3_em",
+              "id": "lt_100309",
               "name": "ENGINEERING MECHANICS",
               "code": "100309",
               "modules": [],
               "questions": []
             },
             {
-              "id": "lt_s3_math3",
+              "id": "lt_100312",
               "name": "MATHEMATICS-III (PDE, PROBABILILTY AND STATISTICS)",
               "code": "100312",
               "modules": [],
               "questions": []
             },
             {
-              "id": "lt_s3_phy",
+              "id": "lt_107301",
               "name": "PHYSICS(WAVES AND OPTICS)",
               "code": "107301",
               "modules": [],
               "questions": []
             },
             {
-              "id": "lt_s3_ilt",
+              "id": "lt_107302",
               "name": "INTRODUCTION TO LEATHER TECHNOLOGY",
               "code": "107302",
               "modules": [],

@@ -19,7 +19,8 @@
       "supportsTablet": true,
       "runtimeVersion": {
         "policy": "appVersion"
-      }
+      },
+      "bundleIdentifier": "com.hasanraiyan.PYQDeck"
     },
     "android": {
       "adaptiveIcon": {
