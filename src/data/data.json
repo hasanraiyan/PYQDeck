@@ -975,6 +975,249 @@
                   "text": "Write short notes on any two of the following: Priority Queue",
                   "type": "Short Notes",
                   "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2023_Q1a",
+                  "year": 2023,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 1: Introduction & Analysis",
+                  "text": "What is the time complexity of the following code snippet?\n```cpp\nfor(i=0; i<n; i++){\n  for(j=0; j<i; j++){\n    int sum= i + j;\n  }\n}\n```\n(i) O(n)\n(ii) O(n^2)\n(iii) O(log n)\n(iv) O(1)",
+                  "type": "MCQ_Code",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2023_Q1b",
+                  "year": 2023,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Which type of traversal of binary search tree outputs the value in sorted order?\n(i) Pre-order\n(ii) In-order\n(iii) Post-order\n(iv) None of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2023_Q1c",
+                  "year": 2023,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 2: Stacks and Queues",
+                  "text": "Suppose a circular queue of capacity (n - 1) elements is implemented with an array of n elements. Assume that the insertion and deletion operations are carried out using REAR and FRONT as array index variables, respectively. Initially, REAR = FRONT = 0. The conditions to detect queue full and queue empty are\n(i) Full: FRONT == (REAR+1) mod n, Empty: REAR == FRONT\n(ii) Full: FRONT == (REAR+1) mod n, Empty: REAR == (FRONT+1) mod n\n(iii) Full: REAR == FRONT, Empty: FRONT == (REAR+1) mod n\n(iv) Full: REAR == (FRONT+1) mod n, Empty: REAR == FRONT",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2023_Q1d",
+                  "year": 2023,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 2: Stacks and Queues",
+                  "text": "Which of the following data structures can be used for parentheses matching?\n(i) Tree\n(ii) Queue\n(iii) Stack\n(iv) Priority queue",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2023_Q1e",
+                  "year": 2023,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 3: Linked Lists",
+                  "text": "What is the worst-case time complexity of inserting n elements into an empty linked list, if the linked list needs to be maintained in sorted order?\n(i) Θ(n)\n(ii) Θ(nlog n)\n(iii) Θ(n^2)\n(iv) Θ(1)",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2023_Q1f",
+                  "year": 2023,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 2: Stacks and Queues",
+                  "text": "What will be the postfix expression for the given infix expression: (a+b)\\*c-d\n(i) -*+abcd\n(ii) ab+c\\*d-\n(iii) ab+cd-\\*\n(iv) abc\\*+d-",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2023_Q1g",
+                  "year": 2023,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 2: Stacks and Queues",
+                  "text": "What is the outcome of the prefix expression +, -, *, 3, 2, /, 8, 4, 1?\n(i) 12\n(ii) 11\n(iii) 5\n(iv) 4",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2023_Q1h",
+                  "year": 2023,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 2: Stacks and Queues",
+                  "text": "Where will the new element be inserted in the linked list implementation of the queue?\n(i) At the middle position of the linked list\n(ii) At the head position of the linked list\n(iii) At the tail position of the linked list\n(iv) None of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2023_Q1i",
+                  "year": 2023,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "Let us consider a list of numbers (34, 16, 2, 93, 80, 77, 51) and a hash table size of 10. What is the order of elements (from index 0 to size-1) in the hash table?\n(i) null, null, 77, 16, null, 34, 93, 2, 51, 80\n(ii) 80, 51, 2, 93, 34, null, 16, 77, null, null\n(iii) 77, 16, 34, 93, 2, 51, 80\n(iv) 80, 51, 2, 93, 34, 16, 77",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2023_Q1j",
+                  "year": 2023,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "The height of a binary tree is the maximum number of edges in any root to leaf path. The maximum number of nodes in a binary tree of height h is:\n(i) 2^h - 1\n(ii) 2^(h-1) - 1\n(iii) 2^(h + 1) - 1\n(iv) 2h+1",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "it_100304_2023_Q2a",
+                  "year": 2023,
+                  "qNumber": "Q2a",
+                  "chapter": "Module 1: Introduction & Analysis",
+                  "text": "Why do we need an asymptotic notation? Explain the different asymptotic notations with definitions and examples.",
+                  "type": "Explanation",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2023_Q2b",
+                  "year": 2023,
+                  "qNumber": "Q2b",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "Write the worst-case run time complexity of the following algorithms: linear search, bubble sort, merge sort, and push operation in the stack.",
+                  "type": "Analysis",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2023_Q3a",
+                  "year": 2023,
+                  "qNumber": "Q3a",
+                  "chapter": "Module 2: Stacks and Queues",
+                  "text": "Write push() and pop() functions of a stack.",
+                  "type": "Code",
+                  "marks": 9
+                },
+                {
+                  "questionId": "it_100304_2023_Q3b",
+                  "year": 2023,
+                  "qNumber": "Q3b",
+                  "chapter": "Module 2: Stacks and Queues",
+                  "text": "Evaluate the following postfix expression using STACK. Show all the steps. 8, 2, /, 3, *, 4, -, 6, 2, /, +",
+                  "type": "Problem",
+                  "marks": 5
+                },
+                {
+                  "questionId": "it_100304_2023_Q4a",
+                  "year": 2023,
+                  "qNumber": "Q4a",
+                  "chapter": "Module 3: Linked Lists",
+                  "text": "Write the algorithm to count the total elements in a singly linked list.",
+                  "type": "Algorithm",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2023_Q4b",
+                  "year": 2023,
+                  "qNumber": "Q4b",
+                  "chapter": "Module 3: Linked Lists",
+                  "text": "How a doubly linked list is better than a singly linked list? Explain deletion operation on a doubly linked list using an example.",
+                  "type": "Comparison & Explanation with Example",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2023_Q5a",
+                  "year": 2023,
+                  "qNumber": "Q5a",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "The following values are to be stored in a hash table:\n 25, 42, 96, 101, 102, 162, 197. Describe how the values are hashed by using the division method of hashing with a table size of 7. Use chaining as the method of collision resolution.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2023_Q5b",
+                  "year": 2023,
+                  "qNumber": "Q5b",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "Apply the merge sort on the following numbers. 10, 15, 50, 17, 20, 25, 30, 16, 70, 6.",
+                  "type": "Algorithm Application",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2023_Q6a",
+                  "year": 2023,
+                  "qNumber": "Q6a",
+                  "chapter": "Module 2: Stacks and Queues",
+                  "text": "Differentiate between stack and queue. Explain different types of queues with examples.",
+                  "type": "Differentiate & Explanation with Example",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2023_Q6b",
+                  "year": 2023,
+                  "qNumber": "Q6b",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Write the properties of a binary search tree. Create a binary search tree using the following elements:\n 45, 15, 79, 90, 10, 55, 12, 20, 50",
+                  "type": "Explanation & Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2023_Q7a",
+                  "year": 2023,
+                  "qNumber": "Q7a",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Consider the in-order and pre-order traversal of a binary search tree are (1, 2, 3, 4, 5, 6, 8, 10, 25) and (4, 3, 1, 2, 10, 8, 5, 6, 25) respectively. Construct a unique search tree for the given in-order and pre-order traversals.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2023_Q7b",
+                  "year": 2023,
+                  "qNumber": "Q7b",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Explain the insertion in the AVL tree using an example.",
+                  "type": "Explanation with Example",
+                  "marks": 7
+                },
+                {
+                  "questionId": "it_100304_2023_Q8",
+                  "year": 2023,
+                  "qNumber": "Q8",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "Explain the Heap sort algorithm. Create a heap for the following elements and then sort them.\n 13, 102, 405, 136, 15, 105, 390, 432, 28, 444",
+                  "type": "Explanation & Algorithm Application",
+                  "marks": 14
+                },
+                {
+                  "questionId": "it_100304_2023_Q9a",
+                  "year": 2023,
+                  "qNumber": "Q9a",
+                  "chapter": "Module 2: Stacks and Queues",
+                  "text": "Write the short note on the following: Circular Queue",
+                  "type": "Short Notes",
+                  "marks": 3.5
+                },
+                {
+                  "questionId": "it_100304_2023_Q9b",
+                  "year": 2023,
+                  "qNumber": "Q9b",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Write the short note on the following: Depth first search",
+                  "type": "Short Notes",
+                  "marks": 3.5
+                },
+                {
+                  "questionId": "it_100304_2023_Q9c",
+                  "year": 2023,
+                  "qNumber": "Q9c",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Write the short note on the following: B tree",
+                  "type": "Short Notes",
+                  "marks": 3.5
+                },
+                {
+                  "questionId": "it_100304_2023_Q9d",
+                  "year": 2023,
+                  "qNumber": "Q9d",
+                  "chapter": "Module 5: Trees and Graphs",
+                  "text": "Write the short note on the following: Adjacency matrix",
+                  "type": "Short Notes",
+                  "marks": 3.5
                 }
               ]
             },
