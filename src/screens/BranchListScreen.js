@@ -300,7 +300,7 @@ const BranchListScreen = ({ navigation }) => {
                     const { totalCount, completedCount, progress } = calculateBranchProgress(branch);
                     const hasData = totalCount > 0;
                     const branchIcon = branch.icon || DEFAULT_BRANCH_ICON;
-                    const subtitle = hasData ? `${completedCount} / ${totalCount} done` : 'No questions yet';
+                    const subtitle = hasData ? `${completedCount} / ${totalCount} done` : 'Coming Soon';
 
                     return (
                         <View key={branch.id} style={styles.branchListItem}>

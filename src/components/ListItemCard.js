@@ -92,7 +92,7 @@ const ListItemCard = React.memo(
                     )}
                     {isItemDisabled && !hasData && (
                         <View style={styles.cardChevronContainer}>
-                            <Text style={styles.noDataText}>No Data</Text>
+                            <Text style={styles.noDataText}></Text>
                         </View>
                     )}
                 </View>

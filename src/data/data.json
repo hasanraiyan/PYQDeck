@@ -4632,238 +4632,6 @@
       ]
     },
     {
-      "id": "ce",
-      "name": "CIVIL ENGINEERING",
-      "icon": {
-        "set": "MaterialCommunityIcons",
-        "name": "bridge"
-      },
-      "semesters": [
-        {
-          "id": "ce_sem3",
-          "number": 3,
-          "subjects": [
-            {
-              "id": "ce_100301",
-              "name": "BIOLOGY FOR ENGINEERS",
-              "code": "100301",
-              "modules": [],
-              "questions": []
-            },
-            {
-              "id": "ce_100312",
-              "name": "MATHEMATICS-III (PDE, PROBABILILTY AND STATISTICS)",
-              "code": "100312",
-              "modules": [],
-              "questions": []
-            },
-            {
-              "id": "ce_101302",
-              "name": "BASIC ELECTRONICS",
-              "code": "101302",
-              "modules": [],
-              "questions": []
-            },
-            {
-              "id": "ce_101303",
-              "name": "COMPUTER AIDED CIVIL ENGINEERING DRAWING",
-              "code": "101303",
-              "modules": [],
-              "questions": []
-            },
-            {
-              "id": "ce_101304",
-              "name": "ENGINEERING MECHANICS",
-              "code": "101304",
-              "modules": [],
-              "questions": []
-            },
-            {
-              "id": "ce_101305",
-              "name": "HUMANITIES-I(EFFECTIVE TECHNICAL COMMUNICATION)",
-              "code": "101305",
-              "modules": [],
-              "questions": []
-            },
-            {
-              "id": "ce_101306",
-              "name": "INTRODUCTION TO CIVIL ENGINEERING",
-              "code": "101306",
-              "modules": [],
-              "questions": []
-            },
-            {
-              "id": "ce_101308",
-              "name": "SURVEYING & GEOMATICS",
-              "code": "101308",
-              "modules": [],
-              "questions": []
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "me",
-      "name": "MECHANICAL ENGINEERING",
-      "icon": {
-        "set": "MaterialCommunityIcons",
-        "name": "cogs"
-      },
-      "semesters": [
-        {
-          "id": "me_sem3",
-          "number": 3,
-          "subjects": [
-            {
-              "id": "me_100301",
-              "name": "BIOLOGY FOR ENGINEERS",
-              "code": "100301",
-              "modules": [],
-              "questions": []
-            },
-            {
-              "id": "me_100303",
-              "name": "BASIC ELECTRONICS ENGINEERING",
-              "code": "100303",
-              "modules": [],
-              "questions": []
-            },
-            {
-              "id": "me_100309",
-              "name": "ENGINEERING MECHANICS",
-              "code": "100309",
-              "modules": [],
-              "questions": []
-            },
-            {
-              "id": "me_100312",
-              "name": "MATHEMATICS-III (PDE, PROBABILILTY AND STATISTICS)",
-              "code": "100312",
-              "modules": [],
-              "questions": []
-            },
-            {
-              "id": "me_102304",
-              "name": "THERMODYNAMICS",
-              "code": "102304",
-              "modules": [],
-              "questions": []
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "ee",
-      "name": "ELECTRICAL ENGINEERING",
-      "icon": {
-        "set": "MaterialCommunityIcons",
-        "name": "flash"
-      },
-      "semesters": [
-        {
-          "id": "ee_sem3",
-          "number": 3,
-          "subjects": [
-            {
-              "id": "ee_100302",
-              "name": "ANALOG ELECTRONIC CIRCUITS",
-              "code": "100302",
-              "modules": [],
-              "questions": []
-            },
-            {
-              "id": "ee_100306",
-              "name": "ELECTRICAL CIRCUIT ANALYSIS",
-              "code": "100306",
-              "modules": [],
-              "questions": []
-            },
-            {
-              "id": "ee_100307",
-              "name": "ELECTRICAL MACHINES - I",
-              "code": "100307",
-              "modules": [],
-              "questions": []
-            },
-            {
-              "id": "ee_100308",
-              "name": "ELECTROMAGNETIC FIELDS",
-              "code": "100308",
-              "modules": [],
-              "questions": []
-            },
-            {
-              "id": "ee_100310",
-              "name": "ENGINEERING MECHANICS",
-              "code": "100310",
-              "modules": [],
-              "questions": []
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "ece",
-      "name": "ELECTRONICS & COMMUNICATION ENGINEERING",
-      "icon": {
-        "set": "MaterialCommunityIcons",
-        "name": "cellphone-wireless"
-      },
-      "semesters": [
-        {
-          "id": "ece_sem3",
-          "number": 3,
-          "subjects": [
-            {
-              "id": "ece_100313",
-              "name": "OBJECT ORIENTED PROGRAMMING USING C++",
-              "code": "100313",
-              "modules": [],
-              "questions": []
-            },
-            {
-              "id": "ece_104301",
-              "name": "BASIC ELECTRONICS",
-              "code": "104301",
-              "modules": [],
-              "questions": []
-            },
-            {
-              "id": "ece_104302",
-              "name": "ELECTRICAL & ELECTRONIC MATERIAL",
-              "code": "104302",
-              "modules": [],
-              "questions": []
-            },
-            {
-              "id": "ece_104303",
-              "name": "MATHEMATICS-III",
-              "code": "104303",
-              "modules": [],
-              "questions": []
-            },
-            {
-              "id": "ece_104304",
-              "name": "NETWORK THEORY",
-              "code": "104304",
-              "modules": [],
-              "questions": []
-            },
-            {
-              "id": "ece_104305",
-              "name": "SIGNALS AND SYSTEMS",
-              "code": "104305",
-              "modules": [],
-              "questions": []
-            }
-          ]
-        }
-      ]
-    },
-    {
       "id": "cse",
       "name": "COMPUTER SCIENCE & ENGINEERING",
       "icon": {
@@ -8461,11 +8229,243 @@
       ]
     },
     {
+      "id": "ce",
+      "name": "CIVIL ENGINEERING",
+      "icon": {
+        "set": "MaterialCommunityIcons",
+        "name": "bridge"
+      },
+      "semesters": [
+        {
+          "id": "ce_sem3",
+          "number": 3,
+          "subjects": [
+            {
+              "id": "ce_100301",
+              "name": "BIOLOGY FOR ENGINEERS",
+              "code": "100301",
+              "modules": [],
+              "questions": []
+            },
+            {
+              "id": "ce_100312",
+              "name": "MATHEMATICS-III (PDE, PROBABILILTY AND STATISTICS)",
+              "code": "100312",
+              "modules": [],
+              "questions": []
+            },
+            {
+              "id": "ce_101302",
+              "name": "BASIC ELECTRONICS",
+              "code": "101302",
+              "modules": [],
+              "questions": []
+            },
+            {
+              "id": "ce_101303",
+              "name": "COMPUTER AIDED CIVIL ENGINEERING DRAWING",
+              "code": "101303",
+              "modules": [],
+              "questions": []
+            },
+            {
+              "id": "ce_101304",
+              "name": "ENGINEERING MECHANICS",
+              "code": "101304",
+              "modules": [],
+              "questions": []
+            },
+            {
+              "id": "ce_101305",
+              "name": "HUMANITIES-I(EFFECTIVE TECHNICAL COMMUNICATION)",
+              "code": "101305",
+              "modules": [],
+              "questions": []
+            },
+            {
+              "id": "ce_101306",
+              "name": "INTRODUCTION TO CIVIL ENGINEERING",
+              "code": "101306",
+              "modules": [],
+              "questions": []
+            },
+            {
+              "id": "ce_101308",
+              "name": "SURVEYING & GEOMATICS",
+              "code": "101308",
+              "modules": [],
+              "questions": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "me",
+      "name": "MECHANICAL ENGINEERING",
+      "icon": {
+        "set": "MaterialCommunityIcons",
+        "name": "cogs"
+      },
+      "semesters": [
+        {
+          "id": "me_sem3",
+          "number": 3,
+          "subjects": [
+            {
+              "id": "me_100301",
+              "name": "BIOLOGY FOR ENGINEERS",
+              "code": "100301",
+              "modules": [],
+              "questions": []
+            },
+            {
+              "id": "me_100303",
+              "name": "BASIC ELECTRONICS ENGINEERING",
+              "code": "100303",
+              "modules": [],
+              "questions": []
+            },
+            {
+              "id": "me_100309",
+              "name": "ENGINEERING MECHANICS",
+              "code": "100309",
+              "modules": [],
+              "questions": []
+            },
+            {
+              "id": "me_100312",
+              "name": "MATHEMATICS-III (PDE, PROBABILILTY AND STATISTICS)",
+              "code": "100312",
+              "modules": [],
+              "questions": []
+            },
+            {
+              "id": "me_102304",
+              "name": "THERMODYNAMICS",
+              "code": "102304",
+              "modules": [],
+              "questions": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ee",
+      "name": "ELECTRICAL ENGINEERING",
+      "icon": {
+        "set": "MaterialCommunityIcons",
+        "name": "flash"
+      },
+      "semesters": [
+        {
+          "id": "ee_sem3",
+          "number": 3,
+          "subjects": [
+            {
+              "id": "ee_100302",
+              "name": "ANALOG ELECTRONIC CIRCUITS",
+              "code": "100302",
+              "modules": [],
+              "questions": []
+            },
+            {
+              "id": "ee_100306",
+              "name": "ELECTRICAL CIRCUIT ANALYSIS",
+              "code": "100306",
+              "modules": [],
+              "questions": []
+            },
+            {
+              "id": "ee_100307",
+              "name": "ELECTRICAL MACHINES - I",
+              "code": "100307",
+              "modules": [],
+              "questions": []
+            },
+            {
+              "id": "ee_100308",
+              "name": "ELECTROMAGNETIC FIELDS",
+              "code": "100308",
+              "modules": [],
+              "questions": []
+            },
+            {
+              "id": "ee_100310",
+              "name": "ENGINEERING MECHANICS",
+              "code": "100310",
+              "modules": [],
+              "questions": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ece",
+      "name": "ELECTRONICS & COMMUNICATION ENGINEERING",
+      "icon": {
+        "set": "MaterialCommunityIcons",
+        "name": "cellphone-wireless"
+      },
+      "semesters": [
+        {
+          "id": "ece_sem3",
+          "number": 3,
+          "subjects": [
+            {
+              "id": "ece_100313",
+              "name": "OBJECT ORIENTED PROGRAMMING USING C++",
+              "code": "100313",
+              "modules": [],
+              "questions": []
+            },
+            {
+              "id": "ece_104301",
+              "name": "BASIC ELECTRONICS",
+              "code": "104301",
+              "modules": [],
+              "questions": []
+            },
+            {
+              "id": "ece_104302",
+              "name": "ELECTRICAL & ELECTRONIC MATERIAL",
+              "code": "104302",
+              "modules": [],
+              "questions": []
+            },
+            {
+              "id": "ece_104303",
+              "name": "MATHEMATICS-III",
+              "code": "104303",
+              "modules": [],
+              "questions": []
+            },
+            {
+              "id": "ece_104304",
+              "name": "NETWORK THEORY",
+              "code": "104304",
+              "modules": [],
+              "questions": []
+            },
+            {
+              "id": "ece_104305",
+              "name": "SIGNALS AND SYSTEMS",
+              "code": "104305",
+              "modules": [],
+              "questions": []
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "lt",
       "name": "LEATHER TECHNOLOGY ENGINEERING",
       "icon": {
-        "set": "MaterialCommunityIcons",
-        "name": "shoe-print"
+        "set": "FontAwesome",
+        "name": "industry"
       },
       "semesters": [
         {
