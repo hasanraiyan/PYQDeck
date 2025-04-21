@@ -19,15 +19,15 @@ const DeveloperInfoScreen = () => {
     const appVersion = '2.0.3';
 
     const handleEmailPress = () => {
-        Linking.openURL('mailto:developer@pyqdeck.com');
+        Linking.openURL('mailto:raiyanhasan2006@gmail.com');
     };
 
     const handleWebsitePress = () => {
-        Linking.openURL('https://pyqdeck.com');
+        Linking.openURL('https://pywdeck.vercel.app');
     };
 
     const handleGithubPress = () => {
-        Linking.openURL('https://github.com/developer/pyqdeck');
+        Linking.openURL('https://github.com/hasanraiyan');
     };
 
     return (
