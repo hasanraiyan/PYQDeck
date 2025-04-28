@@ -3138,7 +3138,7 @@
                   "year": 2020,
                   "qNumber": "Q2b",
                   "chapter": "Module 1: Fundamentals and Logic Families",
-                  "text": "Prove the following: (A⊕B)' = A⊕B' A'⊕B",
+                  "text": "Prove the following: A⊕B = A` ⊕ B`",
                   "type": "Proof",
                   "marks": 3
                 },
@@ -3147,7 +3147,7 @@
                   "year": 2020,
                   "qNumber": "Q2c",
                   "chapter": "Module 1: Fundamentals and Logic Families",
-                  "text": "Prove the following: A⊕B' = A'B' + AB",
+                  "text": "Prove the following: (A⊕B)` = A ⊕ B` = A` ⊕ B",
                   "type": "Proof",
                   "marks": 3
                 },
