@@ -464,6 +464,204 @@
                   "marks": 3.5
                 },
                 {
+                  "questionId": "ds_100304_2020s_Q1a",
+                  "year": 2020,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "If the number of records to be sorted is small, then ______ sorting can be efficient.\n(i) merge\n(ii) heap\n(iii) selection\n(iv) bubble",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "ds_100304_2020s_Q1b",
+                  "year": 2020,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "Which of the following is not a limitation of binary search algorithm?\n(i) Must be a sorted array\n(ii) Requirement of sorted array is expensive when a lot of insertions and deletions are needed\n(iii) There must be a mechanism to access middle element directly\n(iv) Binary search algorithm is not efficient when the data elements are more than 1500",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "ds_100304_2020s_Q1c",
+                  "year": 2020,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "The complexity of the merge sort is\n(i) O(n)\n(ii) O(log n)\n(iii) O(n^2)\n(iv) O(n log n)",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "ds_100304_2020s_Q1d",
+                  "year": 2020,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "Which of the following is a hash function?\n(i) A function has allocated memory to keys\n(ii) A function that computes the location of the key in the array\n(iii) A function that creates an array\n(iv) A function that computes the location of the values in the array",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "ds_100304_2020s_Q1e",
+                  "year": 2020,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "In simple hashing, what is the search complexity?\n(i) O(n)\n(ii) O(log n)\n(iii) O(n log n)\n(iv) O(1)",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "ds_100304_2020s_Q1f",
+                  "year": 2020,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "In simple chaining, what data structure is appropriate?\n(i) Singly linked list\n(ii) Doubly linked list\n(iii) Circular linked list\n(iv) Binary tree",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "ds_100304_2020s_Q1g",
+                  "year": 2020,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "Which is not true about insertion sort?\n(i) Exhibits the worst case performance when the initial array is sorted in reverse order\n(ii) Worst case and average case performance is O(n^2)\n(iii) Can be compared to the way a card player arranges his card from a card deck\n(iv) None of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "ds_100304_2020s_Q1h",
+                  "year": 2020,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "Which of the below mentioned sorting algorithms is not stable?\n(i) Selection sort\n(ii) Bubble sort\n(iii) Merge sort\n(iv) Insertion sort",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "ds_100304_2020s_Q1i",
+                  "year": 2020,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "A pivot element to partition unsorted list is used in\n(i) merge sort\n(ii) bubble sort\n(iii) selection sort\n(iv) insertion sort",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "ds_100304_2020s_Q1j",
+                  "year": 2020,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "Which one of the following is divide and conquer approach?\n(i) Insertion sort\n(ii) Merge sort\n(iii) Shell sort\n(iv) Heapsort",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "ds_100304_2020s_Q2",
+                  "year": 2020,
+                  "qNumber": "Q2",
+                  "chapter": "Module 5: Trees",
+                  "text": "Write down breadth-first traversal and depth-first traversal of given graph taking 1 as source vertex: ![Image link](https://mtjwwpxkwpaagqsnfbks.supabase.co/storage/v1/object/public/images//it_100304_2020s_Q2.png)",
+                  "type": "Traversal Algorithm",
+                  "marks": 14
+                },
+                {
+                  "questionId": "ds_100304_2020s_Q3",
+                  "year": 2020,
+                  "qNumber": "Q3",
+                  "chapter": "Module 5: Trees",
+                  "text": "Construct a B-tree with minimum degree t as 3 and a sequence of integers 10, 20, 30, 40, 50, 60, 70, 80 and 90 in an initially empty B-tree. Show each step.",
+                  "type": "Construction Algorithm",
+                  "marks": 14
+                },
+                {
+                  "questionId": "ds_100304_2020s_Q4",
+                  "year": 2020,
+                  "qNumber": "Q4",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "Write a function to perform merge sort on array of element mentioned. Also write recurrence relation for time complexity of algorithm.",
+                  "type": "Programming & Analysis",
+                  "marks": 14
+                },
+                {
+                  "questionId": "ds_100304_2020s_Q5",
+                  "year": 2020,
+                  "qNumber": "Q5",
+                  "chapter": "Module 5: Trees",
+                  "text": "What is AVL tree? Describe deletion operation in AVL tree with example.",
+                  "type": "Definition & Explanation",
+                  "marks": 14
+                },
+                {
+                  "questionId": "ds_100304_2020s_Q6",
+                  "year": 2020,
+                  "qNumber": "Q6",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "Apply bubble sort on given array of integers : 26, 45, 13, 23, 12, 7, 38, 42\nShow the content of array after every pass.",
+                  "type": "Algorithm Execution",
+                  "marks": 14
+                },
+                {
+                  "questionId": "ds_100304_2020s_Q7",
+                  "year": 2020,
+                  "qNumber": "Q7",
+                  "chapter": "Module 5: Trees",
+                  "text": "Write the algorithm to count leaf node in binary tree and check whether the tree is balanced or not.",
+                  "type": "Algorithm",
+                  "marks": 14
+                },
+                {
+                  "questionId": "ds_100304_2020s_Q8a",
+                  "year": 2020,
+                  "qNumber": "Q8a",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "What is hash table? How can we use this structure to find all anagrams in a dictionary?",
+                  "type": "Definition & Application",
+                  "marks": 7
+                },
+                {
+                  "questionId": "ds_100304_2020s_Q8b",
+                  "year": 2020,
+                  "qNumber": "Q8b",
+                  "chapter": "Module 5: Trees",
+                  "text": "Write a function that inserts a given element in a binary search tree. If the element is already present, throw an exception 'duplicate value'.",
+                  "type": "Programming",
+                  "marks": 7
+                },
+                {
+                  "questionId": "ds_100304_2020s_Q9a",
+                  "year": 2020,
+                  "qNumber": "Q9a",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Write short notes on the following : \n(a) Linear and non-linear data structures",
+                  "type": "Short Note",
+                  "marks": 3.5
+                },
+                {
+                  "questionId": "ds_100304_2020s_Q9b",
+                  "year": 2020,
+                  "qNumber": "Q9b",
+                  "chapter": "Module 2: Stacks and Queues",
+                  "text": "Write short notes on the following : \n(b) How to implement stack using queue",
+                  "type": "Short Note",
+                  "marks": 3.5
+                },
+                {
+                  "questionId": "ds_100304_2020s_Q9c",
+                  "year": 2020,
+                  "qNumber": "Q9c",
+                  "chapter": "Module 4: Searching, Sorting and Hashing",
+                  "text": "Write short notes on the following : \n(c) Heapsort",
+                  "type": "Short Note",
+                  "marks": 3.5
+                },
+                {
+                  "questionId": "ds_100304_2020s_Q9d",
+                  "year": 2020,
+                  "qNumber": "Q9d",
+                  "chapter": "Module 1: Introduction",
+                  "text": "Write short notes on the following : \n(d) C++ STL",
+                  "type": "Short Note",
+                  "marks": 3.5
+                },
+                {
                   "questionId": "it_100304_2021_Q1a",
                   "year": 2021,
                   "qNumber": "Q1a",
@@ -1718,7 +1916,7 @@
                   "marks": 7
                 },
                 {
-                  "questionId": "oop_100313_2020_Q1a",
+                  "questionId": "it_100313_2020_Q1a",
                   "year": 2020,
                   "qNumber": "Q1a",
                   "chapter": "Module 5: Pointers, Arrays and Exception Handling",
@@ -1727,7 +1925,7 @@
                   "marks": 2
                 },
                 {
-                  "questionId": "oop_100313_2020_Q1b",
+                  "questionId": "it_100313_2020_Q1b",
                   "year": 2020,
                   "qNumber": "Q1b",
                   "chapter": "Module 3: Classes and Data Abstraction",
@@ -1736,7 +1934,7 @@
                   "marks": 2
                 },
                 {
-                  "questionId": "oop_100313_2020_Q1c",
+                  "questionId": "it_100313_2020_Q1c",
                   "year": 2020,
                   "qNumber": "Q1c",
                   "chapter": "Module 1: Introduction to C++",
@@ -1745,7 +1943,7 @@
                   "marks": 2
                 },
                 {
-                  "questionId": "oop_100313_2020_Q1d",
+                  "questionId": "it_100313_2020_Q1d",
                   "year": 2020,
                   "qNumber": "Q1d",
                   "chapter": "Module 1: Introduction to C++",
@@ -1754,7 +1952,7 @@
                   "marks": 2
                 },
                 {
-                  "questionId": "oop_100313_2020_Q1e",
+                  "questionId": "it_100313_2020_Q1e",
                   "year": 2020,
                   "qNumber": "Q1e",
                   "chapter": "Module 2: Control Structures and Functions",
@@ -1763,7 +1961,7 @@
                   "marks": 2
                 },
                 {
-                  "questionId": "oop_100313_2020_Q1f",
+                  "questionId": "it_100313_2020_Q1f",
                   "year": 2020,
                   "qNumber": "Q1f",
                   "chapter": "Module 5: Pointers, Arrays and Exception Handling",
@@ -1772,7 +1970,7 @@
                   "marks": 2
                 },
                 {
-                  "questionId": "oop_100313_2020_Q1g",
+                  "questionId": "it_100313_2020_Q1g",
                   "year": 2020,
                   "qNumber": "Q1g",
                   "chapter": "Module 3: Classes and Data Abstraction",
@@ -1781,7 +1979,7 @@
                   "marks": 2
                 },
                 {
-                  "questionId": "oop_100313_2020_Q1h",
+                  "questionId": "it_100313_2020_Q1h",
                   "year": 2020,
                   "qNumber": "Q1h",
                   "chapter": "Module 3: Classes and Data Abstraction",
@@ -1790,7 +1988,7 @@
                   "marks": 2
                 },
                 {
-                  "questionId": "oop_100313_2020_Q1i",
+                  "questionId": "it_100313_2020_Q1i",
                   "year": 2020,
                   "qNumber": "Q1i",
                   "chapter": "Module 1: Introduction to C++",
@@ -1799,7 +1997,7 @@
                   "marks": 2
                 },
                 {
-                  "questionId": "oop_100313_2020_Q1j",
+                  "questionId": "it_100313_2020_Q1j",
                   "year": 2020,
                   "qNumber": "Q1j",
                   "chapter": "Module 4: Overloading, Templates and Inheritance",
@@ -1808,7 +2006,7 @@
                   "marks": 2
                 },
                 {
-                  "questionId": "oop_100313_2020_Q2a",
+                  "questionId": "it_100313_2020_Q2a",
                   "year": 2020,
                   "qNumber": "Q2a",
                   "chapter": "Module 1: Introduction to C++",
@@ -1817,7 +2015,7 @@
                   "marks": 7
                 },
                 {
-                  "questionId": "oop_100313_2020_Q2b",
+                  "questionId": "it_100313_2020_Q2b",
                   "year": 2020,
                   "qNumber": "Q2b",
                   "chapter": "Module 2: Control Structures and Functions",
@@ -1826,7 +2024,7 @@
                   "marks": 7
                 },
                 {
-                  "questionId": "oop_100313_2020_Q3a",
+                  "questionId": "it_100313_2020_Q3a",
                   "year": 2020,
                   "qNumber": "Q3a",
                   "chapter": "Module 2: Control Structures and Functions",
@@ -1835,7 +2033,7 @@
                   "marks": 7
                 },
                 {
-                  "questionId": "oop_100313_2020_Q3b",
+                  "questionId": "it_100313_2020_Q3b",
                   "year": 2020,
                   "qNumber": "Q3b",
                   "chapter": "Module 1: Introduction to C++",
@@ -1844,7 +2042,7 @@
                   "marks": 7
                 },
                 {
-                  "questionId": "oop_100313_2020_Q4a",
+                  "questionId": "it_100313_2020_Q4a",
                   "year": 2020,
                   "qNumber": "Q4a",
                   "chapter": "Module 5: Pointers, Arrays and Exception Handling",
@@ -1853,7 +2051,7 @@
                   "marks": 7
                 },
                 {
-                  "questionId": "oop_100313_2020_Q4b",
+                  "questionId": "it_100313_2020_Q4b",
                   "year": 2020,
                   "qNumber": "Q4b",
                   "chapter": "Module 2: Control Structures and Functions",
@@ -1862,7 +2060,7 @@
                   "marks": 7
                 },
                 {
-                  "questionId": "oop_100313_2020_Q5a",
+                  "questionId": "it_100313_2020_Q5a",
                   "year": 2020,
                   "qNumber": "Q5a",
                   "chapter": "Module 3: Classes and Data Abstraction",
@@ -1871,7 +2069,7 @@
                   "marks": 7
                 },
                 {
-                  "questionId": "oop_100313_2020_Q5b",
+                  "questionId": "it_100313_2020_Q5b",
                   "year": 2020,
                   "qNumber": "Q5b",
                   "chapter": "Module 4: Overloading, Templates and Inheritance",
@@ -1880,7 +2078,7 @@
                   "marks": 7
                 },
                 {
-                  "questionId": "oop_100313_2020_Q6a",
+                  "questionId": "it_100313_2020_Q6a",
                   "year": 2020,
                   "qNumber": "Q6a",
                   "chapter": "Module 4: Overloading, Templates and Inheritance",
@@ -1889,7 +2087,7 @@
                   "marks": 7
                 },
                 {
-                  "questionId": "oop_100313_2020_Q6b",
+                  "questionId": "it_100313_2020_Q6b",
                   "year": 2020,
                   "qNumber": "Q6b",
                   "chapter": "Module 4: Overloading, Templates and Inheritance",
@@ -1898,7 +2096,7 @@
                   "marks": 7
                 },
                 {
-                  "questionId": "oop_100313_2020_Q7a",
+                  "questionId": "it_100313_2020_Q7a",
                   "year": 2020,
                   "qNumber": "Q7a",
                   "chapter": "Module 4: Overloading, Templates and Inheritance",
@@ -1907,7 +2105,7 @@
                   "marks": 7
                 },
                 {
-                  "questionId": "oop_100313_2020_Q7b",
+                  "questionId": "it_100313_2020_Q7b",
                   "year": 2020,
                   "qNumber": "Q7b",
                   "chapter": "Module 2: Control Structures and Functions",
@@ -1916,7 +2114,7 @@
                   "marks": 7
                 },
                 {
-                  "questionId": "oop_100313_2020_Q8a",
+                  "questionId": "it_100313_2020_Q8a",
                   "year": 2020,
                   "qNumber": "Q8a",
                   "chapter": "Module 4: Overloading, Templates and Inheritance",
@@ -1925,7 +2123,7 @@
                   "marks": 7
                 },
                 {
-                  "questionId": "oop_100313_2020_Q8b",
+                  "questionId": "it_100313_2020_Q8b",
                   "year": 2020,
                   "qNumber": "Q8b",
                   "chapter": "Module 4: Overloading, Templates and Inheritance",
@@ -1934,7 +2132,7 @@
                   "marks": 7
                 },
                 {
-                  "questionId": "oop_100313_2020_Q9a",
+                  "questionId": "it_100313_2020_Q9a",
                   "year": 2020,
                   "qNumber": "Q9a",
                   "chapter": "Module 4: Overloading, Templates and Inheritance",
@@ -1943,7 +2141,7 @@
                   "marks": 7
                 },
                 {
-                  "questionId": "oop_100313_2020_Q9b",
+                  "questionId": "it_100313_2020_Q9b",
                   "year": 2020,
                   "qNumber": "Q9b",
                   "chapter": "Module 5: Pointers, Arrays and Exception Handling",
