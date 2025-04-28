@@ -19,7 +19,7 @@
               "modules": [
                 {
                   "id": "m1",
-                  "name": "Module 1: Introduction & Analysis",
+                  "name": "Module 1: Introduction",
                   "description": "Basic Terminologies: Elementary Data Organizations, Data Structure Operations: insertion, deletion, traversal etc.; Analysis of an Algorithm, Asymptotic Notations, Time-Space trade off.",
                   "lectures": 4
                 },
@@ -269,7 +269,7 @@
                   "questionId": "it_100304_2020_Q1a",
                   "year": 2020,
                   "qNumber": "Q1a",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "Which of the following is time complexity of the given code?\n```cpp\nint a = 0;\nfor (i = 0; i<N; i++) {\n  for (j = N; j>i; j--){\n    a = a + i + j;\n  }\n}\n```\n(i) O(N)\n(ii) O(N*log(N))\n(iii) O(N*Sqrt(N))\n(iv) O(N*N)",
                   "type": "MCQ_Code",
                   "marks": 2
@@ -278,7 +278,7 @@
                   "questionId": "it_100304_2020_Q1b",
                   "year": 2020,
                   "qNumber": "Q1b",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "Which of the following is time complexity of the given code?\n```cpp\nint i, j, k = 0;\nfor (i = n/2; i<= n; i++) {\n  for (j = 2; j<= n; j = j*2) {\n    k = k + n/2;\n  }\n}\n```\n(i) O(N)\n(ii) O(N*log(N))\n(iii) O(N*Sqrt(N))\n(iv) O(N*N)",
                   "type": "MCQ_Code",
                   "marks": 2
@@ -287,7 +287,7 @@
                   "questionId": "it_100304_2020_Q1c",
                   "year": 2020,
                   "qNumber": "Q1c",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "Which of the following cases does not exist in complexity theory?\n\n(i) Best case\n(ii) Worst case\n(iii) Average case\n(iv) Null case",
                   "type": "MCQ",
                   "marks": 2
@@ -296,7 +296,7 @@
                   "questionId": "it_100304_2020_Q1d",
                   "year": 2020,
                   "qNumber": "Q1d",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "The operation of processing each element in the list is known as\n\n(i) sorting\n(ii) merging\n(iii) inserting\n(iv) traversal",
                   "type": "MCQ",
                   "marks": 2
@@ -305,7 +305,7 @@
                   "questionId": "it_100304_2020_Q1e",
                   "year": 2020,
                   "qNumber": "Q1e",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "Arrays are best data structures\n\n(i) for relatively permanent collections of data\n(ii) for the size of the structure and the data in the structure are constantly changing\n(iii) Both (i) and (ii)\n(iv) None of the above",
                   "type": "MCQ",
                   "marks": 2
@@ -314,7 +314,7 @@
                   "questionId": "it_100304_2020_Q1f",
                   "year": 2020,
                   "qNumber": "Q1f",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "Each array declaration needs not give, implicitly or explicitly the information about\n\n(i) the name of array\n(ii) the data type of array\n(iii) the first data from the set to be stored\n(iv) the index set of the array",
                   "type": "MCQ",
                   "marks": 2
@@ -359,7 +359,7 @@
                   "questionId": "it_100304_2020_Q2",
                   "year": 2020,
                   "qNumber": "Q2",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "Analyse the time complexity of the given function and also write the recurrence relation of the function :\n```cpp\nint DoSomething (int n)\n{\n  if (n<= 2)\n    return 1;\n  else\n    return (DoSomething (floor(sqrt(n)))+n);\n}\n```",
                   "type": "Analysis & RecurrenceRelation",
                   "marks": 14
@@ -377,7 +377,7 @@
                   "questionId": "it_100304_2020_Q4",
                   "year": 2020,
                   "qNumber": "Q4",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "What are the different notations for comparing the time complexity of an algorithm? Explain each of them with neat figures.",
                   "type": "Explanation with Diagram",
                   "marks": 14
@@ -395,7 +395,7 @@
                   "questionId": "it_100304_2020_Q6",
                   "year": 2020,
                   "qNumber": "Q6",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "Let a and b be positive integers. Suppose a function F is defined recursively as follows:\nF(a, b) = { 0 if a<b; F(a-b, b)+1 if b<=a }\nFind the values of the following :\n(a) F(2, 3)\n(b) F(14, 3)",
                   "type": "Problem",
                   "marks": 14
@@ -701,7 +701,7 @@
                   "questionId": "it_100304_2021_Q1e",
                   "year": 2021,
                   "qNumber": "Q1e",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "Tower of Hanoi is a classic example of\n\n(i) divide and conquer\n(ii) recursive approach\n(iii) (ii) but not (i)\n(iv) Both (i) and (ii)",
                   "type": "MCQ",
                   "marks": 2
@@ -827,7 +827,7 @@
                   "questionId": "it_100304_2021_Q7a",
                   "year": 2021,
                   "qNumber": "Q7a",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "Differentiate between the following: Abstract Data Type and Data Structure",
                   "type": "Differentiate",
                   "marks": 4
@@ -998,7 +998,7 @@
                   "questionId": "it_100304_2022_Q1i",
                   "year": 2022,
                   "qNumber": "Q1i",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "An Abstract Data Type (ADT) is\n(i) same as an abstract class\n(ii) a data type that cannot be instantiated\n(iii) a data type for which only the operations defined on it can be used, but none else\n(iv) all of the above",
                   "type": "MCQ",
                   "marks": 2
@@ -1016,7 +1016,7 @@
                   "questionId": "it_100304_2022_Q2a",
                   "year": 2022,
                   "qNumber": "Q2a",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "Explain different asymptotic notations (Big-O, Ω, Θ) used for comparing the time complexity of an algorithm with neat figures.",
                   "type": "Explanation with Diagram",
                   "marks": 7
@@ -1025,7 +1025,7 @@
                   "questionId": "it_100304_2022_Q2b",
                   "year": 2022,
                   "qNumber": "Q2b",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "The run time of an algorithm is represented by the recurrence relation T(n) = 2T(n/2) + n; n ≥ 2 and with boundary condition T(1) = 0. What is the time complexity (in terms of Θ notation).",
                   "type": "Problem/Analysis",
                   "marks": 7
@@ -1124,7 +1124,7 @@
                   "questionId": "it_100304_2022_Q8a",
                   "year": 2022,
                   "qNumber": "Q8a",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "Differentiate between system defined data types and abstract data types with suitable examples.",
                   "type": "Differentiate with Example",
                   "marks": 7
@@ -1178,7 +1178,7 @@
                   "questionId": "it_100304_2023_Q1a",
                   "year": 2023,
                   "qNumber": "Q1a",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "What is the time complexity of the following code snippet?\n```cpp\nfor(i=0; i<n; i++){\n  for(j=0; j<i; j++){\n    int sum= i + j;\n  }\n}\n```\n(i) O(n)\n(ii) O(n^2)\n(iii) O(log n)\n(iv) O(1)",
                   "type": "MCQ_Code",
                   "marks": 2
@@ -1268,7 +1268,7 @@
                   "questionId": "it_100304_2023_Q2a",
                   "year": 2023,
                   "qNumber": "Q2a",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "Why do we need an asymptotic notation? Explain the different asymptotic notations with definitions and examples.",
                   "type": "Explanation",
                   "marks": 7
@@ -5620,7 +5620,7 @@
               "modules": [
                 {
                   "id": "m1",
-                  "name": "Module 1: Introduction & Analysis",
+                  "name": "Module 1: Introduction",
                   "description": "Basic Terminologies: Elementary Data Organizations, Data Structure Operations: insertion, deletion, traversal etc.; Analysis of an Algorithm, Asymptotic Notations, Time-Space trade off.",
                   "lectures": 4
                 },
@@ -5870,7 +5870,7 @@
                   "questionId": "cse_100304_2020_Q1a",
                   "year": 2020,
                   "qNumber": "Q1a",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "Which of the following is time complexity of the given code?\n```cpp\nint a = 0;\nfor (i = 0; i<N; i++) {\n  for (j = N; j>i; j--){\n    a = a + i + j;\n  }\n}\n```\n(i) O(N)\n(ii) O(N*log(N))\n(iii) O(N*Sqrt(N))\n(iv) O(N*N)",
                   "type": "MCQ_Code",
                   "marks": 2
@@ -5879,7 +5879,7 @@
                   "questionId": "cse_100304_2020_Q1b",
                   "year": 2020,
                   "qNumber": "Q1b",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "Which of the following is time complexity of the given code?\n```cpp\nint i, j, k = 0;\nfor (i = n/2; i<= n; i++) {\n  for (j = 2; j<= n; j = j*2) {\n    k = k + n/2;\n  }\n}\n```\n(i) O(N)\n(ii) O(N*log(N))\n(iii) O(N*Sqrt(N))\n(iv) O(N*N)",
                   "type": "MCQ_Code",
                   "marks": 2
@@ -5888,7 +5888,7 @@
                   "questionId": "cse_100304_2020_Q1c",
                   "year": 2020,
                   "qNumber": "Q1c",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "Which of the following cases does not exist in complexity theory?\n\n(i) Best case\n(ii) Worst case\n(iii) Average case\n(iv) Null case",
                   "type": "MCQ",
                   "marks": 2
@@ -5897,7 +5897,7 @@
                   "questionId": "cse_100304_2020_Q1d",
                   "year": 2020,
                   "qNumber": "Q1d",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "The operation of processing each element in the list is known as\n\n(i) sorting\n(ii) merging\n(iii) inserting\n(iv) traversal",
                   "type": "MCQ",
                   "marks": 2
@@ -5906,7 +5906,7 @@
                   "questionId": "cse_100304_2020_Q1e",
                   "year": 2020,
                   "qNumber": "Q1e",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "Arrays are best data structures\n\n(i) for relatively permanent collections of data\n(ii) for the size of the structure and the data in the structure are constantly changing\n(iii) Both (i) and (ii)\n(iv) None of the above",
                   "type": "MCQ",
                   "marks": 2
@@ -5915,7 +5915,7 @@
                   "questionId": "cse_100304_2020_Q1f",
                   "year": 2020,
                   "qNumber": "Q1f",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "Each array declaration needs not give, implicitly or explicitly the information about\n\n(i) the name of array\n(ii) the data type of array\n(iii) the first data from the set to be stored\n(iv) the index set of the array",
                   "type": "MCQ",
                   "marks": 2
@@ -5960,7 +5960,7 @@
                   "questionId": "cse_100304_2020_Q2",
                   "year": 2020,
                   "qNumber": "Q2",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "Analyse the time complexity of the given function and also write the recurrence relation of the function :\n```cpp\nint DoSomething (int n)\n{\n  if (n<= 2)\n    return 1;\n  else\n    return (DoSomething (floor(sqrt(n)))+n);\n}\n```",
                   "type": "Analysis & RecurrenceRelation",
                   "marks": 14
@@ -5978,7 +5978,7 @@
                   "questionId": "cse_100304_2020_Q4",
                   "year": 2020,
                   "qNumber": "Q4",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "What are the different notations for comparing the time complexity of an algorithm? Explain each of them with neat figures.",
                   "type": "Explanation with Diagram",
                   "marks": 14
@@ -5996,7 +5996,7 @@
                   "questionId": "cse_100304_2020_Q6",
                   "year": 2020,
                   "qNumber": "Q6",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "Let a and b be positive integers. Suppose a function F is defined recursively as follows:\nF(a, b) = { 0 if a<b; F(a-b, b)+1 if b<=a }\nFind the values of the following :\n(a) F(2, 3)\n(b) F(14, 3)",
                   "type": "Problem",
                   "marks": 14
@@ -6104,7 +6104,7 @@
                   "questionId": "cse_100304_2021_Q1e",
                   "year": 2021,
                   "qNumber": "Q1e",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "Tower of Hanoi is a classic example of\n\n(i) divide and conquer\n(ii) recursive approach\n(iii) (ii) but not (i)\n(iv) Both (i) and (ii)",
                   "type": "MCQ",
                   "marks": 2
@@ -6230,7 +6230,7 @@
                   "questionId": "cse_100304_2021_Q7a",
                   "year": 2021,
                   "qNumber": "Q7a",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "Differentiate between the following: Abstract Data Type and Data Structure",
                   "type": "Differentiate",
                   "marks": 4
@@ -6401,7 +6401,7 @@
                   "questionId": "cse_100304_2022_Q1i",
                   "year": 2022,
                   "qNumber": "Q1i",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "An Abstract Data Type (ADT) is\n(i) same as an abstract class\n(ii) a data type that cannot be instantiated\n(iii) a data type for which only the operations defined on it can be used, but none else\n(iv) all of the above",
                   "type": "MCQ",
                   "marks": 2
@@ -6419,7 +6419,7 @@
                   "questionId": "cse_100304_2022_Q2a",
                   "year": 2022,
                   "qNumber": "Q2a",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "Explain different asymptotic notations (Big-O, Ω, Θ) used for comparing the time complexity of an algorithm with neat figures.",
                   "type": "Explanation with Diagram",
                   "marks": 7
@@ -6428,7 +6428,7 @@
                   "questionId": "cse_100304_2022_Q2b",
                   "year": 2022,
                   "qNumber": "Q2b",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "The run time of an algorithm is represented by the recurrence relation T(n) = 2T(n/2) + n; n ≥ 2 and with boundary condition T(1) = 0. What is the time complexity (in terms of Θ notation).",
                   "type": "Problem/Analysis",
                   "marks": 7
@@ -6527,7 +6527,7 @@
                   "questionId": "cse_100304_2022_Q8a",
                   "year": 2022,
                   "qNumber": "Q8a",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "Differentiate between system defined data types and abstract data types with suitable examples.",
                   "type": "Differentiate with Example",
                   "marks": 7
@@ -6581,7 +6581,7 @@
                   "questionId": "cse_100304_2023_Q1a",
                   "year": 2023,
                   "qNumber": "Q1a",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "What is the time complexity of the following code snippet?\n```cpp\nfor(i=0; i<n; i++){\n  for(j=0; j<i; j++){\n    int sum= i + j;\n  }\n}\n```\n(i) O(n)\n(ii) O(n^2)\n(iii) O(log n)\n(iv) O(1)",
                   "type": "MCQ_Code",
                   "marks": 2
@@ -6671,7 +6671,7 @@
                   "questionId": "cse_100304_2023_Q2a",
                   "year": 2023,
                   "qNumber": "Q2a",
-                  "chapter": "Module 1: Introduction & Analysis",
+                  "chapter": "Module 1: Introduction",
                   "text": "Why do we need an asymptotic notation? Explain the different asymptotic notations with definitions and examples.",
                   "type": "Explanation",
                   "marks": 7
