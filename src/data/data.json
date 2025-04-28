@@ -3147,7 +3147,7 @@
                   "year": 2020,
                   "qNumber": "Q2c",
                   "chapter": "Module 1: Fundamentals and Logic Families",
-                  "text": "Prove the following: (A⊕B)` = A ⊕ B` = A` ⊕ B",
+                  "text": "Prove the following: (A⊕B)' = A ⊕ B' = A' ⊕ B",
                   "type": "Proof",
                   "marks": 3
                 },
@@ -3533,7 +3533,7 @@
                   "questionId": "it_100305_2022_Q1a",
                   "year": 2022,
                   "qNumber": "Q1a",
-                  "chapter": "Module 5: Semiconductor memories and Programmable logic devices",
+                  "chapter": "Module 5: Memory and PLDs",
                   "text": "Dynamic RAM employs\n(i) Capacitor or MOSFET\n(ii) FET or JFET\n(iii) Capacitor or BJT\n(iv) BJT or MOS",
                   "type": "MCQ",
                   "marks": 2
@@ -3551,7 +3551,7 @@
                   "questionId": "it_100305_2022_Q1c",
                   "year": 2022,
                   "qNumber": "Q1c",
-                  "chapter": "Module 1: Fundamentals of Digital Systems and logic families",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
                   "text": "The parameter through which 16 distinct values can be represented is known as\n(i) bit\n(ii) byte\n(iii) word\n(iv) nibble",
                   "type": "MCQ",
                   "marks": 2
@@ -3569,7 +3569,7 @@
                   "questionId": "it_100305_2022_Q1e",
                   "year": 2022,
                   "qNumber": "Q1e",
-                  "chapter": "Module 1: Fundamentals of Digital Systems and logic families",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
                   "text": "The systematic reduction of logic circuits is accomplished by\n(i) Symbolic reduction\n(ii) TTL logic\n(iii) Boolean algebra\n(iv) Truth table",
                   "type": "MCQ",
                   "marks": 2
@@ -3578,7 +3578,7 @@
                   "questionId": "it_100305_2022_Q1f",
                   "year": 2022,
                   "qNumber": "Q1f",
-                  "chapter": "Module 1: Fundamentals of Digital Systems and logic families",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
                   "text": "In which of the following base system, 123 is not a valid number?\n(i) BASE 10\n(ii) BASE 16\n(iii) BASE 8\n(iv) BASE 3",
                   "type": "MCQ",
                   "marks": 2
@@ -3587,7 +3587,7 @@
                   "questionId": "it_100305_2022_Q1g",
                   "year": 2022,
                   "qNumber": "Q1g",
-                  "chapter": "Module 1: Fundamentals of Digital Systems and logic families",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
                   "text": "A hexadecimal odometer displays F52F. The next reading will be\n(i) F52E\n(ii) G52F\n(iii) F52F\n(iv) F530",
                   "type": "MCQ",
                   "marks": 2
@@ -3596,7 +3596,7 @@
                   "questionId": "it_100305_2022_Q1h",
                   "year": 2022,
                   "qNumber": "Q1h",
-                  "chapter": "Module 3: Sequential circuits and systems",
+                  "chapter": "Module 3: Sequential Circuits",
                   "text": "Sequential circuit contains;\n(i) No memory element\n(ii) All input applied simultaneously\n(iii) At least one memory element\n(iv) None",
                   "type": "MCQ",
                   "marks": 2
@@ -3605,7 +3605,7 @@
                   "questionId": "it_100305_2022_Q1i",
                   "year": 2022,
                   "qNumber": "Q1i",
-                  "chapter": "Module 1: Fundamentals of Digital Systems and logic families",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
                   "text": "How many entries will be in the truth table of a 4-input NAND gate.\n(i) 6\n(ii) 8\n(iii) 32\n(iv) 16",
                   "type": "MCQ",
                   "marks": 2
@@ -3623,7 +3623,7 @@
                   "questionId": "it_100305_2022_Q2a",
                   "year": 2022,
                   "qNumber": "Q2a",
-                  "chapter": "Module 1: Fundamentals of Digital Systems and logic families",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
                   "text": "What are weighted, non-weighted, cyclic and self-complementary codes? Explain each with examples.",
                   "type": "Explanation",
                   "marks": 7
@@ -3632,7 +3632,7 @@
                   "questionId": "it_100305_2022_Q2b",
                   "year": 2022,
                   "qNumber": "Q2b",
-                  "chapter": "Module 1: Fundamentals of Digital Systems and logic families",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
                   "text": "Find the values of X in the following conversions:\n(i) (95.10)_10 to (X)_2\n(ii) (45.70)_8 to (X)_2\n(iii) (168.16)_16 to (X)_16",
                   "type": "Problem Solving",
                   "marks": 7
@@ -3641,7 +3641,7 @@
                   "questionId": "it_100305_2022_Q3a",
                   "year": 2022,
                   "qNumber": "Q3a",
-                  "chapter": "Module 2: Combinational Digital Circuits",
+                  "chapter": "Module 2: Combinational Circuits",
                   "text": "Design a BCD to 7-segment display decoder circuit using logic gates.",
                   "type": "Design",
                   "marks": 7
@@ -3650,7 +3650,7 @@
                   "questionId": "it_100305_2022_Q3b",
                   "year": 2022,
                   "qNumber": "Q3b",
-                  "chapter": "Module 2: Combinational Digital Circuits",
+                  "chapter": "Module 2: Combinational Circuits",
                   "text": "Design full adder using the following:\n(i) 8:1 mux\n(ii) 4:1 mux",
                   "type": "Design",
                   "marks": 7
@@ -3677,7 +3677,7 @@
                   "questionId": "it_100305_2022_Q5a",
                   "year": 2022,
                   "qNumber": "Q5a",
-                  "chapter": "Module 1: Fundamentals of Digital Systems and logic families",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
                   "text": "Identify the following logic functions implemented at F: ![CMOS Circuit Diagram (i) provided](https://mtjwwpxkwpaagqsnfbks.supabase.co/storage/v1/object/public/images//it_100305_2020_Q8a.png)",
                   "type": "Analysis",
                   "marks": 7
@@ -3686,7 +3686,7 @@
                   "questionId": "it_100305_2022_Q5b",
                   "year": 2022,
                   "qNumber": "Q5b",
-                  "chapter": "Module 1: Fundamentals of Digital Systems and logic families",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
                   "text": "Implement the following CMOS logics:\n(i) (AB(A+B))`\n(ii) (((CD)+B)A)`",
                   "type": "Implementation",
                   "marks": 7
@@ -3695,7 +3695,7 @@
                   "questionId": "it_100305_2022_Q6a",
                   "year": 2022,
                   "qNumber": "Q6a",
-                  "chapter": "Module 3: Sequential circuits and systems",
+                  "chapter": "Module 3: Sequential Circuits",
                   "text": "What is binary shift register? Write down their application.",
                   "type": "Definition & Explanation",
                   "marks": 7
@@ -3704,7 +3704,7 @@
                   "questionId": "it_100305_2022_Q6b",
                   "year": 2022,
                   "qNumber": "Q6b",
-                  "chapter": "Module 3: Sequential circuits and systems",
+                  "chapter": "Module 3: Sequential Circuits",
                   "text": "Describe about Jhonson ring counter using four D-flip-flop.",
                   "type": "Description",
                   "marks": 7
@@ -3713,7 +3713,7 @@
                   "questionId": "it_100305_2022_Q7a",
                   "year": 2022,
                   "qNumber": "Q7a",
-                  "chapter": "Module 2: Combinational Digital Circuits",
+                  "chapter": "Module 2: Combinational Circuits",
                   "text": "Minimize the following expression using k-map\nf(P, Q, R, S) = Σm(0,1,4,5,7,12,13)",
                   "type": "Minimization",
                   "marks": 7
@@ -3722,7 +3722,7 @@
                   "questionId": "it_100305_2022_Q7b",
                   "year": 2022,
                   "qNumber": "Q7b",
-                  "chapter": "Module 3: Sequential circuits and systems",
+                  "chapter": "Module 3: Sequential Circuits",
                   "text": "Draw symbol and write the truth table of JK flip flop.",
                   "type": "Description & Drawing",
                   "marks": 7
@@ -3731,7 +3731,7 @@
                   "questionId": "it_100305_2022_Q8a",
                   "year": 2022,
                   "qNumber": "Q8a",
-                  "chapter": "Module 3: Sequential circuits and systems",
+                  "chapter": "Module 3: Sequential Circuits",
                   "text": "Describe the procedure to design Mod-6 counter.",
                   "type": "Procedure",
                   "marks": 7
@@ -3740,7 +3740,7 @@
                   "questionId": "it_100305_2022_Q8b",
                   "year": 2022,
                   "qNumber": "Q8b",
-                  "chapter": "Module 3: Sequential circuits and systems",
+                  "chapter": "Module 3: Sequential Circuits",
                   "text": "Explain SIPO and SISO operations of shift register with relevant logic diagrams and truth tables.",
                   "type": "Explanation",
                   "marks": 7
@@ -3749,7 +3749,7 @@
                   "questionId": "it_100305_2022_Q9i",
                   "year": 2022,
                   "qNumber": "Q9i",
-                  "chapter": "Module 5: Semiconductor memories and Programmable logic devices",
+                  "chapter": "Module 5: Memory and PLDs",
                   "text": "Write short notes of the following\n(i) RAM",
                   "type": "Short Note",
                   "marks": 3.5
@@ -3758,7 +3758,7 @@
                   "questionId": "it_100305_2022_Q9ii",
                   "year": 2022,
                   "qNumber": "Q9ii",
-                  "chapter": "Module 5: Semiconductor memories and Programmable logic devices",
+                  "chapter": "Module 5: Memory and PLDs",
                   "text": "Write short notes of the following\n(ii) ROM",
                   "type": "Short Note",
                   "marks": 3.5
@@ -3767,7 +3767,7 @@
                   "questionId": "it_100305_2022_Q9iii",
                   "year": 2022,
                   "qNumber": "Q9iii",
-                  "chapter": "Module 1: Fundamentals of Digital Systems and logic families",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
                   "text": "Write short notes of the following\n(iii) CMOS logic",
                   "type": "Short Note",
                   "marks": 3.5
@@ -3776,7 +3776,7 @@
                   "questionId": "it_100305_2022_Q9iv",
                   "year": 2022,
                   "qNumber": "Q9iv",
-                  "chapter": "Module 1: Fundamentals of Digital Systems and logic families",
+                  "chapter": "Module 1: Fundamentals and Logic Families",
                   "text": "Write short notes of the following\n(iv) Operation of TTL logic circuit working as NAND Gate.",
                   "type": "Short Note",
                   "marks": 3.5

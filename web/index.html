@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PYQDeck Web - BEU Past Questions</title>
+    <meta name="description" content="Browse Bihar Engineering University (BEU) Past Year Questions (PYQs) easily with PYQDeck. Accessible interface with customizable settings.">
+    <meta name="author" content="Raiyan Hasan">
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+    <style>
+        [x-cloak] { display: none !important; }
+        pre {
+            background-color: #f0f9ff;
+            border: 1px solid #e0f2fe;
+            border-radius: 8px;
+            padding: 1rem;
+            overflow-x: auto;
+            font-family: 'Fira Code', Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+            margin: 1.5em 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            color: #1f2937;
+        }
+        .dark pre {
+             background-color: #1f2937;
+             border-color: #374151;
+             color: #f9fafb;
+        }
+        .question-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid #e5e7eb;
+            display: block;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+         .dark .question-image {
+            border-color: #4b5563;
+         }
+        html { scroll-behavior: smooth; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f3f4f6; border-radius: 10px; }
+        .dark ::-webkit-scrollbar-track { background: #1f2937; }
+        ::-webkit-scrollbar-thumb { background: #9ca3af; border-radius: 10px; }
+        .dark ::-webkit-scrollbar-thumb { background: #4b5563; }
+        ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+        .dark ::-webkit-scrollbar-thumb:hover { background: #374151; }
+        *:focus-visible {
+            outline: 2px solid #0e7490;
+            outline-offset: 2px;
+        }
+        .dark *:focus-visible {
+             outline-color: #67e8f9;
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-gray-900 font-sans text-gray-900 dark:text-gray-100 antialiased transition-colors duration-300">
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 min-h-screen flex flex-col"
+         x-data="pyqDeckApp()"
+         x-init="initApp()">
+
+        <header class="sticky top-0 z-30 -mx-4 sm:-mx-6 lg:-mx-8 mb-8 px-4 sm:px-6 lg:px-8 py-3 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm shadow-sm border-b border-gray-200 dark:border-gray-700">
+            <div class="container mx-auto flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <h1 class="text-2xl sm:text-3xl font-bold text-cyan-700 dark:text-cyan-400 flex items-center">
+                        <ion-icon name="layers-outline" class="mr-2 text-3xl sm:text-4xl flex-shrink-0"></ion-icon>
+                        <span class="hidden sm:inline">PYQDeck</span>
+                        <span class="sm:hidden">PYQD</span>
+                    </h1>
+                    <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 hidden md:block flex-shrink min-w-0 truncate" x-text="headerSubtitle"></p>
+                 </div>
+
+                <div class="flex items-center space-x-3">
+                    <button @click="showSettingsModal = true" title="Settings"
+                            class="p-2 text-gray-500 dark:text-gray-400 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 transition duration-150">
+                        <ion-icon name="settings-outline" class="text-xl"></ion-icon>
+                    </button>
+
+                    <button x-show="currentView !== 'branches'" @click="goBack()" x-cloak
+                            class="flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-100 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-cyan-500 transition duration-150 text-sm font-medium">
+                        <ion-icon name="arrow-back-outline" class="mr-1 text-base"></ion-icon>
+                        Back
+                    </button>
+                </div>
+            </div>
+             <p class="text-xs text-gray-600 dark:text-gray-400 md:hidden mt-1" x-text="headerSubtitle"></p>
+        </header>
+
+        <div x-show="loading" x-cloak class="text-center py-16 flex-grow flex flex-col items-center justify-center">
+            <svg class="animate-spin h-12 w-12 text-teal-600 dark:text-teal-500 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <p class="mt-4 text-lg text-gray-500 dark:text-gray-400">Loading Question Data...</p>
+        </div>
+
+        <div x-show="error" x-cloak class="text-center py-10 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-500/30 text-red-800 dark:text-red-200 px-4 py-5 rounded-lg relative flex-grow" role="alert">
+            <strong class="font-bold block mb-2">Oops! Something went wrong.</strong>
+            <span class="block sm:inline" x-text="error"></span>
+            <button @click="fetchData()" class="mt-4 px-4 py-2 bg-red-100 dark:bg-red-800/50 text-red-800 dark:text-red-100 border border-red-300 dark:border-red-600 rounded hover:bg-red-200 dark:hover:bg-red-700/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 transition">
+                Retry Loading
+            </button>
+        </div>
+
+        <main x-show="!loading && !error" x-cloak class="flex-grow">
+
+            <div x-show="currentView === 'branches'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100">
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-6">Select Branch</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <template x-for="branch in branches" :key="branch.id">
+                        <div @click="selectBranch(branch.id)"
+                             class="bg-white dark:bg-gray-800 p-5 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition duration-300 ease-in-out flex items-center space-x-4 cursor-pointer border border-gray-200 dark:border-gray-700 hover:border-teal-400 dark:hover:border-teal-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-teal-500">
+                            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-teal-50 dark:bg-teal-900/30 flex items-center justify-center text-teal-600 dark:text-teal-400 font-bold text-lg">
+                                <span x-text="getIconPlaceholder(branch.name)"></span>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100" x-text="branch.name"></h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400" x-text="`${branch.semesters ? branch.semesters.length : 0} Semesters`"></p>
+                            </div>
+                            <ion-icon name="chevron-forward-outline" class="text-gray-400 dark:text-gray-500 text-xl"></ion-icon>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <div x-show="currentView === 'semesters'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100">
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-6" x-text="`Semesters - ${selectedBranch?.name || ''}`"></h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <template x-for="semester in availableSemesters" :key="semester.id">
+                        <div @click="selectSemester(semester.id)"
+                             class="bg-white dark:bg-gray-800 p-5 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition duration-300 ease-in-out flex items-center space-x-4 cursor-pointer border border-gray-200 dark:border-gray-700 hover:border-teal-400 dark:hover:border-teal-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-teal-500">
+                             <div class="flex-shrink-0 w-12 h-12 rounded-full bg-teal-50 dark:bg-teal-900/30 flex items-center justify-center text-teal-600 dark:text-teal-400">
+                                 <ion-icon name="calendar-clear-outline" class="text-2xl"></ion-icon>
+                             </div>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100" x-text="`Semester ${semester.number}`"></h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400" x-text="`${semester.subjects ? semester.subjects.length : 0} Subjects`"></p>
+                            </div>
+                            <ion-icon name="chevron-forward-outline" class="text-gray-400 dark:text-gray-500 text-xl"></ion-icon>
+                        </div>
+                    </template>
+                     <div x-show="availableSemesters.length === 0" class="col-span-full text-center py-10 text-gray-500 dark:text-gray-400">No semesters found for this branch.</div>
+                </div>
+            </div>
+
+            <div x-show="currentView === 'subjects'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100">
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-6" x-text="`Subjects - Sem ${selectedSemester?.number || ''}`"></h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <template x-for="subject in availableSubjects" :key="subject.id">
+                        <div @click="selectSubject(subject.id)"
+                             :class="{
+                                'opacity-60 cursor-not-allowed pointer-events-none': !(subject.questions && subject.questions.length > 0),
+                                'hover:shadow-lg transform hover:-translate-y-1 hover:border-teal-400 dark:hover:border-teal-500 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-teal-500': subject.questions && subject.questions.length > 0
+                             }"
+                             class="bg-white dark:bg-gray-800 p-5 rounded-lg shadow-md transition duration-300 ease-in-out flex items-center space-x-4 border border-gray-200 dark:border-gray-700"
+                             :title="!(subject.questions && subject.questions.length > 0) ? 'No questions available yet' : `View questions for ${subject.name}`">
+                             <div class="flex-shrink-0 w-12 h-12 rounded-full bg-teal-50 dark:bg-teal-900/30 flex items-center justify-center text-teal-600 dark:text-teal-400">
+                                 <ion-icon name="book-outline" class="text-2xl"></ion-icon>
+                             </div>
+                            <div class="flex-grow">
+                                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100" x-text="subject.name"></h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400" x-text="subject.code ? `Code: ${subject.code}` : 'No Code'"></p>
+                                <p class="text-xs text-gray-500 dark:text-gray-500 mt-1" x-text="`${subject.questions ? subject.questions.length : 0} Questions Available`"></p>
+                            </div>
+                            <ion-icon name="chevron-forward-outline" class="text-gray-400 dark:text-gray-500 text-xl" x-show="subject.questions && subject.questions.length > 0"></ion-icon>
+                        </div>
+                    </template>
+                     <div x-show="availableSubjects.length === 0" class="md:col-span-2 text-center py-10 text-gray-500 dark:text-gray-400">No subjects found for this semester.</div>
+                </div>
+            </div>
+
+             <div x-show="currentView === 'organization'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100">
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-6" x-text="`Organize Questions - ${selectedSubject?.name || ''}`"></h2>
+                 <p class="text-gray-600 dark:text-gray-400 mb-8">How would you like to view the questions for this subject?</p>
+                <div class="space-y-5">
+                     <div @click="selectOrganizationMode('all')"
+                         class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition duration-300 ease-in-out flex items-center space-x-4 cursor-pointer border border-gray-200 dark:border-gray-700 hover:border-teal-400 dark:hover:border-teal-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-teal-500">
+                         <div class="flex-shrink-0 w-12 h-12 rounded-full bg-teal-50 dark:bg-teal-900/30 flex items-center justify-center text-teal-600 dark:text-teal-400">
+                             <ion-icon name="list-outline" class="text-2xl"></ion-icon>
+                         </div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">View All Questions</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">See all available questions, sorted newest first by default.</p>
+                        </div>
+                         <ion-icon name="chevron-forward-outline" class="text-gray-400 dark:text-gray-500 text-xl"></ion-icon>
+                    </div>
+                     <div @click="selectOrganizationMode('chapter')"
+                         :class="{
+                            'opacity-60 cursor-not-allowed pointer-events-none': availableChapters.length === 0,
+                            'hover:shadow-lg transform hover:-translate-y-1 hover:border-teal-400 dark:hover:border-teal-500 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-teal-500': availableChapters.length > 0
+                         }"
+                         class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md transition duration-300 ease-in-out flex items-center space-x-4 border border-gray-200 dark:border-gray-700"
+                         :title="availableChapters.length === 0 ? 'No chapter information available' : 'Group questions by chapter'">
+                          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-teal-50 dark:bg-teal-900/30 flex items-center justify-center text-teal-600 dark:text-teal-400">
+                             <ion-icon name="folder-open-outline" class="text-2xl"></ion-icon>
+                         </div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">View By Chapter</h3>
+                             <p class="text-sm text-gray-600 dark:text-gray-400" x-text="availableChapters.length > 0 ? `Select from ${availableChapters.length} chapters` : 'No chapter information available'"></p>
+                        </div>
+                         <ion-icon name="chevron-forward-outline" class="text-gray-400 dark:text-gray-500 text-xl" x-show="availableChapters.length > 0"></ion-icon>
+                    </div>
+                     <div @click="selectOrganizationMode('year')"
+                          :class="{
+                            'opacity-60 cursor-not-allowed pointer-events-none': availableYears.length === 0,
+                            'hover:shadow-lg transform hover:-translate-y-1 hover:border-teal-400 dark:hover:border-teal-500 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-teal-500': availableYears.length > 0
+                         }"
+                         class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md transition duration-300 ease-in-out flex items-center space-x-4 border border-gray-200 dark:border-gray-700"
+                         :title="availableYears.length === 0 ? 'No year information available' : 'Filter questions by examination year'">
+                         <div class="flex-shrink-0 w-12 h-12 rounded-full bg-teal-50 dark:bg-teal-900/30 flex items-center justify-center text-teal-600 dark:text-teal-400">
+                             <ion-icon name="calendar-number-outline" class="text-2xl"></ion-icon>
+                         </div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">View By Year</h3>
+                             <p class="text-sm text-gray-600 dark:text-gray-400" x-text="availableYears.length > 0 ? `Select from ${availableYears.length} years` : 'No year information available'"></p>
+                        </div>
+                         <ion-icon name="chevron-forward-outline" class="text-gray-400 dark:text-gray-500 text-xl" x-show="availableYears.length > 0"></ion-icon>
+                    </div>
+                </div>
+            </div>
+
+             <div x-show="currentView === 'chapterSelection'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100">
+                 <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-6">Select Chapter</h2>
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                     <template x-for="chapter in availableChapters" :key="chapter">
+                         <div @click="selectChapter(chapter)"
+                              class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm hover:shadow-md transform hover:scale-[1.02] transition duration-200 ease-in-out cursor-pointer border border-gray-200 dark:border-gray-700 hover:border-teal-400 dark:hover:border-teal-500 flex justify-between items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-teal-500">
+                             <span class="text-gray-800 dark:text-gray-100 font-medium" x-text="chapter"></span>
+                              <ion-icon name="chevron-forward-outline" class="text-gray-400 dark:text-gray-500"></ion-icon>
+                         </div>
+                     </template>
+                     <div x-show="availableChapters.length === 0" class="md:col-span-2 text-center py-10 text-gray-500 dark:text-gray-400">No chapters found for this subject.</div>
+                 </div>
+             </div>
+
+             <div x-show="currentView === 'yearSelection'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100">
+                 <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-6">Select Year</h2>
+                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                     <template x-for="year in availableYears" :key="year">
+                         <div @click="selectYear(year)"
+                              class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm hover:shadow-md transform hover:scale-[1.02] transition duration-200 ease-in-out cursor-pointer border border-gray-200 dark:border-gray-700 hover:border-teal-400 dark:hover:border-teal-500 text-center focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-teal-500">
+                             <span class="text-lg font-medium text-gray-800 dark:text-gray-100" x-text="year"></span>
+                         </div>
+                     </template>
+                     <div x-show="availableYears.length === 0" class="col-span-full text-center py-10 text-gray-500 dark:text-gray-400">No years found for this subject's questions.</div>
+                 </div>
+             </div>
+
+            <div x-show="currentView === 'questions'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
+                 <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-2" x-text="questionListTitle"></h2>
+                 <p class="text-sm text-gray-600 dark:text-gray-400 mb-6" x-text="`Subject: ${selectedSubject?.name || ''} (${selectedSubject?.code || 'N/A'})`"></p>
+
+                 <div class="mb-8">
+                     <label for="search-questions" class="sr-only">Search questions</label>
+                     <div class="relative rounded-md shadow-sm">
+                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                             <ion-icon name="search-outline" class="text-gray-500 dark:text-gray-400" aria-hidden="true"></ion-icon>
+                         </div>
+                         <input type="search" id="search-questions" x-model.debounce.300ms="searchQuery"
+                                class="block w-full pl-10 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg leading-5 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:focus:ring-cyan-400 focus:border-cyan-500 dark:focus:border-cyan-400 sm:text-sm"
+                                placeholder="Search questions by text, chapter, year...">
+                     </div>
+                 </div>
+
+                <div class="space-y-8">
+                    <template x-for="(question, index) in filteredQuestions" :key="question.questionId + '-' + index">
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+                            <div class="flex flex-wrap items-center justify-between mb-4 gap-y-2">
+                                <div class="flex flex-wrap items-center gap-x-2 gap-y-2">
+                                    <span x-show="question.year" class="inline-flex items-center bg-sky-100 dark:bg-sky-900/60 text-sky-800 dark:text-sky-200 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                        <ion-icon name="calendar-outline" class="-ml-0.5 mr-1 text-sm"></ion-icon>
+                                        <span x-text="question.year"></span>
+                                    </span>
+                                    <span x-show="question.qNumber" class="inline-flex items-center bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                         <ion-icon name="list-outline" class="-ml-0.5 mr-1 text-sm"></ion-icon>
+                                        <span x-text="question.qNumber"></span>
+                                    </span>
+                                    <span x-show="question.marks != null" class="inline-flex items-center bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-200 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                         <ion-icon name="medal-outline" class="-ml-0.5 mr-1 text-sm"></ion-icon>
+                                        <span x-text="`${question.marks} Marks`"></span>
+                                    </span>
+                                </div>
+                            </div>
+
+                             <div x-show="question.chapter" class="mb-4 text-sm text-gray-700 dark:text-gray-300 border-t border-b border-gray-200 dark:border-gray-600 py-2 px-3 bg-gray-50 dark:bg-gray-700/40 rounded-md flex items-center gap-2">
+                                <ion-icon name="layers-outline" class="text-teal-600 dark:text-teal-400 text-base flex-shrink-0"></ion-icon>
+                                <span class="font-medium">Chapter:</span>
+                                <span class="line-clamp-1" x-text="question.chapter"></span>
+                            </div>
+                             <div x-show="!question.chapter" class="mb-4 text-sm text-gray-500 dark:text-gray-400 italic border-t border-b border-gray-200 dark:border-gray-600 py-2 px-3 bg-gray-50 dark:bg-gray-700/40 rounded-md flex items-center gap-2">
+                                <ion-icon name="help-circle-outline" class="text-gray-500 dark:text-gray-400 text-base flex-shrink-0"></ion-icon>
+                                Uncategorized
+                            </div>
+
+                            <div class="prose prose-sm prose-gray dark:prose-invert max-w-none text-gray-900 dark:text-gray-100" x-html="formatMarkdown(question.text)"></div>
+
+                            <div class="mt-5 pt-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between flex-wrap gap-3">
+                                <div class="flex items-center space-x-4">
+                                    <button @click="searchGoogle(question.text)" title="Search on Google"
+                                            class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 rounded transition duration-150">
+                                        <ion-icon name="logo-google" class="text-xl"></ion-icon>
+                                    </button>
+                                     <button @click="copyText(question.text)" title="Copy Question Text"
+                                            class="text-gray-500 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 focus:outline-none focus-visible:ring-1 focus-visible:ring-green-500 rounded transition duration-150">
+                                        <ion-icon name="copy-outline" class="text-xl"></ion-icon>
+                                    </button>
+                                </div>
+                                <button @click="askAI(question)" :title="`Ask ${selectedAiAssistantDetails.name}`"
+                                        class="inline-flex items-center px-4 py-2 bg-amber-600 text-white text-xs font-semibold rounded-full hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 dark:focus:ring-offset-gray-800 transition duration-150 shadow-sm">
+                                     <ion-icon name="sparkles-outline" class="mr-1.5 text-sm"></ion-icon>
+                                    Ask AI Assistant
+                                </button>
+                            </div>
+                        </div>
+                    </template>
+
+                    <div x-show="filteredQuestions.length === 0 && !loading" class="text-center py-16 text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+                         <ion-icon name="search-outline" class="text-5xl mx-auto mb-4 text-gray-400 dark:text-gray-500"></ion-icon>
+                        <p class="text-lg font-medium mb-2 text-gray-800 dark:text-gray-200" x-show="searchQuery.trim() !== ''">No questions match your search "<span class="font-semibold text-teal-600 dark:text-teal-400" x-text="searchQuery"></span>".</p>
+                        <p class="text-lg font-medium mb-2 text-gray-800 dark:text-gray-200" x-show="searchQuery.trim() === '' && originalQuestionCount > 0">No questions found for the selected filter.</p>
+                         <p class="text-lg font-medium mb-2 text-gray-800 dark:text-gray-200" x-show="originalQuestionCount === 0">No questions available for this selection yet.</p>
+                         <p class="text-sm">Try adjusting your search or selection criteria, or check back later.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="text-center mt-16 pt-8 border-t border-gray-300 dark:border-gray-700">
+             <p class="text-sm text-gray-600 dark:text-gray-400">
+                Developed by <a href="https://github.com/hasanraiyan" target="_blank" rel="noopener noreferrer" class="text-teal-600 dark:text-teal-400 hover:underline font-medium">Raiyan Hasan</a>
+            </p>
+            <p class="text-xs text-gray-500 dark:text-gray-500 mt-2">
+                PYQDeck Web © <span x-text="new Date().getFullYear()"></span> | Version 2.3.0 (Settings Added)
+            </p>
+            <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Data fetched from <a href="https://github.com/hasanraiyan/PYQDeck" target="_blank" rel="noopener noreferrer" class="hover:underline">PYQDeck Repository</a></p>
+        </footer>
+
+        <!-- Settings Modal -->
+        <div x-show="showSettingsModal" x-cloak
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 z-40 bg-gray-600 bg-opacity-75 backdrop-blur-sm flex items-center justify-center p-4">
+
+            <div @click.outside="showSettingsModal = false"
+                 x-show="showSettingsModal"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 scale-95"
+                 x-transition:enter-end="opacity-100 scale-100"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100 scale-100"
+                 x-transition:leave-end="opacity-0 scale-95"
+                 class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-lg p-6"
+                 role="dialog" aria-modal="true" aria-labelledby="settings-modal-title">
+
+                <div class="flex items-center justify-between mb-6">
+                    <h2 id="settings-modal-title" class="text-xl font-semibold text-gray-800 dark:text-gray-100">Settings</h2>
+                    <button @click="showSettingsModal = false"
+                            class="p-1 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500">
+                        <span class="sr-only">Close settings</span>
+                        <ion-icon name="close-outline" class="text-2xl"></ion-icon>
+                    </button>
+                </div>
+
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                           AI Assistant Preference
+                        </label>
+                        <fieldset class="mt-2">
+                            <legend class="sr-only">Choose your preferred AI assistant</legend>
+                            <div class="space-y-3">
+                                <template x-for="ai in aiAssistants" :key="ai.id">
+                                    <div class="flex items-center">
+                                        <input :id="'ai-' + ai.id" name="ai-assistant" type="radio"
+                                               :value="ai.id" x-model="selectedAiAssistantId"
+                                               @change="saveSettings()"
+                                               class="h-4 w-4 text-teal-600 border-gray-300 dark:border-gray-600 focus:ring-teal-500 dark:focus:ring-offset-gray-800 dark:bg-gray-700 dark:checked:bg-teal-500">
+                                        <label :for="'ai-' + ai.id" class="ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200" x-text="ai.name"></label>
+                                    </div>
+                                </template>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                           Theme
+                        </label>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-md">
+                            <span class="text-sm text-gray-600 dark:text-gray-300">Toggle Dark Mode</span>
+                             <button @click="toggleDarkMode()"
+                                     :class="darkMode ? 'bg-teal-600' : 'bg-gray-300 dark:bg-gray-600'"
+                                     class="relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 dark:focus:ring-offset-gray-800"
+                                     role="switch" :aria-checked="darkMode">
+                                <span class="sr-only">Use setting</span>
+                                <span :class="darkMode ? 'translate-x-5' : 'translate-x-0'"
+                                      class="pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"></span>
+                              </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="mt-8 pt-4 border-t border-gray-200 dark:border-gray-700 text-right">
+                    <button @click="showSettingsModal = false"
+                            class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-100 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-cyan-500 transition duration-150 text-sm font-medium">
+                        Done
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script>
+        function pyqDeckApp() {
+            return {
+                beuData: null,
+                branches: [],
+                loading: true,
+                error: null,
+                dataUrl: 'https://raw.githubusercontent.com/hasanraiyan/PYQDeck/main/src/data/data.json',
+
+                currentView: 'branches',
+                viewHistory: ['branches'],
+
+                selectedBranchId: null,
+                selectedSemId: null,
+                selectedSubjectId: null,
+                selectedYear: null,
+                selectedChapter: null,
+                organizationMode: 'all',
+                searchQuery: '',
+
+                showSettingsModal: false,
+                aiAssistants: [
+                    { id: 'chatgpt', name: 'ChatGPT (Search)', urlTemplate: 'https://chatgpt.com/search?q=' },
+                    { id: 'perplexity', name: 'Perplexity AI', urlTemplate: 'https://www.perplexity.ai/search?q=' },
+                    { id: 'gemini', name: 'Google Gemini', urlTemplate: 'https://gemini.google.com/app/search?q=' }
+                ],
+                selectedAiAssistantId: 'chatgpt', // Default
+
+                initApp() {
+                    this.loadSettings();
+                    this.fetchData();
+                },
+
+                loadSettings() {
+                    const savedAi = localStorage.getItem('selectedAiAssistantId');
+                    if (savedAi && this.aiAssistants.some(ai => ai.id === savedAi)) {
+                        this.selectedAiAssistantId = savedAi;
+                    }
+                    const savedDarkMode = localStorage.getItem('darkMode');
+                     // Alpine's global darkMode variable handles the initial check via x-data
+                     // this.darkMode = savedDarkMode === 'true';
+                     // Re-apply class if necessary on load (Alpine handles this if x-data is on html)
+                     // document.documentElement.classList.toggle('dark', this.darkMode);
+                },
+
+                saveSettings() {
+                    localStorage.setItem('selectedAiAssistantId', this.selectedAiAssistantId);
+                },
+
+                toggleDarkMode() {
+                    let app = Alpine.store('darkMode'); // Use Alpine's global store if needed or direct access
+                    app.darkMode = !app.darkMode;
+                    localStorage.setItem('darkMode', app.darkMode);
+                    // document.documentElement.classList.toggle('dark', app.darkMode); // Managed by :class on html tag
+                 },
+
+
+                get selectedAiAssistantDetails() {
+                    return this.aiAssistants.find(ai => ai.id === this.selectedAiAssistantId) || this.aiAssistants[0];
+                },
+
+                get selectedBranch() { return this.branches.find(b => b.id === this.selectedBranchId) || null; },
+                get selectedSemester() { return this.selectedBranch?.semesters?.find(s => s.id === this.selectedSemId) || null; },
+                get selectedSubject() { return this.selectedSemester?.subjects?.find(sub => sub.id === this.selectedSubjectId) || null; },
+                get availableSemesters() { return this.selectedBranch?.semesters?.slice().sort((a, b) => a.number - b.number) || []; },
+                get availableSubjects() { return this.selectedSemester?.subjects?.slice().sort((a, b) => a.name.localeCompare(b.name)) || []; },
+                get allQuestionsForSubject() { return this.selectedSubject?.questions || []; },
+
+                 get availableYears() {
+                     if (!this.allQuestionsForSubject) return [];
+                     const years = new Set(this.allQuestionsForSubject
+                         .map(q => q.year)
+                         .filter(year => year != null && !isNaN(Number(year)))
+                         .map(Number)
+                     );
+                     return Array.from(years).sort((a, b) => b - a);
+                 },
+                 get availableChapters() {
+                    if (!this.allQuestionsForSubject) return [];
+                    const chapters = new Set();
+                    let hasUncategorized = false;
+                    this.allQuestionsForSubject.forEach(q => {
+                        const chapterTrimmed = q.chapter && typeof q.chapter === 'string' ? q.chapter.trim() : '';
+                        if (chapterTrimmed) { chapters.add(chapterTrimmed); } else { hasUncategorized = true; }
+                    });
+                    const sortedChapters = Array.from(chapters).sort((a, b) => {
+                        const regex = /^(?:Module|Chapter)\s*(\d+)/i;
+                        const matchA = a.match(regex); const matchB = b.match(regex);
+                        if (matchA && matchB) return parseInt(matchA[1], 10) - parseInt(matchB[1], 10);
+                        if (matchA) return -1; if (matchB) return 1; return a.localeCompare(b);
+                    });
+                    if (hasUncategorized) { sortedChapters.push('Uncategorized'); }
+                    return sortedChapters;
+                 },
+                 get originalQuestionCount() {
+                    let initialFilter = this.allQuestionsForSubject;
+                    if (this.organizationMode === 'year' && this.selectedYear != null) {
+                        initialFilter = initialFilter.filter(q => q.year === this.selectedYear);
+                    } else if (this.organizationMode === 'chapter' && this.selectedChapter) {
+                        initialFilter = initialFilter.filter(q => {
+                            const qChapter = (q.chapter && typeof q.chapter === 'string') ? q.chapter.trim() : '';
+                            if (this.selectedChapter === 'Uncategorized') return !qChapter; return qChapter === this.selectedChapter;
+                        });
+                    }
+                    return initialFilter.length;
+                 },
+                 get filteredQuestions() {
+                    let questions = this.allQuestionsForSubject;
+                    if (this.organizationMode === 'year' && this.selectedYear != null) {
+                        questions = questions.filter(q => q.year === this.selectedYear);
+                    } else if (this.organizationMode === 'chapter' && this.selectedChapter) {
+                         questions = questions.filter(q => {
+                             const qChapter = (q.chapter && typeof q.chapter === 'string') ? q.chapter.trim() : '';
+                             if (this.selectedChapter === 'Uncategorized') return !qChapter; return qChapter === this.selectedChapter;
+                         });
+                    }
+                     const query = this.searchQuery.trim().toLowerCase();
+                     if (query) {
+                         questions = questions.filter(q => {
+                            const plainText = this.getQuestionPlainText(q.text || '').toLowerCase();
+                            const chapterText = (q.chapter || '').toLowerCase();
+                            const yearText = (q.year || '').toString(); const qNumText = (q.qNumber || '').toLowerCase();
+                            return plainText.includes(query) || chapterText.includes(query) || yearText.includes(query) || qNumText.includes(query);
+                         });
+                     }
+                     questions.sort((a, b) => {
+                         const yearDiff = (b.year || 0) - (a.year || 0); if (yearDiff !== 0) return yearDiff;
+                         const numA = (a.qNumber || '').match(/^(\d+)/); const numB = (b.qNumber || '').match(/^(\d+)/);
+                         if (numA && numB && parseInt(numA[1]) !== parseInt(numB[1])) { return parseInt(numA[1]) - parseInt(numB[1]); }
+                         return (a.qNumber || '').localeCompare(b.qNumber || '', undefined, { numeric: true, sensitivity: 'base' });
+                     });
+                    return questions;
+                 },
+                 get headerSubtitle() {
+                     let parts = ['BEU PYQs'];
+                     if (this.selectedBranch) parts.push(this.selectedBranch.name);
+                     if (this.selectedSemester) parts.push(`Sem ${this.selectedSemester.number}`);
+                     if (this.selectedSubject && (['organization', 'yearSelection', 'chapterSelection', 'questions'].includes(this.currentView)) ) {
+                         parts.push(this.selectedSubject.code || this.selectedSubject.name);
+                     }
+                     if (this.currentView === 'questions') {
+                         if (this.organizationMode === 'year' && this.selectedYear) parts.push(`Year ${this.selectedYear}`);
+                         else if (this.organizationMode === 'chapter' && this.selectedChapter) parts.push(this.selectedChapter.length > 15 ? this.selectedChapter.substring(0, 13) + '...' : this.selectedChapter);
+                     }
+                     return parts.join(' › ');
+                 },
+                  get questionListTitle() {
+                     if (this.organizationMode === 'year' && this.selectedYear != null) return `Questions from ${this.selectedYear}`;
+                     if (this.organizationMode === 'chapter' && this.selectedChapter) return `Chapter: ${this.selectedChapter}`;
+                     if (this.searchQuery.trim()) return `Search Results`;
+                     return 'Available Questions';
+                  },
+
+                fetchData() {
+                    this.loading = true; this.error = null;
+                    fetch(this.dataUrl + `?v=${Date.now()}`)
+                        .then(response => { if (!response.ok) throw new Error(`Network response error: ${response.statusText} (${response.status})`); return response.json(); })
+                        .then(data => {
+                            if (data && Array.isArray(data.branches)) {
+                                this.beuData = data; this.branches = data.branches.sort((a, b) => a.name.localeCompare(b.name));
+                                // Reset view state on successful data load if needed, or keep current path if possible
+                                // If coming from error, reset fully
+                                if (this.error) {
+                                    this.currentView = 'branches'; this.viewHistory = ['branches'];
+                                    this.selectedBranchId= null; this.selectedSemId= null; this.selectedSubjectId= null;
+                                    this.selectedYear= null; this.selectedChapter= null; this.organizationMode='all'; this.searchQuery='';
+                                }
+                            } else { throw new Error('Invalid data structure received.'); }
+                        })
+                        .catch(error => { console.error('Fetch/Parse Error:', error); this.error = `Failed to load data. ${error.message}. Please retry.`; })
+                        .finally(() => { this.loading = false; });
+                },
+                _navigateTo(view) {
+                    if (this.currentView === view) return; this.currentView = view;
+                    if (this.viewHistory[this.viewHistory.length - 1] !== view) { this.viewHistory.push(view); }
+                    this.$nextTick(() => window.scrollTo(0, 0));
+                },
+                selectBranch(id) { this.selectedBranchId = id; this.selectedSemId = null; this.selectedSubjectId = null; this._navigateTo('semesters'); },
+                selectSemester(id) { this.selectedSemId = id; this.selectedSubjectId = null; this._navigateTo('subjects'); },
+                selectSubject(id) {
+                    const subject = this.selectedSemester?.subjects?.find(sub => sub.id === id);
+                    if (subject?.questions?.length > 0) {
+                        this.selectedSubjectId = id; this.selectedYear = null; this.selectedChapter = null; this.organizationMode = 'all'; this.searchQuery = '';
+                        this._navigateTo('organization');
+                    } else { console.warn('No questions for subject:', id); }
+                },
+                 selectOrganizationMode(mode) {
+                    this.organizationMode = mode; this.searchQuery = ''; this.selectedYear = null; this.selectedChapter = null;
+                    if (mode === 'all') this._navigateTo('questions');
+                    else if (mode === 'chapter' && this.availableChapters.length > 0) this._navigateTo('chapterSelection');
+                    else if (mode === 'year' && this.availableYears.length > 0) this._navigateTo('yearSelection');
+                 },
+                selectYear(year) { this.selectedYear = year; this.selectedChapter = null; this.organizationMode = 'year'; this.searchQuery = ''; this._navigateTo('questions'); },
+                selectChapter(chapter) { this.selectedChapter = chapter; this.selectedYear = null; this.organizationMode = 'chapter'; this.searchQuery = ''; this._navigateTo('questions'); },
+                goBack() {
+                    if (this.viewHistory.length <= 1) return; this.viewHistory.pop();
+                    const previousView = this.viewHistory[this.viewHistory.length - 1];
+                    if (previousView === 'branches') { this.selectedBranchId = null; this.selectedSemId = null; this.selectedSubjectId = null; }
+                    else if (previousView === 'semesters') { this.selectedSemId = null; this.selectedSubjectId = null; }
+                    else if (previousView === 'subjects') { this.selectedSubjectId = null; }
+                    else if (previousView === 'organization') { this.selectedYear = null; this.selectedChapter = null; this.organizationMode = 'all'; }
+                    if (previousView === 'yearSelection') this.selectedYear = null;
+                    if (previousView === 'chapterSelection') this.selectedChapter = null;
+                    this.searchQuery = ''; this.currentView = previousView;
+                    this.$nextTick(() => window.scrollTo(0, 0));
+                },
+                 getQuestionPlainText(text) {
+                     if (!text) return ''; try { const tempEl = document.createElement('div'); let p = text.replace(/```[\s\S]*?```/gs, ' ').replace(/!\[.*?\]\(.*?\)/g, ' ').replace(/\[(.*?)\]\(.*?\)/g, '$1').replace(/(\*\*|__)(.*?)\1/g, '$2').replace(/(\*|_)(.*?)\1/g, '$2').replace(/`([^`]+)`/g, '$1').replace(/<br\s*\/?>/gi, '\n'); tempEl.innerHTML = p; let pt = tempEl.textContent || tempEl.innerText || ''; return pt.replace(/\s+/g, ' ').trim(); } catch (e) { console.error("PlainText Error:", e); return text; }
+                 },
+                 formatMarkdown(text) {
+                    if (!text) return ''; let html = text; const esc = (unsafe) => unsafe.replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">").replace(/"/g, `"`).replace(/'/g, "'");
+                    const parts = html.split(/(```[\s\S]*?```|!\[.*?\]\(.*?\))/g);
+                    html = parts.map((part, index) => {
+                        if (index % 2 === 0) { return esc(part).replace(/(\*\*|__)(.*?)\1/gs, '<strong>$2</strong>').replace(/(?<!\*)\*(?!\*)(.*?)(?<!\*)\*(?!\*)/gs, '<em>$1</em>').replace(/(?<!_)_(?!_)(.*?)(?<!_)_(?!_)/gs, '<em>$1</em>').replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\n/g, '<br>'); }
+                        else if (part.startsWith('```')) { const code = part.substring(3, part.length - 3).trim(); return `<pre><code>${esc(code)}</code></pre>`; }
+                        else if (part.startsWith('![')) { const match = part.match(/!\[(.*?)\]\((.*?)\)/); if (match) { const alt = esc(match[1]); const url = match[2]; if (url.startsWith('http')) { return `<img src="${esc(url)}" alt="${alt}" class="question-image">`; } } return esc(part); } return esc(part);
+                    }).join(''); return html;
+                 },
+                copyText(text) {
+                    const plainText = this.getQuestionPlainText(text); if (!plainText) { alert('Nothing to copy.'); return; }
+                     navigator.clipboard.writeText(plainText).then(() => { alert('Question text copied!'); }).catch(err => { console.error('Copy Error:', err); alert('Failed to copy text.'); });
+                },
+                 searchGoogle(questionText) {
+                    const query = this.getQuestionPlainText(questionText); if (!query) return;
+                    const context = this.selectedSubject ? `${this.selectedSubject.name} ${this.selectedSubject.code || ''}` : 'BEU engineering'; const fullQuery = `${query} ${context}`;
+                    const url = `https://google.com/search?q=${encodeURIComponent(fullQuery)}`; window.open(url, '_blank', 'noopener,noreferrer');
+                 },
+                 askAI(question) {
+                    const plainText = this.getQuestionPlainText(question.text); if (!plainText) return;
+                     let prompt = `Explain/solve this university question:\n\n**Context:**\n`;
+                     if (this.selectedBranch?.name) prompt += `- Branch: ${this.selectedBranch.name}\n`; if (this.selectedSemester?.number) prompt += `- Semester: ${this.selectedSemester.number}\n`; if (this.selectedSubject?.name) prompt += `- Subject: ${this.selectedSubject.name} (${this.selectedSubject.code || 'N/A'})\n`; if (question.chapter) prompt += `- Chapter: ${question.chapter}\n`; if (question.year) prompt += `- Year: ${question.year}\n`; if (question.qNumber) prompt += `- Q#: ${question.qNumber}\n`; if (question.marks != null) prompt += `- Marks: ${question.marks}\n`;
+                     prompt += `\n**Question:**\n---\n${plainText}\n---\n\nProvide a step-by-step explanation/solution strategy.`;
+
+                     const ai = this.selectedAiAssistantDetails;
+                     const url = ai.urlTemplate + encodeURIComponent(prompt);
+                     window.open(url, '_blank', 'noopener,noreferrer');
+                 },
+                getIconPlaceholder(name) {
+                    if (!name) return '?'; const words = name.trim().split(/[\s&]+/); if (words.length >= 2) return (words[0][0] + words[1][0]).toUpperCase(); if (words.length === 1 && words[0].length >= 2) return words[0].substring(0, 2).toUpperCase(); if (words.length === 1 && words[0].length === 1) return words[0][0].toUpperCase(); return name[0]?.toUpperCase() || '?';
+                }
+            }
+        }
+        // Define Alpine store for dark mode reactivity across components if needed,
+        // although direct binding to `darkMode` in root x-data works here too.
+        document.addEventListener('alpine:init', () => {
+             Alpine.store('darkMode', {
+                on: localStorage.getItem('darkMode') === 'true',
+                toggle() {
+                    this.on = !this.on;
+                    localStorage.setItem('darkMode', this.on);
+                    // Trigger class change on html tag manually if not using :class on html
+                    // document.documentElement.classList.toggle('dark', this.on);
+                }
+            });
+
+             // Sync the component's darkMode with the store if using store
+            // Alpine.data('pyqDeckApp', () => ({
+            //    ...pyqDeckApp(), // Spread existing component data
+            //    get darkMode() { return Alpine.store('darkMode').on },
+            //    toggleDarkMode() { Alpine.store('darkMode').toggle() }
+            // }));
+        });
+
+
+    </script>
+
+</body>
+</html>
