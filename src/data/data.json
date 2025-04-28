@@ -3255,7 +3255,7 @@
                   "year": 2022,
                   "qNumber": "Q5b",
                   "chapter": "Module 1: Fundamentals of Digital Systems and logic families",
-                  "text": "Implement the following CMOS logics:\n(i) AB(A+B)\n(ii) ((CD)+B)A",
+                  "text": "Implement the following CMOS logics:\n(i) (AB(A+B))`\n(ii) (((CD)+B)A)`",
                   "type": "Implementation",
                   "marks": 7
                 },
