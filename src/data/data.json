@@ -5314,7 +5314,7 @@
                   "year": 2022,
                   "qNumber": "Q1a",
                   "chapter": "Module 3: Propositional Logic",
-                  "text": "Choose the correct answer of the following (Any seven question only):\nThe statement p -> q is logically equivalent to\n(i) p v q\n(ii) ~p v q\n(iii) ~p v ~q\n(iv) ~p -> q",
+                  "text": "The statement p -> q is logically equivalent to\n(i) p v q\n(ii) ~p v q\n(iii) ~p v ~q\n(iv) ~p -> q",
                   "type": "MCQ",
                   "marks": 2
                 },
@@ -5350,7 +5350,7 @@
                   "year": 2022,
                   "qNumber": "Q1e",
                   "chapter": "Module 1: Sets, Relation and Function",
-                  "text": "If R = {(1, 2), (2, 3), (3, 3)} be a relation defined on A = {1, 2, 3}, then R.R is\n(i) R itself\n(ii) {(1, 3), (2, 3), (3, 3)}\n(iii) {(1, 3), (3, 3)}\n(iv) {(1, 2), (1, 3), (2, 3)}",
+                  "text": "If R = {(1, 2), (2, 3), (3, 3)} be a relation defined on A = {1, 2, 3}, then R.R is\n(i) R itself\n(ii) {(1, 3), (1, 3), (3, 3)}\n(iii) {(1, 3), (2, 3), (3, 3}\n(iv) {(2, 1), (1, 3), (2, 3)}",
                   "type": "MCQ",
                   "marks": 2
                 },
@@ -5377,7 +5377,7 @@
                   "year": 2022,
                   "qNumber": "Q1h",
                   "chapter": "Module 1: Sets, Relation and Function",
-                  "text": "Let A and B be finite sets with |A| = n and |B| = m. How many functions are possible from A to B with A as the domain?\n(i) n\n(ii) m^n\n(iii) n^m\n(iv) m*n",
+                  "text": "Let A and B be finite sets with |A| = n and |B| = m. How many functions are possible from A to B with A as the domain?\n(i) n\n(ii) m^n\n(iii) n^m\n(iv) m^n",
                   "type": "MCQ",
                   "marks": 2
                 },
@@ -5548,7 +5548,7 @@
                   "year": 2022,
                   "qNumber": "Q8b",
                   "chapter": "Module 5: Graphs and Trees",
-                  "text": "Apply Dijkstra's algorithm to the given graph to determine the shortest distance from vertex a to each of the other vertices.\n![] (https://mtjwwpxkwpaagqsnfbks.supabase.co/storage/v1/object/public/images//it_100305_2022_Q8b.png)",
+                  "text": "Apply Dijkstra's algorithm to the given graph to determine the shortest distance from vertex a to each of the other vertices.\n![image](https://mtjwwpxkwpaagqsnfbks.supabase.co/storage/v1/object/public/images//it_100305_2022_Q8b.png)",
                   "type": "Algorithm Application",
                   "marks": 7
                 },
