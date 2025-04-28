@@ -5308,6 +5308,285 @@
                   "text": "Write short notes on any two of the following: Eulerian and Hamiltonian walk",
                   "type": "Short Notes",
                   "marks": 7
+                },
+                {
+                  "questionId": "dm_106301_2022_Q1a",
+                  "year": 2022,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 3: Propositional Logic",
+                  "text": "Choose the correct answer of the following (Any seven question only):\nThe statement p -> q is logically equivalent to\n(i) p v q\n(ii) ~p v q\n(iii) ~p v ~q\n(iv) ~p -> q",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "dm_106301_2022_Q1b",
+                  "year": 2022,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 5: Graphs and Trees",
+                  "text": "The number of distinct simple graphs with up to three nodes is\n(i) 9\n(ii) 7\n(iii) 10\n(iv) 15",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "dm_106301_2022_Q1c",
+                  "year": 2022,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 2: Basic counting techniques",
+                  "text": "Among 200 people, 150 either swim or jog, or both. If 85 swim, and 60 swim and jog, how many jog?\n(i) 125\n(ii) 225\n(iii) 85\n(iv) 25",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "dm_106301_2022_Q1d",
+                  "year": 2022,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 4: Algebraic Structures and Morphism",
+                  "text": "The total number of subgroups of group G of prime order is\n(i) 3\n(ii) 2\n(iii) 1\n(iv) 4",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "dm_106301_2022_Q1e",
+                  "year": 2022,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 1: Sets, Relation and Function",
+                  "text": "If R = {(1, 2), (2, 3), (3, 3)} be a relation defined on A = {1, 2, 3}, then R.R is\n(i) R itself\n(ii) {(1, 3), (2, 3), (3, 3)}\n(iii) {(1, 3), (3, 3)}\n(iv) {(1, 2), (1, 3), (2, 3)}",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "dm_106301_2022_Q1f",
+                  "year": 2022,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 4: Algebraic Structures and Morphism",
+                  "text": "If f : G -> G' is a homomorphism, then which of the following it true?\n(i) f(e) = e\n(ii) f(e) = e'\n(iii) f(e) = 1\n(iv) f(e) >= phi",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "dm_106301_2022_Q1g",
+                  "year": 2022,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 5: Graphs and Trees",
+                  "text": "In an unweighted, undirected connected graphs, the shortest path from a node S to every other node is computed most efficiently, in terms of time complexity, by\n(i) Dijkstra's algorithm starting from S\n(ii) Warshall's algorithm\n(iii) performing a DFS starting from S\n(iv) performing a BFS starting from S",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "dm_106301_2022_Q1h",
+                  "year": 2022,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 1: Sets, Relation and Function",
+                  "text": "Let A and B be finite sets with |A| = n and |B| = m. How many functions are possible from A to B with A as the domain?\n(i) n\n(ii) m^n\n(iii) n^m\n(iv) m*n",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "dm_106301_2022_Q1i",
+                  "year": 2022,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 5: Graphs and Trees",
+                  "text": "If a graph is a tree, then\n(i) it has 2 spanning trees\n(ii) it has only 1 spanning tree\n(iii) it has 4 spanning trees\n(iv) it has 5 spanning trees",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "dm_106301_2022_Q1j",
+                  "year": 2022,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 4: Algebraic Structures and Morphism",
+                  "text": "If (S, *) is a monoid, where S = {1, 2, 3, 6} and * is defined by a * b = lcm(a, b) where a, b E S; then the identity element is\n(i) 1\n(ii) 2\n(iii) 3\n(iv) 6",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "dm_106301_2022_Q2a",
+                  "year": 2022,
+                  "qNumber": "Q2a",
+                  "chapter": "Module 3: Propositional Logic",
+                  "text": "Show that ((p v q) ^ ~(~p ^ (~q v ~r))) v (~p ^ ~q) v (~p ^ ~r) is a tautology.",
+                  "type": "Proof",
+                  "marks": 7
+                },
+                {
+                  "questionId": "dm_106301_2022_Q2b",
+                  "year": 2022,
+                  "qNumber": "Q2b",
+                  "chapter": "Module 4: Algebraic Structures and Morphism",
+                  "text": "Define sub-lattice of a lattice. Show with an example that union of two sub-lattice may not be sub-lattice.",
+                  "type": "Definition & Proof",
+                  "marks": 7
+                },
+                {
+                  "questionId": "dm_106301_2022_Q3a",
+                  "year": 2022,
+                  "qNumber": "Q3a",
+                  "chapter": "Module 3: Propositional Logic",
+                  "text": "Show that s is a valid conclusion from the premises p -> ~q, q v r, ~s -> p.",
+                  "type": "Proof",
+                  "marks": 5
+                },
+                {
+                  "questionId": "dm_106301_2022_Q3b",
+                  "year": 2022,
+                  "qNumber": "Q3b",
+                  "chapter": "Module 2: Basic counting techniques",
+                  "text": "A new flag is to be designed with 6 vertical strips using 4 colors. In how many ways can this be done so that no 2 adjacent strips have the same color?",
+                  "type": "Problem Solving",
+                  "marks": 4
+                },
+                {
+                  "questionId": "dm_106301_2022_Q3c",
+                  "year": 2022,
+                  "qNumber": "Q3c",
+                  "chapter": "Module 2: Principles of Mathematical Induction",
+                  "text": "By mathematical induction, prove that 6^(n+2) + 7^(2n+1) is divisible by 43, for each natural number n.",
+                  "type": "Proof",
+                  "marks": 5
+                },
+                {
+                  "questionId": "dm_106301_2022_Q4a",
+                  "year": 2022,
+                  "qNumber": "Q4a",
+                  "chapter": "Module 5: Graphs and Trees",
+                  "text": "Show that every tree with two or more vertices is 2 - chromatic.",
+                  "type": "Proof",
+                  "marks": 5
+                },
+                {
+                  "questionId": "dm_106301_2022_Q4b",
+                  "year": 2022,
+                  "qNumber": "Q4b",
+                  "chapter": "Module 4: Algebraic Structures and Morphism",
+                  "text": "If (L, ^, v) be a complemented distributed lattice, then prove that:\n(a v b)' = a' ^ b'\n(a ^ b)' = a' v b'",
+                  "type": "Proof",
+                  "marks": 5
+                },
+                {
+                  "questionId": "dm_106301_2022_Q4c",
+                  "year": 2022,
+                  "qNumber": "Q4c",
+                  "chapter": "Module 3: Propositional Logic",
+                  "text": "Obtain the CNF form of the following statement\n(p -> (q ^ r)) ^ (~p -> (~q ^ ~r))",
+                  "type": "Transformation",
+                  "marks": 4
+                },
+                {
+                  "questionId": "dm_106301_2022_Q5a",
+                  "year": 2022,
+                  "qNumber": "Q5a",
+                  "chapter": "Module 1: Sets, Relation and Function",
+                  "text": "Define relations and function. What is equivalence relation?",
+                  "type": "Definition",
+                  "marks": 5
+                },
+                {
+                  "questionId": "dm_106301_2022_Q5b",
+                  "year": 2022,
+                  "qNumber": "Q5b",
+                  "chapter": "Module 5: Graphs and Trees",
+                  "text": "Show that a tree with n vertices has (n - 1) edges.",
+                  "type": "Proof",
+                  "marks": 4
+                },
+                {
+                  "questionId": "dm_106301_2022_Q5c",
+                  "year": 2022,
+                  "qNumber": "Q5c",
+                  "chapter": "Module 4: Algebraic Structures and Morphism",
+                  "text": "Show that every group of order 3 is cyclic.",
+                  "type": "Proof",
+                  "marks": 5
+                },
+                {
+                  "questionId": "dm_106301_2022_Q6a",
+                  "year": 2022,
+                  "qNumber": "Q6a",
+                  "chapter": "Module 4: Algebraic Structures and Morphism",
+                  "text": "Prove that the necessary and sufficient condition for a non-empty set H of a group (G, *) to be a subgroup is a, b E H => a * b^-1 E H.",
+                  "type": "Proof",
+                  "marks": 7
+                },
+                {
+                  "questionId": "dm_106301_2022_Q6b",
+                  "year": 2022,
+                  "qNumber": "Q6b",
+                  "chapter": "Module 1: Sets, Relation and Function",
+                  "text": "If functions f, g, h : Z -> Z are defined as\nf(x) = x - 1, g(x) = 3x\nand h(x) = { 0, if x is even\n            { 1, if x is odd\nverify that f . (g . h) = (f . g) . h.",
+                  "type": "Verification",
+                  "marks": 7
+                },
+                {
+                  "questionId": "dm_106301_2022_Q7a",
+                  "year": 2022,
+                  "qNumber": "Q7a",
+                  "chapter": "Module 5: Graphs and Trees",
+                  "text": "Prove that the sum of degrees of all vertices in a graph is always even.",
+                  "type": "Proof",
+                  "marks": 6
+                },
+                {
+                  "questionId": "dm_106301_2022_Q7b",
+                  "year": 2022,
+                  "qNumber": "Q7b",
+                  "chapter": "Module 4: Algebraic Structures and Morphism",
+                  "text": "Define the following with example:\nRing, PO sets, Lattice, Cyclic group.",
+                  "type": "Definition & Example",
+                  "marks": 8
+                },
+                {
+                  "questionId": "dm_106301_2022_Q8a",
+                  "year": 2022,
+                  "qNumber": "Q8a",
+                  "chapter": "Module 4: Algebraic Structures and Morphism",
+                  "text": "Show that the set of integers with the composition + and * defined by\na + b = a + b + 1 and\na * b = ab + a + b is a ring.",
+                  "type": "Proof",
+                  "marks": 7
+                },
+                {
+                  "questionId": "dm_106301_2022_Q8b",
+                  "year": 2022,
+                  "qNumber": "Q8b",
+                  "chapter": "Module 5: Graphs and Trees",
+                  "text": "Apply Dijkstra's algorithm to the given graph to determine the shortest distance from vertex a to each of the other vertices.\n![] (https://mtjwwpxkwpaagqsnfbks.supabase.co/storage/v1/object/public/images//it_100305_2022_Q8b.png)",
+                  "type": "Algorithm Application",
+                  "marks": 7
+                },
+                {
+                  "questionId": "dm_106301_2022_Q9a",
+                  "year": 2022,
+                  "qNumber": "Q9a",
+                  "chapter": "Module 4: Algebraic Structures and Morphism",
+                  "text": "Write short notes on the following:\n(a) Cosets",
+                  "type": "Short Note",
+                  "marks": 3.5
+                },
+                {
+                  "questionId": "dm_106301_2022_Q9b",
+                  "year": 2022,
+                  "qNumber": "Q9b",
+                  "chapter": "Module 5: Graphs and Trees",
+                  "text": "Write short notes on the following:\n(b) Bipartite graph",
+                  "type": "Short Note",
+                  "marks": 3.5
+                },
+                {
+                  "questionId": "dm_106301_2022_Q9c",
+                  "year": 2022,
+                  "qNumber": "Q9c",
+                  "chapter": "Module 4: Algebraic Structures and Morphism",
+                  "text": "Write short notes on the following:\n(c) Homomorphism",
+                  "type": "Short Note",
+                  "marks": 3.5
+                },
+                {
+                  "questionId": "dm_106301_2022_Q9d",
+                  "year": 2022,
+                  "qNumber": "Q9d",
+                  "chapter": "Module 1: Sets, Relation and Function",
+                  "text": "Write short notes on the following:\n(d) Schroeder - Bernstein theorem.",
+                  "type": "Short Note",
+                  "marks": 3.5
                 }
               ]
             }
