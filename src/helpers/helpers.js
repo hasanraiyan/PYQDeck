@@ -194,7 +194,7 @@ export const searchGoogle = (query, showFeedback) => {
 };
 
 export const askAI = (query, showFeedback) => {
-    const url = `https://chatgpt.com/search?q=${encodeURIComponent(
+    const url = `https://chatgpt.com?q=${encodeURIComponent(
         query || '' 
     )}`;
     openLink(url, showFeedback);
