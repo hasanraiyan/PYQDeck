@@ -1,94 +1,25 @@
 // src/screens/SemesterListScreen.js
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { StyleSheet, FlatList, SafeAreaView, Platform, StatusBar, TouchableOpacity, Text, ActivityIndicator, View, Alert } from 'react-native';
+import { StyleSheet, FlatList, SafeAreaView, Platform, StatusBar } from 'react-native';
 import { COLORS } from '../constants';
-import { findData, loadCompletionStatuses, saveSemesterPYQsToSecureStore, isSemesterPYQDownloaded } from '../helpers/helpers'; // Import download helpers
+import { findData, loadCompletionStatuses } from '../helpers/helpers';
 import ListItemCard from '../components/ListItemCard';
 import LoadingIndicator from '../components/LoadingIndicator';
 import ErrorMessage from '../components/ErrorMessage';
 import EmptyState from '../components/EmptyState';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-// --- Download Button Component (improved) ---
-const SemesterDownloadButton = ({ branchId, semId, COLORS, branchData, onOpen }) => {
-    const key = `${branchId}_${semId}`;
-    const [status, setStatus] = React.useState('idle');
-    const [downloaded, setDownloaded] = React.useState(false);
-    React.useEffect(() => {
-        isSemesterPYQDownloaded(branchId, semId).then(setDownloaded);
-    }, [branchId, semId, status]);
-    const handleDownload = async () => {
-        setStatus('downloading');
-        try {
-            await new Promise((resolve) => setTimeout(resolve, 1500));
-            const branch = branchData;
-            const semester = branch?.semesters?.find(s => s.id === semId);
-            if (!semester) throw new Error('Semester not found');
-            await saveSemesterPYQsToSecureStore(branchId, semId, semester);
-            setStatus('done');
-            setTimeout(() => setDownloaded(true), 1500);
-        } catch (e) {
-            setStatus('error');
-        }
-    };
-    let icon = null;
-    let iconColor = COLORS.primaryLight;
-    let onPressHandler = null;
-    let disabled = false;
-    if (status === 'downloading') {
-        icon = <ActivityIndicator size={18} color={COLORS.primaryLight} />;
-        disabled = true;
-    } else if (downloaded) {
-        icon = (
-            <Ionicons
-                name={'chevron-forward'}
-                size={22}
-                color={COLORS.primaryLight}
-            />
-        );
-        onPressHandler = onOpen;
-    } else {
-        icon = (
-            <Ionicons
-                name={'download-outline'}
-                size={18}
-                color={COLORS.primaryLight}
-            />
-        );
-        onPressHandler = handleDownload;
-    }
-    return (
-        <TouchableOpacity
-            style={{
-                backgroundColor: 'transparent',
-                borderColor: 'transparent',
-                borderWidth: 0,
-                borderRadius: 20,
-                width: 38,
-                height: 38,
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginLeft: 10,
-                opacity: status === 'downloading' ? 0.5 : 1,
-            }}
-            disabled={disabled}
-            onPress={onPressHandler}
-            activeOpacity={0.7}
-        >
-            {icon}
-        </TouchableOpacity>
-    );
-};
+
 
 const SemesterListScreen = ({ route, navigation }) => {
     const { branchId } = route.params;
-    // --- State Variables ---
+    // State Variables
     const [branchData, setBranchData] = useState(null);
     const [completionStatus, setCompletionStatus] = useState({});
     const [isLoadingStatuses, setIsLoadingStatuses] = useState(true);
     const [error, setError] = useState(null);
 
-    // --- Effect for fetching initial branch data ---
+    // Effect for fetching initial branch data
     useEffect(() => {
         let isMounted = true;
         setIsLoadingStatuses(true); // Reset status loading on param change
@@ -123,7 +54,7 @@ const SemesterListScreen = ({ route, navigation }) => {
         return () => { isMounted = false; };
     }, [branchId, navigation]);
 
-    // --- Effect for loading completion statuses for all semesters in the branch ---
+    // Effect for loading completion statuses for all semesters in the branch
     useEffect(() => {
         let isMounted = true;
         if (branchData?.semesters && branchData.semesters.length > 0) {
@@ -169,28 +100,15 @@ const SemesterListScreen = ({ route, navigation }) => {
         return () => { isMounted = false; };
     }, [branchData]); // Depend on branchData
 
-    // --- Navigation Handler ---
+    // Navigation Handler
     const handlePressSemester = useCallback(
         (semId) => {
-            // Only allow navigation if the semester is downloaded
-            isSemesterPYQDownloaded(branchId, semId).then((downloaded) => {
-                if (downloaded) {
-                    navigation.navigate('Subjects', { branchId, semId });
-                } else {
-                    // Optionally show a message to the user
-                    if (Platform.OS === 'web') {
-                        alert('Please download this semester first.');
-                    } else {
-                        // Use native alert
-                        Alert.alert('Download Required', 'Please download this semester before proceeding.');
-                    }
-                }
-            });
+            navigation.navigate('Subjects', { branchId, semId });
         },
         [navigation, branchId]
     );
 
-    // --- Render Item Function with Progress Calculation ---
+    // Render Item Function with Progress Calculation
     const renderSemesterItem = useCallback(
         ({ item: semester }) => {
             let totalCount = 0;
@@ -227,22 +145,14 @@ const SemesterListScreen = ({ route, navigation }) => {
                     iconSet="Ionicons"
                     iconColor={COLORS.semesterIconColor}
                     progress={hasData ? (isLoadingStatuses ? -1 : progress) : null}
-                    rightElement={
-                        <SemesterDownloadButton
-                            branchId={branchId}
-                            semId={semester.id}
-                            COLORS={COLORS}
-                            branchData={branchData}
-                            onOpen={() => handlePressSemester(semester.id)}
-                        />
-                    }
+                    rightElement={null}
                 />
             );
         },
         [handlePressSemester, completionStatus, isLoadingStatuses, branchData]
     );
 
-    // --- Render Logic ---
+    // Render Logic
     if (error) return <ErrorMessage message={error} />;
     // Show loading indicator if initial branch data OR statuses are loading
     if ((!branchData && !error) || isLoadingStatuses) return <LoadingIndicator />;
