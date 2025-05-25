@@ -29,6 +29,8 @@ export const COLORS = {
   semesterIconColor: '#3b82f6',
   subjectIconColor: '#8b5cf6', // Used for subject list icon
   progressBarBackground: '#e5e7eb',
+  surfaceOverlay: 'rgba(255, 255, 255, 0.75)', // For main loader
+  surfaceOverlayWebView: 'rgba(255, 255, 255, 0.6)',
   yearIconColor: '#f59e0b', // Used for year selection icon
 };
 

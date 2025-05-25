@@ -179,15 +179,7 @@ const AIChatModal = React.memo(({
                         showsVerticalScrollIndicator={true} 
                         keyboardShouldPersistTaps="handled" 
                     >
-                        {/* {questionItem && (
-                            <View style={styles.questionContextContainer}>
-                                <Text style={styles.questionContextTitle}>Your Question:</Text>
-                                <Text style={styles.questionContextText} numberOfLines={5} ellipsizeMode="tail">
-                                    {questionPlainText}
-                                </Text>
-                            </View>
-                        )} */}
-
+                       
                         {isLoading && (
                             <View style={styles.stateInfoContainer}>
                                 <ActivityIndicator size={Platform.OS === 'ios' ? "large" : 60} color={COLORS.primary || '#007AFF'} />
