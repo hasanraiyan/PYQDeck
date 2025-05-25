@@ -2,11 +2,11 @@ import { COLORS } from "../constants";
 import { Platform } from "react-native";
 
 const generateHTML = (markdownContent) => {
-    const escapedData = JSON.stringify(markdownContent)
-        .replace(/</g, '\\u003c')
-        .replace(/\//g, '\\/');
+  const escapedData = JSON.stringify(markdownContent)
+    .replace(/</g, '\\u003c')
+    .replace(/\//g, '\\/');
 
-    return `
+  return `
   <!DOCTYPE html>
   <html>
   <head>
@@ -82,7 +82,8 @@ const generateHTML = (markdownContent) => {
           const md = window.markdownit({
             html: true,
             linkify: true,
-            typographer: true
+            typographer: true,
+            breaks: true 
           });
   
           const tm = window.texmath.use(window.katex, {

@@ -281,13 +281,13 @@ const QuestionItem = ({ item, isCompleted, onToggleComplete, onCopy, onSearch, o
             </TouchableOpacity>
           </View>
           <TouchableOpacity style={styles.askAiButton} onPress={handleAskAIInternal} activeOpacity={0.8}>
-            <Icon 
+            {/*<Icon 
                 iconSet="MaterialCommunityIcons" 
                 name="robot-happy-outline" 
                 size={18} 
                 color={COLORS.white || '#FFFFFF'}
                 style={styles.askAiButtonIcon} 
-            />
+            />*/}
             <Text style={styles.askAiButtonText}>Ask AI</Text>
           </TouchableOpacity>
         </View>
@@ -302,7 +302,16 @@ const QuestionItem = ({ item, isCompleted, onToggleComplete, onCopy, onSearch, o
           <SafeAreaView style={styles.modalOverlay}>
             <View style={styles.modalView}>
                 <View style={styles.modalHeader}>
-                    <Text style={styles.modalTitle}>Question Content</Text>
+                    <View style={styles.modalTitleContainer}>
+                        <Icon 
+                            iconSet="Ionicons" 
+                            name="document-text-outline" 
+                            size={20} 
+                            color={COLORS.text || '#000000'} 
+                            style={styles.modalTitleIcon}
+                        />
+                        <Text style={styles.modalTitle}>Question Content</Text>
+                    </View>
                     <TouchableOpacity onPress={closeWebViewModal} style={styles.modalCloseButton}>
                         <Icon iconSet="Ionicons" name="close" size={28} color={COLORS.textSecondary || '#8E8E93'} />
                     </TouchableOpacity>
@@ -341,7 +350,16 @@ const QuestionItem = ({ item, isCompleted, onToggleComplete, onCopy, onSearch, o
           <SafeAreaView style={styles.modalOverlay}>
             <View style={styles.modalView}>
                 <View style={styles.modalHeader}>
-                    <Text style={styles.modalTitle}>Google Search</Text>
+                    <View style={styles.modalTitleContainer}>
+                        <Icon 
+                            iconSet="FontAwesome" 
+                            name="google" 
+                            size={18} 
+                            color={COLORS.text || '#000000'} 
+                            style={styles.modalTitleIcon}
+                        />
+                        <Text style={styles.modalTitle}>Google Search</Text>
+                    </View>
                     <TouchableOpacity onPress={closeSearchModal} style={styles.modalCloseButton}>
                         <Icon iconSet="Ionicons" name="close" size={28} color={COLORS.textSecondary || '#8E8E93'} />
                     </TouchableOpacity>
@@ -476,11 +494,12 @@ const styles = StyleSheet.create({
     color: COLORS.textTertiary || '#C7C7CC',
   },
   markdownTouchable: {
-    
+    // No specific styles needed here, TouchableOpacity handles touch
   },
   markdownContainer: { 
     paddingHorizontal: 16,
     paddingBottom: 8, 
+    // paddingTop: 8, // Added padding top for webview container
   },
   webViewContentContainer: {
     backgroundColor: COLORS.surface || '#FFFFFF', 
@@ -562,12 +581,12 @@ const styles = StyleSheet.create({
     shadowColor: COLORS.primary || '#007AFF',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
-    gap: 4,
+    gap: 4, // Use gap if supported, otherwise use margin on icon
     shadowRadius: 4,
     elevation: 4,
   },
   askAiButtonIcon: {
-    marginRight: 6, // For gap
+    // marginRight: 6, // Using gap in askAiButton instead
   },
   askAiButtonText: {
     color: COLORS.white || '#FFFFFF', 
@@ -602,6 +621,15 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: COLORS.borderLight || '#E0E0E0',
   },
+  modalTitleContainer: { // New style for icon and title
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8, // Space between icon and title
+    flex: 1, // Allow it to take available space
+  },
+  modalTitleIcon: { // New style for modal title icon
+    marginRight: 10,
+  },
   modalTitle: {
     fontSize: 16,
     fontWeight: '600',
@@ -609,6 +637,7 @@ const styles = StyleSheet.create({
   },
   modalCloseButton: {
     padding: 8, 
+    marginLeft: 10, // Add some margin if title is long
   },
   modalWebView: {
     flex: 1,
