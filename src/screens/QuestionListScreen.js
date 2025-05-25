@@ -17,38 +17,51 @@ import {
     StatusBar,
     ScrollView,
     TextInput,
+    Alert, // Added for potential alerts
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons'; // Assuming Ionicons are used
 import {
     COLORS,
     UNCAT_CHAPTER_NAME,
     SEARCH_DEBOUNCE_DELAY,
 } from '../constants';
 import {
-    findData,
+    findData, // Fallback for local data
     loadCompletionStatuses,
     setQuestionCompleted,
     copyToClipboard,
-    searchGoogle,
-    askAI as askAIHelper, // Renamed import
+    // searchGoogle, // This is now handled within QuestionItem via SearchWebViewModal
     debounce,
     getQuestionPlainText,
     getSemesterPYQsFromSecureStore,
-    updateDailyStreak, // New import
+    updateDailyStreak,
 } from '../helpers/helpers';
+import { askAIWithContext } from '../helpers/openaiHelper'; // New AI helper
+
 import LoadingIndicator from '../components/LoadingIndicator';
 import ErrorMessage from '../components/ErrorMessage';
 import EmptyState from '../components/EmptyState';
 import QuestionItem from '../components/QuestionItem';
+import AIChatModal from '../components/AIChatModal'; // New AI Chat Modal
+
+// Attempt to load beuData for context like branch/semester names for AI
+// This is a simplification. In a larger app, this data might come from a context/service.
+let beuDataStructure = null;
+try {
+    beuDataStructure = require('../data/beuData').default; // Adjust path if necessary
+} catch (e) {
+    console.warn("beuData.js not found or failed to load. AI context might be limited.", e);
+}
+
 
 const QuestionListScreen = ({ route, navigation }) => {
     const {
         branchId,
         semId,
         subjectId,
-        organizationMode = 'all',
-        selectedYear,
-        selectedChapter,
+        organizationMode = 'all', // 'all', 'year', 'chapter'
+        selectedYear, // for organizationMode 'year'
+        selectedChapter, // for organizationMode 'chapter'
     } = route.params;
 
     const [subjectData, setSubjectData] = useState(null);
@@ -56,14 +69,22 @@ const QuestionListScreen = ({ route, navigation }) => {
     const [completionStatus, setCompletionStatus] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
     const [showFeedback, setShowFeedback] = useState(false);
     const [feedbackMessage, setFeedbackMessage] = useState('');
-    const [sortBy, setSortBy] = useState('default');
-    const [filterCompleted, setFilterCompleted] = useState('all');
+    const feedbackTimerRef = useRef(null);
+
+    const [sortBy, setSortBy] = useState('default'); // 'default', 'year_asc', 'year_desc'
+    const [filterCompleted, setFilterCompleted] = useState('all'); // 'all', 'completed', 'incomplete'
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
 
-    const feedbackTimerRef = useRef(null);
+    // AI Chat Modal State
+    const [isAIChatModalVisible, setIsAIChatModalVisible] = useState(false);
+    const [currentAIQuestion, setCurrentAIQuestion] = useState(null);
+    const [aiResponseText, setAiResponseText] = useState('');
+    const [isAILoading, setIsAILoading] = useState(false);
+    const [aiError, setAiError] = useState(null);
 
     const debouncedSearchHandler = useCallback(
         debounce((query) => {
@@ -84,39 +105,50 @@ const QuestionListScreen = ({ route, navigation }) => {
         setQuestions([]);
         if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
 
-        // --- NEW: Try Secure Store first for semester data ---
-        const tryLoadPYQs = async () => {
+        const loadData = async () => {
             let semesterData = null;
             try {
                 semesterData = await getSemesterPYQsFromSecureStore(branchId, semId);
-            } catch {}
+            } catch (secureStoreError) {
+                console.warn("Failed to load PYQs from secure store:", secureStoreError);
+            }
+
             let subject = null;
             let fetchedQuestions = [];
             let dataError = null;
+
             if (semesterData && semesterData.subjects) {
                 subject = semesterData.subjects.find(sub => sub.id === subjectId);
                 if (!subject) {
-                    dataError = 'Subject not found in downloaded data.';
+                    dataError = 'Subject not found in downloaded data. Trying local fallback.';
                 } else {
                     fetchedQuestions = Array.isArray(subject.questions) ? subject.questions : [];
                 }
-            } else {
-                // Fallback to beuData.js
+            }
+
+            if (!subject || dataError) { // Fallback to local beuData.js
+                console.log(dataError || "No data in SecureStore or subject not found, falling back to local data.");
                 const fallback = findData({ branchId, semId, subjectId });
                 subject = fallback.subject;
                 fetchedQuestions = fallback.questions;
-                dataError = fallback.error;
+                dataError = fallback.error; // Overwrite error if fallback also fails
             }
+
+
             if (dataError) {
                 if (isMounted) {
                     setError(dataError);
                     setSubjectData(null);
                     setLoading(false);
                 }
-            } else if (subject) {
+                return;
+            }
+
+            if (subject) {
                 if (isMounted) {
                     setSubjectData(subject);
                     setQuestions(fetchedQuestions);
+
                     let screenTitle = subject.name || 'Questions';
                     if (organizationMode === 'year' && selectedYear != null) {
                         screenTitle = `${subject.name} (${selectedYear})`;
@@ -125,29 +157,36 @@ const QuestionListScreen = ({ route, navigation }) => {
                             selectedChapter === UNCAT_CHAPTER_NAME
                                 ? 'Uncategorized'
                                 : selectedChapter;
-                        screenTitle = `${subject.code || subject.name} (${chapterDisplay})`;
+                        screenTitle = `${subject.code || subject.name} (${chapterDisplay.substring(0,15)}${chapterDisplay.length > 15 ? '...' : ''})`;
                     }
                     navigation.setOptions({ title: screenTitle });
+
                     if (fetchedQuestions.length > 0) {
                         const questionIds = fetchedQuestions.map((q) => q.questionId);
                         loadCompletionStatuses(questionIds)
                             .then((statuses) => {
-                                if (isMounted) {
-                                    setCompletionStatus(statuses);
-                                }
+                                if (isMounted) setCompletionStatus(statuses);
                             })
                             .finally(() => {
                                 if (isMounted) setLoading(false);
                             });
                     } else {
-                        setLoading(false);
+                        if (isMounted) setLoading(false);
                     }
                 }
+            } else {
+                 if (isMounted) {
+                    setError("Subject data could not be loaded.");
+                    setLoading(false);
+                 }
             }
         };
-        tryLoadPYQs();
+
+        loadData();
+
         return () => {
             isMounted = false;
+            if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
         };
     }, [branchId, semId, subjectId, organizationMode, selectedYear, selectedChapter, navigation]);
 
@@ -159,71 +198,105 @@ const QuestionListScreen = ({ route, navigation }) => {
             setShowFeedback(false);
             setFeedbackMessage('');
             feedbackTimerRef.current = null;
-        }, 1500);
+        }, 2000); // Increased duration slightly
     }, []);
 
     const handleToggleComplete = useCallback(async (questionId, newStatus) => {
         setCompletionStatus((prev) => ({ ...prev, [questionId]: newStatus }));
-        setQuestionCompleted(questionId, newStatus);
+        await setQuestionCompleted(questionId, newStatus); // Ensure await
         if (newStatus) {
-            await updateDailyStreak();
+            await updateDailyStreak(); // Ensure await
+            displayFeedback("Marked as Done!");
+        } else {
+            displayFeedback("Marked as Not Done.");
         }
-    }, []);
+    }, [displayFeedback]);
 
     const handleCopy = useCallback(
         (text) => copyToClipboard(text, displayFeedback),
         [displayFeedback]
     );
 
-    // handleSearch still uses plain text for better search results
-    const handleSearch = useCallback(
-        (plainText) => searchGoogle(plainText, displayFeedback),
-        [displayFeedback]
-    );
+    // AI Related Functions
+    const callAIAndSetState = useCallback(async (itemToAsk) => {
+        if (!subjectData || !itemToAsk) {
+            displayFeedback('Cannot ask AI: Missing question or subject data.');
+            setAiError('Missing context to ask AI.');
+            setIsAILoading(false);
+            return;
+        }
 
-    // This function now creates the detailed prompt and calls the helper
-    const handleAskAI = useCallback(
-        (item) => { // Takes the full item object
-            if (!subjectData || !item) {
-                displayFeedback('Could not prepare AI prompt.');
-                return;
-            }
+        setIsAILoading(true);
+        setAiResponseText('');
+        setAiError(null);
 
-            // Find branch and semester names for context
-            let branchName = '';
-            let semesterNumber = '';
-            try {
-                const branch = require('../data/beuData').default.branches.find(b => b.id === branchId);
-                branchName = branch ? branch.name : '';
-                if (branch && semId) {
-                    const semester = branch.semesters.find(s => s.id === semId);
-                    semesterNumber = semester ? semester.number : '';
+        let branchName = 'N/A';
+        let semesterNumber = 'N/A';
+
+        if (beuDataStructure?.branches) {
+            const currentBranch = beuDataStructure.branches.find(b => b.id === branchId);
+            if (currentBranch) {
+                branchName = currentBranch.name;
+                if (currentBranch.semesters) {
+                    const currentSemester = currentBranch.semesters.find(s => s.id === semId);
+                    if (currentSemester) {
+                        semesterNumber = currentSemester.number.toString(); // Ensure it's a string
+                    }
                 }
-            } catch (e) {}
+            }
+        } else {
+            // If beuDataStructure is not available, these will remain 'N/A'
+            // You might pass branchName and semesterNumber via route.params if available
+            if (route.params.branchName) branchName = route.params.branchName;
+            if (route.params.semesterNumber) semesterNumber = route.params.semesterNumber.toString();
+        }
 
-            // Improved AI prompt
-            let prompt = `Help me with this previous year question.\n\n`;
-            if (branchName) prompt += `Branch: ${branchName}\n`;
-            if (semesterNumber) prompt += `Semester: ${semesterNumber}\n`;
-            prompt += `Subject: ${subjectData.code || subjectData.name}  \n`;
-            if (item.chapter && item.chapter !== UNCAT_CHAPTER_NAME) prompt += `Chapter: ${item.chapter}  \n`;
-            if (item.year) prompt += `Year: ${item.year}  \n`;
-            if (item.qNumber) prompt += `Question Number: ${item.qNumber}  \n`;
-            if (item.marks != null) prompt += `Marks: ${item.marks}  \n`;
-            prompt += `\n---\nQuestion Text:  \n${item.text}  \n---\n`;
-            prompt += `\nAt the end of your answer, always include this line exactly as written:\n\n"Generated by PYQ Deck – Your personal exam prep assistant."`;
 
-            askAIHelper(prompt, displayFeedback); // Call the helper with the full prompt
-        },
-        [subjectData, displayFeedback, branchId, semId]
-    );
+        const subjectContext = {
+            branchName,
+            semesterNumber,
+            subjectName: subjectData.name,
+            subjectCode: subjectData.code,
+        };
+
+        try {
+            const response = await askAIWithContext(itemToAsk, subjectContext, displayFeedback);
+            setAiResponseText(response);
+        } catch (error) {
+            console.error("AI Call Error in Screen:", error);
+            setAiError(error.message || "An unexpected error occurred with the AI service.");
+            // Optionally display an alert too
+            // Alert.alert("AI Error", error.message || "Could not get response from AI.");
+        } finally {
+            setIsAILoading(false);
+        }
+    }, [subjectData, displayFeedback, branchId, semId, route.params.branchName, route.params.semesterNumber]); // Added dependencies
+
+    const handleAskAI = useCallback((item) => {
+        setCurrentAIQuestion(item);
+        setIsAIChatModalVisible(true);
+        callAIAndSetState(item); // Initial call when modal opens
+    }, [callAIAndSetState]);
+
+    const handleRegenerateAIResponse = useCallback(() => {
+        if (currentAIQuestion) {
+            callAIAndSetState(currentAIQuestion);
+        }
+    }, [currentAIQuestion, callAIAndSetState]);
+
+    const closeAIChatModal = useCallback(() => {
+        setIsAIChatModalVisible(false);
+        // Optional: Reset AI state when closing
+        // setCurrentAIQuestion(null);
+        // setAiResponseText('');
+        // setAiError(null);
+        // setIsAILoading(false); // Ensure loading is false if modal is closed while loading
+    }, []);
 
     const processedQuestions = useMemo(() => {
         if (!Array.isArray(questions)) return [];
-
         let filtered = [...questions];
 
-        // Filtering based on organization mode
         if (organizationMode === 'year' && selectedYear != null) {
             filtered = filtered.filter((q) => q.year === selectedYear);
         } else if (organizationMode === 'chapter' && selectedChapter) {
@@ -236,13 +309,12 @@ const QuestionListScreen = ({ route, navigation }) => {
             }
         }
 
-        // Filtering based on search query
         const query = debouncedSearchQuery.trim().toLowerCase();
         if (query) {
             filtered = filtered.filter((q) => {
                 const plainText = getQuestionPlainText(q.text).toLowerCase();
                 const chapterText = (q.chapter || '').toLowerCase();
-                const yearText = (q.year || '').toString();
+                const yearText = (q.year || '').toString(); // Ensure year is string for includes
                 const qNumText = (q.qNumber || '').toLowerCase();
                 return (
                     plainText.includes(query) ||
@@ -253,7 +325,6 @@ const QuestionListScreen = ({ route, navigation }) => {
             });
         }
 
-        // Filtering based on completion status
         if (filterCompleted !== 'all') {
             const requiredStatus = filterCompleted === 'completed';
             filtered = filtered.filter(
@@ -261,7 +332,6 @@ const QuestionListScreen = ({ route, navigation }) => {
             );
         }
 
-        // Sorting logic
         if (organizationMode === 'all') {
             switch (sortBy) {
                 case 'year_asc':
@@ -272,11 +342,9 @@ const QuestionListScreen = ({ route, navigation }) => {
                     break;
                 case 'default':
                 default:
-                    // Default sort: newest year first, then by question number
                     filtered.sort((a, b) => {
                         const yearDiff = (b.year || 0) - (a.year || 0);
                         if (yearDiff !== 0) return yearDiff;
-                        // Natural sort for question numbers (e.g., Q1a, Q2, Q10)
                         return (a.qNumber || '').localeCompare(b.qNumber || '', undefined, {
                             numeric: true,
                             sensitivity: 'base',
@@ -285,7 +353,6 @@ const QuestionListScreen = ({ route, navigation }) => {
                     break;
             }
         } else {
-            // If filtered by year or chapter, sort only by question number
             filtered.sort((a, b) =>
                 (a.qNumber || '').localeCompare(b.qNumber || '', undefined, {
                     numeric: true,
@@ -293,7 +360,6 @@ const QuestionListScreen = ({ route, navigation }) => {
                 })
             );
         }
-
         return filtered;
     }, [
         questions,
@@ -306,7 +372,6 @@ const QuestionListScreen = ({ route, navigation }) => {
         selectedChapter,
     ]);
 
-    // Pass a function to onAskAI that calls handleAskAI with the specific item
     const renderQuestionItem = useCallback(
         ({ item }) => (
             <QuestionItem
@@ -314,49 +379,49 @@ const QuestionListScreen = ({ route, navigation }) => {
                 isCompleted={!!completionStatus[item.questionId]}
                 onToggleComplete={handleToggleComplete}
                 onCopy={handleCopy}
-                onSearch={handleSearch}
-                onAskAI={() => handleAskAI(item)} // Pass the specific item to the handler
+                // onSearch prop is removed as QuestionItem now handles search via SearchWebViewModal internally
+                onAskAI={() => handleAskAI(item)}
             />
         ),
-        [ // Dependencies for renderQuestionItem callback
-            completionStatus,
-            handleToggleComplete, // Needed for isCompleted updates
-            handleCopy,           // Needed for copy button
-            handleSearch,         // Needed for search button
-            handleAskAI           // Needed for ask AI button
-        ]
+        [completionStatus, handleToggleComplete, handleCopy, handleAskAI]
     );
 
-    if (error) return <ErrorMessage message={error} />;
-    if (loading || !subjectData) return <LoadingIndicator />;
+    if (loading && !subjectData && !error) return <LoadingIndicator />; // Show full screen loader only if no data and no error yet
+    if (error) return <ErrorMessage message={error} onRetry={loadData} />; // Pass loadData to onRetry if ErrorMessage supports it
+
 
     const noQuestionsInitiallyForSubject = questions.length === 0;
     const noResultsAfterFilter = !noQuestionsInitiallyForSubject && processedQuestions.length === 0;
 
-    // Determine the appropriate empty state message
     let listEmptyMessage = 'No questions available for this subject.';
     if (noResultsAfterFilter) {
-        if (organizationMode === 'year') {
+        if (debouncedSearchQuery) {
+            listEmptyMessage = `No questions match your search for "${debouncedSearchQuery}".`;
+        } else if (filterCompleted !== 'all') {
+            listEmptyMessage = `No ${filterCompleted} questions found.`;
+        } else if (organizationMode === 'year') {
             listEmptyMessage = `No questions match your filters for ${selectedYear}.`;
         } else if (organizationMode === 'chapter') {
             const chapterDisplay = selectedChapter === UNCAT_CHAPTER_NAME ? 'Uncategorized' : `"${selectedChapter}"`;
             listEmptyMessage = `No questions match your filters for the ${chapterDisplay} chapter.`;
         } else {
-            listEmptyMessage = 'No questions match search/filter criteria.';
+            listEmptyMessage = 'No questions match the current filter criteria.';
         }
-    } else if (organizationMode === 'year' && noQuestionsInitiallyForSubject && processedQuestions.length === 0) {
-        listEmptyMessage = `No questions found for year ${selectedYear}.`;
-    } else if (organizationMode === 'chapter' && noQuestionsInitiallyForSubject && processedQuestions.length === 0) {
-        const chapterDisplay = selectedChapter === UNCAT_CHAPTER_NAME ? 'Uncategorized' : `"${selectedChapter}"`;
-        listEmptyMessage = `No questions found for the ${chapterDisplay} chapter.`;
+    } else if (noQuestionsInitiallyForSubject && processedQuestions.length === 0) {
+         if (organizationMode === 'year' && selectedYear) {
+            listEmptyMessage = `No questions found for year ${selectedYear}.`;
+        } else if (organizationMode === 'chapter' && selectedChapter) {
+            const chapterDisplay = selectedChapter === UNCAT_CHAPTER_NAME ? 'Uncategorized' : `"${selectedChapter}"`;
+            listEmptyMessage = `No questions found for the ${chapterDisplay} chapter.`;
+        }
     }
 
 
     return (
         <SafeAreaView style={styles.screen}>
             <StatusBar
-                barStyle="dark-content"
-                backgroundColor={COLORS.surface}
+                barStyle={Platform.OS === "ios" ? "dark-content" : "dark-content"}
+                backgroundColor={COLORS.surface} // For Android status bar background
             />
             {showFeedback && (
                 <View style={styles.feedbackToast} pointerEvents="none">
@@ -378,7 +443,7 @@ const QuestionListScreen = ({ route, navigation }) => {
                         placeholder={`Search in ${organizationMode === 'year'
                                 ? selectedYear
                                 : organizationMode === 'chapter'
-                                    ? (selectedChapter === UNCAT_CHAPTER_NAME ? 'Uncategorized' : `Chapter: ${selectedChapter.substring(0, 15)}${selectedChapter.length > 15 ? '...' : ''}`) // Shorten long chapter names
+                                    ? (selectedChapter === UNCAT_CHAPTER_NAME ? 'Uncategorized' : `Ch: ${selectedChapter.substring(0, 10)}${selectedChapter.length > 10 ? '...' : ''}`)
                                     : subjectData?.code || 'questions'
                             }...`}
                         placeholderTextColor={COLORS.textSecondary}
@@ -389,188 +454,140 @@ const QuestionListScreen = ({ route, navigation }) => {
                     />
                 </View>
 
-                {!noQuestionsInitiallyForSubject && (
+                {(!noQuestionsInitiallyForSubject || loading) && ( // Show controls if questions exist or still loading them
                     <ScrollView
                         horizontal
                         showsHorizontalScrollIndicator={false}
                         contentContainerStyle={styles.controlsScroll}>
-                        {/* Sort Controls (only show if viewing 'all') */}
                         {organizationMode === 'all' && (
                             <>
                                 <Text style={styles.controlLabel}>Sort:</Text>
                                 <TouchableOpacity
                                     onPress={() => setSortBy('default')}
-                                    style={[
-                                        styles.controlButton,
-                                        sortBy === 'default' && styles.controlButtonActive,
-                                    ]}>
-                                    <Text
-                                        style={[
-                                            styles.controlButtonText,
-                                            sortBy === 'default' && styles.controlButtonTextActive,
-                                        ]}>
-                                        Default
-                                    </Text>
+                                    style={[styles.controlButton, sortBy === 'default' && styles.controlButtonActive]}>
+                                    <Text style={[styles.controlButtonText, sortBy === 'default' && styles.controlButtonTextActive]}>Default</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     onPress={() => setSortBy('year_desc')}
-                                    style={[
-                                        styles.controlButton,
-                                        sortBy === 'year_desc' && styles.controlButtonActive,
-                                    ]}>
-                                    <Text
-                                        style={[
-                                            styles.controlButtonText,
-                                            sortBy === 'year_desc' && styles.controlButtonTextActive,
-                                        ]}>
-                                        Newest
-                                    </Text>
+                                    style={[styles.controlButton, sortBy === 'year_desc' && styles.controlButtonActive]}>
+                                    <Text style={[styles.controlButtonText, sortBy === 'year_desc' && styles.controlButtonTextActive]}>Newest</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     onPress={() => setSortBy('year_asc')}
-                                    style={[
-                                        styles.controlButton,
-                                        sortBy === 'year_asc' && styles.controlButtonActive,
-                                    ]}>
-                                    <Text
-                                        style={[
-                                            styles.controlButtonText,
-                                            sortBy === 'year_asc' && styles.controlButtonTextActive,
-                                        ]}>
-                                        Oldest
-                                    </Text>
+                                    style={[styles.controlButton, sortBy === 'year_asc' && styles.controlButtonActive]}>
+                                    <Text style={[styles.controlButtonText, sortBy === 'year_asc' && styles.controlButtonTextActive]}>Oldest</Text>
                                 </TouchableOpacity>
                                 <View style={styles.controlSeparator} />
                             </>
                         )}
 
-                        {/* Filter Controls */}
                         <Text style={styles.controlLabel}>Filter:</Text>
                         <TouchableOpacity
                             onPress={() => setFilterCompleted('all')}
-                            style={[
-                                styles.controlButton,
-                                filterCompleted === 'all' && styles.controlButtonActive,
-                            ]}>
-                            <Text
-                                style={[
-                                    styles.controlButtonText,
-                                    filterCompleted === 'all' && styles.controlButtonTextActive,
-                                ]}>
-                                All
-                            </Text>
+                            style={[styles.controlButton, filterCompleted === 'all' && styles.controlButtonActive]}>
+                            <Text style={[styles.controlButtonText, filterCompleted === 'all' && styles.controlButtonTextActive]}>All</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => setFilterCompleted('completed')}
-                            style={[
-                                styles.controlButton,
-                                filterCompleted === 'completed' && styles.controlButtonActive,
-                            ]}>
-                            <Text
-                                style={[
-                                    styles.controlButtonText,
-                                    filterCompleted === 'completed' &&
-                                    styles.controlButtonTextActive,
-                                ]}>
-                                Done
-                            </Text>
+                            style={[styles.controlButton, filterCompleted === 'completed' && styles.controlButtonActive]}>
+                            <Text style={[styles.controlButtonText, filterCompleted === 'completed' && styles.controlButtonTextActive]}>Done</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => setFilterCompleted('incomplete')}
-                            style={[
-                                styles.controlButton,
-                                filterCompleted === 'incomplete' && styles.controlButtonActive,
-                            ]}>
-                            <Text
-                                style={[
-                                    styles.controlButtonText,
-                                    filterCompleted === 'incomplete' &&
-                                    styles.controlButtonTextActive,
-                                ]}>
-                                Not Done
-                            </Text>
+                            style={[styles.controlButton, filterCompleted === 'incomplete' && styles.controlButtonActive]}>
+                            <Text style={[styles.controlButtonText, filterCompleted === 'incomplete' && styles.controlButtonTextActive]}>Not Done</Text>
                         </TouchableOpacity>
                     </ScrollView>
                 )}
             </View>
 
-            {/* Question List */}
+            {loading && subjectData && <LoadingIndicator style={{marginTop: 20}} />}
+
             <FlatList
                 data={processedQuestions}
                 renderItem={renderQuestionItem}
-                keyExtractor={(item) => item.questionId}
+                keyExtractor={(item) => item.questionId.toString()} // Ensure key is string
                 contentContainerStyle={styles.listContentContainer}
-                ListEmptyComponent={<EmptyState message={listEmptyMessage} />}
+                ListEmptyComponent={!loading ? <EmptyState message={listEmptyMessage} iconName="documents-outline" /> : null}
                 initialNumToRender={7}
                 maxToRenderPerBatch={10}
                 windowSize={21}
-                removeClippedSubviews={Platform.OS === 'android'} // Optimization for Android
-                getItemLayout={null} // Consider using if item height is fixed/predictable
+                removeClippedSubviews={Platform.OS === 'android'}
+            />
+
+            <AIChatModal
+                visible={isAIChatModalVisible}
+                onClose={closeAIChatModal}
+                questionItem={currentAIQuestion}
+                aiResponse={aiResponseText}
+                isLoading={isAILoading}
+                error={aiError}
+                onRegenerate={handleRegenerateAIResponse}
             />
         </SafeAreaView>
     );
 };
 
-// Styles remain the same as provided previously
 const styles = StyleSheet.create({
     screen: {
         flex: 1,
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.background || '#F2F2F7', // Default background
     },
     listContentContainer: {
-        paddingTop: 10,
+        paddingTop: 0, // Adjusted as controls container provides spacing
         paddingBottom: Platform.OS === 'ios' ? 40 : 30,
         paddingHorizontal: 12,
     },
     feedbackToast: {
         position: 'absolute',
-        bottom: Platform.OS === 'ios' ? 40 : 20,
+        bottom: Platform.OS === 'ios' ? 60 : 30, // Adjusted position
         left: 20,
         right: 20,
-        backgroundColor: 'rgba(40, 40, 40, 0.9)',
+        backgroundColor: 'rgba(40, 40, 40, 0.95)', // Slightly more opaque
         paddingVertical: 12,
-        paddingHorizontal: 15,
-        borderRadius: 25,
+        paddingHorizontal: 18,
+        borderRadius: 25, // Fully rounded
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 1000,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: { width: 0, height: 3 },
         shadowOpacity: 0.3,
-        shadowRadius: 3,
+        shadowRadius: 4,
         elevation: 6,
     },
     feedbackText: {
-        color: COLORS.surface,
+        color: COLORS.white || '#FFFFFF',
         fontSize: 14,
         textAlign: 'center',
     },
     controlsContainer: {
         paddingBottom: 8,
-        backgroundColor: COLORS.surface,
+        backgroundColor: COLORS.surface || '#FFFFFF', // Surface color for controls background
         borderBottomWidth: 1,
-        borderBottomColor: COLORS.border,
+        borderBottomColor: COLORS.border || '#E0E0E0', // Border color
+        // Removed shadow to make it feel more integrated with the list
     },
     searchContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: COLORS.background,
-        borderRadius: 8,
-        paddingHorizontal: 10,
+        backgroundColor: COLORS.background || '#F2F2F7', // Background color for search input
+        borderRadius: 10, // Slightly more rounded
+        paddingHorizontal: 12, // Increased padding
         marginHorizontal: 12,
         marginTop: 10,
-        marginBottom: 5,
+        marginBottom: 8, // Adjusted margin
         borderWidth: 1,
-        borderColor: COLORS.border,
+        borderColor: COLORS.borderLight || '#DDD', // Lighter border for search
     },
     searchIcon: {
-        marginRight: 8,
+        marginRight: 10, // Increased spacing
     },
     searchInput: {
         flex: 1,
-        paddingVertical: Platform.OS === 'ios' ? 10 : 8,
+        paddingVertical: Platform.OS === 'ios' ? 12 : 10, // Adjusted padding
         fontSize: 15,
-        color: COLORS.text,
+        color: COLORS.text || '#000000',
     },
     controlsScroll: {
         paddingVertical: 8,
@@ -580,37 +597,37 @@ const styles = StyleSheet.create({
     controlLabel: {
         fontSize: 13,
         fontWeight: '600',
-        color: COLORS.textSecondary,
+        color: COLORS.textSecondary || '#8E8E93',
         marginRight: 8,
         marginLeft: 4,
     },
     controlButton: {
-        paddingVertical: 5,
-        paddingHorizontal: 12,
-        borderRadius: 15,
-        borderWidth: 1,
-        borderColor: COLORS.border,
+        paddingVertical: 6, // Adjusted padding
+        paddingHorizontal: 14, // Adjusted padding
+        borderRadius: 18, // More rounded
+        borderWidth: 1.5, // Slightly thicker border
+        borderColor: COLORS.border || '#D1D1D6',
         marginRight: 8,
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.surfaceAlt || COLORS.surface, // Alt surface or surface
     },
     controlButtonActive: {
-        backgroundColor: COLORS.primaryLight,
-        borderColor: COLORS.primaryLight,
+        backgroundColor: COLORS.primary || '#007AFF',
+        borderColor: COLORS.primary || '#007AFF',
     },
     controlButtonText: {
-        fontSize: 12,
-        color: COLORS.textSecondary,
+        fontSize: 13, // Slightly larger
+        color: COLORS.textSecondary || '#555',
         fontWeight: '500',
     },
     controlButtonTextActive: {
-        color: COLORS.surface,
+        color: COLORS.white || '#FFFFFF',
         fontWeight: '600',
     },
     controlSeparator: {
         width: 1,
-        height: 16,
-        backgroundColor: COLORS.border,
-        marginHorizontal: 6,
+        height: 20, // Increased height
+        backgroundColor: COLORS.borderLight || '#E0E0E0',
+        marginHorizontal: 8, // Increased margin
     },
 });
 
