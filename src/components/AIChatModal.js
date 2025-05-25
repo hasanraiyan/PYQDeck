@@ -1,5 +1,5 @@
 // src/components/AIChatModal.js
-import React, { useMemo, useCallback, useState, useEffect } from 'react'; // Added useEffect
+import React, { useMemo, useCallback, useState, useEffect } from 'react';
 import {
     Modal,
     View,
@@ -25,12 +25,16 @@ const AIChatModal = React.memo(({
     onClose,
     questionItem,
     aiResponse,
-    isLoading, // Overall loading state for AI response generation
+    isLoading,
     error,
     onRegenerate,
 }) => {
     const [isActionsMenuVisible, setIsActionsMenuVisible] = useState(false);
-    const [isWebViewLoading, setIsWebViewLoading] = useState(true); // For WebView's own loading state
+    const [isWebViewLoading, setIsWebViewLoading] = useState(true);
+
+    // Log props on re-render for context
+    // console.log('[AIChatModal] Props:', { visible, questionItemExists: !!questionItem, aiResponseExists: !!aiResponse, isLoading, errorExists: !!error, onRegenerateExists: typeof onRegenerate === 'function' });
+
 
     const questionPlainText = useMemo(() => {
         if (questionItem && questionItem.text) {
@@ -39,7 +43,6 @@ const AIChatModal = React.memo(({
         return "No question context available.";
     }, [questionItem]);
 
-    // Reset WebView loading state when AI response changes or modal becomes visible with a response
     useEffect(() => {
         if (visible && aiResponse && !isLoading && !error) {
             setIsWebViewLoading(true);
@@ -47,40 +50,50 @@ const AIChatModal = React.memo(({
     }, [visible, aiResponse, isLoading, error]);
 
     const handleCopyResponse = useCallback(async () => {
+        console.log('[AIChatModal] handleCopyResponse: CALLED'); // Log 1
+        setIsActionsMenuVisible(false);
         if (aiResponse) {
             try {
+                console.log('[AIChatModal] handleCopyResponse: Attempting to copy:', aiResponse.substring(0, 50) + "..."); // Log 2
                 await Clipboard.setStringAsync(aiResponse);
                 Alert.alert("Copied!", "AI response copied to clipboard.");
             } catch (e) {
-                console.error("Failed to copy to clipboard", e);
+                console.error("[AIChatModal] handleCopyResponse: Failed to copy to clipboard", e);
                 Alert.alert("Error", "Could not copy response to clipboard.");
             }
+        } else {
+            console.log('[AIChatModal] handleCopyResponse: No aiResponse to copy.'); // Log 3
+            Alert.alert("Nothing to Copy", "There is no AI response available to copy.");
         }
-        setIsActionsMenuVisible(false);
     }, [aiResponse]);
 
     const handleRegenerate = useCallback(() => {
-        if (onRegenerate) {
-            onRegenerate();
-        }
+        console.log('[AIChatModal] handleRegenerate: CALLED. isLoading:', isLoading); // Log 4
         setIsActionsMenuVisible(false);
-    }, [onRegenerate]);
+        if (typeof onRegenerate === 'function') {
+            console.log('[AIChatModal] handleRegenerate: Calling onRegenerate prop function.'); // Log 5
+            onRegenerate();
+        } else {
+            console.warn("[AIChatModal] handleRegenerate: onRegenerate is not a function or not provided.");
+        }
+    }, [onRegenerate, isLoading]); // isLoading added for the console.log, not strictly needed for func logic
 
     const markdownHTML = useMemo(() => {
         if (aiResponse) {
             return generateHTML(aiResponse);
         }
-        return generateHTML("<!-- No content -->"); // Empty valid HTML
+        return generateHTML("<!-- No content -->");
     }, [aiResponse]);
 
 
     const canCopy = !!aiResponse && !isLoading && !error;
-    const canRegenerate = !!onRegenerate && !isLoading; // Can regenerate even if there was an error or no response yet
 
     const handleCloseModal = () => {
         setIsActionsMenuVisible(false);
         onClose();
     };
+
+    // console.log('[AIChatModal] Render state:', { isActionsMenuVisible, canCopy, isLoading, onRegenerateExists: typeof onRegenerate === 'function' });
 
     return (
         <Modal
@@ -92,6 +105,7 @@ const AIChatModal = React.memo(({
             <SafeAreaView style={styles.modalOverlay}>
                 <View style={styles.modalView}>
                     <View style={styles.modalHeader}>
+                        {/* ... header title ... */}
                         <View style={styles.modalTitleContainer}>
                             <Icon
                                 iconSet="MaterialCommunityIcons"
@@ -103,32 +117,43 @@ const AIChatModal = React.memo(({
                             <Text style={styles.modalTitle} numberOfLines={1}>AI Assistant</Text>
                         </View>
                         <View style={styles.headerRightActions}>
-                            {(canCopy || (onRegenerate && !isLoading)) && ( // Show ellipsis if actions are possible
+                            {(canCopy || typeof onRegenerate === 'function') && (
                                 <View style={styles.moreOptionsContainer}>
                                     <TouchableOpacity
-                                        onPress={() => setIsActionsMenuVisible(v => !v)}
+                                        onPress={() => {
+                                            console.log('[AIChatModal] Ellipsis icon PRESSED. Current isActionsMenuVisible:', isActionsMenuVisible); // Log 6
+                                            setIsActionsMenuVisible(v => !v);
+                                        }}
                                         style={styles.headerIconButton}
-                                        disabled={isLoading && !onRegenerate} // Disable if loading and no regenerate possible
+                                        disabled={isLoading && typeof onRegenerate !== 'function'}
                                     >
-                                        <Icon
-                                            iconSet="Ionicons"
-                                            name="ellipsis-vertical"
-                                            size={24}
-                                            color={(isLoading && !onRegenerate) ? (COLORS.disabled || '#CCCCCC') : (COLORS.text || '#000000')}
-                                        />
+                                        <Icon /* ... */ />
                                     </TouchableOpacity>
                                     {isActionsMenuVisible && (
                                         <View style={styles.moreOptionsMenu}>
+                                            {/* Log when menu becomes visible */}
+                                            {/* {console.log('[AIChatModal] More options menu IS VISIBLE.')}  */}
                                             {canCopy && (
-                                                <TouchableOpacity style={styles.menuItem} onPress={handleCopyResponse}>
+                                                <TouchableOpacity
+                                                    style={styles.menuItem}
+                                                    onPress={() => {
+                                                        console.log('[AIChatModal] "Copy Response" TouchableOpacity: PRESSED'); // Log 7
+                                                        handleCopyResponse();
+                                                    }}
+                                                >
                                                     <Icon name="copy-outline" iconSet="Ionicons" size={20} color={COLORS.text || '#000'} style={styles.menuItemIcon} />
                                                     <Text style={styles.menuItemText}>Copy Response</Text>
                                                 </TouchableOpacity>
                                             )}
-                                            {onRegenerate && (
+                                            {typeof onRegenerate === 'function' && (
                                                 <TouchableOpacity
                                                     style={styles.menuItem}
-                                                    onPress={handleRegenerate}
+                                                    onPress={() => {
+                                                        console.log('[AIChatModal] "Regenerate" TouchableOpacity: PRESSED. isLoading:', isLoading); // Log 8
+                                                        // We don't need to check isLoading here again, as `disabled` prop handles it.
+                                                        // If `disabled` is true, this `onPress` shouldn't even fire.
+                                                        handleRegenerate();
+                                                    }}
                                                     disabled={isLoading}
                                                 >
                                                     <Icon name="reload-circle-outline" iconSet="Ionicons" size={20} color={isLoading ? (COLORS.disabled || '#CCCCCC') : (COLORS.text || '#000')} style={styles.menuItemIcon} />
@@ -147,20 +172,21 @@ const AIChatModal = React.memo(({
                         </View>
                     </View>
 
+                    {/* ... ScrollView and content ... */}
                     <ScrollView
                         style={styles.contentScrollView}
                         contentContainerStyle={styles.contentScrollContainer}
-                        showsVerticalScrollIndicator={true} // Show scrollbar if content overflows
-                        keyboardShouldPersistTaps="handled" // Good for webview interactions
+                        showsVerticalScrollIndicator={true} 
+                        keyboardShouldPersistTaps="handled" 
                     >
-                        {questionItem && (
+                        {/* {questionItem && (
                             <View style={styles.questionContextContainer}>
                                 <Text style={styles.questionContextTitle}>Your Question:</Text>
                                 <Text style={styles.questionContextText} numberOfLines={5} ellipsizeMode="tail">
                                     {questionPlainText}
                                 </Text>
                             </View>
-                        )}
+                        )} */}
 
                         {isLoading && (
                             <View style={styles.stateInfoContainer}>
@@ -174,8 +200,8 @@ const AIChatModal = React.memo(({
                                 <Icon name="alert-circle-outline" iconSet="Ionicons" size={50} color={COLORS.error || '#D32F2F'} />
                                 <Text style={[styles.stateInfoTitle, { color: COLORS.error || '#D32F2F' }]}>Oops! An Error Occurred</Text>
                                 <Text style={styles.errorDetailText}>{error}</Text>
-                                {onRegenerate && (
-                                    <TouchableOpacity style={styles.errorRetryButton} onPress={handleRegenerate}>
+                                {typeof onRegenerate === 'function' && (
+                                    <TouchableOpacity style={styles.errorRetryButton} onPress={handleRegenerate} disabled={isLoading}>
                                         <Icon name="refresh-outline" iconSet="Ionicons" size={20} color={COLORS.error || '#D32F2F'} style={styles.actionButtonIcon} />
                                         <Text style={styles.errorRetryButtonText}>Try Again</Text>
                                     </TouchableOpacity>
@@ -185,7 +211,7 @@ const AIChatModal = React.memo(({
 
                         {!isLoading && !error && aiResponse && (
                             <View style={styles.aiResponseContainer}>
-                                {isWebViewLoading && ( // Show activity indicator while WebView content itself is loading
+                                {isWebViewLoading && ( 
                                     <ActivityIndicator
                                         size="large"
                                         color={COLORS.primary || '#007AFF'}
@@ -195,21 +221,19 @@ const AIChatModal = React.memo(({
                                 <WebView
                                     originWhitelist={['*']}
                                     source={{ html: markdownHTML }}
-                                    style={[styles.webView, { opacity: isWebViewLoading ? 0 : 1 }]} // Hide WebView while its content loads
+                                    style={[styles.webView, { opacity: isWebViewLoading ? 0 : 1 }]} 
                                     javaScriptEnabled={true}
                                     domStorageEnabled={true}
                                     mixedContentMode="compatibility"
                                     setSupportMultipleWindows={false}
-                                    showsVerticalScrollIndicator={false} // HTML body will handle scroll
+                                    showsVerticalScrollIndicator={false} 
                                     showsHorizontalScrollIndicator={false}
-                                    onLoadEnd={() => setIsWebViewLoading(false)} // WebView content finished loading
+                                    onLoadEnd={() => setIsWebViewLoading(false)} 
                                     onError={({ nativeEvent }) => {
                                         console.error('Chat WebView error:', nativeEvent);
-                                        setIsWebViewLoading(false); // Ensure loader hides on error too
+                                        setIsWebViewLoading(false); 
                                         Alert.alert("Display Error", "Could not render AI response format correctly.");
                                     }}
-                                    // renderLoading is for the initial load of the WebView component itself,
-                                    // not necessarily its HTML content. We use a custom loader.
                                 />
                             </View>
                         )}
@@ -217,8 +241,8 @@ const AIChatModal = React.memo(({
                              <View style={styles.stateInfoContainer}>
                                 <Icon name="chatbubbles-outline" iconSet="Ionicons" size={48} color={COLORS.textDisabled || '#AEAEB2'} />
                                 <Text style={styles.stateInfoText}>AI response will appear here.</Text>
-                                {onRegenerate && ( // Offer to generate if possible
-                                     <TouchableOpacity style={styles.generateButton} onPress={handleRegenerate}>
+                                {typeof onRegenerate === 'function' && ( 
+                                     <TouchableOpacity style={styles.generateButton} onPress={handleRegenerate} disabled={isLoading}>
                                         <Icon name="sparkles-outline" iconSet="Ionicons" size={20} color={COLORS.primary || '#007AFF'} style={styles.actionButtonIcon} />
                                         <Text style={styles.generateButtonText}>Generate Response</Text>
                                     </TouchableOpacity>
@@ -230,7 +254,10 @@ const AIChatModal = React.memo(({
                 {isActionsMenuVisible && (
                     <Pressable
                         style={styles.fullScreenMenuBackdrop}
-                        onPress={() => setIsActionsMenuVisible(false)}
+                        onPress={() => {
+                             console.log('[AIChatModal] Backdrop PRESSED. Closing menu.'); // Log 9
+                             setIsActionsMenuVisible(false);
+                        }}
                     />
                 )}
             </SafeAreaView>
@@ -310,7 +337,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.15,
         shadowRadius: 8,
         elevation: 10,
-        zIndex: 200,
+        zIndex: 200, // Higher than backdrop
         minWidth: 210, // Increased width
         borderWidth: Platform.OS === 'ios' ? 0.5 : 0, // Subtle border for iOS
         borderColor: COLORS.borderUltraLight || '#F0F0F0',
@@ -331,8 +358,9 @@ const styles = StyleSheet.create({
     fullScreenMenuBackdrop: {
         position: 'absolute',
         top: 0, left: 0, right: 0, bottom: 0,
-        backgroundColor: 'transparent',
-        zIndex: 100,
+        backgroundColor: 'transparent', // Keeps it invisible but pressable
+        // backgroundColor: 'rgba(0, 255, 0, 0.1)', // TEMP: For visualizing backdrop
+        zIndex: 100, // Lower than menu
     },
     contentScrollView: {
         flex: 1,
