@@ -74,8 +74,35 @@ const generateHTML = (markdownContent) => {
         max-width: 100%;
         height: auto;
       }
+      /* KaTeX equation styling */
       .katex { font-size: 1em !important; }
-      .katex-display { margin: 1em 0; }
+      .katex-display {
+        margin: 1em 0;
+        overflow-x: auto;
+        white-space: nowrap;
+        display: block;
+      }
+
+      /* List styling for nested lists */
+      ul, ol {
+        margin: 12px 0;
+        padding-left: 20px;
+      }
+      li {
+        margin: 6px 0;
+      }
+      ul ul, ul ol, ol ul, ol ol {
+        margin-top: 4px;
+        margin-bottom: 4px;
+        padding-left: 20px;
+      }
+      /* Optional custom bullet colors */
+      ul li::marker {
+        color: ${COLORS.primary};
+      }
+      ol li {
+        color: ${COLORS.text};
+      }
 
       /* Table styling */
       table {
@@ -146,6 +173,15 @@ const generateHTML = (markdownContent) => {
               wrapper.style.width = '100%';
               wrapper.appendChild(table.cloneNode(true));
               table.replaceWith(wrapper);
+            });
+
+            // Wrap display math for horizontal scrolling
+            document.querySelectorAll('.katex-display').forEach((eq) => {
+              const wrapper = document.createElement('div');
+              wrapper.style.overflowX = 'auto';
+              wrapper.style.width = '100%';
+              wrapper.appendChild(eq.cloneNode(true));
+              eq.replaceWith(wrapper);
             });
           } catch (error) {
             contentDiv.innerHTML = '<p>Error rendering content</p>';
