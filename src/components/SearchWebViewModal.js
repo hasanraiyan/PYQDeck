@@ -6,16 +6,16 @@ import {
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
-  ActivityIndicator,
+  ActivityIndicator, // Still used for the placeholder if we had one, but not for webview loading
   Platform,
   Alert,
   Share,
-  Pressable, // For the menu backdrop
+  Pressable,
 } from 'react-native';
 import { WebView } from 'react-native-webview';
 import * as WebBrowser from 'expo-web-browser';
-import Icon from './Icon'; // Assuming Icon component path
-import { COLORS } from '../constants'; // Assuming constants path
+import Icon from './Icon';
+import { COLORS } from '../constants';
 
 // A simple progress bar component
 const ProgressBar = ({ progress }) => (
@@ -35,8 +35,8 @@ const SearchWebViewModal = React.memo(({
   const [canGoBack, setCanGoBack] = useState(false);
   const [canGoForward, setCanGoForward] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isMoreMenuVisible, setIsMoreMenuVisible] = useState(false); // State for the new menu
+  const [isLoading, setIsLoading] = useState(true); // Still true to show initial progress bar / "Loading..." title
+  const [isMoreMenuVisible, setIsMoreMenuVisible] = useState(false);
 
   const initialSearchUrl = searchQuery
     ? `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}&aod=0`
@@ -49,8 +49,8 @@ const SearchWebViewModal = React.memo(({
       setCanGoBack(false);
       setCanGoForward(false);
       setLoadingProgress(0);
-      setIsLoading(true);
-      setIsMoreMenuVisible(false); // Reset menu state when modal becomes visible
+      setIsLoading(true); // Reset loading state for new search or visibility
+      setIsMoreMenuVisible(false);
     }
   }, [visible, searchQuery, initialSearchUrl]);
 
@@ -61,9 +61,9 @@ const SearchWebViewModal = React.memo(({
     if (navState.title && !navState.title.startsWith('http')) {
       setPageTitle(navState.title);
     }
-    setIsLoading(navState.loading);
+    setIsLoading(navState.loading); // This will be true while loading, false when done
     if (!navState.loading) {
-      setLoadingProgress(0);
+      setLoadingProgress(0); // Reset progress when loading finishes
     }
   }, []);
 
@@ -75,7 +75,7 @@ const SearchWebViewModal = React.memo(({
   const goForward = () => webViewRef.current?.goForward();
   const reload = () => {
     webViewRef.current?.reload();
-    setIsMoreMenuVisible(false); // Close menu if open
+    setIsMoreMenuVisible(false);
   }
 
   const openInBrowser = async () => {
@@ -119,9 +119,7 @@ const SearchWebViewModal = React.memo(({
       </Text>
       <TouchableOpacity
         onPress={() => {
-          openInBrowser(); // This already closes the menu
-          // If error screen is visible, onClose might also be desired
-          // onClose();
+          openInBrowser();
         }}
         style={[styles.errorActionButton, {marginBottom: 10}]}
       >
@@ -143,53 +141,29 @@ const SearchWebViewModal = React.memo(({
     >
       <SafeAreaView style={styles.modalOverlay}>
         <View style={styles.modalView}>
-          {/* Header */}
           <View style={styles.modalHeader}>
-            {/* Left Navigation Controls */}
             <View style={styles.headerNavControls}>
-              <TouchableOpacity
-                onPress={goBack}
-                disabled={!canGoBack}
-                style={styles.navButton}
-              >
+              <TouchableOpacity onPress={goBack} disabled={!canGoBack} style={styles.navButton}>
                 <Icon iconSet="Ionicons" name="arrow-back" size={24} color={canGoBack ? (COLORS.primary || '#007AFF') : (COLORS.disabled || '#CCCCCC')} />
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={goForward}
-                disabled={!canGoForward}
-                style={styles.navButton}
-              >
+              <TouchableOpacity onPress={goForward} disabled={!canGoForward} style={styles.navButton}>
                 <Icon iconSet="Ionicons" name="arrow-forward" size={24} color={canGoForward ? (COLORS.primary || '#007AFF') : (COLORS.disabled || '#CCCCCC')} />
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={reload}
-                style={styles.navButton}
-              >
+              {/* <TouchableOpacity onPress={reload} style={styles.navButton}>
                 <Icon iconSet="Ionicons" name="refresh" size={24} color={COLORS.primary || '#007AFF'} />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
 
-            {/* Title */}
             <View style={styles.modalTitleContainer}>
-              <Icon
-                iconSet="FontAwesome"
-                name="globe"
-                size={16}
-                color={COLORS.textSecondary || '#8E8E93'}
-                style={styles.modalTitleIcon}
-              />
+              <Icon iconSet="FontAwesome" name="globe" size={16} color={COLORS.textSecondary || '#8E8E93'} style={styles.modalTitleIcon} />
               <Text style={styles.modalTitle} numberOfLines={1} ellipsizeMode="tail">
-                {isLoading && loadingProgress < 1 ? 'Loading...' : pageTitle}
+                {isLoading && loadingProgress < 1 ? '' : pageTitle}
               </Text>
             </View>
 
-            {/* Right Action Controls */}
             <View style={styles.headerActionControls}>
               <View style={styles.moreOptionsContainer}>
-                <TouchableOpacity
-                  onPress={() => setIsMoreMenuVisible(prev => !prev)}
-                  style={styles.modalActionButton}
-                >
+                <TouchableOpacity onPress={() => setIsMoreMenuVisible(prev => !prev)} style={styles.modalActionButton}>
                   <Icon iconSet="Ionicons" name="ellipsis-vertical" size={24} color={COLORS.primary || '#007AFF'} />
                 </TouchableOpacity>
                 {isMoreMenuVisible && (
@@ -211,8 +185,8 @@ const SearchWebViewModal = React.memo(({
             </View>
           </View>
 
-          {/* Content Area (Progress Bar, WebView/Placeholder, and Menu Backdrop) */}
           <View style={styles.contentAreaContainer}>
+            {/* Progress Bar - shown when isLoading is true AND there's progress > 0 and < 1 */}
             {isLoading && loadingProgress > 0 && loadingProgress < 1 && <ProgressBar progress={loadingProgress} />}
 
             {initialSearchUrl ? (
@@ -223,18 +197,13 @@ const SearchWebViewModal = React.memo(({
                 style={styles.modalWebView}
                 javaScriptEnabled={true}
                 domStorageEnabled={true}
-                startInLoadingState={true}
+                startInLoadingState={true} // WebView will show its own loading state (e.g., spinner or blank)
+                // renderLoading prop REMOVED
                 setSupportMultipleWindows={false}
                 forceDarkOff={true}
                 preferredColorScheme="light"
                 onNavigationStateChange={handleNavigationStateChange}
                 onLoadProgress={handleLoadProgress}
-                renderLoading={() => (
-                  <View style={styles.modalLoadingViewAbsolute}>
-                    <ActivityIndicator size="large" color={COLORS.primary || '#007AFF'} />
-                    <Text style={styles.loadingText}>Loading results for "{searchQuery}"...</Text>
-                  </View>
-                )}
                 renderError={renderError}
                 onError={(syntheticEvent) => {
                   const { nativeEvent } = syntheticEvent;
@@ -264,7 +233,6 @@ const SearchWebViewModal = React.memo(({
               </View>
             )}
 
-            {/* Menu Backdrop - Conditionally rendered over the content */}
             {isMoreMenuVisible && (
               <Pressable
                 onPress={() => setIsMoreMenuVisible(false)}
@@ -289,24 +257,24 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingHorizontal: 0,
-    paddingBottom: Platform.OS === 'ios' ? 0 : 0, // SafeAreaView handles bottom padding
-    height: '90%',
+    paddingBottom: 0,
+    height: '70%',
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: -3 },
     shadowOpacity: 0.15,
     shadowRadius: 8,
     elevation: 25,
-    overflow: 'hidden', // Important for border radius to apply to children like WebView
+    overflow: 'hidden',
   },
   modalHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between', // Distribute space
+    justifyContent: 'space-between',
     paddingVertical: 8,
     paddingHorizontal: 10,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.borderLight || '#E0E0E0',
-    zIndex: 10, // Ensure header is above content, for menu pop-up
+    zIndex: 10,
   },
   headerNavControls: {
     flexDirection: 'row',
@@ -320,11 +288,12 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   modalTitleContainer: {
-    flex: 1, // Allows title to take remaining space and truncate
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginHorizontal: 5, // Space between nav/action groups and title
+    gop:6,
+    marginHorizontal: 5,
   },
   modalTitleIcon: {
     marginRight: 6,
@@ -335,21 +304,20 @@ const styles = StyleSheet.create({
     color: COLORS.text || '#000000',
     textAlign: 'center',
   },
-  modalActionButton: { // Used for "More" button now
+  modalActionButton: {
     padding: 8,
   },
   modalCloseButton: {
     padding: 8,
-    marginLeft: 0, // Reduced margin as it's part of a flex group
+    marginLeft: 0,
   },
-  // --- More Options Menu Styles ---
   moreOptionsContainer: {
-    position: 'relative', // For positioning the dropdown menu
-    marginRight: Platform.OS === 'ios' ? 0 : 4, // Minor spacing adjustment
+    position: 'relative',
+    marginRight: Platform.OS === 'ios' ? 0 : 4,
   },
   moreOptionsMenu: {
     position: 'absolute',
-    top: '100%', // Position below the button
+    top: '100%',
     right: 0,
     backgroundColor: COLORS.surface || '#FFFFFF',
     borderRadius: 8,
@@ -359,8 +327,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 8,
-    zIndex: 100, // Ensure menu is above backdrop and other content
-    minWidth: 180, // Give it some width
+    zIndex: 100,
+    minWidth: 180,
   },
   menuItem: {
     flexDirection: 'row',
@@ -377,22 +345,19 @@ const styles = StyleSheet.create({
   },
   menuBackdrop: {
     position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'transparent', // Or 'rgba(0,0,0,0.05)' for a very subtle hint
-    zIndex: 50, // Below menu, above content
+    top: 0, left: 0, right: 0, bottom: 0,
+    backgroundColor: 'transparent',
+    zIndex: 50,
   },
-  // --- End More Options Menu Styles ---
   contentAreaContainer: {
     flex: 1,
-    position: 'relative', // For menuBackdrop positioning
-    paddingBottom: Platform.OS === 'ios' ? 20 : 15, // Re-add padding here as modalView has 0
+    position: 'relative',
+    paddingBottom: Platform.OS === 'ios' ? 20 : 15,
   },
   progressBarContainer: {
     height: 3,
     backgroundColor: COLORS.borderLight || '#E0E0E0',
+    // No absolute positioning needed if it's part of the flow
   },
   progressBar: {
     height: '100%',
@@ -401,20 +366,9 @@ const styles = StyleSheet.create({
   modalWebView: {
     flex: 1,
     width: '100%',
-    backgroundColor: COLORS.surface || '#FFFFFF',
+    backgroundColor: COLORS.surface || '#FFFFFF', // Match modal background to avoid flash
   },
-  modalLoadingViewAbsolute: {
-    position: 'absolute',
-    top: 0, left: 0, right: 0, bottom: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: (COLORS.surface || '#FFFFFF') + 'E6',
-  },
-  loadingText: {
-    marginTop: 10,
-    color: COLORS.textSecondary || '#8E8E93',
-    fontSize: 14,
-  },
+  // modalLoadingViewAbsolute and loadingText styles REMOVED
   placeholderView: {
     flex: 1,
     justifyContent: 'center',
