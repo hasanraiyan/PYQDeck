@@ -46,10 +46,11 @@ const ContentDisplayModal = React.memo(({
               <Icon iconSet="Ionicons" name="close" size={28} color={COLORS.textSecondary || '#8E8E93'} />
             </TouchableOpacity>
           </View>
-          <WebView
+            <View style={{flex: 1, margin: 10, marginTop:0}}>
+            <WebView
             originWhitelist={['*']}
             source={{ html: htmlContent }}
-            style={styles.modalWebView}
+            style={[styles.modalWebView,{margin: 10}]}
             javaScriptEnabled={true}
             domStorageEnabled={true}
             mixedContentMode="compatibility"
@@ -66,6 +67,7 @@ const ContentDisplayModal = React.memo(({
               onClose();
             }}
           />
+            </View>
         </View>
       </SafeAreaView>
     </Modal>
