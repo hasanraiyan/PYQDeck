@@ -1,5 +1,5 @@
 // src/components/AIChatModal.js
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useState, useEffect } from 'react'; // Added useEffect
 import {
     Modal,
     View,
@@ -10,13 +10,14 @@ import {
     ScrollView,
     ActivityIndicator,
     Platform,
-    Alert, // For copy feedback
+    Alert,
+    Pressable,
 } from 'react-native';
 import Icon from './Icon';
 import { COLORS } from '../constants';
 import { getQuestionPlainText } from '../helpers/helpers';
 import { WebView } from 'react-native-webview';
-import * as Clipboard from 'expo-clipboard'; // Using expo-clipboard
+import * as Clipboard from 'expo-clipboard';
 import generateHTML from '../helpers/generateHTML';
 
 const AIChatModal = React.memo(({
@@ -24,10 +25,13 @@ const AIChatModal = React.memo(({
     onClose,
     questionItem,
     aiResponse,
-    isLoading,
+    isLoading, // Overall loading state for AI response generation
     error,
     onRegenerate,
 }) => {
+    const [isActionsMenuVisible, setIsActionsMenuVisible] = useState(false);
+    const [isWebViewLoading, setIsWebViewLoading] = useState(true); // For WebView's own loading state
+
     const questionPlainText = useMemo(() => {
         if (questionItem && questionItem.text) {
             return getQuestionPlainText(questionItem.text);
@@ -35,7 +39,14 @@ const AIChatModal = React.memo(({
         return "No question context available.";
     }, [questionItem]);
 
-    const handleCopyResponse = useCallback(async () => { // Made async for expo-clipboard
+    // Reset WebView loading state when AI response changes or modal becomes visible with a response
+    useEffect(() => {
+        if (visible && aiResponse && !isLoading && !error) {
+            setIsWebViewLoading(true);
+        }
+    }, [visible, aiResponse, isLoading, error]);
+
+    const handleCopyResponse = useCallback(async () => {
         if (aiResponse) {
             try {
                 await Clipboard.setStringAsync(aiResponse);
@@ -45,101 +56,38 @@ const AIChatModal = React.memo(({
                 Alert.alert("Error", "Could not copy response to clipboard.");
             }
         }
+        setIsActionsMenuVisible(false);
     }, [aiResponse]);
 
-    const markdownStyles = useMemo(() => ({
-        // General Body & Text
-        body: { color: COLORS.text || '#2c3e50', fontSize: 15.5, lineHeight: 25 },
-        paragraph: { marginVertical: 8, color: COLORS.text || '#2c3e50', fontSize: 15.5, lineHeight: 25 },
-        text: { color: COLORS.text || '#2c3e50' },
-        strong: { fontWeight: Platform.OS === 'ios' ? '600' : 'bold' },
-        em: { fontStyle: 'italic' },
-        
-        // Headings
-        heading1: { color: COLORS.primary || '#007AFF', marginTop: 18, marginBottom: 10, paddingBottom: 8, borderBottomWidth: 1.5, borderColor: COLORS.border || '#E0E0E0', fontSize: 22, fontWeight: '600' },
-        heading2: { color: COLORS.primaryDark || COLORS.primary || '#0056b3', marginTop: 16, marginBottom: 8, fontSize: 20, fontWeight: '600' },
-        heading3: { color: COLORS.text || '#2c3e50', marginTop: 14, marginBottom: 6, fontSize: 18, fontWeight: '600' },
-        heading4: { color: COLORS.textSecondary || '#34495e', marginTop: 12, marginBottom: 4, fontSize: 16, fontWeight: 'bold' },
-
-        // Links
-        link: { color: COLORS.accent || COLORS.primary || '#007AFF', textDecorationLine: 'underline' },
-        
-        // Images (Note: MarkdownDisplay handles image rendering if URLs are valid)
-        image: { maxWidth: '100%', alignSelf: 'center', marginVertical: 12, borderRadius: 8, borderWidth: 1, borderColor: COLORS.borderLight || '#EAEAEA', resizeMode: 'contain' },
-        
-        // Code Blocks
-        code_block: {
-            backgroundColor: COLORS.codeBackground || COLORS.background || '#f4f4f8',
-            padding: 12,
-            borderRadius: 6,
-            fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
-            fontSize: 13.5,
-            marginVertical: 8,
-            borderWidth: 1,
-            borderColor: COLORS.border || '#E0E0E0',
-            color: COLORS.codeText || COLORS.textSecondary || '#333'
-        },
-        fence: { // Alias for code_block
-            backgroundColor: COLORS.codeBackground || COLORS.background || '#f4f4f8',
-            padding: 12,
-            borderRadius: 6,
-            fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
-            fontSize: 13.5,
-            marginVertical: 8,
-            borderWidth: 1,
-            borderColor: COLORS.border || '#E0E0E0',
-            color: COLORS.codeText || COLORS.textSecondary || '#333'
-        },
-        
-        // Tables
-        table: { borderWidth: 1, borderColor: COLORS.border || '#D0D0D0', borderRadius: 6, marginVertical: 10, overflow: 'hidden' },
-        th: { backgroundColor: COLORS.surfaceAlt || COLORS.background || '#f0f2f5', padding: 10, fontWeight: 'bold', borderBottomWidth: 1, borderColor: COLORS.border || '#D0D0D0', color: COLORS.text || '#2c3e50'},
-        td: { padding: 10, borderBottomWidth: 1, borderColor: COLORS.borderLight || '#EAEAEA', color: COLORS.text || '#2c3e50' },
-        tr: { borderBottomWidth: 0 },
-        
-        // Lists
-        bullet_list: { marginLeft: 5, marginVertical: 8 },
-        ordered_list: { marginLeft: 5, marginVertical: 8 },
-        list_item: { 
-            marginVertical: 5, 
-            flexDirection: 'row', 
-            alignItems: 'flex-start',
-            lineHeight: 24, 
-        },
-        bullet_list_icon: {
-            marginRight: 10,
-            fontSize: Platform.OS === 'ios' ? 8 : 10, 
-            color: COLORS.textSecondary || '#555',
-            lineHeight: 24, 
-            marginTop: Platform.OS === 'ios' ? 7 : 6, 
-        },
-        ordered_list_icon: {
-            marginRight: 10,
-            fontSize: 15,
-            color: COLORS.textSecondary || '#555',
-            lineHeight: 24, 
-            minWidth: 20, 
-        },
-        // Blockquotes
-        blockquote: {
-            backgroundColor: COLORS.surfaceAlt || '#f9f9f9',
-            paddingHorizontal: 15,
-            paddingVertical: 10,
-            marginVertical: 10,
-            borderLeftColor: COLORS.primary || '#007AFF',
-            borderLeftWidth: 4,
-            borderRadius: 4,
+    const handleRegenerate = useCallback(() => {
+        if (onRegenerate) {
+            onRegenerate();
         }
+        setIsActionsMenuVisible(false);
+    }, [onRegenerate]);
 
-    }), [COLORS]);
+    const markdownHTML = useMemo(() => {
+        if (aiResponse) {
+            return generateHTML(aiResponse);
+        }
+        return generateHTML("<!-- No content -->"); // Empty valid HTML
+    }, [aiResponse]);
 
+
+    const canCopy = !!aiResponse && !isLoading && !error;
+    const canRegenerate = !!onRegenerate && !isLoading; // Can regenerate even if there was an error or no response yet
+
+    const handleCloseModal = () => {
+        setIsActionsMenuVisible(false);
+        onClose();
+    };
 
     return (
         <Modal
             animationType="slide"
             transparent={true}
             visible={visible}
-            onRequestClose={onClose}
+            onRequestClose={handleCloseModal}
         >
             <SafeAreaView style={styles.modalOverlay}>
                 <View style={styles.modalView}>
@@ -148,21 +96,62 @@ const AIChatModal = React.memo(({
                             <Icon
                                 iconSet="MaterialCommunityIcons"
                                 name="robot-happy-outline"
-                                size={24}
+                                size={22}
                                 color={COLORS.primary || '#007AFF'}
                                 style={styles.modalTitleIcon}
                             />
-                            <Text style={styles.modalTitle}>AI Assistant</Text>
+                            <Text style={styles.modalTitle} numberOfLines={1}>AI Assistant</Text>
                         </View>
-                        <TouchableOpacity onPress={onClose} style={styles.modalCloseButton}>
-                            <Icon iconSet="Ionicons" name="close-circle" size={30} color={COLORS.textSecondary || '#8E8E93'} />
-                        </TouchableOpacity>
+                        <View style={styles.headerRightActions}>
+                            {(canCopy || (onRegenerate && !isLoading)) && ( // Show ellipsis if actions are possible
+                                <View style={styles.moreOptionsContainer}>
+                                    <TouchableOpacity
+                                        onPress={() => setIsActionsMenuVisible(v => !v)}
+                                        style={styles.headerIconButton}
+                                        disabled={isLoading && !onRegenerate} // Disable if loading and no regenerate possible
+                                    >
+                                        <Icon
+                                            iconSet="Ionicons"
+                                            name="ellipsis-vertical"
+                                            size={24}
+                                            color={(isLoading && !onRegenerate) ? (COLORS.disabled || '#CCCCCC') : (COLORS.text || '#000000')}
+                                        />
+                                    </TouchableOpacity>
+                                    {isActionsMenuVisible && (
+                                        <View style={styles.moreOptionsMenu}>
+                                            {canCopy && (
+                                                <TouchableOpacity style={styles.menuItem} onPress={handleCopyResponse}>
+                                                    <Icon name="copy-outline" iconSet="Ionicons" size={20} color={COLORS.text || '#000'} style={styles.menuItemIcon} />
+                                                    <Text style={styles.menuItemText}>Copy Response</Text>
+                                                </TouchableOpacity>
+                                            )}
+                                            {onRegenerate && (
+                                                <TouchableOpacity
+                                                    style={styles.menuItem}
+                                                    onPress={handleRegenerate}
+                                                    disabled={isLoading}
+                                                >
+                                                    <Icon name="reload-circle-outline" iconSet="Ionicons" size={20} color={isLoading ? (COLORS.disabled || '#CCCCCC') : (COLORS.text || '#000')} style={styles.menuItemIcon} />
+                                                    <Text style={[styles.menuItemText, isLoading && { color: COLORS.disabled || '#CCCCCC' }]}>
+                                                        {aiResponse || error ? 'Regenerate' : 'Generate'}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            )}
+                                        </View>
+                                    )}
+                                </View>
+                            )}
+                            <TouchableOpacity onPress={handleCloseModal} style={[styles.headerIconButton, styles.modalCloseButton]}>
+                                <Icon iconSet="Ionicons" name="close-circle" size={28} color={COLORS.textSecondary || '#8E8E93'} />
+                            </TouchableOpacity>
+                        </View>
                     </View>
 
-                    <ScrollView 
-                        style={styles.contentScrollView} 
+                    <ScrollView
+                        style={styles.contentScrollView}
                         contentContainerStyle={styles.contentScrollContainer}
-                        showsVerticalScrollIndicator={false}
+                        showsVerticalScrollIndicator={true} // Show scrollbar if content overflows
+                        keyboardShouldPersistTaps="handled" // Good for webview interactions
                     >
                         {questionItem && (
                             <View style={styles.questionContextContainer}>
@@ -174,21 +163,21 @@ const AIChatModal = React.memo(({
                         )}
 
                         {isLoading && (
-                            <View style={styles.loadingContainer}>
+                            <View style={styles.stateInfoContainer}>
                                 <ActivityIndicator size={Platform.OS === 'ios' ? "large" : 60} color={COLORS.primary || '#007AFF'} />
-                                <Text style={styles.loadingText}>AI is thinking, please wait...</Text>
+                                <Text style={styles.stateInfoText}>AI is thinking, please wait...</Text>
                             </View>
                         )}
 
                         {error && !isLoading && (
-                            <View style={styles.errorContainer}>
-                                <Icon name="alert-circle" iconSet="Ionicons" size={50} color={COLORS.error || '#D32F2F'} />
-                                <Text style={styles.errorTitle}>Oops! An Error Occurred</Text>
-                                <Text style={styles.errorText}>{error}</Text>
+                            <View style={[styles.stateInfoContainer, styles.errorStateContainer]}>
+                                <Icon name="alert-circle-outline" iconSet="Ionicons" size={50} color={COLORS.error || '#D32F2F'} />
+                                <Text style={[styles.stateInfoTitle, { color: COLORS.error || '#D32F2F' }]}>Oops! An Error Occurred</Text>
+                                <Text style={styles.errorDetailText}>{error}</Text>
                                 {onRegenerate && (
-                                    <TouchableOpacity style={[styles.actionButtonBase, styles.errorRetryButton]} onPress={onRegenerate}>
+                                    <TouchableOpacity style={styles.errorRetryButton} onPress={handleRegenerate}>
                                         <Icon name="refresh-outline" iconSet="Ionicons" size={20} color={COLORS.error || '#D32F2F'} style={styles.actionButtonIcon} />
-                                        <Text style={[styles.actionButtonText, {color: COLORS.error || '#D32F2F'}]}>Try Again</Text>
+                                        <Text style={styles.errorRetryButtonText}>Try Again</Text>
                                     </TouchableOpacity>
                                 )}
                             </View>
@@ -196,61 +185,54 @@ const AIChatModal = React.memo(({
 
                         {!isLoading && !error && aiResponse && (
                             <View style={styles.aiResponseContainer}>
+                                {isWebViewLoading && ( // Show activity indicator while WebView content itself is loading
+                                    <ActivityIndicator
+                                        size="large"
+                                        color={COLORS.primary || '#007AFF'}
+                                        style={styles.webViewLoader}
+                                    />
+                                )}
                                 <WebView
                                     originWhitelist={['*']}
-                                    source={{ html: generateHTML(aiResponse) }}
-                                    style={{
-                                        flex: 1,
-                                        minHeight: 200,
-                                        maxHeight: '100%',
-                                        backgroundColor: COLORS.surface || "#FFF",
-                                        borderRadius: 8,
-                                        overflow: 'hidden',
-                                    }}
+                                    source={{ html: markdownHTML }}
+                                    style={[styles.webView, { opacity: isWebViewLoading ? 0 : 1 }]} // Hide WebView while its content loads
                                     javaScriptEnabled={true}
                                     domStorageEnabled={true}
                                     mixedContentMode="compatibility"
                                     setSupportMultipleWindows={false}
-                                    startInLoadingState={true}
-                                    scrollEnabled={true}
-                                    showsVerticalScrollIndicator={true}
-                                    renderLoading={() => (
-                                        <ActivityIndicator
-                                            size="large"
-                                            color={COLORS.primary || '#007AFF'}
-                                            style={{ marginVertical: 20 }}
-                                        />
-                                    )}
+                                    showsVerticalScrollIndicator={false} // HTML body will handle scroll
+                                    showsHorizontalScrollIndicator={false}
+                                    onLoadEnd={() => setIsWebViewLoading(false)} // WebView content finished loading
                                     onError={({ nativeEvent }) => {
                                         console.error('Chat WebView error:', nativeEvent);
-                                        Alert.alert("Display Error", "Could not render AI response.");
+                                        setIsWebViewLoading(false); // Ensure loader hides on error too
+                                        Alert.alert("Display Error", "Could not render AI response format correctly.");
                                     }}
+                                    // renderLoading is for the initial load of the WebView component itself,
+                                    // not necessarily its HTML content. We use a custom loader.
                                 />
                             </View>
                         )}
-                         {!isLoading && !error && !aiResponse && (
-                            <View style={styles.emptyResponseContainer}>
+                        {!isLoading && !error && !aiResponse && (
+                             <View style={styles.stateInfoContainer}>
                                 <Icon name="chatbubbles-outline" iconSet="Ionicons" size={48} color={COLORS.textDisabled || '#AEAEB2'} />
-                                <Text style={styles.emptyResponseText}>AI response will appear here.</Text>
+                                <Text style={styles.stateInfoText}>AI response will appear here.</Text>
+                                {onRegenerate && ( // Offer to generate if possible
+                                     <TouchableOpacity style={styles.generateButton} onPress={handleRegenerate}>
+                                        <Icon name="sparkles-outline" iconSet="Ionicons" size={20} color={COLORS.primary || '#007AFF'} style={styles.actionButtonIcon} />
+                                        <Text style={styles.generateButtonText}>Generate Response</Text>
+                                    </TouchableOpacity>
+                                )}
                             </View>
                         )}
                     </ScrollView>
-
-                    {!isLoading && !error && aiResponse && (
-                        <View style={styles.footerActions}>
-                            <TouchableOpacity style={[styles.actionButtonBase, styles.secondaryActionButton]} onPress={handleCopyResponse}>
-                                 <Icon name="copy-outline" iconSet="Ionicons" size={20} color={COLORS.primary || '#007AFF'} style={styles.actionButtonIcon} />
-                                <Text style={[styles.actionButtonText, { color: COLORS.primary || '#007AFF' }]}>Copy</Text>
-                            </TouchableOpacity>
-                            {onRegenerate && (
-                                <TouchableOpacity style={[styles.actionButtonBase, styles.primaryActionButton]} onPress={onRegenerate}>
-                                    <Icon name="reload-circle-outline" iconSet="Ionicons" size={22} color={COLORS.white || '#FFFFFF'} style={styles.actionButtonIcon} />
-                                    <Text style={[styles.actionButtonText, { color: COLORS.white || '#FFFFFF' }]}>Regenerate</Text>
-                                </TouchableOpacity>
-                            )}
-                        </View>
-                    )}
                 </View>
+                {isActionsMenuVisible && (
+                    <Pressable
+                        style={styles.fullScreenMenuBackdrop}
+                        onPress={() => setIsActionsMenuVisible(false)}
+                    />
+                )}
             </SafeAreaView>
         </Modal>
     );
@@ -259,170 +241,217 @@ const AIChatModal = React.memo(({
 const styles = StyleSheet.create({
     modalOverlay: {
         flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.6)', 
+        backgroundColor: 'rgba(0,0,0,0.65)', // Slightly darker overlay
         justifyContent: 'flex-end',
     },
     modalView: {
         backgroundColor: COLORS.surface || '#FFFFFF',
-        borderTopLeftRadius: 24, 
+        borderTopLeftRadius: 24,
         borderTopRightRadius: 24,
-        height: Platform.OS === 'ios' ? '92%' : '90%',
+        height: Platform.OS === 'ios' ? '93%' : '90%', // Adjusted height
         shadowColor: '#000000',
-        shadowOffset: { width: 0, height: -5 },
-        shadowOpacity: 0.20,
-        shadowRadius: 12,
-        elevation: 30,
+        shadowOffset: { width: 0, height: -6 },
+        shadowOpacity: 0.22,
+        shadowRadius: 14,
+        elevation: 35,
         overflow: 'hidden',
     },
     modalHeader: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingVertical: 14,
-        paddingHorizontal: 18,
+        justifyContent: 'space-between', // Changed from flex-start to space-between
+        paddingVertical: Platform.OS === 'ios' ? 12 : 14,
+        paddingHorizontal: 16,
         borderBottomWidth: 1,
-        borderBottomColor: COLORS.borderLight || '#F0F0F0', 
+        borderBottomColor: COLORS.borderLight || '#ECECEC',
+        minHeight: 58,
     },
     modalTitleContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 10, 
+        justifyContent: 'flex-start', // Changed from center to flex-start
+        gap: 8,
+        flex: 1, // Added to allow title to take remaining space
     },
-    modalTitleIcon: {},
+    modalTitleIcon: {
+        // No specific style needed if using gap
+    },
     modalTitle: {
-        fontSize: 19, 
+        fontSize: 18,
         fontWeight: '600',
         color: COLORS.text || '#1A1A1A',
+        textAlign: 'left', // Changed from center to left
+    },
+    headerRightActions: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        // Removed fixed width to allow natural sizing
+    },
+    headerIconButton: {
+        padding: 8,
     },
     modalCloseButton: {
-        padding: 5, 
+        // marginLeft: 4, // If more options icon is present
+    },
+    moreOptionsContainer: {
+        position: 'relative',
+        marginRight: Platform.OS === 'ios' ? 0 : -4, // Fine-tune spacing
+    },
+    moreOptionsMenu: {
+        position: 'absolute',
+        top: Platform.OS === 'ios' ? 40 : 44, // Adjust based on header height
+        right: 8,
+        backgroundColor: COLORS.surface || '#FFFFFF',
+        borderRadius: 10,
+        paddingVertical: 6,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.15,
+        shadowRadius: 8,
+        elevation: 10,
+        zIndex: 200,
+        minWidth: 210, // Increased width
+        borderWidth: Platform.OS === 'ios' ? 0.5 : 0, // Subtle border for iOS
+        borderColor: COLORS.borderUltraLight || '#F0F0F0',
+    },
+    menuItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 13, // Increased padding
+        paddingHorizontal: 18,
+    },
+    menuItemIcon: {
+        marginRight: 14,
+    },
+    menuItemText: {
+        fontSize: 16, // Slightly larger
+        color: COLORS.text || '#000000',
+    },
+    fullScreenMenuBackdrop: {
+        position: 'absolute',
+        top: 0, left: 0, right: 0, bottom: 0,
+        backgroundColor: 'transparent',
+        zIndex: 100,
     },
     contentScrollView: {
         flex: 1,
     },
     contentScrollContainer: {
-        paddingHorizontal: 20, 
-        paddingTop: 15,
-        paddingBottom: 40, 
+        flexGrow: 1, // Allows content to expand to fill ScrollView viewport if short
+        paddingHorizontal: 18,
+        paddingTop: 18,
+        paddingBottom: 30, // Ensure space at the bottom
     },
     questionContextContainer: {
-
-        padding: 15,
-        backgroundColor: COLORS.background || '#F7F9FC', 
-        borderRadius: 12, 
+        padding: 16,
+        backgroundColor: COLORS.surfaceAlt || '#F7F9FC',
+        borderRadius: 12,
         borderWidth: 1,
         borderColor: COLORS.borderLight || '#E8ECF0',
+        marginBottom: 20, // Increased margin
     },
     questionContextTitle: {
-        fontSize: 14,
-        fontWeight: '600', 
-        color: COLORS.textSecondary || '#4A5568', 
-        marginBottom: 6,
+        fontSize: 14.5,
+        fontWeight: '600',
+        color: COLORS.textSecondary || '#4A5568',
+        marginBottom: 8,
     },
     questionContextText: {
-        fontSize: 14.5,
+        fontSize: 15,
         color: COLORS.text || '#2D3748',
-        lineHeight: 21,
+        lineHeight: 22,
     },
-    loadingContainer: {
-        flex: 1,
+    stateInfoContainer: { // Common container for loading, error, empty states
+        flex: 1, // Allow this to take up space if it's the only thing
         justifyContent: 'center',
         alignItems: 'center',
-        paddingVertical: 60, 
+        paddingVertical: 40,
+        minHeight: 200, // Ensure it has some minimum height
     },
-    loadingText: {
+    stateInfoText: {
         marginTop: 18,
-        fontSize: 16.5,
+        fontSize: 16,
         color: COLORS.textSecondary || '#718096',
-        textAlign: 'center'
+        textAlign: 'center',
+        paddingHorizontal: 20,
     },
-    errorContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 25,
-        marginVertical: 20, 
-        backgroundColor:  '#FFF0F0', 
-        borderRadius: 12,
-    },
-    errorTitle: {
-        fontSize: 20, 
-        fontWeight: 'bold',
-        color: COLORS.error || '#D32F2F',
+    stateInfoTitle: {
+        fontSize: 19,
+        fontWeight: '600',
         marginTop: 15,
-        marginBottom: 8,
+        marginBottom: 10,
         textAlign: 'center',
     },
-    errorText: {
-        fontSize: 15.5,
+    errorStateContainer: { // Specific styling for error block
+        backgroundColor:  COLORS.errorBackground || '#FFF0F0',
+        borderRadius: 12,
+        paddingHorizontal: 15, // Inner padding
+        marginVertical: 10, // If it's not taking flex:1
+    },
+    errorDetailText: {
+        fontSize: 15,
         color: COLORS.errorText || COLORS.textSecondary || '#502A2A',
         textAlign: 'center',
-        lineHeight: 22,
+        lineHeight: 21,
         marginBottom: 25,
     },
-    aiResponseContainer: {
-        paddingVertical: 10, 
-        minHeight: '100%'
-    },
-    emptyResponseContainer: {
-        paddingVertical: 50,
-        alignItems: 'center',
-        justifyContent: 'center',
-        opacity: 0.7,
-    },
-    emptyResponseText: {
-        fontSize: 16,
-        color: '#A0AEC0',
-        textAlign: 'center',
-        marginTop: 12,
-    },
-    footerActions: {
-        paddingVertical: 12,
-        paddingHorizontal: 18,
-        paddingBottom: Platform.OS === 'ios' ? 30 : 20, 
-        borderTopWidth: 1,
-        borderTopColor: COLORS.borderLight || '#F0F0F0',
-        flexDirection: 'row',
-        justifyContent: 'space-around', 
-        alignItems: 'center',
-        backgroundColor: COLORS.surface || '#FFFFFF', 
-    },
-    actionButtonBase: { 
+    errorRetryButton: {
         flexDirection: 'row',
         alignItems: 'center',
         paddingVertical: 10,
-        paddingHorizontal: 18,
-        borderRadius: 25, 
-        minWidth: 120, 
-        justifyContent: 'center',
-        marginHorizontal: 5,
-    },
-    primaryActionButton: { 
-        backgroundColor: COLORS.primary || '#007AFF',
-        shadowColor: COLORS.primary || '#007AFF',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.3,
-        shadowRadius: 3,
-        elevation: 4,
-    },
-    secondaryActionButton: { 
-        backgroundColor: COLORS.surface,
-        borderWidth: 1.5,
-        borderColor: COLORS.primary || '#007AFF',
-    },
-    errorRetryButton: { 
+        paddingHorizontal: 20,
+        borderRadius: 25,
         borderColor: COLORS.error || '#D32F2F',
         borderWidth: 1.5,
-        backgroundColor: 'transparent', 
-        paddingVertical: 8,
-        paddingHorizontal: 16,
+        backgroundColor: 'transparent',
     },
-    actionButtonIcon: {
-        marginRight: 8,
-    },
-    actionButtonText: {
+    errorRetryButtonText: {
         fontSize: 15,
         fontWeight: '600',
+        color: COLORS.error || '#D32F2F',
+    },
+    generateButton: { // For the empty state "Generate Response"
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 25,
+        borderColor: COLORS.primary || '#007AFF',
+        borderWidth: 1.5,
+        backgroundColor: 'transparent',
+        marginTop: 25,
+    },
+    generateButtonText: {
+        fontSize: 15,
+        fontWeight: '600',
+        color: COLORS.primary || '#007AFF',
+    },
+    aiResponseContainer: {
+        flex: 1, // Key for making this container take available vertical space
+        backgroundColor: COLORS.surface || "#FFF", // Match WebView background for seamless look
+        borderRadius: 10, // Rounded corners for the content area
+        overflow: 'hidden', // Important for border radius on WebView
+        minHeight: 250, // Ensure a decent minimum height for the response area
+        position: 'relative', // For positioning the WebView loader
+    },
+    webViewLoader: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(255,255,255,0.8)', // Semi-transparent overlay
+        zIndex: 1, // Above WebView while loading
+    },
+    webView: {
+        flex: 1, // WebView fills its parent (aiResponseContainer)
+        backgroundColor: 'transparent', // Let parent container handle background
+    },
+    actionButtonIcon: { // Used by errorRetryButton and generateButton
+        marginRight: 8,
     },
 });
 
