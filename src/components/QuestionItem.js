@@ -494,7 +494,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surface,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    paddingHorizontal: 0,
+    paddingHorizontal: 10,
     paddingBottom: Platform.OS === 'ios' ? 20 : 10,
     maxHeight: '90%',
     minHeight: '50%',
@@ -523,6 +523,7 @@ const styles = StyleSheet.create({
   },
   modalWebView: {
     flex: 1,
+    padding: 20,
     width: '100%',
     backgroundColor: COLORS.surface,
   },
