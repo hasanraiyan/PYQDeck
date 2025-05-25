@@ -15,8 +15,9 @@ import {
 import Icon from './Icon';
 import { COLORS } from '../constants';
 import { getQuestionPlainText } from '../helpers/helpers';
-import MarkdownDisplay from 'react-native-markdown-display';
+import { WebView } from 'react-native-webview';
 import * as Clipboard from 'expo-clipboard'; // Using expo-clipboard
+import generateHTML from '../helpers/generateHTML';
 
 const AIChatModal = React.memo(({
     visible,
@@ -194,10 +195,37 @@ const AIChatModal = React.memo(({
                         )}
 
                         {!isLoading && !error && aiResponse && (
-                             <View style={styles.aiResponseContainer}>
-                                <MarkdownDisplay style={markdownStyles}>
-                                    {aiResponse}
-                                </MarkdownDisplay>
+                            <View style={styles.aiResponseContainer}>
+                                <WebView
+                                    originWhitelist={['*']}
+                                    source={{ html: generateHTML(aiResponse) }}
+                                    style={{
+                                        flex: 1,
+                                        minHeight: 200,
+                                        maxHeight: '100%',
+                                        backgroundColor: COLORS.surface || "#FFF",
+                                        borderRadius: 8,
+                                        overflow: 'hidden',
+                                    }}
+                                    javaScriptEnabled={true}
+                                    domStorageEnabled={true}
+                                    mixedContentMode="compatibility"
+                                    setSupportMultipleWindows={false}
+                                    startInLoadingState={true}
+                                    scrollEnabled={true}
+                                    showsVerticalScrollIndicator={true}
+                                    renderLoading={() => (
+                                        <ActivityIndicator
+                                            size="large"
+                                            color={COLORS.primary || '#007AFF'}
+                                            style={{ marginVertical: 20 }}
+                                        />
+                                    )}
+                                    onError={({ nativeEvent }) => {
+                                        console.error('Chat WebView error:', nativeEvent);
+                                        Alert.alert("Display Error", "Could not render AI response.");
+                                    }}
+                                />
                             </View>
                         )}
                          {!isLoading && !error && !aiResponse && (
@@ -238,7 +266,7 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.surface || '#FFFFFF',
         borderTopLeftRadius: 24, 
         borderTopRightRadius: 24,
-        height: Platform.OS === 'ios' ? '92%' : '90%', 
+        height: Platform.OS === 'ios' ? '92%' : '90%',
         shadowColor: '#000000',
         shadowOffset: { width: 0, height: -5 },
         shadowOpacity: 0.20,
@@ -278,9 +306,9 @@ const styles = StyleSheet.create({
         paddingBottom: 40, 
     },
     questionContextContainer: {
-        marginBottom: 20, 
+
         padding: 15,
-        backgroundColor: COLORS.surfaceAlt || COLORS.background || '#F7F9FC', 
+        backgroundColor: COLORS.background || '#F7F9FC', 
         borderRadius: 12, 
         borderWidth: 1,
         borderColor: COLORS.borderLight || '#E8ECF0',
@@ -314,7 +342,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 25,
         marginVertical: 20, 
-        backgroundColor: COLORS.errorBackground || '#FFF0F0', 
+        backgroundColor:  '#FFF0F0', 
         borderRadius: 12,
     },
     errorTitle: {
@@ -334,6 +362,7 @@ const styles = StyleSheet.create({
     },
     aiResponseContainer: {
         paddingVertical: 10, 
+        minHeight: '100%'
     },
     emptyResponseContainer: {
         paddingVertical: 50,
@@ -343,7 +372,7 @@ const styles = StyleSheet.create({
     },
     emptyResponseText: {
         fontSize: 16,
-        color: COLORS.textDisabled || '#A0AEC0',
+        color: '#A0AEC0',
         textAlign: 'center',
         marginTop: 12,
     },
