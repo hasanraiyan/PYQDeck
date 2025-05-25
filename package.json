@@ -24,6 +24,7 @@
     "expo-sharing": "~13.1.5",
     "expo-splash-screen": "~0.30.8",
     "expo-updates": "~0.28.12",
+    "expo-web-browser": "~14.1.6",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-native": "0.79.2",
@@ -34,8 +35,7 @@
     "react-native-svg": "15.11.2",
     "react-native-view-shot": "^4.0.3",
     "react-native-web": "^0.20.0",
-    "react-native-webview": "^13.13.5",
-    "expo-web-browser": "~14.1.6"
+    "react-native-webview": "^13.13.5"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

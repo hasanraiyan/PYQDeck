@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import Icon from './Icon'; // Assuming Icon component path
-import { COLORS } from '../constants'; // Assuming constants path
+import Icon from './Icon'; 
+import { COLORS } from '../constants';
 
 const QuestionActionsBar = React.memo(({
   onSearch,
