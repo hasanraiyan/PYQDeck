@@ -1,3 +1,6 @@
+import { COLORS } from "../constants";
+import { Platform } from "react-native";
+
 const generateHTML = (markdownContent) => {
     const escapedData = JSON.stringify(markdownContent)
         .replace(/</g, '\\u003c')
