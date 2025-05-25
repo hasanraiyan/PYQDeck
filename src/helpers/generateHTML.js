@@ -11,10 +11,18 @@ const generateHTML = (markdownContent) => {
   <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    
+    <!-- KaTeX -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"></script>
+
+    <!-- Markdown-it & TexMath -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/13.0.1/markdown-it.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/markdown-it-texmath@1.0.0/texmath.min.js"></script>
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
 
     <style>
       html, body {
@@ -30,7 +38,6 @@ const generateHTML = (markdownContent) => {
         font-family: -apple-system, sans-serif;
         line-height: 1.4;
         font-size: 17px;
-        line-height: 25px;
         color: ${COLORS.text};
         font-weight: 400;
         user-select: none;
@@ -74,7 +81,6 @@ const generateHTML = (markdownContent) => {
         max-width: 100%;
         height: auto;
       }
-      /* KaTeX equation styling */
       .katex { font-size: 1em !important; }
       .katex-display {
         margin: 1em 0;
@@ -82,8 +88,6 @@ const generateHTML = (markdownContent) => {
         white-space: nowrap;
         display: block;
       }
-
-      /* List styling for nested lists */
       ul, ol {
         margin: 12px 0;
         padding-left: 20px;
@@ -96,21 +100,25 @@ const generateHTML = (markdownContent) => {
         margin-bottom: 4px;
         padding-left: 20px;
       }
-      /* Optional custom bullet colors */
       ul li::marker {
         color: ${COLORS.primary};
       }
       ol li {
         color: ${COLORS.text};
       }
-
-      /* Table styling */
+      /* Rounded table wrapper */
+      .table-wrapper {
+        overflow-x: auto;
+        width: 100%;
+        // border-radius: 8px;
+        // box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
       table {
         width: 100%;
         border-collapse: collapse;
         margin: 12px 0;
-        display: block;
-        overflow-x: auto;
+        border-radius: 8px;
+        overflow: hidden;
       }
       thead {
         background-color: ${COLORS.disabledBackground};
@@ -121,14 +129,19 @@ const generateHTML = (markdownContent) => {
         text-align: left;
         font-size: 15px;
         color: ${COLORS.text};
-      }
-      th {
-        background-color: ${COLORS.primary};
-        color: ${COLORS.onPrimary || '#fff'};
-        font-weight: bold;
-      }
-      td {
         background-color: ${COLORS.surface || '#fff'};
+      }
+      th:first-child {
+        border-top-left-radius: 8px;
+      }
+      th:last-child {
+        border-top-right-radius: 8px;
+      }
+      tr:last-child td:first-child {
+        border-bottom-left-radius: 8px;
+      }
+      tr:last-child td:last-child {
+        border-bottom-right-radius: 8px;
       }
       @media (max-width: 768px) {
         table { font-size: 14px; }
@@ -140,63 +153,78 @@ const generateHTML = (markdownContent) => {
     <div id="content"></div>
     <div style="pointer-events:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:999999"></div>
     <script>
-      (function() {
-        document.addEventListener('DOMContentLoaded', function() {
-          const data = ${escapedData};
+      document.addEventListener('DOMContentLoaded', function() {
+        const data = ${escapedData};
 
-          const md = window.markdownit({
-            html: true,
-            linkify: true,
-            typographer: true,
-            breaks: true 
-          });
-
-          const tm = window.texmath.use(window.katex, {
-            delimiters: [
-              { left: "$$", right: "$$", display: true },
-              { left: "$", right: "$", display: false },
-              { left: "\\(", right: "\\)", display: false },
-              { left: "\\[", right: "\\]", display: true }
-            ]
-          });
-
-          md.use(tm);
-
-          const contentDiv = document.getElementById('content');
-          try {
-            contentDiv.innerHTML = md.render(data);
-
-            // Wrap tables for horizontal scrolling
-            document.querySelectorAll('table').forEach((table) => {
-              const wrapper = document.createElement('div');
-              wrapper.style.overflowX = 'auto';
-              wrapper.style.width = '100%';
-              wrapper.appendChild(table.cloneNode(true));
-              table.replaceWith(wrapper);
-            });
-
-            // Wrap display math for horizontal scrolling
-            document.querySelectorAll('.katex-display').forEach((eq) => {
-              const wrapper = document.createElement('div');
-              wrapper.style.overflowX = 'auto';
-              wrapper.style.width = '100%';
-              wrapper.appendChild(eq.cloneNode(true));
-              eq.replaceWith(wrapper);
-            });
-          } catch (error) {
-            contentDiv.innerHTML = '<p>Error rendering content</p>';
-            console.error('Markdown rendering error:', error);
+        const md = window.markdownit({
+          html: true,
+          linkify: true,
+          typographer: true,
+          breaks: true,
+          highlight: (str, lang) => {
+            if (lang && hljs.getLanguage(lang)) {
+              try {
+                return '<pre><code class="hljs">'
+                  + hljs.highlight(str, { language: lang, ignoreIllegals: true }).value
+                  + '</code></pre>';
+              } catch (_) {}
+            }
+            return '<pre><code class="hljs">' + md.utils.escapeHtml(str) + '</code></pre>';
           }
-
-          document.querySelectorAll('img').forEach(img => {
-            img.onerror = () => { img.style.display = 'none'; };
-          });
         });
-      })();
+
+        const tm = window.texmath.use(window.katex, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false },
+            { left: "\\(", right: "\\)", display: false },
+            { left: "\\[", right: "\\]", display: true }
+          ]
+        });
+
+        md.use(tm);
+
+        const contentDiv = document.getElementById('content');
+        try {
+          // Render markdown
+          contentDiv.innerHTML = md.render(data);
+
+          // Wrap tables in .table-wrapper
+          document.querySelectorAll('table').forEach((table) => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'table-wrapper';
+            wrapper.appendChild(table.cloneNode(true));
+            table.replaceWith(wrapper);
+          });
+
+          // Highlight code blocks
+          document.querySelectorAll('pre code.hljs').forEach(block => {
+            hljs.highlightElement(block);
+          });
+
+          // Wrap display equations
+          document.querySelectorAll('.katex-display').forEach((eq) => {
+            const w = document.createElement('div');
+            w.style.overflowX = 'auto';
+            w.style.width = '100%';
+            w.appendChild(eq.cloneNode(true));
+            eq.replaceWith(w);
+          });
+
+        } catch (error) {
+          contentDiv.innerHTML = '<p>Error rendering content</p>';
+          console.error('Markdown rendering error:', error);
+        }
+
+        // Hide broken images
+        document.querySelectorAll('img').forEach(img => {
+          img.onerror = () => { img.style.display = 'none'; };
+        });
+      });
     </script>
   </body>
   </html>
-    `;
+  `;
 };
 
 export default generateHTML;

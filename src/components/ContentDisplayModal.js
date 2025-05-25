@@ -31,6 +31,8 @@ const ContentDisplayModal = React.memo(({
     >
       <SafeAreaView style={styles.modalOverlay}>
         <View style={styles.modalView}>
+
+          {/* Header */}
           <View style={styles.modalHeader}>
             <View style={styles.modalTitleContainer}>
               <Icon
@@ -38,36 +40,43 @@ const ContentDisplayModal = React.memo(({
                 name={titleIconName}
                 size={20}
                 color={COLORS.text || '#000000'}
-                style={styles.modalTitleIcon}
               />
               <Text style={styles.modalTitle}>{title}</Text>
             </View>
             <TouchableOpacity onPress={onClose} style={styles.modalCloseButton}>
-              <Icon iconSet="Ionicons" name="close" size={28} color={COLORS.textSecondary || '#8E8E93'} />
+              <Icon
+                iconSet="Ionicons"
+                name="close"
+                size={28}
+                color={COLORS.textSecondary || '#8E8E93'}
+              />
             </TouchableOpacity>
           </View>
-            <View style={{flex: 1, margin: 10, marginTop:0}}>
+
+          {/* Content */}
+          <View style={{ flex: 1, margin: 10, marginTop: 0 }}>
             <WebView
-            originWhitelist={['*']}
-            source={{ html: htmlContent }}
-            style={[styles.modalWebView,{margin: 10, flexWrap: 'wrap'}]}
-            javaScriptEnabled={true}
-            domStorageEnabled={true}
-            mixedContentMode="compatibility"
-            startInLoadingState={true}
-            renderLoading={() => (
-              <View style={styles.modalLoadingView}>
-                <ActivityIndicator size="large" color={COLORS.primary || '#007AFF'} />
-              </View>
-            )}
-            onError={(syntheticEvent) => {
-              const { nativeEvent } = syntheticEvent;
-              console.error('Modal WebView error:', nativeEvent);
-              Alert.alert("Error", "Could not load content fully.");
-              onClose();
-            }}
-          />
-            </View>
+              originWhitelist={['*']}
+              source={{ html: htmlContent }}
+              style={styles.modalWebView}
+              javaScriptEnabled={true}
+              domStorageEnabled={true}
+              mixedContentMode="compatibility"
+              startInLoadingState={true}
+              renderLoading={() => (
+                <View style={styles.modalLoadingView}>
+                  <ActivityIndicator size="large" color={COLORS.primary || '#007AFF'} />
+                </View>
+              )}
+              onError={(syntheticEvent) => {
+                const { nativeEvent } = syntheticEvent;
+                console.error('Modal WebView error:', nativeEvent);
+                Alert.alert("Error", "Could not load content fully.");
+                onClose();
+              }}
+            />
+          </View>
+
         </View>
       </SafeAreaView>
     </Modal>
@@ -84,7 +93,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surface || '#FFFFFF',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    paddingHorizontal: 0, // Content padding is handled by WebView style or content
     paddingBottom: Platform.OS === 'ios' ? 30 : 20,
     maxHeight: '95%',
     minHeight: '60%',
@@ -109,9 +117,6 @@ const styles = StyleSheet.create({
     gap: 8,
     flex: 1,
   },
-  modalTitleIcon: {
-    // marginRight: 10, // Replaced by gap
-  },
   modalTitle: {
     fontSize: 16,
     fontWeight: '600',
@@ -125,7 +130,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     backgroundColor: COLORS.surface || '#FFFFFF',
-    margin: 10, // Added margin around webview content
+    // No margins here — container View handles spacing
   },
   modalLoadingView: {
     position: 'absolute',
