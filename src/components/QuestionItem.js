@@ -11,21 +11,22 @@ import {
   ActivityIndicator,
   Modal,
 } from 'react-native';
-import MarkdownDisplay from 'react-native-markdown-display';
+import { WebView } from 'react-native-webview';
 import { COLORS, UNCAT_CHAPTER_NAME } from '../constants';
 import { getQuestionPlainText } from '../helpers/helpers';
 import { toggleBookmark, isQuestionBookmarked } from '../helpers/bookmarkHelpers';
 import Icon from './Icon';
 import { Share, Alert } from 'react-native';
 
-// Custom Image View component to handle images in markdown
+const screenWidth = Dimensions.get('window').width;
+const maxImageWidth = screenWidth - 2 * 15 - 20;
+
 const CustomImageView = ({ src, alt }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const [imageHeight, setImageHeight] = useState(150);
 
-  // Pre-calculate image dimensions to maintain aspect ratio
   useEffect(() => {
     if (src && !hasError) {
       Image.getSize(src, (width, height) => {
@@ -64,8 +65,8 @@ const CustomImageView = ({ src, alt }) => {
           <Text style={styles.errorText}>Failed to load image</Text>
         </View>
       ) : (
-        <TouchableOpacity 
-          onPress={handleImagePress} 
+        <TouchableOpacity
+          onPress={handleImagePress}
           activeOpacity={0.9}
           style={styles.imageTouchable}
         >
@@ -74,7 +75,6 @@ const CustomImageView = ({ src, alt }) => {
             style={[styles.questionImage, { height: imageHeight, opacity: isLoading ? 0 : 1 }]}
             accessibilityLabel={alt || 'Question Image'}
             onLoadEnd={() => {
-              // Add a small delay to prevent flickering
               setTimeout(() => setIsLoading(false), 100);
             }}
             onError={(error) => {
@@ -85,11 +85,11 @@ const CustomImageView = ({ src, alt }) => {
           />
           {!isLoading && (
             <View style={styles.imageOverlay}>
-              <Icon 
-                iconSet="Ionicons" 
-                name="expand-outline" 
-                size={20} 
-                color={COLORS.surface} 
+              <Icon
+                iconSet="Ionicons"
+                name="expand-outline"
+                size={20}
+                color={COLORS.surface}
               />
             </View>
           )}
@@ -102,14 +102,14 @@ const CustomImageView = ({ src, alt }) => {
               <Icon iconSet="Ionicons" name="close" size={24} color={COLORS.surface} />
             </TouchableOpacity>
           </View>
-          <TouchableOpacity 
-            style={styles.modalImageContainer} 
-            onPress={handleCloseModal} 
+          <TouchableOpacity
+            style={styles.modalImageContainer}
+            onPress={handleCloseModal}
             activeOpacity={1}
           >
-            <Image 
-              source={{ uri: src }} 
-              style={styles.fullScreenImage} 
+            <Image
+              source={{ uri: src }}
+              style={styles.fullScreenImage}
               resizeMode="contain"
               accessibilityLabel={alt || 'Full Screen Image'}
             />
@@ -125,17 +125,15 @@ const CustomImageView = ({ src, alt }) => {
   );
 };
 
-// Function to parse markdown content and extract image links
 const parseMarkdownContent = (text) => {
   if (!text) return [{ type: 'text', content: '' }];
-  
+
   const imageRegex = /!\[(.*?)\]\((.*?)\)/g;
   const parts = [];
   let lastIndex = 0;
   let match;
 
   while ((match = imageRegex.exec(text)) !== null) {
-    // Add text before the image
     if (match.index > lastIndex) {
       parts.push({
         type: 'text',
@@ -143,7 +141,6 @@ const parseMarkdownContent = (text) => {
       });
     }
 
-    // Add the image
     parts.push({
       type: 'image',
       alt: match[1],
@@ -153,7 +150,6 @@ const parseMarkdownContent = (text) => {
     lastIndex = match.index + match[0].length;
   }
 
-  // Add remaining text after the last image
   if (lastIndex < text.length) {
     parts.push({
       type: 'text',
@@ -161,7 +157,6 @@ const parseMarkdownContent = (text) => {
     });
   }
 
-  // If no images were found, return the entire text
   if (parts.length === 0) {
     parts.push({
       type: 'text',
@@ -172,82 +167,123 @@ const parseMarkdownContent = (text) => {
   return parts;
 }
 
+const generateHTML = (markdownContent) => {
+  const escapedData = JSON.stringify(markdownContent)
+    .replace(/</g, '\\u003c')
+    .replace(/\//g, '\\/');
 
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/13.0.1/markdown-it.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/markdown-it-texmath@1.0.0/texmath.min.js"></script>
+  <style>
+    body {
+      padding: 0px;
+      font-family: -apple-system, sans-serif;
+      line-height: 1.4;
+      font-size: 17px;
+      line-height: 25px;
+      color: ${COLORS.text};
+      font-weight: 400;
+    }
+    pre {
+      background-color: ${COLORS.disabledBackground};
+      padding: 8px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: ${Platform.OS === 'ios' ? 'Menlo' : 'monospace'};
+      background-color: ${COLORS.disabledBackground};
+      border-radius: 8px;
+      padding: 8px;
+      font-size: 14px;
+      color: ${COLORS.text};
+    }
+    code {
+      background-color: ${COLORS.disabledBackground};
+      padding-horizontal: 4px;
+      padding-vertical: 1px;
+      border-radius: 3px;
+      font-family: ${Platform.OS === 'ios' ? 'Menlo' : 'monospace'};
+      font-size: 14px;
+      color: ${COLORS.text};
+    }
+    h1 {
+      font-size: 22px;
+      font-weight: bold;
+      color: ${COLORS.primary};
+      margin-bottom: 5px;
+      margin-top: 10px;
+    }
+    h2 {
+      font-size: 20px;
+      font-weight: bold;
+      color: ${COLORS.primary};
+      margin-bottom: 5px;
+      margin-top: 8px;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+    .katex { font-size: 1em !important; }
+    .katex-display { margin: 1em 0; }
+  </style>
+</head>
+<body>
+  <div id="content"></div>
 
-const markdownStyles = StyleSheet.create({
-  body: {
-    fontSize: 17,
-    lineHeight: 25,
-    color: COLORS.text,
-    fontWeight: '400',
-  },
-  code_block: {
-    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
-    backgroundColor: COLORS.disabledBackground,
-    borderRadius: 8,
-    padding: 8,
-    fontSize: 14,
-    color: COLORS.text,
-  },
-  code_inline: {
-    backgroundColor: COLORS.disabledBackground,
-    paddingHorizontal: 4,
-    paddingVertical: 1,
-    borderRadius: 3,
-    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
-    fontSize: 14,
-    color: COLORS.text,
-  },
-  bullet_list: {
-    marginLeft: 10,
-  },
-  ordered_list: {
-    marginLeft: 10,
-  },
-  heading1: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: COLORS.primary,
-    marginBottom: 5,
-    marginTop: 10,
-  },
-  heading2: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: COLORS.primary,
-    marginBottom: 5,
-    marginTop: 8,
-  },
-  blockquote: {
-    backgroundColor: '#f9f9f9',
-    borderLeftColor: '#ccc',
-    borderLeftWidth: 5,
-    marginVertical: 5,
-    padding: 10,
-  },
-  strong: {
-    fontWeight: 'bold',
-  },
-  em: {
-    fontStyle: 'italic',
-  },
-});
+  <script>
+    (function() {
+      document.addEventListener('DOMContentLoaded', function() {
+        const data = ${escapedData};
 
-const screenWidth = Dimensions.get('window').width;
-const maxImageWidth = screenWidth - 2 * 15 - 20;
+        const md = window.markdownit({
+          html: true,
+          linkify: true,
+          typographer: true
+        });
 
+        const tm = window.texmath.use(window.katex, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false },
+            { left: "\\\(", right: "\\\)", display: false },
+            { left: "\\\\[", right: "\\\\]", display: true }
+          ]
+        });
 
+        md.use(tm);
+
+        const contentDiv = document.getElementById('content');
+        try {
+          contentDiv.innerHTML = md.render(data);
+        } catch (error) {
+          contentDiv.innerHTML = '<p>Error rendering content</p>';
+          console.error('Markdown rendering error:', error);
+        }
+
+        document.querySelectorAll('img').forEach(img => {
+          img.onerror = () => {
+            img.style.display = 'none';
+          };
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
+  `;
+};
 
 const QuestionItem = React.memo(
   ({ item, isCompleted, onToggleComplete, onCopy, onSearch, onAskAI }) => {
     const plainText = useMemo(
       () => getQuestionPlainText(item.text),
-      [item.text]
-    );
-
-    // Parse markdown content to separate text and images
-    const parsedContent = useMemo(
-      () => parseMarkdownContent(item.text),
       [item.text]
     );
 
@@ -276,7 +312,6 @@ const QuestionItem = React.memo(
       onAskAI(item);
     }, [onAskAI, item]);
 
-    // --- SHARE AS TEXT (Expo Go Safe) ---
     const handleShareText = async () => {
       try {
         await Share.share({
@@ -345,20 +380,24 @@ const QuestionItem = React.memo(
           </View>
         )}
         <View style={styles.markdownContainer}>
-          {parsedContent.map((part, index) => {
-            if (part.type === 'image') {
-              return <CustomImageView key={index} src={part.src} alt={part.alt} />;
-            } else {
-              return (
-                <MarkdownDisplay
-                  key={index}
-                  style={markdownStyles}
-                >
-                  {part.content}
-                </MarkdownDisplay>
-              );
-            }
-          })}
+          <WebView
+            originWhitelist={['*']}
+            source={{ html: generateHTML(item.text) }}
+            style={styles.webview}
+            javaScriptEnabled={true}
+            domStorageEnabled={true}
+            mixedContentMode="compatibility"
+            onError={(syntheticEvent) => {
+              const { nativeEvent } = syntheticEvent;
+              console.error('WebView error:', nativeEvent);
+            }}
+            startInLoadingState={true}
+            renderLoading={() => (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="small" color={COLORS.primary} />
+              </View>
+            )}
+          />
         </View>
         <View style={styles.actionsRow}>
           <View style={styles.actionsLeft}>
@@ -376,7 +415,6 @@ const QuestionItem = React.memo(
             >
               <Icon iconSet="Ionicons" name="copy-outline" size={22} color={COLORS.textSecondary} />
             </TouchableOpacity>
-            {/* --- SHARE AS TEXT BUTTON --- */}
             <TouchableOpacity
               onPress={handleShareText}
               style={styles.iconButton}
@@ -521,7 +559,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexShrink: 1,
     margin: 10,
-
   },
   tag: {
     borderRadius: 12,
@@ -613,6 +650,16 @@ const styles = StyleSheet.create({
   bookmarkButton: {
     marginHorizontal: 8,
     padding: 2,
+  },
+  webview: {
+    flex: 1,
+    minHeight: 100,
+    width: '100%',
+  },
+  loadingContainer: {
+    height: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

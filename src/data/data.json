@@ -1915,7 +1915,6 @@
                   "type": "Code",
                   "marks": 7
                 },
-        
                 {
                   "questionId": "it_100313_2021_Q1a",
                   "year": 2021,
@@ -6593,8 +6592,103 @@
               "id": "cse_100311",
               "name": "MATHEMATICS-III (DIFFERENTIAL CALCULUS)",
               "code": "100311",
-              "modules": [],
-              "questions": []
+              "modules": [
+                {
+                  "id": "m1",
+                  "name": "Module 1: Differential Equations",
+                  "description": "Formation of differential equations, Solutions of first order differential equation, Exact differential equations, equations reducible to exact forms.",
+                  "lectures": 8
+                },
+                {
+                  "id": "m2",
+                  "name": "Module 2: Linear Differential Equations",
+                  "description": "Linear differential equations with constant coefficients, complementary function, particular integral, solution of Cauchy-Euler equations, Applications of Linear Differential Equations to Electrical Circuits.",
+                  "lectures": 10
+                },
+                {
+                  "id": "m3",
+                  "name": "Module 3: Laplace Transform",
+                  "description": "Laplace Transform, Properties of Laplace Transform, Laplace Transform of Derivatives and Integrals, Inverse Laplace Transform, Convolution Theorem, Application to solve Linear Differential Equations.",
+                  "lectures": 10
+                },
+                {
+                  "id": "m4",
+                  "name": "Module 4: Infinite Series",
+                  "description": "Convergence and divergence of Infinite Series, Tests for Convergence, Power Series, Taylor Series, Maclaurin Series.",
+                  "lectures": 8
+                },
+                {
+                  "id": "m5",
+                  "name": "Module 5: Fourier Series",
+                  "description": "Periodic Function, Fourier Series, Dirichlet’s Conditions, Euler’s Formulae, Functions having points of discontinuity, Change of interval, Odd and Even functions, Half range series.",
+                  "lectures": 10
+                }
+              ],
+              "questions": [
+                {
+                  "questionId": "cse_100311_2023_Q1a",
+                  "year": 2023,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 1: Differential Equations",
+                  "text": "The order of the differential equation $(d^2y/dx^2)^3 + (dy/dx)^4 + y = 0$ is:\n(i) 2\n(ii) 3\n(iii) 4\n(iv) 0",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100311_2023_Q1b",
+                  "year": 2023,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 3: Laplace Transform",
+                  "text": "The Laplace transform of $\\cos(at)$ is:\n(i) $a / (s^2 + a^2)$\n(ii) $s / (s^2 + a^2)$\n(iii) $a / (s^2 - a^2)$\n(iv) $s / (s^2 - a^2)$",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "cse_100311_2023_Q2a",
+                  "year": 2023,
+                  "qNumber": "Q2a",
+                  "chapter": "Module 2: Linear Differential Equations",
+                  "text": "Solve the differential equation: $(D^2 + 4D + 4)y = e^{-2x}$",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100311_2023_Q2b",
+                  "year": 2023,
+                  "qNumber": "Q2b",
+                  "chapter": "Module 3: Laplace Transform",
+                  "text": "Find the Laplace transform of $f(t) = t * \\sin(t)$.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100311_2023_Q3",
+                  "year": 2023,
+                  "qNumber": "Q3",
+                  "chapter": "Module 5: Fourier Series",
+                  "text": "Find the Fourier series for the function $f(x) = x$, $-\\pi < x < \\pi$.",
+                  "type": "Problem",
+                  "marks": 14
+                },
+                {
+                  "questionId": "cse_100311_2023_Q4a",
+                  "year": 2023,
+                  "qNumber": "Q4a",
+                  "chapter": "Module 4: Infinite Series",
+                  "text": "Test the convergence of the series: $\\Sigma (1/n^2)$, from n=1 to infinity.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "cse_100311_2023_Q4b",
+                  "year": 2023,
+                  "qNumber": "Q4b",
+                  "chapter": "Module 1: Differential Equations",
+                  "text": "Solve the differential equation: $dy/dx + y/x = x^2$.",
+                  "type": "Problem",
+                  "marks": 7
+                }
+              ]
             },
             {
               "id": "cse_100313",
