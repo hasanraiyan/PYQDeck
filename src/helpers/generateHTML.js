@@ -20,6 +20,7 @@ const generateHTML = (markdownContent) => {
     <style>
       body {
         padding: 0px;
+        margin: 0px;
         font-family: -apple-system, sans-serif;
         line-height: 1.4;
         font-size: 17px;

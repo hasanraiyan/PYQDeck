@@ -39,7 +39,7 @@ import {
 import LoadingIndicator from '../components/LoadingIndicator';
 import ErrorMessage from '../components/ErrorMessage';
 import EmptyState from '../components/EmptyState';
-import MemoizedQuestionItem from '../components/QuestionItem';
+import QuestionItem from '../components/QuestionItem';
 
 const QuestionListScreen = ({ route, navigation }) => {
     const {
@@ -309,7 +309,7 @@ const QuestionListScreen = ({ route, navigation }) => {
     // Pass a function to onAskAI that calls handleAskAI with the specific item
     const renderQuestionItem = useCallback(
         ({ item }) => (
-            <MemoizedQuestionItem
+            <QuestionItem
                 item={item}
                 isCompleted={!!completionStatus[item.questionId]}
                 onToggleComplete={handleToggleComplete}
