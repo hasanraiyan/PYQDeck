@@ -50,7 +50,7 @@ const ContentDisplayModal = React.memo(({
             <WebView
             originWhitelist={['*']}
             source={{ html: htmlContent }}
-            style={[styles.modalWebView,{margin: 10}]}
+            style={[styles.modalWebView,{margin: 10, flexWrap: 'wrap'}]}
             javaScriptEnabled={true}
             domStorageEnabled={true}
             mixedContentMode="compatibility"
