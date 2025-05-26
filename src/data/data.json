@@ -4509,6 +4509,195 @@
                   "text": "Solve the following differential equations: $$(p^2+q^2)y = qz$$",
                   "type": "Problem",
                   "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2022_Q1a",
+                  "year": 2022,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 1: Single Variable Calculus Fundamentals",
+                  "text": "(b) The value of the integral\n$$\\int_C \\{yzdx + (xz + 1)dy + xydz\\}$$ \nWhere C is any path from $(1, 0, 0)$ to $(2, 1, 4)$ is\n(i) 6 (ii) 7\n(iii) 8 (iv) 9",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2022_Q1b",
+                  "year": 2022,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 3: Vector Calculus",
+                  "text": "The value of the integral $\\int_C (y z \\, dx + (x z + 1) \\, dy + x y \\, dz)$ where $C$ is any path from $(1,0,0)$ to $(2,1,4)$ is\n(i) 6\n(ii) 7\n(iii) 8\n(iv) 9",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2022_Q1c",
+                  "year": 2022,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 2: Multivariable Calculus - Differentiation and Optimization",
+                  "text": "The maximum value of $\\sin x + \\cos x$ is\n(i) 1\n(ii) 2\n(iii) $\\sqrt{2}$\n(iv) 0",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2022_Q1d",
+                  "year": 2022,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 5: Higher Order Ordinary Differential Equations and Special Functions",
+                  "text": "The value of $\\nabla^2 [(1-x)(1-2x)]$ is equal to \n(i) 2\n(ii) 3\n(iii) 4\n(iv) 6",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2022_Q1e",
+                  "year": 2022,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 4: First Order Ordinary Differential Equations",
+                  "text": "The degree of the differential equation $$ y \\frac{dx}{dy} - (\\frac{dx}{dy})^2 - \\sin y (\\frac{dx}{dy})^3 - \\cos x = 0 $$ is\n(i) 0\n(ii) 1\n(iii) 2\n(iv) Cannot be determined",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2022_Q1f",
+                  "year": 2022,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 3: Vector Calculus",
+                  "text": "If $f = \\tan^{-1} \\frac{y}{x}$, then div(grad $f$) is equal to\n(i) 1\n(ii) -1\n(iii) 0\n(iv) 2",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2022_Q1g",
+                  "year": 2022,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 5: Higher Order Ordinary Differential Equations and Special Functions",
+                  "text": "If $P_n$ is the Legendre polynomial of the first kind, then the value of $\\int_{-1}^{1} x P_n(x) P_n'(x) \\, dx$ is\n(i) $\\frac{2}{2n+1}$\n(ii) $\\frac{2n}{2n+1}$\n(iii) $\\frac{2}{2n+3}$\n(iv) $\\frac{2n}{2n+3}$",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2022_Q1h",
+                  "year": 2022,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 5: Higher Order Ordinary Differential Equations and Special Functions",
+                  "text": "If $J_n$ is the Bessel's function of first kind, then the value of $J_{-1/2}$ is\n(i) $\\sqrt{\\frac{2}{\\pi x}}(\\frac{\\cos x}{x} - \\sin x)$\n(ii) $\\sqrt{\\frac{2}{\\pi x}}(\\frac{\\sin x}{x} - \\cos x)$\n(iii) $\\sqrt{\\frac{2}{\\pi x}}\\sin x$\n(iv) $\\sqrt{\\frac{2}{\\pi x}}\\cos x$\n",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2022_Q1i",
+                  "year": 2022,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 6: First Order Partial Differential Equations",
+                  "text": "The solution of $p \\tan x + q \\tan y = \\tan z$ is\n(i) $\\sin x / \\sin y = \\phi(\\sin y / \\sin z)$\n(ii) $\\sin x \\cdot \\sin y = \\phi(\\sin y / \\sin z)$\n(iii) $\\sin x / \\sin y = \\phi(\\sin y, \\sin z)$\n(iv) $\\sin x / \\sin y = \\phi(\\sin y \\cdot \\sin z)$",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2022_Q1j",
+                  "year": 2022,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 3: Vector Calculus",
+                  "text": "The vector $\\vec{v} = e^x \\sin y \\hat{i} + e^x \\cos y \\hat{j}$ is\n(i) Solenoidal\n(ii) irrotational\n(iii) rotational\n(iv) cannot be found",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2022_Q2a",
+                  "year": 2022,
+                  "qNumber": "Q2a",
+                  "chapter": "Module 6: First Order Partial Differential Equations",
+                  "text": "Form the partial differential equation $(x-a)^2 + (y-b)^2 + z^2 = 1$.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2022_Q2b",
+                  "year": 2022,
+                  "qNumber": "Q2b",
+                  "chapter": "Module 6: First Order Partial Differential Equations",
+                  "text": "Solve $xp+yq=3z$.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2022_Q3a",
+                  "year": 2022,
+                  "qNumber": "Q3a",
+                  "chapter": "Module 3: Vector Calculus",
+                  "text": "Find the directional derivative of $\\phi = x^2yz + 4xz^2$ at the point $(1,-2,1)$ in the direction of the vector $2\\hat{i} - \\hat{j} - 2\\hat{k}$.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2022_Q3b",
+                  "year": 2022,
+                  "qNumber": "Q3b",
+                  "chapter": "Module 3: Vector Calculus",
+                  "text": "Find a unit vector normal to the surface $x^3+y^3+3xyz=3$ at the point $(1,2,-1)$.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2022_Q4a",
+                  "year": 2022,
+                  "qNumber": "Q4a",
+                  "chapter": "Module 6: First Order Partial Differential Equations",
+                  "text": "Solve partial differential equation $\\frac{y^2z}{x}p + xzq = y^2.$",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2022_Q4b",
+                  "year": 2022,
+                  "qNumber": "Q4b",
+                  "chapter": "Module 2: Multivariable Calculus - Differentiation and Optimization",
+                  "text": "Show that the function $f(x,y) = \\begin{cases} \\frac{xy}{\\sqrt{x^2+y^2}}, & (x,y) \\neq (0,0) \\\\ 0, & (x,y) = (0,0) \\end{cases}$ is continuous at origin.",
+                  "type": "Proof",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2022_Q5a",
+                  "year": 2022,
+                  "qNumber": "Q5a",
+                  "chapter": "Module 3: Vector Calculus",
+                  "text": "If $f=(x^2+y^2+z^2)^{-n}$, then find div grad $f$ and determine $n$, if div grad $f=0$.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2022_Q5b",
+                  "year": 2022,
+                  "qNumber": "Q5b",
+                  "chapter": "Module 3: Vector Calculus",
+                  "text": "Verify Green's theorem for $$\\oint_{C}\\{(xy + y^2)dx + x^2dy\\}$$\nWhere C is bounded by $y = x, y = x^2$.",
+                  "type": "Verification",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2022_Q6a",
+                  "year": 2022,
+                  "qNumber": "Q6a",
+                  "chapter": "Module 3: Vector Calculus",
+                  "text": "Evaluate the integral by changing the order of integration\n $$\\iint_{\\infty 0}^{\\infty x} xe^{\\frac{x^2}{y}} dydx$$",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2022_Q6b",
+                  "year": 2022,
+                  "qNumber": "Q6b",
+                  "chapter": "Module 4: First Order Ordinary Differential Equations",
+                  "text": "Solve the differential equation $(x^2+y^2+x)dx - (2x^2+2y^2-y)dy = 0$.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2022_Q7",
+                  "year": 2022,
+                  "qNumber": "Q7",
+                  "chapter": "Module 3: Vector Calculus",
+                  "text": "Verify the stokes' theorem for $\\vec{A} = (y-z+2)\\hat{i} + (yz+4)\\hat{j} - xz\\hat{k}$ Where S is the surface of the cube $x=0, y=0, z=0, x=2, y=2$ and $z=2$ above the xy-plane.",
+                  "type": "Verification",
+                  "marks": 14
                 }
               ]
             },
