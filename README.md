@@ -8,7 +8,7 @@ PYQDeck is a cross-platform mobile application (iOS & Android) and a web interfa
 [![React Native](https://img.shields.io/badge/React%20Native-0.79.2-61DAFB?logo=react&logoColor=white)](https://reactnative.dev/)
 [![Expo](https://img.shields.io/badge/Expo-53.0.8-000020?logo=expo&logoColor=white)](https://expo.dev/)
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6%2B-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[![Version](https://img.shields.io/badge/Version-3.0.1-blue.svg)](package.json)
+[![Version](https://img.shields.io/badge/Version-3.1.0-blue.svg)](package.json)
 
 ## Overview
 
