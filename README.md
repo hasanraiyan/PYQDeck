@@ -133,41 +133,51 @@ hasanraiyan-pyqdeck/
         # or
         yarn web
         ```
-        The `web/index.html` file can also be opened directly in a browser, but data fetching might require it to be served by a local server or for the `data.json` path to be adjusted/hosted.
+        The `web/index.html` file can also be opened directly in a browser. It is configured to fetch `data.json` from `https://raw.githubusercontent.com/hasanraiyan/PYQDeck/main/src/data/data.json`.
 
 4.  **API Keys:**
-    *   The AI feature in `src/helpers/openaiHelper.js` currently uses a placeholder API key and the Pollinations AI proxy. For direct OpenAI integration, you would need to replace `"dummmy-key"` with a valid OpenAI API key and potentially adjust the API endpoint.
+    *   The AI feature in `src/helpers/openaiHelper.js` currently uses a placeholder API key (`"skfhjkdgkjxlkhlkcvgkefh"`) and the Pollinations AI proxy. For direct OpenAI integration or production use, replace this with a valid OpenAI API key and potentially adjust the API endpoint and model names.
 
 ## Data Source
 
 The primary source of Past Year Questions is `src/data/data.json`. This JSON file follows a hierarchical structure:
 `Branches -> Semesters -> Subjects -> Questions`
-Each question object contains details like `questionId`, `year`, `qNumber`, `chapter`, `text` (in Markdown), `type`, and `marks`.
+Each subject also contains a `modules` array detailing the syllabus. Each question object contains details like `questionId`, `year`, `qNumber`, `chapter` (mapped to a module), `text` (in Markdown, can include image URLs or data URIs), `type`, and `marks`.
 
 ## Key Components & Logic
 
-*   **`QuestionItem.js`:** A central component responsible for displaying an individual question, its header (year, marks, chapter), actions (copy, search, AI), and managing its bookmarked/completed state.
+*   **`QuestionItem.js`:** A central component responsible for displaying an individual question, its header (year, marks, chapter), actions (copy, share, search, AI), and managing its bookmarked/completed state. It uses `QuestionHeader.js`, `QuestionContentPreview.js`, and `QuestionActionsBar.js`.
 *   **Modal Components:**
-    *   `AIChatModal.js`: Provides an interface to interact with the AI assistant for a selected question.
-    *   `ContentDisplayModal.js`: Shows the full question content in a WebView if it's too long for the preview.
-    *   `SearchWebViewModal.js`: An in-app browser for Google searches.
-*   **`generateHTML.js`:** Dynamically creates an HTML string to render question content (Markdown, KaTeX, images, code blocks) within a WebView in the React Native app.
+    *   `AIChatModal.js`: A significantly enhanced modal providing an animated interface to interact with the AI assistant. Supports multiple request types (solve, explain concepts, get video search tags), shows dynamic loading states, and handles errors gracefully.
+    *   `ContentDisplayModal.js`: Shows the full question content in a WebView if it's too long for the preview or if the user taps to expand.
+    *   `SearchWebViewModal.js`: An in-app browser for Google searches, featuring navigation controls (back, forward), a progress bar, a "more options" menu (reload, share, open in external browser), and custom User-Agent.
+*   **`generateHTML.js`:** Dynamically creates an HTML string to render question content (Markdown, KaTeX, images, code blocks) within a WebView. Uses CDN versions of Markdown-it, KaTeX, and Highlight.js. Styles are embedded for consistent rendering, including a body background color matching the AI response container.
 *   **Helper Modules (`src/helpers/`):**
     *   `bookmarkHelpers.js`: Manages bookmarking functionality using AsyncStorage.
-    *   `helpers.js`: Contains core utility functions for data retrieval (`findData`), completion status management, last journey, streak tracking, clipboard operations, linking, debouncing, and PYQ data storage in SecureStore (chunked for larger data).
-    *   `openaiHelper.js`: Handles API calls to the AI service, including formatting the prompt with question context.
-*   **Navigation (`src/navigation/AppNavigator.js`):** Uses React Navigation's native stack navigator to manage screen transitions. `CustomHeader.js` provides a consistent header across screens.
-*   **Data Flow:** Screens fetch data using `findData` (from `beuData.js` which imports `data.json`) or `getSemesterPYQsFromSecureStore` (for offline cached data). User interactions like completing or bookmarking questions update AsyncStorage.
+    *   `helpers.js`: Contains core utility functions:
+        *   Data retrieval (`findData` from `beuData.js` which imports `data.json`).
+        *   Completion status management (single and bulk using AsyncStorage).
+        *   Last journey persistence (`saveLastJourney`, `loadLastJourney`).
+        *   Daily streak tracking (`updateDailyStreak`, `getStreakInfo`, `checkAndResetStreak`).
+        *   Clipboard operations, linking, debouncing.
+        *   PYQ data caching in SecureStore (`saveSemesterPYQsToSecureStore`, `getSemesterPYQsFromSecureStore`, `isSemesterPYQDownloaded`), using chunking for larger data.
+    *   `openaiHelper.js`: Handles API calls to the AI service (OpenAI via Pollinations proxy). Manages different `REQUEST_TYPES`, builds context-rich prompts (including image data if present in question HTML), and formats requests for the AI.
+*   **Navigation (`src/navigation/AppNavigator.js`):** Uses React Navigation's native stack navigator. `CustomHeader.js` provides a consistent header across screens.
+*   **Data Flow & Screens:**
+    *   Screens like `BranchListScreen`, `SemesterListScreen`, `SubjectListScreen`, `ChapterSelectionScreen`, `YearSelectionScreen` display lists with progress indicators.
+    *   `QuestionListScreen` fetches data using `findData` or `getSemesterPYQsFromSecureStore` (for offline cached data). It handles filtering, sorting, and displays questions using `QuestionItem`. It integrates with `AIChatModal` for AI assistance and updates streaks on question completion.
+    *   User interactions like completing or bookmarking questions update AsyncStorage.
+    *   `BranchListScreen` includes a "Resume Last Journey" feature and displays streak information.
 
 ## Web Version (`web/index.html`)
 
 The `web/` directory contains a standalone HTML file that provides a simplified web-based interface for PYQDeck.
 *   It uses **Alpine.js** for interactivity and **Tailwind CSS** (via CDN) for styling.
-*   It fetches data directly from the `data.json` file (assumed to be hosted or accessible at `https://raw.githubusercontent.com/hasanraiyan/PYQDeck/main/src/data/data.json`).
-*   Users can navigate through branches, semesters, subjects, and view questions.
-*   Question text is formatted from Markdown (simple regex-based conversion in Alpine.js logic).
-*   Includes links to search the question on Google or "Ask AI" (configurable AI assistant via settings).
-*   Supports dark mode and basic settings persistence via `localStorage`.
+*   It fetches data directly from `https://raw.githubusercontent.com/hasanraiyan/PYQDeck/main/src/data/data.json`.
+*   Users can navigate through branches, semesters, subjects, and view questions (organized by 'all', 'chapter', or 'year').
+*   Question text is formatted from Markdown using a simple regex-based conversion within Alpine.js logic. Images are also rendered.
+*   Includes links to search the question on Google or "Ask AI". The AI assistant (e.g., ChatGPT, Perplexity) can be configured via a settings modal.
+*   Supports dark mode. Settings (AI preference, dark mode) are persisted via `localStorage`.
 
 ## Developer
 
@@ -175,8 +185,4 @@ PYQDeck is developed by **Raiyan Hasan**.
 
 *   **Email:** [raiyanhasan2006@gmail.com](mailto:raiyanhasan2006@gmail.com)
 *   **GitHub:** [hasanraiyan](https://github.com/hasanraiyan)
-*   **Portfolio/Website:** [https://hasanraiyan.github.io/Portfolio](https://hasanraiyan.github.io/Portfolio) (or pyqdeck.vercel.app as per DeveloperInfoScreen)
-
----
-
-This README provides a comprehensive overview of PYQDeck. For specific code details, please refer to the source files.
+*   **Portfolio/Website:** [https://hasanraiyan.github.io/Portfolio](https://hasanraiyan.github.io/Portfolio) (or [pyqdeck.vercel.app](https://pyqdeck.vercel.app) as per DeveloperInfoScreen)
