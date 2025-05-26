@@ -50,28 +50,28 @@ const AIChatModal = React.memo(({
     }, [visible, aiResponse, isLoading, error]);
 
     const handleCopyResponse = useCallback(async () => {
-        console.log('[AIChatModal] handleCopyResponse: CALLED'); // Log 1
+        // console.log('[AIChatModal] handleCopyResponse: CALLED'); // Log 1
         setIsActionsMenuVisible(false);
         if (aiResponse) {
             try {
-                console.log('[AIChatModal] handleCopyResponse: Attempting to copy:', aiResponse.substring(0, 50) + "..."); // Log 2
+                // console.log('[AIChatModal] handleCopyResponse: Attempting to copy:', aiResponse.substring(0, 50) + "..."); // Log 2
                 await Clipboard.setStringAsync(aiResponse);
                 Alert.alert("Copied!", "AI response copied to clipboard.");
             } catch (e) {
-                console.error("[AIChatModal] handleCopyResponse: Failed to copy to clipboard", e);
+                // console.error("[AIChatModal] handleCopyResponse: Failed to copy to clipboard", e);
                 Alert.alert("Error", "Could not copy response to clipboard.");
             }
         } else {
-            console.log('[AIChatModal] handleCopyResponse: No aiResponse to copy.'); // Log 3
+            // console.log('[AIChatModal] handleCopyResponse: No aiResponse to copy.'); // Log 3
             Alert.alert("Nothing to Copy", "There is no AI response available to copy.");
         }
     }, [aiResponse]);
 
     const handleRegenerate = useCallback(() => {
-        console.log('[AIChatModal] handleRegenerate: CALLED. isLoading:', isLoading); // Log 4
+        // console.log('[AIChatModal] handleRegenerate: CALLED. isLoading:', isLoading); // Log 4
         setIsActionsMenuVisible(false);
         if (typeof onRegenerate === 'function') {
-            console.log('[AIChatModal] handleRegenerate: Calling onRegenerate prop function.'); // Log 5
+            // console.log('[AIChatModal] handleRegenerate: Calling onRegenerate prop function.'); // Log 5
             onRegenerate();
         } else {
             console.warn("[AIChatModal] handleRegenerate: onRegenerate is not a function or not provided.");
@@ -121,7 +121,7 @@ const AIChatModal = React.memo(({
                                 <View style={styles.moreOptionsContainer}>
                                     <TouchableOpacity
                                         onPress={() => {
-                                            console.log('[AIChatModal] Ellipsis icon PRESSED. Current isActionsMenuVisible:', isActionsMenuVisible); // Log 6
+                                            // console.log('[AIChatModal] Ellipsis icon PRESSED. Current isActionsMenuVisible:', isActionsMenuVisible); // Log 6
                                             setIsActionsMenuVisible(v => !v);
                                         }}
                                         style={styles.headerIconButton}
@@ -137,7 +137,7 @@ const AIChatModal = React.memo(({
                                                 <TouchableOpacity
                                                     style={styles.menuItem}
                                                     onPress={() => {
-                                                        console.log('[AIChatModal] "Copy Response" TouchableOpacity: PRESSED'); // Log 7
+                                                        // console.log('[AIChatModal] "Copy Response" TouchableOpacity: PRESSED'); // Log 7
                                                         handleCopyResponse();
                                                     }}
                                                 >
@@ -149,7 +149,7 @@ const AIChatModal = React.memo(({
                                                 <TouchableOpacity
                                                     style={styles.menuItem}
                                                     onPress={() => {
-                                                        console.log('[AIChatModal] "Regenerate" TouchableOpacity: PRESSED. isLoading:', isLoading); // Log 8
+                                                        // console.log('[AIChatModal] "Regenerate" TouchableOpacity: PRESSED. isLoading:', isLoading); // Log 8
                                                         // We don't need to check isLoading here again, as `disabled` prop handles it.
                                                         // If `disabled` is true, this `onPress` shouldn't even fire.
                                                         handleRegenerate();
@@ -247,7 +247,7 @@ const AIChatModal = React.memo(({
                     <Pressable
                         style={styles.fullScreenMenuBackdrop}
                         onPress={() => {
-                             console.log('[AIChatModal] Backdrop PRESSED. Closing menu.'); // Log 9
+                            //  console.log('[AIChatModal] Backdrop PRESSED. Closing menu.'); // Log 9
                              setIsActionsMenuVisible(false);
                         }}
                     />
