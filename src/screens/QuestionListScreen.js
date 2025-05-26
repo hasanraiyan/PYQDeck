@@ -18,6 +18,7 @@ import {
     ScrollView,
     TextInput,
     Alert,
+    ActivityIndicator, // Added for inline loading
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import {
@@ -35,7 +36,6 @@ import {
     getSemesterPYQsFromSecureStore,
     updateDailyStreak,
 } from '../helpers/helpers';
-// REMOVE: askAIWithContext, REQUEST_TYPES (not directly used by QuestionListScreen anymore for initial call)
 
 import LoadingIndicator from '../components/LoadingIndicator';
 import ErrorMessage from '../components/ErrorMessage';
@@ -64,25 +64,34 @@ const QuestionListScreen = ({ route, navigation }) => {
     const [subjectData, setSubjectData] = useState(null);
     const [questions, setQuestions] = useState([]);
     const [completionStatus, setCompletionStatus] = useState({});
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true); // Overall loading for initial data
+    const [loadingStatuses, setLoadingStatuses] = useState(true); // Specific loading for statuses
     const [error, setError] = useState(null);
 
     const [showFeedback, setShowFeedback] = useState(false);
     const [feedbackMessage, setFeedbackMessage] = useState('');
     const feedbackTimerRef = useRef(null);
+    const qlsMountedRef = useRef(true);
+
 
     const [sortBy, setSortBy] = useState('default');
     const [filterCompleted, setFilterCompleted] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
 
-    // AI Chat Modal State
     const [isAIChatModalVisible, setIsAIChatModalVisible] = useState(false);
     const [currentAIQuestion, setCurrentAIQuestion] = useState(null);
-    // REMOVE: initialAiResponse, isAILoading, aiError from QuestionListScreen state
-    // These are now managed within AIChatModal
 
-    // Derived subject context for AI
+    useEffect(() => {
+        qlsMountedRef.current = true;
+        return () => {
+            qlsMountedRef.current = false;
+            if (feedbackTimerRef.current) {
+                clearTimeout(feedbackTimerRef.current);
+            }
+        };
+    }, []);
+
     const subjectContextForAI = useMemo(() => {
         if (!subjectData) return null;
 
@@ -116,7 +125,9 @@ const QuestionListScreen = ({ route, navigation }) => {
 
     const debouncedSearchHandler = useCallback(
         debounce((query) => {
-            setDebouncedSearchQuery(query);
+            if (qlsMountedRef.current) {
+                setDebouncedSearchQuery(query);
+            }
         }, SEARCH_DEBOUNCE_DELAY),
         []
     );
@@ -126,8 +137,9 @@ const QuestionListScreen = ({ route, navigation }) => {
     }, [searchQuery, debouncedSearchHandler]);
 
     const loadData = useCallback(async () => {
-        let isMounted = true;
+        if (!qlsMountedRef.current) return;
         setLoading(true);
+        setLoadingStatuses(true);
         setError(null);
         if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
 
@@ -154,18 +166,21 @@ const QuestionListScreen = ({ route, navigation }) => {
         if (!subject || dataError) {
             const fallback = findData({ branchId, semId, subjectId });
             subject = fallback.subject;
-            fetchedQuestions = fallback.questions;
+            fetchedQuestions = fallback.questions || [];
             dataError = fallback.error;
         }
 
-        if (dataError && isMounted) {
+        if (!qlsMountedRef.current) return;
+
+        if (dataError) {
             setError(dataError);
             setSubjectData(null);
             setLoading(false);
+            setLoadingStatuses(false);
             return;
         }
 
-        if (subject && isMounted) {
+        if (subject) {
             setSubjectData(subject);
             setQuestions(fetchedQuestions);
 
@@ -183,45 +198,62 @@ const QuestionListScreen = ({ route, navigation }) => {
 
             if (fetchedQuestions.length > 0) {
                 const questionIds = fetchedQuestions.map((q) => q.questionId);
-                loadCompletionStatuses(questionIds)
-                    .then((statuses) => {
-                        if (isMounted) setCompletionStatus(statuses);
-                    })
-                    .finally(() => {
-                        if (isMounted) setLoading(false);
-                    });
+                try {
+                    const statuses = await loadCompletionStatuses(questionIds);
+                    if (qlsMountedRef.current) {
+                        setCompletionStatus(statuses);
+                    }
+                } catch (err) {
+                    console.error("Error loading completion statuses in loadData:", err);
+                     if (qlsMountedRef.current) {
+                        setError("Failed to load completion data.");
+                    }
+                } finally {
+                    if (qlsMountedRef.current) {
+                        setLoadingStatuses(false);
+                    }
+                }
             } else {
-                if (isMounted) setLoading(false);
+                 if (qlsMountedRef.current) {
+                    setCompletionStatus({});
+                    setLoadingStatuses(false);
+                 }
             }
-        } else if (isMounted) {
+        } else {
             setError("Subject data could not be loaded.");
             setSubjectData(null);
-            setLoading(false);
         }
-        return () => { isMounted = false; };
+        if (qlsMountedRef.current) {
+            setLoading(false); // Overall loading done once subject/questions are set or error occurs
+        }
+
     }, [branchId, semId, subjectId, organizationMode, selectedYear, selectedChapter, navigation]);
 
 
     useEffect(() => {
-        const cleanup = loadData();
+        loadData(); // Initial load
         return () => {
-            if (typeof cleanup === 'function') cleanup();
-            if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
+            // This cleanup is from the qlsMountedRef effect, no need to duplicate here.
         };
-    }, [loadData]);
+    }, [loadData]); // Rerun if loadData identity changes (due to its deps)
 
     const displayFeedback = useCallback((message) => {
         if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
+        if (!qlsMountedRef.current) return;
+
         setFeedbackMessage(message);
         setShowFeedback(true);
         feedbackTimerRef.current = setTimeout(() => {
-            setShowFeedback(false);
-            setFeedbackMessage('');
-            feedbackTimerRef.current = null;
+            if (qlsMountedRef.current) {
+                setShowFeedback(false);
+                setFeedbackMessage('');
+            }
         }, 2000);
     }, []);
 
     const handleToggleComplete = useCallback(async (questionId, newStatus) => {
+        if (!qlsMountedRef.current) return;
+
         setCompletionStatus((prev) => ({ ...prev, [questionId]: newStatus }));
         await setQuestionCompleted(questionId, newStatus);
         if (newStatus) {
@@ -233,19 +265,20 @@ const QuestionListScreen = ({ route, navigation }) => {
     }, [displayFeedback]);
 
     const handleCopy = useCallback(
-        (text) => copyToClipboard(text, displayFeedback),
+        (text) => copyToClipboard(getQuestionPlainText(text), displayFeedback), // Ensure plain text is copied
         [displayFeedback]
     );
 
-    // AI Related Functions
     const handleAskAI = useCallback((item) => {
-        setCurrentAIQuestion(item); // Set the question context for the modal
-        setIsAIChatModalVisible(true); // Open the modal
-        // DO NOT call AI here anymore. Modal will handle user's choice.
+        if (!qlsMountedRef.current) return;
+        setCurrentAIQuestion(item); 
+        setIsAIChatModalVisible(true);
     }, []); 
 
     const closeAIChatModal = useCallback(() => {
+        if (!qlsMountedRef.current) return;
         setIsAIChatModalVisible(false);
+        setCurrentAIQuestion(null); // Clear the question
     }, []);
 
     const processedQuestions = useMemo(() => {
@@ -307,7 +340,7 @@ const QuestionListScreen = ({ route, navigation }) => {
                     });
                     break;
             }
-        } else {
+        } else { // For year or chapter view, sort by qNumber
             filtered.sort((a, b) =>
                 (a.qNumber || '').localeCompare(b.qNumber || '', undefined, {
                     numeric: true,
@@ -335,12 +368,13 @@ const QuestionListScreen = ({ route, navigation }) => {
                 onToggleComplete={handleToggleComplete}
                 onCopy={handleCopy}
                 onAskAI={() => handleAskAI(item)}
+                 // Removed onSearch as it's handled by SearchWebViewModal inside QuestionItem
             />
         ),
         [completionStatus, handleToggleComplete, handleCopy, handleAskAI]
     );
 
-    if (loading && !subjectData && !error) return <LoadingIndicator />;
+    if (loading && !subjectData && !error) return <LoadingIndicator />; // Full screen loader for initial fetch
     if (error && !loading) return <ErrorMessage message={error} onRetry={loadData} />;
 
 
@@ -454,14 +488,20 @@ const QuestionListScreen = ({ route, navigation }) => {
                 )}
             </View>
 
-            {loading && subjectData && <LoadingIndicator style={{marginTop: 20}} />}
+             {loading && subjectData && !error && ( // Show inline loader if data exists but statuses are still loading
+                <View style={{paddingVertical: 20, alignItems: 'center'}}>
+                    <ActivityIndicator size="small" color={COLORS.primary} />
+                    <Text style={{marginTop: 8, color: COLORS.textSecondary, fontSize: 13}}>Loading questions...</Text>
+                </View>
+            )}
+
 
             <FlatList
                 data={processedQuestions}
                 renderItem={renderQuestionItem}
                 keyExtractor={(item) => item.questionId.toString()}
                 contentContainerStyle={styles.listContentContainer}
-                ListEmptyComponent={!loading ? <EmptyState message={listEmptyMessage} iconName="documents-outline" /> : null}
+                ListEmptyComponent={(!loading && !loadingStatuses) ? <EmptyState message={listEmptyMessage} iconName="documents-outline" /> : null}
                 initialNumToRender={7}
                 maxToRenderPerBatch={10}
                 windowSize={21}
@@ -474,7 +514,6 @@ const QuestionListScreen = ({ route, navigation }) => {
                     onClose={closeAIChatModal}
                     questionItem={currentAIQuestion}
                     subjectContext={subjectContextForAI}
-                    // REMOVED: initialAiResponse, initialIsLoading, initialError, onRegenerateAnswer props
                 />
             )}
         </SafeAreaView>
@@ -487,7 +526,7 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.background || '#F2F2F7',
     },
     listContentContainer: {
-        paddingTop: 0,
+        paddingTop: 0, // Changed from 10 to 0 as controls container has bottom padding
         paddingBottom: Platform.OS === 'ios' ? 40 : 30,
         paddingHorizontal: 12,
     },
@@ -539,7 +578,7 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingVertical: Platform.OS === 'ios' ? 12 : 10,
         fontSize: 15,
-        color: COLORS.text || '#000000', // Ensure color is defined
+        color: COLORS.text || '#000000', 
     },
     controlsScroll: {
         paddingVertical: 8,
