@@ -15,80 +15,69 @@ import {
 } from 'react-native';
 import Icon from './Icon';
 import { COLORS } from '../constants';
-// getQuestionPlainText is not used directly in this version of the modal, but can be kept if needed elsewhere.
-// import { getQuestionPlainText } from '../helpers/helpers';
 import { WebView } from 'react-native-webview';
 import * as Clipboard from 'expo-clipboard';
 import generateHTML from '../helpers/generateHTML';
-import { askAIWithContext, REQUEST_TYPES } from '../helpers/openaiHelper'; // MODIFIED
+import { askAIWithContext, REQUEST_TYPES } from '../helpers/openaiHelper';
 
 const AIChatModal = React.memo(({
     visible,
     onClose,
     questionItem,
-    subjectContext, // ADDED: { branchName, semesterNumber, subjectName, subjectCode }
-    aiResponse: initialAiResponse, // RENAMED for clarity
-    isLoading: initialIsLoading,   // RENAMED for clarity
-    error: initialError,           // RENAMED for clarity
-    onRegenerate: onRegenerateAnswer, // RENAMED: This prop is for regenerating the *answer*
+    subjectContext,
+    // REMOVE: initialAiResponse, initialIsLoading, initialError, onRegenerateAnswer
+    // These will now be managed internally after user action.
 }) => {
-    const [contentType, setContentType] = useState(REQUEST_TYPES.SOLVE_QUESTION);
+    const [contentType, setContentType] = useState(null); // null | SOLVE_QUESTION | EXPLAIN_CONCEPTS
     const [currentResponse, setCurrentResponse] = useState(null);
     const [currentIsLoading, setCurrentIsLoading] = useState(false);
     const [currentError, setCurrentError] = useState(null);
     const [modalTitle, setModalTitle] = useState("AI Assistant");
+    const [userHasMadeChoice, setUserHasMadeChoice] = useState(false); // NEW: Tracks if user clicked a primary action
 
-    const [isActionsMenuVisible, setIsActionsMenuVisible] = useState(false);
+    const [isActionsMenuVisible, setIsActionsMenuVisible] = useState(false); // Will be simplified
     const [isWebViewLoading, setIsWebViewLoading] = useState(true);
 
     useEffect(() => {
         if (visible) {
-            // When modal becomes visible, if we are in "answer" mode, sync with props from parent.
-            if (contentType === REQUEST_TYPES.SOLVE_QUESTION) {
-                setCurrentResponse(initialAiResponse);
-                setCurrentIsLoading(initialIsLoading);
-                setCurrentError(initialError);
-                setModalTitle("AI Assistant");
-            }
-            // If currentResponse is null (e.g., modal just opened or reset) and initialAiResponse is available,
-            // ensure we are in SOLVE_QUESTION mode and display it.
-            if (currentResponse === null && initialAiResponse && contentType !== REQUEST_TYPES.EXPLAIN_CONCEPTS) {
-                 setCurrentResponse(initialAiResponse);
-                 setContentType(REQUEST_TYPES.SOLVE_QUESTION);
-                 setModalTitle("AI Assistant");
-            }
-        } else {
-            // Reset states when modal is closed
-            setContentType(REQUEST_TYPES.SOLVE_QUESTION); // Default to answer mode for next open
+            // Reset to initial state when modal becomes visible
+            // but preserve questionItem and subjectContext as they are props.
+            setContentType(null);
             setCurrentResponse(null);
             setCurrentIsLoading(false);
             setCurrentError(null);
             setModalTitle("AI Assistant");
-            setIsActionsMenuVisible(false); // Close menu if open
+            setUserHasMadeChoice(false); // Reset choice flag
             setIsWebViewLoading(true); // Reset WebView loader
+            setIsActionsMenuVisible(false);
         }
-    }, [visible, initialAiResponse, initialIsLoading, initialError, contentType]);
-
+    }, [visible]); // Only depends on `visible` to reset
 
     const generateAndSetResponse = useCallback(async (requestedType) => {
         if (!questionItem || !subjectContext) {
             setCurrentError("Missing question or subject context to ask AI.");
             setCurrentIsLoading(false);
+            setUserHasMadeChoice(true); // Still mark as choice made to show error state
             return;
         }
-        if (currentIsLoading && requestedType === contentType) return; // Prevent re-triggering same request if already loading
+        if (currentIsLoading) return;
 
-        setIsActionsMenuVisible(false); // Close menu
+        setIsActionsMenuVisible(false);
         setCurrentIsLoading(true);
         setCurrentError(null);
-        setCurrentResponse(null); // Clear previous response for new fetch
-        setContentType(requestedType);
-        setModalTitle(requestedType === REQUEST_TYPES.EXPLAIN_CONCEPTS ? "AI Explains Concepts" : "AI Assistant");
-        setIsWebViewLoading(true); // Show WebView loader for new content
+        setCurrentResponse(null);
+        setContentType(requestedType); // Set content type based on user's choice
+        setModalTitle(requestedType === REQUEST_TYPES.EXPLAIN_CONCEPTS ? "AI Explains Concepts" : "AI Solution");
+        setUserHasMadeChoice(true); // User has now made a choice
+        setIsWebViewLoading(true);
 
         try {
-            // `displayFeedback` for askAIWithContext can be a toast/snackbar in future
-            const response = await askAIWithContext(requestedType, questionItem, subjectContext, (feedbackMsg) => console.log("AI Info:", feedbackMsg));
+            const response = await askAIWithContext(
+                requestedType,
+                questionItem,
+                subjectContext,
+                (feedbackMsg) => console.log("AI Info:", feedbackMsg)
+            );
             setCurrentResponse(response);
         } catch (e) {
             setCurrentError(e.message || `Failed to get AI response for ${requestedType === REQUEST_TYPES.EXPLAIN_CONCEPTS ? 'concepts' : 'answer'}.`);
@@ -96,59 +85,27 @@ const AIChatModal = React.memo(({
         } finally {
             setCurrentIsLoading(false);
         }
-    }, [questionItem, subjectContext, currentIsLoading, contentType]); // Added contentType
+    }, [questionItem, subjectContext, currentIsLoading]);
 
-    const handleRegenerateCurrentView = useCallback(() => {
-        if (currentIsLoading) return;
-
-        if (contentType === REQUEST_TYPES.SOLVE_QUESTION) {
-            if (typeof onRegenerateAnswer === 'function') {
-                setIsActionsMenuVisible(false);
-                // Parent handles fetching answer and updates props (initialAiResponse, etc.)
-                // useEffect will then sync these props to internal state.
-                onRegenerateAnswer();
-            } else {
-                // Fallback if parent doesn't provide onRegenerateAnswer
-                generateAndSetResponse(REQUEST_TYPES.SOLVE_QUESTION);
-            }
-        } else if (contentType === REQUEST_TYPES.EXPLAIN_CONCEPTS) {
-            generateAndSetResponse(REQUEST_TYPES.EXPLAIN_CONCEPTS);
-        }
-    }, [contentType, generateAndSetResponse, onRegenerateAnswer, currentIsLoading]);
+    const handleGenerateAnswer = useCallback(() => {
+        generateAndSetResponse(REQUEST_TYPES.SOLVE_QUESTION);
+    }, [generateAndSetResponse]);
 
     const handleExplainConcepts = useCallback(() => {
-        if (currentIsLoading) return;
         generateAndSetResponse(REQUEST_TYPES.EXPLAIN_CONCEPTS);
-    }, [generateAndSetResponse, currentIsLoading]);
+    }, [generateAndSetResponse]);
 
-    const handleShowAnswer = useCallback(() => {
-        if (currentIsLoading) return;
-        setIsActionsMenuVisible(false);
-        setContentType(REQUEST_TYPES.SOLVE_QUESTION); // Switch mode
-        // useEffect will pick up initialAiResponse. If it's null and onRegenerateAnswer exists,
-        // parent might need to be triggered or user clicks regenerate.
-        // For a better UX, if initialAiResponse is null but onRegenerateAnswer is available, call it.
-        if (!initialAiResponse && typeof onRegenerateAnswer === 'function' && !initialIsLoading) {
-            onRegenerateAnswer();
-        } else {
-             // If initialAiResponse is already there, useEffect handles showing it.
-             // If it's currently loading by parent, useEffect handles it.
-             // If no initial response and no way to get it, it will show empty state for answer.
-            setCurrentResponse(initialAiResponse); // Explicitly set, useEffect will confirm
-            setCurrentIsLoading(initialIsLoading);
-            setCurrentError(initialError);
-            setModalTitle("AI Assistant");
+    const handleRegenerateCurrentView = useCallback(() => {
+        if (contentType) { // Only if a content type was previously chosen
+            generateAndSetResponse(contentType);
         }
-    }, [currentIsLoading, initialAiResponse, onRegenerateAnswer, initialIsLoading]);
-
+    }, [contentType, generateAndSetResponse]);
 
     useEffect(() => {
-        // Reset WebView loader when new content is ready to be rendered
         if (visible && currentResponse && !currentIsLoading && !currentError) {
             setIsWebViewLoading(true);
         }
     }, [visible, currentResponse, currentIsLoading, currentError]);
-
 
     const handleCopyResponse = useCallback(async () => {
         setIsActionsMenuVisible(false);
@@ -168,27 +125,117 @@ const AIChatModal = React.memo(({
         if (currentResponse) {
             return generateHTML(currentResponse);
         }
-        // Provide a placeholder based on the content type if no response
-        const placeholderMsg = contentType === REQUEST_TYPES.EXPLAIN_CONCEPTS ?
-            "<!-- Awaiting concept explanation -->" :
-            "<!-- Awaiting answer -->";
-        return generateHTML(placeholderMsg);
-    }, [currentResponse, contentType]);
+        return generateHTML("<!-- Awaiting AI Content -->");
+    }, [currentResponse]);
 
     const canCopy = !!currentResponse && !currentIsLoading && !currentError;
-    // Enable regenerate if we have a way to fetch (either parent's func or internal) and questionItem exists
-    const canRegenerate = (typeof onRegenerateAnswer === 'function' || !!questionItem) && !!questionItem;
-    const canExplainConcepts = !!questionItem && !!subjectContext; // Need item and context
+    const canRegenerate = userHasMadeChoice && !!contentType && !currentIsLoading;
 
     const handleCloseModal = () => {
-        onClose(); // Parent handles visibility. State reset is done in useEffect via `visible` prop.
+        onClose();
     };
-    
-    const regenerateButtonText = () => {
-        if (currentIsLoading) return "Generating...";
-        if (!currentResponse && !currentError) return contentType === REQUEST_TYPES.EXPLAIN_CONCEPTS ? "Generate Explanation" : "Generate Answer";
-        return contentType === REQUEST_TYPES.EXPLAIN_CONCEPTS ? "Regenerate Explanation" : "Regenerate Answer";
+
+    const renderInitialChoiceButtons = () => (
+        <View style={styles.initialActionsContainer}>
+            <Text style={styles.initialActionsTitle}>How can AI assist you with this question?</Text>
+            <TouchableOpacity style={[styles.actionButton, styles.generateAnswerButton]} onPress={handleGenerateAnswer} disabled={currentIsLoading}>
+                <Icon name="chatbubble-ellipses-outline" iconSet="Ionicons" size={22} color={COLORS.white} style={styles.actionButtonIcon} />
+                <Text style={styles.actionButtonText}>Generate Answer</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.actionButton, styles.explainConceptsButton]} onPress={handleExplainConcepts} disabled={currentIsLoading}>
+                <Icon name="bulb-outline" iconSet="Ionicons" size={22} color={COLORS.primary} style={styles.actionButtonIconAlt} />
+                <Text style={styles.actionButtonTextAlt}>Explain Concepts</Text>
+            </TouchableOpacity>
+        </View>
+    );
+
+    const renderPostChoiceContent = () => {
+        if (currentIsLoading) {
+            return (
+                <View style={styles.stateInfoContainer}>
+                    <ActivityIndicator size={Platform.OS === 'ios' ? "large" : 60} color={COLORS.primary || '#007AFF'} />
+                    <Text style={styles.stateInfoText}>
+                        {contentType === REQUEST_TYPES.EXPLAIN_CONCEPTS ? "AI is preparing concept explanations..." : "AI is generating the answer..."}
+                    </Text>
+                </View>
+            );
+        }
+
+        if (currentError) {
+            return (
+                <View style={[styles.stateInfoContainer, styles.errorStateContainer]}>
+                    <Icon name="alert-circle-outline" iconSet="Ionicons" size={50} color={COLORS.error || '#D32F2F'} />
+                    <Text style={[styles.stateInfoTitle, { color: COLORS.error || '#D32F2F' }]}>Oops! An Error Occurred</Text>
+                    <Text style={styles.errorDetailText}>{currentError}</Text>
+                    {canRegenerate && (
+                        <TouchableOpacity style={styles.errorRetryButton} onPress={handleRegenerateCurrentView}>
+                            <Icon name="refresh-outline" iconSet="Ionicons" size={20} color={COLORS.error || '#D32F2F'} style={styles.actionButtonIcon} />
+                            <Text style={styles.errorRetryButtonText}>
+                                {contentType === REQUEST_TYPES.EXPLAIN_CONCEPTS ? "Retry Explanation" : "Retry Answer"}
+                            </Text>
+                        </TouchableOpacity>
+                    )}
+                </View>
+            );
+        }
+
+        if (currentResponse) {
+            return (
+                <View style={styles.aiResponseContainer}>
+                    {isWebViewLoading && (
+                        <ActivityIndicator
+                            size="large"
+                            color={COLORS.primary || '#007AFF'}
+                            style={styles.webViewLoader}
+                        />
+                    )}
+                    <WebView
+                        originWhitelist={['*']}
+                        source={{ html: markdownHTML }}
+                        style={[styles.webView, { opacity: isWebViewLoading ? 0 : 1 }]}
+                        javaScriptEnabled={true}
+                        domStorageEnabled={true}
+                        mixedContentMode="compatibility"
+                        setSupportMultipleWindows={false}
+                        showsVerticalScrollIndicator={false}
+                        showsHorizontalScrollIndicator={false}
+                        onLoadEnd={() => setIsWebViewLoading(false)}
+                        onError={({ nativeEvent }) => {
+                            console.error('Chat WebView error:', nativeEvent);
+                            setIsWebViewLoading(false);
+                            setCurrentError("Error displaying AI response. HTML content might be malformed. Try regenerating.");
+                        }}
+                    />
+                    {/* Subsequent action buttons can go here, e.g., under the WebView */}
+                    {canRegenerate && (
+                         <View style={styles.subsequentActionsContainer}>
+                            <TouchableOpacity style={[styles.actionButtonSmall, styles.regenerateButtonSmall]} onPress={handleRegenerateCurrentView}>
+                                <Icon name="reload-circle-outline" iconSet="Ionicons" size={18} color={COLORS.primary} style={styles.actionButtonIconAlt} />
+                                <Text style={styles.actionButtonTextSmallAlt}>
+                                    {contentType === REQUEST_TYPES.SOLVE_QUESTION ? "Regenerate Answer" : "Regenerate Concepts"}
+                                </Text>
+                            </TouchableOpacity>
+                             {contentType === REQUEST_TYPES.SOLVE_QUESTION && (
+                                <TouchableOpacity style={[styles.actionButtonSmall, styles.explainConceptsButtonSmall]} onPress={handleExplainConcepts}>
+                                    <Icon name="bulb-outline" iconSet="Ionicons" size={18} color={COLORS.textSecondary} style={styles.actionButtonIconAlt} />
+                                    <Text style={styles.actionButtonTextSmallAlt}>Explain Concepts</Text>
+                                </TouchableOpacity>
+                             )}
+                             {contentType === REQUEST_TYPES.EXPLAIN_CONCEPTS && (
+                                <TouchableOpacity style={[styles.actionButtonSmall, styles.showAnswerButtonSmall]} onPress={handleGenerateAnswer}>
+                                     <Icon name="chatbubble-ellipses-outline" iconSet="Ionicons" size={18} color={COLORS.textSecondary} style={styles.actionButtonIconAlt} />
+                                     <Text style={styles.actionButtonTextSmallAlt}>Show Answer</Text>
+                                 </TouchableOpacity>
+                             )}
+                         </View>
+                    )}
+                </View>
+            );
+        }
+        // Fallback, though should be covered by initial choice or error/loading
+        return <View style={styles.stateInfoContainer}><Text style={styles.stateInfoText}>Select an action.</Text></View>;
     };
+
 
     return (
         <Modal
@@ -203,7 +250,11 @@ const AIChatModal = React.memo(({
                         <View style={styles.modalTitleContainer}>
                             <Icon
                                 iconSet="MaterialCommunityIcons"
-                                name={contentType === REQUEST_TYPES.EXPLAIN_CONCEPTS ? "brain-outline" : "robot-happy-outline"}
+                                name={
+                                    contentType === REQUEST_TYPES.EXPLAIN_CONCEPTS ? "brain-outline"
+                                    : contentType === REQUEST_TYPES.SOLVE_QUESTION ? "robot-happy-outline"
+                                    : "help-circle-outline" // Default icon before choice
+                                }
                                 size={22}
                                 color={COLORS.primary || '#007AFF'}
                                 style={styles.modalTitleIcon}
@@ -211,51 +262,23 @@ const AIChatModal = React.memo(({
                             <Text style={styles.modalTitle} numberOfLines={1}>{modalTitle}</Text>
                         </View>
                         <View style={styles.headerRightActions}>
-                            {(canCopy || canRegenerate || canExplainConcepts) && (
-                                <View style={styles.moreOptionsContainer}>
-                                    <TouchableOpacity
-                                        onPress={() => setIsActionsMenuVisible(v => !v)}
-                                        style={styles.headerIconButton}
-                                        disabled={currentIsLoading} // Disable menu toggle while any AI is loading
-                                    >
-                                        <Icon iconSet="Ionicons" name="ellipsis-vertical" size={24} color={COLORS.textSecondary || '#8E8E93'} />
+                            {canCopy && ( // Only show copy if there's content
+                                <TouchableOpacity
+                                    onPress={() => setIsActionsMenuVisible(v => !v)}
+                                    style={styles.headerIconButton}
+                                >
+                                    <Icon iconSet="Ionicons" name="ellipsis-vertical" size={24} color={COLORS.textSecondary || '#8E8E93'} />
+                                </TouchableOpacity>
+                            )}
+                             {isActionsMenuVisible && canCopy && (
+                                <View style={styles.moreOptionsMenu}>
+                                    <TouchableOpacity style={styles.menuItem} onPress={handleCopyResponse}>
+                                        <Icon name="copy-outline" iconSet="Ionicons" size={20} color={COLORS.text || '#000'} style={styles.menuItemIcon} />
+                                        <Text style={styles.menuItemText}>Copy Response</Text>
                                     </TouchableOpacity>
-                                    {isActionsMenuVisible && (
-                                        <View style={styles.moreOptionsMenu}>
-                                            {canCopy && (
-                                                <TouchableOpacity style={styles.menuItem} onPress={handleCopyResponse}>
-                                                    <Icon name="copy-outline" iconSet="Ionicons" size={20} color={COLORS.text || '#000'} style={styles.menuItemIcon} />
-                                                    <Text style={styles.menuItemText}>Copy Response</Text>
-                                                </TouchableOpacity>
-                                            )}
-                                            
-                                            {contentType === REQUEST_TYPES.EXPLAIN_CONCEPTS && (
-                                                <TouchableOpacity style={styles.menuItem} onPress={handleShowAnswer} disabled={currentIsLoading}>
-                                                    <Icon name="chatbubble-ellipses-outline" iconSet="Ionicons" size={20} color={currentIsLoading ? (COLORS.disabled || '#CCC') : (COLORS.text || '#000')} style={styles.menuItemIcon} />
-                                                    <Text style={[styles.menuItemText, currentIsLoading && { color: COLORS.disabled || '#CCC' }]}>Show Answer</Text>
-                                                </TouchableOpacity>
-                                            )}
-                                            
-                                            {contentType === REQUEST_TYPES.SOLVE_QUESTION && canExplainConcepts && (
-                                                <TouchableOpacity style={styles.menuItem} onPress={handleExplainConcepts} disabled={currentIsLoading}>
-                                                    <Icon name="bulb-outline" iconSet="Ionicons" size={20} color={currentIsLoading ? (COLORS.disabled || '#CCC') : (COLORS.text || '#000')} style={styles.menuItemIcon} />
-                                                    <Text style={[styles.menuItemText, currentIsLoading && { color: COLORS.disabled || '#CCC' }]}>Explain Concepts</Text>
-                                                </TouchableOpacity>
-                                            )}
-
-                                            {canRegenerate && (
-                                                <TouchableOpacity style={styles.menuItem} onPress={handleRegenerateCurrentView} disabled={currentIsLoading}>
-                                                    <Icon name="reload-circle-outline" iconSet="Ionicons" size={20} color={currentIsLoading ? (COLORS.disabled || '#CCC') : (COLORS.text || '#000')} style={styles.menuItemIcon} />
-                                                    <Text style={[styles.menuItemText, currentIsLoading && { color: COLORS.disabled || '#CCC' }]}>
-                                                        {regenerateButtonText()}
-                                                    </Text>
-                                                </TouchableOpacity>
-                                            )}
-                                        </View>
-                                    )}
                                 </View>
                             )}
-                            <TouchableOpacity onPress={handleCloseModal} style={[styles.headerIconButton, styles.modalCloseButton]}>
+                            <TouchableOpacity onPress={handleCloseModal} style={[styles.headerIconButton, styles.modalCloseButton, !canCopy && {marginLeft: 'auto'}]}>
                                 <Icon iconSet="Ionicons" name="close-circle" size={28} color={COLORS.textSecondary || '#8E8E93'} />
                             </TouchableOpacity>
                         </View>
@@ -267,76 +290,7 @@ const AIChatModal = React.memo(({
                         showsVerticalScrollIndicator={true}
                         keyboardShouldPersistTaps="handled"
                     >
-                        {currentIsLoading && (
-                            <View style={styles.stateInfoContainer}>
-                                <ActivityIndicator size={Platform.OS === 'ios' ? "large" : 60} color={COLORS.primary || '#007AFF'} />
-                                <Text style={styles.stateInfoText}>
-                                    {contentType === REQUEST_TYPES.EXPLAIN_CONCEPTS ? "AI is preparing concept explanations..." : "AI is thinking, please wait..."}
-                                </Text>
-                            </View>
-                        )}
-
-                        {currentError && !currentIsLoading && (
-                            <View style={[styles.stateInfoContainer, styles.errorStateContainer]}>
-                                <Icon name="alert-circle-outline" iconSet="Ionicons" size={50} color={COLORS.error || '#D32F2F'} />
-                                <Text style={[styles.stateInfoTitle, { color: COLORS.error || '#D32F2F' }]}>Oops! An Error Occurred</Text>
-                                <Text style={styles.errorDetailText}>{currentError}</Text>
-                                {canRegenerate && (
-                                    <TouchableOpacity style={styles.errorRetryButton} onPress={handleRegenerateCurrentView} disabled={currentIsLoading}>
-                                        <Icon name="refresh-outline" iconSet="Ionicons" size={20} color={COLORS.error || '#D32F2F'} style={styles.actionButtonIcon} />
-                                        <Text style={styles.errorRetryButtonText}>
-                                            {contentType === REQUEST_TYPES.EXPLAIN_CONCEPTS ? "Retry Explanation" : "Try Again"}
-                                        </Text>
-                                    </TouchableOpacity>
-                                )}
-                            </View>
-                        )}
-
-                        {!currentIsLoading && !currentError && currentResponse && (
-                            <View style={styles.aiResponseContainer}>
-                                {isWebViewLoading && (
-                                    <ActivityIndicator
-                                        size="large"
-                                        color={COLORS.primary || '#007AFF'}
-                                        style={styles.webViewLoader}
-                                    />
-                                )}
-                                <WebView
-                                    originWhitelist={['*']}
-                                    source={{ html: markdownHTML }}
-                                    style={[styles.webView, { opacity: isWebViewLoading ? 0 : 1 }]}
-                                    javaScriptEnabled={true}
-                                    domStorageEnabled={true}
-                                    mixedContentMode="compatibility"
-                                    setSupportMultipleWindows={false}
-                                    showsVerticalScrollIndicator={false}
-                                    showsHorizontalScrollIndicator={false}
-                                    onLoadEnd={() => setIsWebViewLoading(false)}
-                                    onError={({ nativeEvent }) => {
-                                        console.error('Chat WebView error:', nativeEvent);
-                                        setIsWebViewLoading(false);
-                                        setCurrentError("Error displaying AI response. HTML content might be malformed. Try regenerating.");
-                                    }}
-                                />
-                            </View>
-                        )}
-                        
-                        {!currentIsLoading && !currentError && !currentResponse && (
-                             <View style={styles.stateInfoContainer}>
-                                <Icon
-                                    name={contentType === REQUEST_TYPES.EXPLAIN_CONCEPTS ? "bulb-outline" : "chatbubbles-outline"}
-                                    iconSet="Ionicons" size={48} color={COLORS.textDisabled || '#AEAEB2'} />
-                                <Text style={styles.stateInfoText}>
-                                    {contentType === REQUEST_TYPES.EXPLAIN_CONCEPTS ? "Concept explanations will appear here." : "AI response will appear here."}
-                                </Text>
-                                {canRegenerate && (
-                                     <TouchableOpacity style={styles.generateButton} onPress={handleRegenerateCurrentView} disabled={currentIsLoading}>
-                                        <Icon name="sparkles-outline" iconSet="Ionicons" size={20} color={COLORS.primary || '#007AFF'} style={styles.actionButtonIcon} />
-                                        <Text style={styles.generateButtonText}>{regenerateButtonText()}</Text>
-                                    </TouchableOpacity>
-                                )}
-                            </View>
-                        )}
+                        {!userHasMadeChoice ? renderInitialChoiceButtons() : renderPostChoiceContent()}
                     </ScrollView>
                 </View>
                 {isActionsMenuVisible && (
@@ -383,11 +337,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-start',
         gap: 8,
-        flex: 1, 
+        flex: 1,
     },
-    modalTitleIcon: {
-        // marginRight: 8, // Using gap instead
-    },
+    modalTitleIcon: {},
     modalTitle: {
         fontSize: 18,
         fontWeight: '600',
@@ -403,15 +355,15 @@ const styles = StyleSheet.create({
         padding: 8,
     },
     modalCloseButton: {
-        // marginLeft: 4, // Adjust if needed
+        // marginLeft auto is applied if no other buttons
     },
-    moreOptionsContainer: {
+    moreOptionsContainer: { // This container is not strictly needed if only one button
         position: 'relative',
         marginRight: Platform.OS === 'ios' ? 0 : -4,
     },
     moreOptionsMenu: {
         position: 'absolute',
-        top: Platform.OS === 'ios' ? 40 : 44, 
+        top: Platform.OS === 'ios' ? 40 : 44,
         right: 8,
         backgroundColor: COLORS.surface || '#FFFFFF',
         borderRadius: 10,
@@ -421,45 +373,100 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.15,
         shadowRadius: 8,
         elevation: 10,
-        zIndex: 200, 
-        minWidth: 230, // Adjusted width
+        zIndex: 200,
+        minWidth: 200, // Adjusted
         borderWidth: Platform.OS === 'ios' ? 0.5 : 0,
         borderColor: COLORS.borderUltraLight || '#F0F0F0',
     },
     menuItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: 13, 
+        paddingVertical: 13,
         paddingHorizontal: 18,
     },
     menuItemIcon: {
         marginRight: 14,
     },
     menuItemText: {
-        fontSize: 16, 
+        fontSize: 16,
         color: COLORS.text || '#000000',
     },
     fullScreenMenuBackdrop: {
         position: 'absolute',
         top: 0, left: 0, right: 0, bottom: 0,
         backgroundColor: 'transparent',
-        zIndex: 100, 
+        zIndex: 100,
     },
     contentScrollView: {
         flex: 1,
     },
     contentScrollContainer: {
-        flexGrow: 1, 
+        flexGrow: 1,
         paddingHorizontal: 18,
         paddingTop: 18,
-        paddingBottom: 30, 
+        paddingBottom: 30,
     },
-    stateInfoContainer: { 
-        flex: 1, 
+    // NEW Styles for initial action buttons
+    initialActionsContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+    },
+    initialActionsTitle: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: COLORS.textSecondary || '#4A5568',
+        textAlign: 'center',
+        marginBottom: 30,
+    },
+    actionButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 14,
+        paddingHorizontal: 20,
+        borderRadius: 25,
+        width: '90%',
+        marginBottom: 15,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 3,
+        elevation: 3,
+    },
+    generateAnswerButton: {
+        backgroundColor: COLORS.primary || '#007AFF',
+    },
+    explainConceptsButton: {
+        backgroundColor: COLORS.surface || '#FFFFFF',
+        borderWidth: 1.5,
+        borderColor: COLORS.primary || '#007AFF',
+    },
+    actionButtonText: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: COLORS.white || '#FFFFFF',
+    },
+    actionButtonTextAlt: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: COLORS.primary || '#007AFF',
+    },
+    actionButtonIcon: {
+        marginRight: 10,
+    },
+    actionButtonIconAlt: { // For buttons with text color matching icon
+         marginRight: 10,
+        //  color: COLORS.primary || '#007AFF', // Color is set on Icon directly
+    },
+    // END NEW Styles for initial action buttons
+    stateInfoContainer: {
+        flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         paddingVertical: 40,
-        minHeight: 200, 
+        minHeight: 200,
     },
     stateInfoText: {
         marginTop: 18,
@@ -475,15 +482,15 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         textAlign: 'center',
     },
-    errorStateContainer: { 
-        backgroundColor:  COLORS.errorBackground || '#FFF0F0', // Provide fallback
+    errorStateContainer: {
+        backgroundColor:  COLORS.errorBackground || '#FFF0F0',
         borderRadius: 12,
-        paddingHorizontal: 15, 
-        marginVertical: 10, 
+        padding: 20, // Added more padding around error
+        marginVertical: 10,
     },
     errorDetailText: {
         fontSize: 15,
-        color: COLORS.errorText || COLORS.textSecondary || '#502A2A', // Provide fallback
+        color: COLORS.errorText || COLORS.textSecondary || '#502A2A',
         textAlign: 'center',
         lineHeight: 21,
         marginBottom: 25,
@@ -503,29 +510,15 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: COLORS.error || '#D32F2F',
     },
-    generateButton: { 
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 25,
-        borderColor: COLORS.primary || '#007AFF',
-        borderWidth: 1.5,
-        backgroundColor: 'transparent',
-        marginTop: 25,
-    },
-    generateButtonText: {
-        fontSize: 15,
-        fontWeight: '600',
-        color: COLORS.primary || '#007AFF',
-    },
     aiResponseContainer: {
-        flex: 1, 
-        backgroundColor: COLORS.surface || "#FFF", 
-        borderRadius: 10, 
-        overflow: 'hidden', 
-        minHeight: 250, 
-        position: 'relative', 
+        flex: 1,
+        backgroundColor: COLORS.surface || "#FFF",
+        borderRadius: 10,
+        overflow: 'hidden',
+        minHeight: 250,
+        position: 'relative',
+        display: 'flex', // Use flex for column layout
+        flexDirection: 'column', // Stack WebView and subsequent actions
     },
     webViewLoader: {
         position: 'absolute',
@@ -535,16 +528,49 @@ const styles = StyleSheet.create({
         bottom: 0,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: COLORS.surface || 'rgba(255,255,255,0.8)', 
-        zIndex: 1, 
+        backgroundColor: COLORS.surface || 'rgba(255,255,255,0.8)',
+        zIndex: 1,
     },
     webView: {
-        flex: 1, 
-        backgroundColor: 'transparent', 
+        flex: 1, // WebView takes available space
+        backgroundColor: 'transparent',
     },
-    actionButtonIcon: { 
-        marginRight: 8,
+    // NEW Styles for subsequent action buttons
+    subsequentActionsContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around', // Or 'flex-end' or 'center'
+        alignItems: 'center',
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+        borderTopWidth: 1,
+        borderTopColor: COLORS.borderLight || '#ECECEC',
+        backgroundColor: COLORS.surfaceAlt || '#F8F8F8', // Slight contrast
     },
+    actionButtonSmall: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        borderRadius: 20,
+        borderWidth: 1,
+    },
+    regenerateButtonSmall: {
+        borderColor: COLORS.primary || '#007AFF',
+    },
+    explainConceptsButtonSmall: {
+        borderColor: COLORS.textSecondary || '#8E8E93',
+    },
+    showAnswerButtonSmall: {
+        borderColor: COLORS.textSecondary || '#8E8E93',
+    },
+    actionButtonTextSmallAlt: {
+        fontSize: 13,
+        fontWeight: '500',
+        color: COLORS.primary, // Default for regenerate
+    },
+    // Note: For explain/show answer buttons with secondary color, icon color is set on icon directly,
+    // and text color can be specific like:
+    // explainConceptsButtonSmall > Text: { color: COLORS.textSecondary }
 });
 
 export default AIChatModal;

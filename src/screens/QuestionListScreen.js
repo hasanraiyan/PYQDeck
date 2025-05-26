@@ -35,7 +35,7 @@ import {
     getSemesterPYQsFromSecureStore,
     updateDailyStreak,
 } from '../helpers/helpers';
-import { askAIWithContext, REQUEST_TYPES } from '../helpers/openaiHelper'; // MODIFIED: Added REQUEST_TYPES
+// REMOVE: askAIWithContext, REQUEST_TYPES (not directly used by QuestionListScreen anymore for initial call)
 
 import LoadingIndicator from '../components/LoadingIndicator';
 import ErrorMessage from '../components/ErrorMessage';
@@ -79,9 +79,8 @@ const QuestionListScreen = ({ route, navigation }) => {
     // AI Chat Modal State
     const [isAIChatModalVisible, setIsAIChatModalVisible] = useState(false);
     const [currentAIQuestion, setCurrentAIQuestion] = useState(null);
-    const [initialAiResponse, setInitialAiResponse] = useState(''); // MODIFIED: Renamed from aiResponseText
-    const [isAILoading, setIsAILoading] = useState(false);
-    const [aiError, setAiError] = useState(null);
+    // REMOVE: initialAiResponse, isAILoading, aiError from QuestionListScreen state
+    // These are now managed within AIChatModal
 
     // Derived subject context for AI
     const subjectContextForAI = useMemo(() => {
@@ -126,13 +125,10 @@ const QuestionListScreen = ({ route, navigation }) => {
         debouncedSearchHandler(searchQuery);
     }, [searchQuery, debouncedSearchHandler]);
 
-    const loadData = useCallback(async () => { // Wrapped loadData in useCallback for onRetry
-        let isMounted = true; // Local isMounted for this specific call
+    const loadData = useCallback(async () => {
+        let isMounted = true;
         setLoading(true);
         setError(null);
-        // Do not reset completionStatus or questions here if you want to keep them during retry
-        // setCompletionStatus({});
-        // setQuestions([]);
         if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
 
         let semesterData = null;
@@ -164,7 +160,7 @@ const QuestionListScreen = ({ route, navigation }) => {
 
         if (dataError && isMounted) {
             setError(dataError);
-            setSubjectData(null); // Ensure subjectData is null on error
+            setSubjectData(null);
             setLoading(false);
             return;
         }
@@ -199,20 +195,20 @@ const QuestionListScreen = ({ route, navigation }) => {
             }
         } else if (isMounted) {
             setError("Subject data could not be loaded.");
-            setSubjectData(null); // Ensure subjectData is null on error
+            setSubjectData(null);
             setLoading(false);
         }
-        return () => { isMounted = false; }; // Cleanup function for the specific call
+        return () => { isMounted = false; };
     }, [branchId, semId, subjectId, organizationMode, selectedYear, selectedChapter, navigation]);
 
 
     useEffect(() => {
-        const cleanup = loadData(); // Call loadData
+        const cleanup = loadData();
         return () => {
-            if (typeof cleanup === 'function') cleanup(); // Execute cleanup if it's a function
+            if (typeof cleanup === 'function') cleanup();
             if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
         };
-    }, [loadData]); // Depend on the memoized loadData
+    }, [loadData]);
 
     const displayFeedback = useCallback((message) => {
         if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
@@ -242,59 +238,14 @@ const QuestionListScreen = ({ route, navigation }) => {
     );
 
     // AI Related Functions
-    const callAIAndSetState = useCallback(async (itemToAsk) => {
-        if (!subjectContextForAI || !itemToAsk) { // MODIFIED: Use subjectContextForAI
-            displayFeedback('Cannot ask AI: Missing question or subject data.');
-            setAiError('Missing context to ask AI.');
-            setIsAILoading(false);
-            return;
-        }
-
-        setIsAILoading(true);
-        setInitialAiResponse(''); // MODIFIED: Renamed
-        setAiError(null);
-
-        try {
-            // MODIFIED: Pass REQUEST_TYPES.SOLVE_QUESTION
-            const response = await askAIWithContext(
-                REQUEST_TYPES.SOLVE_QUESTION,
-                itemToAsk,
-                subjectContextForAI,
-                displayFeedback
-            );
-            setInitialAiResponse(response); // MODIFIED: Renamed
-        } catch (error) {
-            console.error("AI Call Error in Screen:", error);
-            setAiError(error.message || "An unexpected error occurred with the AI service.");
-        } finally {
-            setIsAILoading(false);
-        }
-    }, [subjectContextForAI, displayFeedback]); // MODIFIED: Dependency
-
     const handleAskAI = useCallback((item) => {
-        setCurrentAIQuestion(item);
-        setIsAIChatModalVisible(true);
-        // Only call if no response yet or error, or if you always want to refresh
-        if (!initialAiResponse || aiError) {
-            callAIAndSetState(item);
-        }
-    }, [callAIAndSetState, initialAiResponse, aiError]); // MODIFIED: Added dependencies
-
-    const handleRegenerateAIResponse = useCallback(() => {
-        if (currentAIQuestion) {
-            callAIAndSetState(currentAIQuestion);
-        }
-    }, [currentAIQuestion, callAIAndSetState]);
+        setCurrentAIQuestion(item); // Set the question context for the modal
+        setIsAIChatModalVisible(true); // Open the modal
+        // DO NOT call AI here anymore. Modal will handle user's choice.
+    }, []); 
 
     const closeAIChatModal = useCallback(() => {
         setIsAIChatModalVisible(false);
-        // Decide if you want to clear AI state on close.
-        // If modal handles its own subsequent calls (like "Explain Concepts"),
-        // you might not want to clear currentAIQuestion here.
-        // setCurrentAIQuestion(null); // Keep this if you want it to reset fully
-        // setInitialAiResponse('');
-        // setAiError(null);
-        // setIsAILoading(false);
     }, []);
 
     const processedQuestions = useMemo(() => {
@@ -395,7 +346,7 @@ const QuestionListScreen = ({ route, navigation }) => {
 
     const noQuestionsInitiallyForSubject = questions.length === 0;
     const noResultsAfterFilter = !noQuestionsInitiallyForSubject && processedQuestions.length === 0;
-
+    
     let listEmptyMessage = 'No questions available for this subject.';
     if (noResultsAfterFilter) {
         if (debouncedSearchQuery) {
@@ -419,6 +370,7 @@ const QuestionListScreen = ({ route, navigation }) => {
         }
     }
 
+
     return (
         <SafeAreaView style={styles.screen}>
             <StatusBar
@@ -432,7 +384,7 @@ const QuestionListScreen = ({ route, navigation }) => {
             )}
 
             <View style={styles.controlsContainer}>
-                <View style={styles.searchContainer}>
+                 <View style={styles.searchContainer}>
                     <Ionicons
                         name="search-outline"
                         size={20}
@@ -455,7 +407,7 @@ const QuestionListScreen = ({ route, navigation }) => {
                     />
                 </View>
 
-                {(!noQuestionsInitiallyForSubject || loading) && (
+                {(!noQuestionsInitiallyForSubject || loading) && ( 
                     <ScrollView
                         horizontal
                         showsHorizontalScrollIndicator={false}
@@ -516,16 +468,13 @@ const QuestionListScreen = ({ route, navigation }) => {
                 removeClippedSubviews={Platform.OS === 'android'}
             />
 
-            {isAIChatModalVisible && currentAIQuestion && subjectContextForAI && ( // MODIFIED: Ensure all are present
+            {isAIChatModalVisible && currentAIQuestion && subjectContextForAI && (
                 <AIChatModal
                     visible={isAIChatModalVisible}
                     onClose={closeAIChatModal}
                     questionItem={currentAIQuestion}
-                    subjectContext={subjectContextForAI} // MODIFIED: Pass subjectContext
-                    initialAiResponse={initialAiResponse} // MODIFIED: Renamed prop
-                    initialIsLoading={isAILoading}       // MODIFIED: Renamed prop
-                    initialError={aiError}               // MODIFIED: Renamed prop
-                    onRegenerateAnswer={handleRegenerateAIResponse} // MODIFIED: Renamed prop
+                    subjectContext={subjectContextForAI}
+                    // REMOVED: initialAiResponse, initialIsLoading, initialError, onRegenerateAnswer props
                 />
             )}
         </SafeAreaView>
@@ -590,7 +539,7 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingVertical: Platform.OS === 'ios' ? 12 : 10,
         fontSize: 15,
-        color: COLORS.text || '#000000',
+        color: COLORS.text || '#000000', // Ensure color is defined
     },
     controlsScroll: {
         paddingVertical: 8,
