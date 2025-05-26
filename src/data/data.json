@@ -3817,7 +3817,240 @@
                 }
               ],
               "questions": [
-               
+                {
+                  "questionId": "math_100311_2019_Q1a",
+                  "year": 2019,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 1: Single Variable Calculus Fundamentals",
+                  "text": "The function\n$$ f(x) = \\begin{cases} (1+2x)^{1/x}, & x \\neq 0 \\\\ e^2, & x=0 \\end{cases} $$\nis\n(i) differentiable at $x=0$\n(ii) continuous at $x=0$\n(iii) discontinuous at $x=0$\n(iv) not differentiable at $x=0$",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2019_Q1b",
+                  "year": 2019,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 2: Multivariable Calculus - Differentiation and Optimization",
+                  "text": "The function\n$$ f(x,y) = \\begin{cases} \\frac{x^2-2xy+y^2}{x-y}, & (x,y) \\neq (1,-1) \\\\ 0, & (x,y) = (1,-1) \\end{cases} $$\nis\n(i) continuous at $(1, -1)$\n(ii) discontinuous everywhere\n(iii) discontinuous at $(1, -1)$\n(iv) continuous everywhere",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2019_Q1c",
+                  "year": 2019,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 2: Multivariable Calculus - Differentiation and Optimization",
+                  "text": "If $w = \\sin^{-1}u$, $u = \\frac{x^2+y^2+z^2}{x+y+z}$ then $x\\frac{\\partial w}{\\partial x} + y\\frac{\\partial w}{\\partial y} + z\\frac{\\partial w}{\\partial z}$ is equal to\n(i) $\\sin w$\n(ii) $\\cos w$\n(iii) $\\tan w$\n(iv) $\\cot w$",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2019_Q1d",
+                  "year": 2019,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 2: Multivariable Calculus - Differentiation and Optimization",
+                  "text": "The minimum value of $f(x,y,z) = x^2+y^2+z^2$ such that $xyz=k^3$, is\n(i) $k^2$\n(ii) $9k^2$\n(iii) $3k^2$\n(iv) $k^3$",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2019_Q1e",
+                  "year": 2019,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 4: First Order Ordinary Differential Equations",
+                  "text": "The solution of the differential equation $y dx - x dy + e^{1/x} dx = 0$ is\n(i) $y-xe^{1/x} = cx$\n(ii) $y+xe^{-1/x} = cx$\n(iii) $ye^{1/x} + x = cx$\n(iv) $y+xe^x = cx$",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2019_Q1f",
+                  "year": 2019,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 3: Vector Calculus",
+                  "text": "If $\\vec{r} = x\\hat{i} + y\\hat{j} + z\\hat{k}$, $r = |\\vec{r}|$ and $\\hat{r}$ is the unit vector of $\\vec{r}$, then $\\nabla \\cdot \\hat{r}$ is\n(i) $r$\n(ii) $2r$\n(iii) $1/r$\n(iv) $2/r$",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2019_Q1g",
+                  "year": 2019,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 3: Vector Calculus",
+                  "text": "If C is any path from $(1,0,0)$ to $(2,1,4)$, then $\\int_C [yz dx + (zx+1)dy + xy dz]$ is equal to\n(i) 1\n(ii) 2\n(iii) 8\n(iv) 9",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2019_Q1h",
+                  "year": 2019,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 5: Higher Order Ordinary Differential Equations and Special Functions",
+                  "text": "If $P_n(x)$ is the Legendre polynomial of first kind, then the incorrect statement is\n(i) $(2n+1)xP_n(x) = (n+1)P_{n+1}(x) + nP_{n-1}(x)$\n(ii) $nP_n(x) = xP'_n(x) - P'_{n-1}(x)$\n(iii) $(2n+1)P_n(x) = P'_{n+1}(x) + P'_{n-1}(x)$ (Note: OCR might be $P_{n+1}'(x) - P_{n-1}'(x)$ based on standard recurrence relations. Assuming '+' from image.)\n(iv) $(n+1)P_n(x) = P'_{n+1}(x) - xP'_n(x)$",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2019_Q1i",
+                  "year": 2019,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 6: First Order Partial Differential Equations",
+                  "text": "The partial differential equation which satisfies the arbitrary functions $z = f(\\frac{xy}{z})$ is\n(i) $px+qy=0$\n(ii) $px-qy=0$\n(iii) $px+qy=z$\n(iv) None of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2019_Q1j",
+                  "year": 2019,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 4: First Order Ordinary Differential Equations",
+                  "text": "The singular solution of the differential equation $9(\\frac{dy}{dx})^2 (2-y)^2 = 4(3-y)$ is\n(i) $y^2(3-y)=0$\n(ii) $(2-y)^2(3-y)=0$\n(iii) $y=3$\n(iv) None of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2019_Q2a",
+                  "year": 2019,
+                  "qNumber": "Q2a",
+                  "chapter": "Module 1: Single Variable Calculus Fundamentals",
+                  "text": "If $y = A \\cos(\\log x) + B \\sin(\\log x)$, show that $x^2 y_{n+2} + (2n+1)xy_{n+1} + (n^2+1)y_n = 0$ where $y_n = \\frac{d^n y}{dx^n}$.",
+                  "type": "Proof",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2019_Q2b",
+                  "year": 2019,
+                  "qNumber": "Q2b",
+                  "chapter": "Module 1: Single Variable Calculus Fundamentals",
+                  "text": "Find: $$ \\lim_{x \\to 0} \\frac{\\sin x \\cdot \\sin^{-1} x - x^2}{x^6} $$",
+                  "type": "Problem",
+                  "marks": 7
+                },                
+                {
+                  "questionId": "math_100311_2019_Q3a",
+                  "year": 2019,
+                  "qNumber": "Q3a",
+                  "chapter": "Module 2: Multivariable Calculus - Differentiation and Optimization",
+                  "text": "Show that the following function is continuous at the point $(0,0)$:\n$$ f(x,y) = \\begin{cases} \\frac{2x^3+3y^2}{x^2+y^2}, & (x,y) \\neq (0,0) \\\\ 0, & (x,y) = (0,0) \\end{cases} $$",
+                  "type": "Proof",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2019_Q3b",
+                  "year": 2019,
+                  "qNumber": "Q3b",
+                  "chapter": "Module 2: Multivariable Calculus - Differentiation and Optimization",
+                  "text": "If $z(x+y) = x^2+y^2$, show that $$ (\\frac{\\partial z}{\\partial x} - \\frac{\\partial z}{\\partial y})^2 = 4(1 - \\frac{\\partial z}{\\partial x} - \\frac{\\partial z}{\\partial y}) $$",
+                  "type": "Proof",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2019_Q4a",
+                  "year": 2019,
+                  "qNumber": "Q4a",
+                  "chapter": "Module 2: Multivariable Calculus - Differentiation and Optimization",
+                  "text": "Transform the equation $$ \\frac{\\partial^2 u}{\\partial x^2} + \\frac{\\partial^2 u}{\\partial y^2} = 0 $$ into polar coordinates.",
+                  "type": "Transformation",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2019_Q4b",
+                  "year": 2019,
+                  "qNumber": "Q4b",
+                  "chapter": "Module 2: Multivariable Calculus - Differentiation and Optimization",
+                  "text": "Find the extreme values of $f(x,y,z) = 2x+3y+z$, such that $x^2+y^2=5$ and $x+z=1$.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2019_Q5a",
+                  "year": 2019,
+                  "qNumber": "Q5a",
+                  "chapter": "Module 3: Vector Calculus",
+                  "text": "Evaluate $$ \\int_{(0,0)}^{(2,1)} [(10x^4 - 2xy^3)dx - 3x^2y^2 dy] $$ along the path $x^4 - 6xy^3 = 4y^2$.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2019_Q5b",
+                  "year": 2019,
+                  "qNumber": "Q5b",
+                  "chapter": "Module 3: Vector Calculus",
+                  "text": "Evaluate $$ \\iint_S \\vec{F} \\cdot n dS $$, where $\\vec{F} = 4xz\\hat{i} - y^2\\hat{j} + yz\\hat{k}$ and S is the surface of the cube bounded by $x=0, x=1, y=0, y=1, z=0, z=1$, by using Gauss divergence theorem.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2019_Q6a",
+                  "year": 2019,
+                  "qNumber": "Q6a",
+                  "chapter": "Module 3: Vector Calculus",
+                  "text": "Evaluate $$ \\frac{d}{d\\theta} \\{\\vec{A} \\times (\\vec{B} \\times \\vec{C})\\} $$ at $\\theta=0$, where $\\vec{A} = \\sin\\theta \\hat{i} + \\cos\\theta \\hat{j} + \\theta\\hat{k}$, $\\vec{B} = \\cos\\theta \\hat{i} - \\sin\\theta \\hat{j} - 3\\hat{k}$, $\\vec{C} = 2\\hat{i} + 3\\hat{j} - \\hat{k}$.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2019_Q6b",
+                  "year": 2019,
+                  "qNumber": "Q6b",
+                  "chapter": "Module 3: Vector Calculus",
+                  "text": "A particle moves along the curve $x=t^3+1, y=t^2, z=2t+5$ where $t$ is the time. Find the components of the velocity and acceleration at $t=1$, in the direction $\\hat{i}+\\hat{j}+3\\hat{k}$.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2019_Q7a",
+                  "year": 2019,
+                  "qNumber": "Q7a",
+                  "chapter": "Module 4: First Order Ordinary Differential Equations",
+                  "text": "Solve: $$ (x+y+a) \\frac{dy}{dx} = y^2+b $$",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2019_Q7b",
+                  "year": 2019,
+                  "qNumber": "Q7b",
+                  "chapter": "Module 4: First Order Ordinary Differential Equations",
+                  "text": "Solve: $$ x^2 + p^2x = yp $$ where $p = \\frac{dy}{dx}$.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2019_Q8a",
+                  "year": 2019,
+                  "qNumber": "Q8a",
+                  "chapter": "Module 5: Higher Order Ordinary Differential Equations and Special Functions",
+                  "text": "Solve by the method of variation of parameters $$ \\frac{d^2y}{dx^2} + n^2y = \\sec nx $$",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2019_Q8b",
+                  "year": 2019,
+                  "qNumber": "Q8b",
+                  "chapter": "Module 5: Higher Order Ordinary Differential Equations and Special Functions",
+                  "text": "Solve: $$ \\frac{d^2y}{dx^2} - 2\\tan x \\frac{dy}{dx} + 5y = \\sec x e^x $$",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2019_Q9a",
+                  "year": 2019,
+                  "qNumber": "Q9a",
+                  "chapter": "Module 6: First Order Partial Differential Equations",
+                  "text": "Solve: $$ z \\left( \\frac{\\partial z}{\\partial x} \\right)^2 - z \\left( \\frac{\\partial z}{\\partial y} \\right)^2 = (x - y) $$",
+                  "type": "Problem",
+                  "marks": 7
+                },                
+                {
+                  "questionId": "math_100311_2019_Q9b",
+                  "year": 2019,
+                  "qNumber": "Q9b",
+                  "chapter": "Module 5: Higher Order Ordinary Differential Equations and Special Functions",
+                  "text": "Evaluate: $$ \\int_{-1}^{1} x P_n(x) P_{n-1}(x) dx $$ where $P_n$ is the Legendre polynomial.",
+                  "type": "Problem",
+                  "marks": 7
+                }
               ]
             },
             {
