@@ -1,5 +1,5 @@
 // src/components/AIChatModal.js
-import React, { useMemo, useCallback, useState, useEffect } from 'react';
+import React, { useMemo, useCallback, useState, useEffect, useRef } from 'react';
 import {
     Modal,
     View,
@@ -12,247 +12,609 @@ import {
     Platform,
     Alert,
     Pressable,
+    Animated,
+    Dimensions,
+    Easing,
 } from 'react-native';
 import Icon from './Icon';
 import { COLORS } from '../constants';
-import { getQuestionPlainText } from '../helpers/helpers';
 import { WebView } from 'react-native-webview';
 import * as Clipboard from 'expo-clipboard';
 import generateHTML from '../helpers/generateHTML';
+import { askAIWithContext, REQUEST_TYPES } from '../helpers/openaiHelper';
+import * as Haptics from 'expo-haptics';
+
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+
+
+const DYNAMIC_LOADING_TEXTS = [
+    "🧠 AI is analyzing your question...",
+    "📚 Consulting knowledge base...",
+    "✨ Crafting a response...",
+    "💡 Formulating insights...",
+    "⏳ Just a moment more...",
+    "🏷️ Extracting key concepts for videos...",
+    "🔍 Preparing video search...",
+];
+
+// Enhanced PressableScale with better animations and haptic feedback
+const PressableScale = ({ onPress, style, children, disabled, hapticType = 'light', scaleValue = 0.96 }) => {
+    const scale = useRef(new Animated.Value(1)).current;
+    const opacity = useRef(new Animated.Value(1)).current;
+
+    const animateIn = () => {
+        if (disabled) return;
+        Haptics.impactAsync(
+            hapticType === 'medium' ? Haptics.ImpactFeedbackStyle.Medium :
+                hapticType === 'heavy' ? Haptics.ImpactFeedbackStyle.Heavy :
+                    Haptics.ImpactFeedbackStyle.Light
+        );
+        Animated.parallel([
+            Animated.spring(scale, {
+                toValue: scaleValue,
+                useNativeDriver: true,
+                tension: 300,
+                friction: 10,
+            }),
+            Animated.timing(opacity, {
+                toValue: 0.8,
+                duration: 100,
+                useNativeDriver: true,
+            })
+        ]).start();
+    };
+
+    const animateOut = () => {
+        if (disabled) return;
+        Animated.parallel([
+            Animated.spring(scale, {
+                toValue: 1,
+                useNativeDriver: true,
+                tension: 300,
+                friction: 8,
+            }),
+            Animated.timing(opacity, {
+                toValue: 1,
+                duration: 150,
+                useNativeDriver: true,
+            })
+        ]).start();
+    };
+
+    return (
+        <Animated.View style={[{ transform: [{ scale }], opacity }, disabled && { opacity: 0.5 }]}>
+            <TouchableOpacity
+                onPressIn={animateIn}
+                onPressOut={animateOut}
+                onPress={onPress}
+                style={style}
+                activeOpacity={1} // Active opacity is handled by Animated.View
+                disabled={disabled}
+            >
+                {children}
+            </TouchableOpacity>
+        </Animated.View>
+    );
+};
+
+// Animated loading dots component
+const LoadingDots = ({ color = COLORS.primary }) => {
+    const dot1 = useRef(new Animated.Value(0)).current;
+    const dot2 = useRef(new Animated.Value(0)).current;
+    const dot3 = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        const createAnimation = (dot, delay) =>
+            Animated.loop(
+                Animated.sequence([
+                    Animated.delay(delay),
+                    Animated.timing(dot, {
+                        toValue: 1,
+                        duration: 600,
+                        easing: Easing.inOut(Easing.sin),
+                        useNativeDriver: true,
+                    }),
+                    Animated.timing(dot, {
+                        toValue: 0,
+                        duration: 600,
+                        easing: Easing.inOut(Easing.sin),
+                        useNativeDriver: true,
+                    }),
+                    Animated.delay(600) // Wait for other dots cycle
+                ])
+            );
+
+        const animations = [
+            createAnimation(dot1, 0),
+            createAnimation(dot2, 200),
+            createAnimation(dot3, 400),
+        ];
+
+        Animated.parallel(animations).start();
+    }, [dot1, dot2, dot3]);
+
+    return (
+        <View style={styles.loadingDotsContainer}>
+            {[dot1, dot2, dot3].map((dot, index) => (
+                <Animated.View
+                    key={index}
+                    style={[
+                        styles.loadingDot,
+                        { backgroundColor: color },
+                        {
+                            transform: [{
+                                translateY: dot.interpolate({
+                                    inputRange: [0, 1],
+                                    outputRange: [0, -8],
+                                })
+                            }]
+                        }
+                    ]}
+                />
+            ))}
+        </View>
+    );
+};
 
 const AIChatModal = React.memo(({
     visible,
     onClose,
     questionItem,
-    aiResponse,
-    isLoading,
-    error,
-    onRegenerate,
+    subjectContext,
 }) => {
-    const [isActionsMenuVisible, setIsActionsMenuVisible] = useState(false);
-    const [isWebViewLoading, setIsWebViewLoading] = useState(true);
+    const [contentType, setContentType] = useState(null); // REQUEST_TYPES enum or null
+    const [aiTextResponse, setAiTextResponse] = useState(null); // For Markdown/KaTeX responses
+    const [youtubeSearchUrl, setYoutubeSearchUrl] = useState(null); // For YouTube WebView
+    const [currentIsLoading, setCurrentIsLoading] = useState(false);
+    const [currentError, setCurrentError] = useState(null);
+    const [modalTitle, setModalTitle] = useState("AI Assistant");
+    const [userHasMadeChoice, setUserHasMadeChoice] = useState(false);
+    const [dynamicLoadingText, setDynamicLoadingText] = useState(DYNAMIC_LOADING_TEXTS[0]);
+    const [isWebViewLoading, setIsWebViewLoading] = useState(true); // For both markdown and YouTube WebViews
 
-    // Log props on re-render for context
-    // console.log('[AIChatModal] Props:', { visible, questionItemExists: !!questionItem, aiResponseExists: !!aiResponse, isLoading, errorExists: !!error, onRegenerateExists: typeof onRegenerate === 'function' });
+    // Enhanced animation values
+    const modalSlideAnim = useRef(new Animated.Value(screenHeight)).current;
+    const backdropOpacity = useRef(new Animated.Value(0)).current;
+    const initialContentOpacity = useRef(new Animated.Value(0)).current;
+    const initialContentTranslateY = useRef(new Animated.Value(30)).current;
+    const subsequentActionsOpacity = useRef(new Animated.Value(0)).current;
+    const headerScale = useRef(new Animated.Value(0.9)).current;
+    const contentScale = useRef(new Animated.Value(0.95)).current;
+    const progressBarAnim = useRef(new Animated.Value(0)).current;
 
 
-    const questionPlainText = useMemo(() => {
-        if (questionItem && questionItem.text) {
-            return getQuestionPlainText(questionItem.text);
+    // Dynamic loading text rotation
+    useEffect(() => {
+        let textInterval;
+        if (currentIsLoading) {
+            setDynamicLoadingText(DYNAMIC_LOADING_TEXTS[0]);
+            let currentIndex = 0;
+            textInterval = setInterval(() => {
+                currentIndex = (currentIndex + 1) % DYNAMIC_LOADING_TEXTS.length;
+                setDynamicLoadingText(DYNAMIC_LOADING_TEXTS[currentIndex]);
+            }, 2000);
         }
-        return "No question context available.";
-    }, [questionItem]);
+        return () => clearInterval(textInterval);
+    }, [currentIsLoading]);
+
+    // Loading progress bar animation
+    useEffect(() => {
+        if (currentIsLoading) {
+            progressBarAnim.setValue(0);
+            Animated.loop(
+                Animated.timing(progressBarAnim, {
+                    toValue: 1,
+                    duration: 1500,
+                    easing: Easing.linear,
+                    useNativeDriver: false,
+                })
+            ).start();
+        } else {
+            progressBarAnim.stopAnimation();
+            progressBarAnim.setValue(0);
+        }
+    }, [currentIsLoading, progressBarAnim]);
 
     useEffect(() => {
-        if (visible && aiResponse && !isLoading && !error) {
-            setIsWebViewLoading(true);
+        if (visible) {
+            setContentType(null);
+            setAiTextResponse(null);
+            setYoutubeSearchUrl(null);
+            setCurrentIsLoading(false);
+            setCurrentError(null);
+            setModalTitle("AI Assistant");
+            setUserHasMadeChoice(false);
+            setIsWebViewLoading(true); // Reset for new content
+            setDynamicLoadingText(DYNAMIC_LOADING_TEXTS[0]);
+
+            modalSlideAnim.setValue(screenHeight);
+            backdropOpacity.setValue(0);
+            initialContentOpacity.setValue(0);
+            initialContentTranslateY.setValue(30);
+            subsequentActionsOpacity.setValue(0);
+            headerScale.setValue(0.9);
+            contentScale.setValue(0.95);
+
+            Animated.parallel([
+                Animated.timing(backdropOpacity, { toValue: 1, duration: 300, useNativeDriver: true }),
+                Animated.spring(modalSlideAnim, { toValue: 0, useNativeDriver: true, tension: 100, friction: 12 }),
+            ]).start(() => {
+                Animated.parallel([
+                    Animated.spring(headerScale, { toValue: 1, useNativeDriver: true, tension: 150, friction: 10 }),
+                    Animated.spring(contentScale, { toValue: 1, useNativeDriver: true, tension: 120, friction: 10 }),
+                    Animated.timing(initialContentOpacity, { toValue: 1, duration: 400, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+                    Animated.spring(initialContentTranslateY, { toValue: 0, useNativeDriver: true, tension: 120, friction: 10 }),
+                ]).start();
+            });
         }
-    }, [visible, aiResponse, isLoading, error]);
+    }, [visible]);
 
-    const handleCopyResponse = useCallback(async () => {
-        // console.log('[AIChatModal] handleCopyResponse: CALLED'); // Log 1
-        setIsActionsMenuVisible(false);
-        if (aiResponse) {
-            try {
-                // console.log('[AIChatModal] handleCopyResponse: Attempting to copy:', aiResponse.substring(0, 50) + "..."); // Log 2
-                await Clipboard.setStringAsync(aiResponse);
-                Alert.alert("Copied!", "AI response copied to clipboard.");
-            } catch (e) {
-                // console.error("[AIChatModal] handleCopyResponse: Failed to copy to clipboard", e);
-                Alert.alert("Error", "Could not copy response to clipboard.");
-            }
-        } else {
-            // console.log('[AIChatModal] handleCopyResponse: No aiResponse to copy.'); // Log 3
-            Alert.alert("Nothing to Copy", "There is no AI response available to copy.");
-        }
-    }, [aiResponse]);
-
-    const handleRegenerate = useCallback(() => {
-        // console.log('[AIChatModal] handleRegenerate: CALLED. isLoading:', isLoading); // Log 4
-        setIsActionsMenuVisible(false);
-        if (typeof onRegenerate === 'function') {
-            // console.log('[AIChatModal] handleRegenerate: Calling onRegenerate prop function.'); // Log 5
-            onRegenerate();
-        } else {
-            console.warn("[AIChatModal] handleRegenerate: onRegenerate is not a function or not provided.");
-        }
-    }, [onRegenerate, isLoading]); // isLoading added for the console.log, not strictly needed for func logic
-
-    const markdownHTML = useMemo(() => {
-        if (aiResponse) {
-            return generateHTML(aiResponse);
-        }
-        return generateHTML("<!-- No content -->");
-    }, [aiResponse]);
-
-
-    const canCopy = !!aiResponse && !isLoading && !error;
-
-    const handleCloseModal = () => {
-        setIsActionsMenuVisible(false);
-        onClose();
+    const triggerHaptic = (type = Haptics.ImpactFeedbackStyle.Light) => {
+        Haptics.impactAsync(type);
     };
 
-    // console.log('[AIChatModal] Render state:', { isActionsMenuVisible, canCopy, isLoading, onRegenerateExists: typeof onRegenerate === 'function' });
+    const generateAndSetResponse = useCallback(async (requestedType) => {
+        if (!questionItem || !subjectContext) {
+            setCurrentError("Missing question or subject context to ask AI.");
+            setCurrentIsLoading(false);
+            setUserHasMadeChoice(true);
+            return;
+        }
+        if (currentIsLoading) return;
+
+        setCurrentIsLoading(true);
+        setCurrentError(null);
+        setAiTextResponse(null);
+        setYoutubeSearchUrl(null); // Clear previous search URL
+        setContentType(requestedType);
+        setUserHasMadeChoice(true);
+        setIsWebViewLoading(true); // Assume WebView will load for any choice
+        subsequentActionsOpacity.setValue(0);
+
+        if (requestedType === REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS) {
+            setModalTitle("Explore Concept Videos");
+        } else if (requestedType === REQUEST_TYPES.EXPLAIN_CONCEPTS) {
+            setModalTitle("AI Explains Concepts");
+        } else {
+            setModalTitle("AI Solution");
+        }
+        
+        try {
+            const response = await askAIWithContext(
+                requestedType,
+                questionItem,
+                subjectContext,
+                (feedbackMsg) => console.log("AI Info:", feedbackMsg)
+            );
+
+            if (requestedType === REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS) {
+                const tags = response.split(',').map(tag => tag.trim()).filter(tag => tag);
+                if (tags.length > 0) {
+                    const searchQuery = tags.join('+');
+                    setYoutubeSearchUrl(`https://m.youtube.com/results?search_query=${encodeURIComponent(searchQuery)}`);
+                } else {
+                    setCurrentError("AI could not extract relevant tags for video search. Try explaining concepts instead.");
+                }
+                setAiTextResponse(null); // No markdown for video search
+            } else {
+                setAiTextResponse(response);
+                setYoutubeSearchUrl(null); // No YouTube URL for text response
+            }
+            triggerHaptic(Haptics.ImpactFeedbackStyle.Medium);
+        } catch (e) {
+            setCurrentError(e.message || `Failed to get AI response.`);
+            triggerHaptic(Haptics.NotificationFeedbackType.Error);
+        } finally {
+            setCurrentIsLoading(false);
+            // setIsWebViewLoading will be set to false by WebView's onLoadEnd
+        }
+    }, [questionItem, subjectContext, currentIsLoading, subsequentActionsOpacity]);
+
+    const handleGenerateAnswer = useCallback(() => {
+        generateAndSetResponse(REQUEST_TYPES.SOLVE_QUESTION);
+    }, [generateAndSetResponse]);
+
+    const handleExplainConcepts = useCallback(() => {
+        generateAndSetResponse(REQUEST_TYPES.EXPLAIN_CONCEPTS);
+    }, [generateAndSetResponse]);
+
+    const handleGetVideoSearchTags = useCallback(() => {
+        generateAndSetResponse(REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS);
+    }, [generateAndSetResponse]);
+
+
+    const handleRegenerateCurrentView = useCallback(() => {
+        if (contentType) { // contentType will be SOLVE_QUESTION, EXPLAIN_CONCEPTS, or GET_VIDEO_SEARCH_TAGS
+            generateAndSetResponse(contentType);
+        }
+    }, [contentType, generateAndSetResponse]);
+
+    useEffect(() => {
+        if (!isWebViewLoading && !currentIsLoading && (aiTextResponse || youtubeSearchUrl) && userHasMadeChoice) {
+            Animated.spring(subsequentActionsOpacity, {
+                toValue: 1,
+                useNativeDriver: true,
+                tension: 120,
+                friction: 8,
+            }).start();
+        }
+    }, [isWebViewLoading, currentIsLoading, aiTextResponse, youtubeSearchUrl, userHasMadeChoice, subsequentActionsOpacity]);
+
+    const markdownHTML = useMemo(() => {
+        if (aiTextResponse) {
+            return generateHTML(aiTextResponse);
+        }
+        return generateHTML("<!-- Awaiting AI Content -->");
+    }, [aiTextResponse]);
+
+    const canRegenerate = userHasMadeChoice && !!contentType && !currentIsLoading;
+
+    const handleCloseModal = () => {
+        triggerHaptic(Haptics.ImpactFeedbackStyle.Medium);
+        Animated.parallel([
+            Animated.timing(backdropOpacity, { toValue: 0, duration: 250, useNativeDriver: true }),
+            Animated.spring(modalSlideAnim, { toValue: screenHeight, useNativeDriver: true, tension: 100, friction: 10 }),
+        ]).start(onClose);
+    };
+
+    const renderInitialChoiceButtons = () => (
+        <Animated.View style={[
+            styles.initialActionsContainer,
+            {
+                opacity: initialContentOpacity,
+                transform: [{ translateY: initialContentTranslateY }, { scale: contentScale }]
+            }
+        ]}>
+            <View style={styles.iconContainer}>
+                <Icon name="sparkles" iconSet="Ionicons" size={48} color={COLORS.primary || '#007AFF'} />
+            </View>
+            <Text style={styles.initialActionsTitle}>How can AI assist you today?</Text>
+            <Text style={styles.initialActionsSubtitle}>Choose an option to get started with your AI-powered learning experience</Text>
+
+            <View style={styles.buttonsContainer}>
+                <PressableScale
+                    style={[styles.actionButton, styles.generateAnswerButton, currentIsLoading && styles.buttonDisabled]}
+                    onPress={handleGenerateAnswer}
+                    disabled={currentIsLoading} hapticType="medium">
+                    <View style={styles.buttonIconContainer}>
+                        <Icon name="chatbubble-ellipses" iconSet="Ionicons" size={20} color="white" />
+                    </View>
+                    <View style={styles.buttonTextContainer}>
+                        <Text style={styles.actionButtonText}>Generate Answer</Text>
+                        <Text style={styles.actionButtonSubtext}>Get a complete solution</Text>
+                    </View>
+                    <Icon name="arrow-forward" iconSet="Ionicons" size={16} color="rgba(255,255,255,0.8)" />
+                </PressableScale>
+
+                <PressableScale
+                    style={[styles.actionButton, styles.explainConceptsButton, currentIsLoading && styles.buttonDisabled]}
+                    onPress={handleExplainConcepts}
+                    disabled={currentIsLoading} hapticType="medium">
+                    <View style={[styles.buttonIconContainer, styles.conceptsIconContainer]}>
+                        <Icon name="bulb" iconSet="Ionicons" size={20} color={COLORS.primary} />
+                    </View>
+                    <View style={styles.buttonTextContainer}>
+                        <Text style={[styles.actionButtonText, { color: COLORS.primary }]}>Explain Concepts</Text>
+                        <Text style={[styles.actionButtonSubtext, { color: COLORS.textSecondary }]}>Learn the fundamentals</Text>
+                    </View>
+                    <Icon name="arrow-forward" iconSet="Ionicons" size={16} color={COLORS.primary + '80'} />
+                </PressableScale>
+
+                {/* New Button for YouTube Video Search */}
+                <PressableScale
+                    style={[styles.actionButton, styles.exploreVideosButton, currentIsLoading && styles.buttonDisabled]}
+                    onPress={handleGetVideoSearchTags}
+                    disabled={currentIsLoading} hapticType="medium">
+                    <View style={[styles.buttonIconContainer, styles.videosIconContainer]}>
+                        <Icon name="logo-youtube" iconSet="Ionicons" size={20} color={COLORS.error} />
+                    </View>
+                    <View style={styles.buttonTextContainer}>
+                        <Text style={[styles.actionButtonText, { color: COLORS.error }]}>Explore Videos</Text>
+                        <Text style={[styles.actionButtonSubtext, { color: COLORS.textSecondary }]}>Find relevant YouTube tutorials</Text>
+                    </View>
+                    <Icon name="arrow-forward" iconSet="Ionicons" size={16} color={COLORS.error + '80'} />
+                </PressableScale>
+            </View>
+        </Animated.View>
+    );
+
+    const renderPostChoiceContent = () => {
+        if (currentIsLoading) {
+            return (
+                <Animated.View style={[styles.stateInfoContainer, { transform: [{ scale: contentScale }] }]}>
+                    <View style={styles.loadingContainer}>
+                        <LoadingDots color={COLORS.primary} />
+                        <Text style={styles.stateInfoText}>{dynamicLoadingText}</Text>
+                        <View style={styles.progressBar}>
+                            <Animated.View style={[
+                                styles.progressBarFill,
+                                {
+                                    width: progressBarAnim.interpolate({
+                                        inputRange: [0, 1],
+                                        outputRange: ['0%', '100%']
+                                    })
+                                }
+                            ]} />
+                        </View>
+                    </View>
+                </Animated.View>
+            );
+        }
+
+        if (currentError) {
+            let retryActionText = "Retry";
+            if (contentType === REQUEST_TYPES.EXPLAIN_CONCEPTS) retryActionText = "Retry Explanation";
+            else if (contentType === REQUEST_TYPES.SOLVE_QUESTION) retryActionText = "Retry Answer";
+            else if (contentType === REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS) retryActionText = "Retry Tag Extraction";
+
+            return (
+                <Animated.View style={[styles.stateInfoContainer, styles.errorStateContainer, { transform: [{ scale: contentScale }] }]}>
+                    <View style={styles.errorIconContainer}>
+                        <Icon name="alert-circle" iconSet="Ionicons" size={44} color={COLORS.error || '#D32F2F'} />
+                    </View>
+                    <Text style={[styles.stateInfoTitle, { color: COLORS.error || '#D32F2F' }]}>Oops! Something went wrong</Text>
+                    <Text style={styles.errorDetailText}>{currentError}</Text>
+                    {canRegenerate && (
+                        <PressableScale
+                            style={styles.errorRetryButton}
+                            onPress={handleRegenerateCurrentView}
+                            disabled={currentIsLoading} hapticType="medium">
+                            <Icon name="refresh" iconSet="Ionicons" size={18} color={COLORS.error || '#D32F2F'} />
+                            <Text style={styles.errorRetryButtonText}>{retryActionText}</Text>
+                        </PressableScale>
+                    )}
+                </Animated.View>
+            );
+        }
+
+        if (contentType === REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS && youtubeSearchUrl) {
+            return (
+                <Animated.View style={[styles.aiResponseContainer, { transform: [{ scale: contentScale }] }]}>
+                    {isWebViewLoading && (
+                        <View style={styles.webViewLoaderContainer}>
+                            <ActivityIndicator size="large" color={COLORS.primary || '#007AFF'} />
+                            <Text style={styles.webViewLoaderText}>Loading YouTube search results...</Text>
+                        </View>
+                    )}
+                    <WebView
+                        originWhitelist={['https://*', 'http://*']}
+                        source={{ uri: youtubeSearchUrl }}
+                        style={[styles.webView, { opacity: isWebViewLoading ? 0.3 : 1 }]}
+                        javaScriptEnabled={true}
+                        domStorageEnabled={true}
+                        onLoadEnd={() => { setIsWebViewLoading(false); triggerHaptic(); }}
+                        onError={({ nativeEvent }) => {
+                            console.error('YouTube WebView error:', nativeEvent);
+                            setIsWebViewLoading(false);
+                            setCurrentError("Error displaying YouTube results. Please check your connection or try again.");
+                        }}
+                    />
+                    {/* Subsequent actions can be different for video view if needed */}
+                </Animated.View>
+            );
+        }
+        
+        if (aiTextResponse && (contentType === REQUEST_TYPES.SOLVE_QUESTION || contentType === REQUEST_TYPES.EXPLAIN_CONCEPTS)) {
+            return (
+                <Animated.View style={[styles.aiResponseContainer, { transform: [{ scale: contentScale }] }]}>
+                    {isWebViewLoading && (
+                        <View style={styles.webViewLoaderContainer}>
+                            <ActivityIndicator size="large" color={COLORS.primary || '#007AFF'} />
+                            <Text style={styles.webViewLoaderText}>Formatting response...</Text>
+                        </View>
+                    )}
+                    <WebView
+                        originWhitelist={['*']}
+                        source={{ html: markdownHTML }}
+                        style={[styles.webView, { opacity: isWebViewLoading ? 0.3 : 1 }]}
+                        javaScriptEnabled={true}
+                        domStorageEnabled={true}
+                        mixedContentMode="compatibility"
+                        setSupportMultipleWindows={false}
+                        showsVerticalScrollIndicator={false}
+                        showsHorizontalScrollIndicator={false}
+                        onLoadEnd={() => { setIsWebViewLoading(false); triggerHaptic(); }}
+                        onError={({ nativeEvent }) => {
+                            console.error('Chat WebView error:', nativeEvent);
+                            setIsWebViewLoading(false);
+                            setCurrentError("Error displaying AI response. Content might be malformed. Try regenerating.");
+                        }}
+                    />
+                    <Animated.View style={[styles.subsequentActionsContainer, { opacity: subsequentActionsOpacity }]}>
+                        {canRegenerate && (
+                            <PressableScale
+                                style={[styles.actionButtonSmall, styles.regenerateButtonSmall, currentIsLoading && styles.buttonDisabled]}
+                                onPress={handleRegenerateCurrentView}
+                                disabled={currentIsLoading} hapticType="light">
+                                <Icon name="refresh" iconSet="Ionicons" size={16} color={COLORS.primary} />
+                                <Text style={[styles.actionButtonTextSmall, { color: COLORS.primary }]}>
+                                    Regenerate
+                                </Text>
+                            </PressableScale>
+                        )}
+                        {contentType === REQUEST_TYPES.SOLVE_QUESTION && (
+                            <PressableScale
+                                style={[styles.actionButtonSmall, styles.switchButtonSmall, currentIsLoading && styles.buttonDisabled]}
+                                onPress={handleExplainConcepts}
+                                disabled={currentIsLoading} hapticType="light">
+                                <Icon name="bulb-outline" iconSet="Ionicons" size={16} color={COLORS.textSecondary} />
+                                <Text style={[styles.actionButtonTextSmall, { color: COLORS.textSecondary }]}>Concepts</Text>
+                            </PressableScale>
+                        )}
+                        {contentType === REQUEST_TYPES.EXPLAIN_CONCEPTS && (
+                            <PressableScale
+                                style={[styles.actionButtonSmall, styles.switchButtonSmall, currentIsLoading && styles.buttonDisabled]}
+                                onPress={handleGenerateAnswer}
+                                disabled={currentIsLoading} hapticType="light">
+                                <Icon name="chatbubble-ellipses-outline" iconSet="Ionicons" size={16} color={COLORS.textSecondary} />
+                                <Text style={[styles.actionButtonTextSmall, { color: COLORS.textSecondary }]}>Answer</Text>
+                            </PressableScale>
+                        )}
+                    </Animated.View>
+                </Animated.View>
+            );
+        }
+
+        return (
+            <Animated.View style={[styles.stateInfoContainer, { transform: [{ scale: contentScale }] }]}>
+                <Icon name="information-circle-outline" iconSet="Ionicons" size={48} color={COLORS.textDisabled || '#AEAEB2'} />
+                <Text style={styles.stateInfoText}>Please select an action to proceed.</Text>
+            </Animated.View>
+        );
+    };
+    
+    const getHeaderIcon = () => {
+        switch (contentType) {
+            case REQUEST_TYPES.EXPLAIN_CONCEPTS: return { name: "brain", set: "MaterialCommunityIcons" };
+            case REQUEST_TYPES.SOLVE_QUESTION: return { name: "robot-happy-outline", set: "MaterialCommunityIcons" };
+            case REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS: return { name: "logo-youtube", set: "Ionicons" };
+            default: return { name: "sparkles", set: "Ionicons" };
+        }
+    };
+    const headerIconInfo = getHeaderIcon();
+
 
     return (
         <Modal
-            animationType="slide"
+            animationType="none"
             transparent={true}
             visible={visible}
             onRequestClose={handleCloseModal}
         >
-            <SafeAreaView style={styles.modalOverlay}>
-                <View style={styles.modalView}>
-                    <View style={styles.modalHeader}>
-                        {/* ... header title ... */}
+            <Animated.View style={[styles.modalOverlay, { opacity: backdropOpacity }]}>
+                <Animated.View style={[styles.modalView, { transform: [{ translateY: modalSlideAnim }] }]}>
+                    <Animated.View style={[styles.modalHeader, { transform: [{ scale: headerScale }] }]}>
                         <View style={styles.modalTitleContainer}>
-                            <Icon
-                                iconSet="MaterialCommunityIcons"
-                                name="robot-happy-outline"
-                                size={22}
-                                color={COLORS.primary || '#007AFF'}
-                                style={styles.modalTitleIcon}
-                            />
-                            <Text style={styles.modalTitle} numberOfLines={1}>AI Assistant</Text>
+                            <View style={styles.titleIconContainer}>
+                                <Icon
+                                    iconSet={headerIconInfo.set}
+                                    name={headerIconInfo.name}
+                                    size={24}
+                                    color={contentType === REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS ? COLORS.error : (COLORS.primary || '#007AFF')}
+                                />
+                            </View>
+                            <Text style={styles.modalTitle} numberOfLines={1}>{modalTitle}</Text>
                         </View>
                         <View style={styles.headerRightActions}>
-                            {(canCopy || typeof onRegenerate === 'function') && (
-                                <View style={styles.moreOptionsContainer}>
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            // console.log('[AIChatModal] Ellipsis icon PRESSED. Current isActionsMenuVisible:', isActionsMenuVisible); // Log 6
-                                            setIsActionsMenuVisible(v => !v);
-                                        }}
-                                        style={styles.headerIconButton}
-                                        disabled={isLoading && typeof onRegenerate !== 'function'}
-                                    >
-                                        <Icon /* ... */ />
-                                    </TouchableOpacity>
-                                    {isActionsMenuVisible && (
-                                        <View style={styles.moreOptionsMenu}>
-                                            {/* Log when menu becomes visible */}
-                                            {/* {console.log('[AIChatModal] More options menu IS VISIBLE.')}  */}
-                                            {canCopy && (
-                                                <TouchableOpacity
-                                                    style={styles.menuItem}
-                                                    onPress={() => {
-                                                        // console.log('[AIChatModal] "Copy Response" TouchableOpacity: PRESSED'); // Log 7
-                                                        handleCopyResponse();
-                                                    }}
-                                                >
-                                                    <Icon name="copy-outline" iconSet="Ionicons" size={20} color={COLORS.text || '#000'} style={styles.menuItemIcon} />
-                                                    <Text style={styles.menuItemText}>Copy Response</Text>
-                                                </TouchableOpacity>
-                                            )}
-                                            {typeof onRegenerate === 'function' && (
-                                                <TouchableOpacity
-                                                    style={styles.menuItem}
-                                                    onPress={() => {
-                                                        // console.log('[AIChatModal] "Regenerate" TouchableOpacity: PRESSED. isLoading:', isLoading); // Log 8
-                                                        // We don't need to check isLoading here again, as `disabled` prop handles it.
-                                                        // If `disabled` is true, this `onPress` shouldn't even fire.
-                                                        handleRegenerate();
-                                                    }}
-                                                    disabled={isLoading}
-                                                >
-                                                    <Icon name="reload-circle-outline" iconSet="Ionicons" size={20} color={isLoading ? (COLORS.disabled || '#CCCCCC') : (COLORS.text || '#000')} style={styles.menuItemIcon} />
-                                                    <Text style={[styles.menuItemText, isLoading && { color: COLORS.disabled || '#CCCCCC' }]}>
-                                                        {aiResponse || error ? 'Regenerate' : 'Generate'}
-                                                    </Text>
-                                                </TouchableOpacity>
-                                            )}
-                                        </View>
-                                    )}
-                                </View>
-                            )}
-                            <TouchableOpacity onPress={handleCloseModal} style={[styles.headerIconButton, styles.modalCloseButton]}>
+                            <PressableScale
+                                onPress={handleCloseModal}
+                                style={styles.headerIconButton}
+                                hapticType="medium" scaleValue={0.9}>
                                 <Icon iconSet="Ionicons" name="close-circle" size={28} color={COLORS.textSecondary || '#8E8E93'} />
-                            </TouchableOpacity>
+                            </PressableScale>
                         </View>
-                    </View>
+                    </Animated.View>
 
-                    {/* ... ScrollView and content ... */}
                     <ScrollView
                         style={styles.contentScrollView}
                         contentContainerStyle={styles.contentScrollContainer}
-                        showsVerticalScrollIndicator={true} 
-                        keyboardShouldPersistTaps="handled" 
-                    >
-                       
-                        {isLoading && (
-                            <View style={styles.stateInfoContainer}>
-                                <ActivityIndicator size={Platform.OS === 'ios' ? "large" : 60} color={COLORS.primary || '#007AFF'} />
-                                <Text style={styles.stateInfoText}>AI is thinking, please wait...</Text>
-                            </View>
-                        )}
-
-                        {error && !isLoading && (
-                            <View style={[styles.stateInfoContainer, styles.errorStateContainer]}>
-                                <Icon name="alert-circle-outline" iconSet="Ionicons" size={50} color={COLORS.error || '#D32F2F'} />
-                                <Text style={[styles.stateInfoTitle, { color: COLORS.error || '#D32F2F' }]}>Oops! An Error Occurred</Text>
-                                <Text style={styles.errorDetailText}>{error}</Text>
-                                {typeof onRegenerate === 'function' && (
-                                    <TouchableOpacity style={styles.errorRetryButton} onPress={handleRegenerate} disabled={isLoading}>
-                                        <Icon name="refresh-outline" iconSet="Ionicons" size={20} color={COLORS.error || '#D32F2F'} style={styles.actionButtonIcon} />
-                                        <Text style={styles.errorRetryButtonText}>Try Again</Text>
-                                    </TouchableOpacity>
-                                )}
-                            </View>
-                        )}
-
-                        {!isLoading && !error && aiResponse && (
-                            <View style={styles.aiResponseContainer}>
-                                {isWebViewLoading && ( 
-                                    <ActivityIndicator
-                                        size="large"
-                                        color={COLORS.primary || '#007AFF'}
-                                        style={styles.webViewLoader}
-                                    />
-                                )}
-                                <WebView
-                                    originWhitelist={['*']}
-                                    source={{ html: markdownHTML }}
-                                    style={[styles.webView, { opacity: isWebViewLoading ? 0 : 1 }]} 
-                                    javaScriptEnabled={true}
-                                    domStorageEnabled={true}
-                                    mixedContentMode="compatibility"
-                                    setSupportMultipleWindows={false}
-                                    showsVerticalScrollIndicator={false} 
-                                    showsHorizontalScrollIndicator={false}
-                                    onLoadEnd={() => setIsWebViewLoading(false)} 
-                                    onError={({ nativeEvent }) => {
-                                        console.error('Chat WebView error:', nativeEvent);
-                                        setIsWebViewLoading(false); 
-                                        Alert.alert("Display Error", "Could not render AI response format correctly.");
-                                    }}
-                                />
-                            </View>
-                        )}
-                        {!isLoading && !error && !aiResponse && (
-                             <View style={styles.stateInfoContainer}>
-                                <Icon name="chatbubbles-outline" iconSet="Ionicons" size={48} color={COLORS.textDisabled || '#AEAEB2'} />
-                                <Text style={styles.stateInfoText}>AI response will appear here.</Text>
-                                {typeof onRegenerate === 'function' && ( 
-                                     <TouchableOpacity style={styles.generateButton} onPress={handleRegenerate} disabled={isLoading}>
-                                        <Icon name="sparkles-outline" iconSet="Ionicons" size={20} color={COLORS.primary || '#007AFF'} style={styles.actionButtonIcon} />
-                                        <Text style={styles.generateButtonText}>Generate Response</Text>
-                                    </TouchableOpacity>
-                                )}
-                            </View>
-                        )}
+                        showsVerticalScrollIndicator={false}
+                        keyboardShouldPersistTaps="handled"
+                        bounces={true}>
+                        {!userHasMadeChoice ? renderInitialChoiceButtons() : renderPostChoiceContent()}
                     </ScrollView>
-                </View>
-                {isActionsMenuVisible && (
-                    <Pressable
-                        style={styles.fullScreenMenuBackdrop}
-                        onPress={() => {
-                            //  console.log('[AIChatModal] Backdrop PRESSED. Closing menu.'); // Log 9
-                             setIsActionsMenuVisible(false);
-                        }}
-                    />
-                )}
-            </SafeAreaView>
+                </Animated.View>
+            </Animated.View>
         </Modal>
     );
 });
@@ -260,218 +622,325 @@ const AIChatModal = React.memo(({
 const styles = StyleSheet.create({
     modalOverlay: {
         flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.65)', // Slightly darker overlay
+        backgroundColor: 'rgba(0,0,0,0.6)', 
         justifyContent: 'flex-end',
     },
     modalView: {
         backgroundColor: COLORS.surface || '#FFFFFF',
-        borderTopLeftRadius: 24,
-        borderTopRightRadius: 24,
-        height: Platform.OS === 'ios' ? '93%' : '90%', // Adjusted height
+        borderTopLeftRadius: 32, 
+        borderTopRightRadius: 32,
+        height: Platform.OS === 'ios' ? '95%' : '93%', 
         shadowColor: '#000000',
-        shadowOffset: { width: 0, height: -6 },
-        shadowOpacity: 0.22,
-        shadowRadius: 14,
-        elevation: 35,
+        shadowOffset: { width: 0, height: -12 }, 
+        shadowOpacity: 0.3,
+        shadowRadius: 24,
+        elevation: 50,
         overflow: 'hidden',
     },
     modalHeader: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between', // Changed from flex-start to space-between
-        paddingVertical: Platform.OS === 'ios' ? 12 : 14,
-        paddingHorizontal: 16,
+        justifyContent: 'space-between',
+        paddingVertical: Platform.OS === 'ios' ? 18 : 20, 
+        paddingHorizontal: 24,
         borderBottomWidth: 1,
-        borderBottomColor: COLORS.borderLight || '#ECECEC',
-        minHeight: 58,
+        borderBottomColor: COLORS.borderLight || '#F0F0F0',
+        minHeight: 70, 
+        backgroundColor: COLORS.surface || '#FFFFFF', 
     },
     modalTitleContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'flex-start', // Changed from center to flex-start
-        gap: 8,
-        flex: 1, // Added to allow title to take remaining space
+        flex: 1, 
     },
-    modalTitleIcon: {
-        // No specific style needed if using gap
+    titleIconContainer: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        backgroundColor: (COLORS.primary || '#007AFF') + '10', 
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: 12,
     },
     modalTitle: {
-        fontSize: 18,
-        fontWeight: '600',
+        fontSize: 20, 
+        fontWeight: '700', 
         color: COLORS.text || '#1A1A1A',
-        textAlign: 'left', // Changed from center to left
+        letterSpacing: -0.3, 
     },
     headerRightActions: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'flex-end',
-        // Removed fixed width to allow natural sizing
     },
     headerIconButton: {
-        padding: 8,
-    },
-    modalCloseButton: {
-        // marginLeft: 4, // If more options icon is present
-    },
-    moreOptionsContainer: {
-        position: 'relative',
-        marginRight: Platform.OS === 'ios' ? 0 : -4, // Fine-tune spacing
-    },
-    moreOptionsMenu: {
-        position: 'absolute',
-        top: Platform.OS === 'ios' ? 40 : 44, // Adjust based on header height
-        right: 8,
-        backgroundColor: COLORS.surface || '#FFFFFF',
-        borderRadius: 10,
-        paddingVertical: 6,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.15,
-        shadowRadius: 8,
-        elevation: 10,
-        zIndex: 200, // Higher than backdrop
-        minWidth: 210, // Increased width
-        borderWidth: Platform.OS === 'ios' ? 0.5 : 0, // Subtle border for iOS
-        borderColor: COLORS.borderUltraLight || '#F0F0F0',
-    },
-    menuItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingVertical: 13, // Increased padding
-        paddingHorizontal: 18,
-    },
-    menuItemIcon: {
-        marginRight: 14,
-    },
-    menuItemText: {
-        fontSize: 16, // Slightly larger
-        color: COLORS.text || '#000000',
-    },
-    fullScreenMenuBackdrop: {
-        position: 'absolute',
-        top: 0, left: 0, right: 0, bottom: 0,
-        backgroundColor: 'transparent', // Keeps it invisible but pressable
-        // backgroundColor: 'rgba(0, 255, 0, 0.1)', // TEMP: For visualizing backdrop
-        zIndex: 100, // Lower than menu
+        padding: 8, 
+        borderRadius: 20,
     },
     contentScrollView: {
         flex: 1,
     },
     contentScrollContainer: {
-        flexGrow: 1, // Allows content to expand to fill ScrollView viewport if short
-        paddingHorizontal: 18,
-        paddingTop: 18,
-        paddingBottom: 30, // Ensure space at the bottom
+        flexGrow: 1,
+        paddingHorizontal: 24,
+        paddingTop: 32, 
+        paddingBottom: 40, 
     },
-    questionContextContainer: {
-        padding: 16,
-        backgroundColor: COLORS.surfaceAlt || '#F7F9FC',
-        borderRadius: 12,
-        borderWidth: 1,
-        borderColor: COLORS.borderLight || '#E8ECF0',
-        marginBottom: 20, // Increased margin
-    },
-    questionContextTitle: {
-        fontSize: 14.5,
-        fontWeight: '600',
-        color: COLORS.textSecondary || '#4A5568',
-        marginBottom: 8,
-    },
-    questionContextText: {
-        fontSize: 15,
-        color: COLORS.text || '#2D3748',
-        lineHeight: 22,
-    },
-    stateInfoContainer: { // Common container for loading, error, empty states
-        flex: 1, // Allow this to take up space if it's the only thing
+    initialActionsContainer: {
+        flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingVertical: 40,
-        minHeight: 200, // Ensure it has some minimum height
+        paddingHorizontal: 20,
+        paddingBottom: 60, 
+    },
+    iconContainer: { 
+        width: 80,
+        height: 80,
+        borderRadius: 40,
+        backgroundColor: (COLORS.primary || '#007AFF') + '15',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 24,
+    },
+    initialActionsTitle: {
+        fontSize: 24, 
+        fontWeight: '700',
+        color: COLORS.text || '#1A1A1A',
+        textAlign: 'center',
+        marginBottom: 12,
+        letterSpacing: -0.5,
+    },
+    initialActionsSubtitle: {
+        fontSize: 16,
+        fontWeight: '400',
+        color: COLORS.textSecondary || '#666666',
+        textAlign: 'center',
+        marginBottom: 40, 
+        lineHeight: 22,
+        paddingHorizontal: 20,
+    },
+    buttonsContainer: { 
+        width: '100%',
+        maxWidth: 380, 
+        gap: 16, 
+    },
+    actionButton: { 
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 20, 
+        paddingHorizontal: 24,
+        borderRadius: 16, 
+        width: '100%',
+    },
+    generateAnswerButton: {
+        backgroundColor: COLORS.primary || '#007AFF',
+        shadowColor: COLORS.primary || '#007AFF',
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.25,
+        shadowRadius: 8,
+        elevation: 8,
+    },
+    explainConceptsButton: {
+        backgroundColor: COLORS.surface || '#FFFFFF',
+        borderWidth: 2,
+        borderColor: (COLORS.primary || '#007AFF') + '20', 
+        shadowColor: '#000000',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.08,
+        shadowRadius: 6,
+        elevation: 4,
+    },
+    exploreVideosButton: { // New style for YouTube button
+        backgroundColor: COLORS.surface || '#FFFFFF',
+        borderWidth: 2,
+        borderColor: (COLORS.error || '#D32F2F') + '20',
+        shadowColor: '#000000',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.08,
+        shadowRadius: 6,
+        elevation: 4,
+    },
+    buttonIconContainer: {
+        width: 36,
+        height: 36,
+        borderRadius: 18,
+        backgroundColor: 'rgba(255,255,255,0.2)', 
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    conceptsIconContainer: {
+        backgroundColor: (COLORS.primary || '#007AFF') + '15', 
+    },
+    videosIconContainer: { // New style for YouTube icon container
+        backgroundColor: (COLORS.error || '#D32F2F') + '15',
+    },
+    buttonTextContainer: {
+        flex: 1,
+        marginLeft: 16,
+    },
+    actionButtonText: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: 'white', 
+        marginBottom: 2,
+    },
+    actionButtonSubtext: {
+        fontSize: 14,
+        fontWeight: '400',
+        color: 'rgba(255,255,255,0.8)', 
+    },
+    buttonDisabled: { 
+        opacity: 0.6, 
+    },
+    stateInfoContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+        minHeight: 300, 
+    },
+    loadingContainer: { 
+        alignItems: 'center',
+        width: '100%',
+    },
+    loadingDotsContainer: {
+        flexDirection: 'row',
+        marginBottom: 20,
+    },
+    loadingDot: {
+        width: 10,
+        height: 10,
+        borderRadius: 5,
+        marginHorizontal: 5,
+    },
+    progressBar: {
+        height: 4,
+        width: '70%', 
+        backgroundColor: COLORS.borderLight || '#E0E0E0',
+        borderRadius: 2,
+        marginTop: 15,
+        overflow: 'hidden',
+    },
+    progressBarFill: {
+        height: '100%',
+        backgroundColor: COLORS.primary || '#007AFF',
+        borderRadius: 2,
     },
     stateInfoText: {
-        marginTop: 18,
+        marginTop: 20,
         fontSize: 16,
         color: COLORS.textSecondary || '#718096',
         textAlign: 'center',
         paddingHorizontal: 20,
+        lineHeight: 23,
     },
-    stateInfoTitle: {
-        fontSize: 19,
+    errorStateContainer: { 
+        backgroundColor: (COLORS.error || '#D32F2F') + '10', 
+        borderRadius: 16,
+        paddingVertical: 30,
+    },
+    errorIconContainer: {
+        width: 70,
+        height: 70,
+        borderRadius: 35,
+        backgroundColor: (COLORS.error || '#D32F2F') + '20',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 15,
+    },
+    stateInfoTitle: { 
+        fontSize: 20,
         fontWeight: '600',
-        marginTop: 15,
-        marginBottom: 10,
         textAlign: 'center',
-    },
-    errorStateContainer: { // Specific styling for error block
-        backgroundColor:  COLORS.errorBackground || '#FFF0F0',
-        borderRadius: 12,
-        paddingHorizontal: 15, // Inner padding
-        marginVertical: 10, // If it's not taking flex:1
+        marginBottom: 8,
     },
     errorDetailText: {
         fontSize: 15,
-        color: COLORS.errorText || COLORS.textSecondary || '#502A2A',
+        color: COLORS.textSecondary || '#4A5568',
         textAlign: 'center',
-        lineHeight: 21,
         marginBottom: 25,
+        paddingHorizontal: 10,
+        lineHeight: 21,
     },
     errorRetryButton: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 25,
+        justifyContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 30,
+        borderRadius: 25, 
         borderColor: COLORS.error || '#D32F2F',
         borderWidth: 1.5,
-        backgroundColor: 'transparent',
+        backgroundColor: 'transparent', 
+        marginTop: 15,
+        gap: 8,
     },
     errorRetryButtonText: {
-        fontSize: 15,
-        fontWeight: '600',
         color: COLORS.error || '#D32F2F',
-    },
-    generateButton: { // For the empty state "Generate Response"
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 25,
-        borderColor: COLORS.primary || '#007AFF',
-        borderWidth: 1.5,
-        backgroundColor: 'transparent',
-        marginTop: 25,
-    },
-    generateButtonText: {
         fontSize: 15,
         fontWeight: '600',
-        color: COLORS.primary || '#007AFF',
     },
     aiResponseContainer: {
-        flex: 1, // Key for making this container take available vertical space
-        backgroundColor: COLORS.surface || "#FFF", // Match WebView background for seamless look
-        borderRadius: 10, // Rounded corners for the content area
-        overflow: 'hidden', // Important for border radius on WebView
-        minHeight: 250, // Ensure a decent minimum height for the response area
-        position: 'relative', // For positioning the WebView loader
+        flex: 1,
+        backgroundColor: COLORS.surfaceAlt2 || '#F9F9F9', 
+        borderRadius: 16,
+        overflow: 'hidden',
+        minHeight: 300, 
+        display: 'flex',
+        flexDirection: 'column',
     },
-    webViewLoader: {
+    webViewLoaderContainer: {
         position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
+        top: 0, left: 0, right: 0, bottom: 0,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(255,255,255,0.8)', // Semi-transparent overlay
-        zIndex: 1, // Above WebView while loading
+        backgroundColor: (COLORS.surfaceAlt2 || '#F9F9F9') + 'E6', 
+        zIndex: 10, 
+    },
+    webViewLoaderText: {
+        marginTop: 12,
+        fontSize: 14,
+        color: COLORS.textSecondary,
     },
     webView: {
-        flex: 1, // WebView fills its parent (aiResponseContainer)
-        backgroundColor: 'transparent', // Let parent container handle background
+        flex: 1,
+        backgroundColor: 'transparent', 
     },
-    actionButtonIcon: { // Used by errorRetryButton and generateButton
-        marginRight: 8,
+    subsequentActionsContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        paddingVertical: 16,
+        paddingHorizontal: 16,
+        borderTopWidth: 1,
+        borderTopColor: COLORS.borderLight || '#ECECEC',
+        backgroundColor: COLORS.surface || '#FFFFFF', 
+    },
+    actionButtonSmall: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 10,
+        paddingHorizontal: 12,
+        borderRadius: 10,
+        flex: 1, 
+        marginHorizontal: 5,
+        maxWidth: Platform.OS === 'ios' ? 170 : 160, 
+        gap: 6,
+    },
+    regenerateButtonSmall: {
+        backgroundColor: (COLORS.primary || '#007AFF') + '10', 
+        borderColor: (COLORS.primary || '#007AFF') + '30', 
+        borderWidth: 1.2,
+    },
+    switchButtonSmall: {
+        backgroundColor: COLORS.surfaceAlt || '#E9ECEF', 
+        borderColor: COLORS.border || '#D1D1D6',
+        borderWidth: 1.2,
+    },
+    actionButtonTextSmall: {
+        fontSize: 13,
+        fontWeight: '500',
+        textAlign: 'center',
     },
 });
 

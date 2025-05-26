@@ -17,38 +17,35 @@ import {
     StatusBar,
     ScrollView,
     TextInput,
-    Alert, // Added for potential alerts
+    Alert,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // Assuming Ionicons are used
+import { Ionicons } from '@expo/vector-icons';
 import {
     COLORS,
     UNCAT_CHAPTER_NAME,
     SEARCH_DEBOUNCE_DELAY,
 } from '../constants';
 import {
-    findData, // Fallback for local data
+    findData,
     loadCompletionStatuses,
     setQuestionCompleted,
     copyToClipboard,
-    // searchGoogle, // This is now handled within QuestionItem via SearchWebViewModal
     debounce,
     getQuestionPlainText,
     getSemesterPYQsFromSecureStore,
     updateDailyStreak,
 } from '../helpers/helpers';
-import { askAIWithContext } from '../helpers/openaiHelper'; // New AI helper
+// REMOVE: askAIWithContext, REQUEST_TYPES (not directly used by QuestionListScreen anymore for initial call)
 
 import LoadingIndicator from '../components/LoadingIndicator';
 import ErrorMessage from '../components/ErrorMessage';
 import EmptyState from '../components/EmptyState';
 import QuestionItem from '../components/QuestionItem';
-import AIChatModal from '../components/AIChatModal'; // New AI Chat Modal
+import AIChatModal from '../components/AIChatModal';
 
-// Attempt to load beuData for context like branch/semester names for AI
-// This is a simplification. In a larger app, this data might come from a context/service.
 let beuDataStructure = null;
 try {
-    beuDataStructure = require('../data/beuData').default; // Adjust path if necessary
+    beuDataStructure = require('../data/beuData').default;
 } catch (e) {
     console.warn("beuData.js not found or failed to load. AI context might be limited.", e);
 }
@@ -59,9 +56,9 @@ const QuestionListScreen = ({ route, navigation }) => {
         branchId,
         semId,
         subjectId,
-        organizationMode = 'all', // 'all', 'year', 'chapter'
-        selectedYear, // for organizationMode 'year'
-        selectedChapter, // for organizationMode 'chapter'
+        organizationMode = 'all',
+        selectedYear,
+        selectedChapter,
     } = route.params;
 
     const [subjectData, setSubjectData] = useState(null);
@@ -74,17 +71,48 @@ const QuestionListScreen = ({ route, navigation }) => {
     const [feedbackMessage, setFeedbackMessage] = useState('');
     const feedbackTimerRef = useRef(null);
 
-    const [sortBy, setSortBy] = useState('default'); // 'default', 'year_asc', 'year_desc'
-    const [filterCompleted, setFilterCompleted] = useState('all'); // 'all', 'completed', 'incomplete'
+    const [sortBy, setSortBy] = useState('default');
+    const [filterCompleted, setFilterCompleted] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
 
     // AI Chat Modal State
     const [isAIChatModalVisible, setIsAIChatModalVisible] = useState(false);
     const [currentAIQuestion, setCurrentAIQuestion] = useState(null);
-    const [aiResponseText, setAiResponseText] = useState('');
-    const [isAILoading, setIsAILoading] = useState(false);
-    const [aiError, setAiError] = useState(null);
+    // REMOVE: initialAiResponse, isAILoading, aiError from QuestionListScreen state
+    // These are now managed within AIChatModal
+
+    // Derived subject context for AI
+    const subjectContextForAI = useMemo(() => {
+        if (!subjectData) return null;
+
+        let branchName = 'N/A';
+        let semesterNumber = 'N/A';
+
+        if (beuDataStructure?.branches) {
+            const currentBranch = beuDataStructure.branches.find(b => b.id === branchId);
+            if (currentBranch) {
+                branchName = currentBranch.name;
+                if (currentBranch.semesters) {
+                    const currentSemester = currentBranch.semesters.find(s => s.id === semId);
+                    if (currentSemester) {
+                        semesterNumber = currentSemester.number.toString();
+                    }
+                }
+            }
+        } else {
+            if (route.params.branchName) branchName = route.params.branchName;
+            if (route.params.semesterNumber) semesterNumber = route.params.semesterNumber.toString();
+        }
+        
+        return {
+            branchName,
+            semesterNumber,
+            subjectName: subjectData.name,
+            subjectCode: subjectData.code,
+        };
+    }, [subjectData, branchId, semId, route.params.branchName, route.params.semesterNumber]);
+
 
     const debouncedSearchHandler = useCallback(
         debounce((query) => {
@@ -97,98 +125,90 @@ const QuestionListScreen = ({ route, navigation }) => {
         debouncedSearchHandler(searchQuery);
     }, [searchQuery, debouncedSearchHandler]);
 
-    useEffect(() => {
+    const loadData = useCallback(async () => {
         let isMounted = true;
         setLoading(true);
         setError(null);
-        setCompletionStatus({});
-        setQuestions([]);
         if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
 
-        const loadData = async () => {
-            let semesterData = null;
-            try {
-                semesterData = await getSemesterPYQsFromSecureStore(branchId, semId);
-            } catch (secureStoreError) {
-                console.warn("Failed to load PYQs from secure store:", secureStoreError);
-            }
+        let semesterData = null;
+        try {
+            semesterData = await getSemesterPYQsFromSecureStore(branchId, semId);
+        } catch (secureStoreError) {
+            console.warn("Failed to load PYQs from secure store:", secureStoreError);
+        }
 
-            let subject = null;
-            let fetchedQuestions = [];
-            let dataError = null;
+        let subject = null;
+        let fetchedQuestions = [];
+        let dataError = null;
 
-            if (semesterData && semesterData.subjects) {
-                subject = semesterData.subjects.find(sub => sub.id === subjectId);
-                if (!subject) {
-                    dataError = 'Subject not found in downloaded data. Trying local fallback.';
-                } else {
-                    fetchedQuestions = Array.isArray(subject.questions) ? subject.questions : [];
-                }
-            }
-
-            if (!subject || dataError) { // Fallback to local beuData.js
-                // console.log(dataError || "No data in SecureStore or subject not found, falling back to local data.");
-                const fallback = findData({ branchId, semId, subjectId });
-                subject = fallback.subject;
-                fetchedQuestions = fallback.questions;
-                dataError = fallback.error; // Overwrite error if fallback also fails
-            }
-
-
-            if (dataError) {
-                if (isMounted) {
-                    setError(dataError);
-                    setSubjectData(null);
-                    setLoading(false);
-                }
-                return;
-            }
-
-            if (subject) {
-                if (isMounted) {
-                    setSubjectData(subject);
-                    setQuestions(fetchedQuestions);
-
-                    let screenTitle = subject.name || 'Questions';
-                    if (organizationMode === 'year' && selectedYear != null) {
-                        screenTitle = `${subject.name} (${selectedYear})`;
-                    } else if (organizationMode === 'chapter' && selectedChapter) {
-                        const chapterDisplay =
-                            selectedChapter === UNCAT_CHAPTER_NAME
-                                ? 'Uncategorized'
-                                : selectedChapter;
-                        screenTitle = `${subject.code || subject.name} (${chapterDisplay.substring(0,15)}${chapterDisplay.length > 15 ? '...' : ''})`;
-                    }
-                    navigation.setOptions({ title: screenTitle });
-
-                    if (fetchedQuestions.length > 0) {
-                        const questionIds = fetchedQuestions.map((q) => q.questionId);
-                        loadCompletionStatuses(questionIds)
-                            .then((statuses) => {
-                                if (isMounted) setCompletionStatus(statuses);
-                            })
-                            .finally(() => {
-                                if (isMounted) setLoading(false);
-                            });
-                    } else {
-                        if (isMounted) setLoading(false);
-                    }
-                }
+        if (semesterData && semesterData.subjects) {
+            subject = semesterData.subjects.find(sub => sub.id === subjectId);
+            if (!subject) {
+                dataError = 'Subject not found in downloaded data. Trying local fallback.';
             } else {
-                 if (isMounted) {
-                    setError("Subject data could not be loaded.");
-                    setLoading(false);
-                 }
+                fetchedQuestions = Array.isArray(subject.questions) ? subject.questions : [];
             }
-        };
+        }
 
-        loadData();
+        if (!subject || dataError) {
+            const fallback = findData({ branchId, semId, subjectId });
+            subject = fallback.subject;
+            fetchedQuestions = fallback.questions;
+            dataError = fallback.error;
+        }
 
+        if (dataError && isMounted) {
+            setError(dataError);
+            setSubjectData(null);
+            setLoading(false);
+            return;
+        }
+
+        if (subject && isMounted) {
+            setSubjectData(subject);
+            setQuestions(fetchedQuestions);
+
+            let screenTitle = subject.name || 'Questions';
+            if (organizationMode === 'year' && selectedYear != null) {
+                screenTitle = `${subject.name} (${selectedYear})`;
+            } else if (organizationMode === 'chapter' && selectedChapter) {
+                const chapterDisplay =
+                    selectedChapter === UNCAT_CHAPTER_NAME
+                        ? 'Uncategorized'
+                        : selectedChapter;
+                screenTitle = `${subject.code || subject.name} (${chapterDisplay.substring(0,15)}${chapterDisplay.length > 15 ? '...' : ''})`;
+            }
+            navigation.setOptions({ title: screenTitle });
+
+            if (fetchedQuestions.length > 0) {
+                const questionIds = fetchedQuestions.map((q) => q.questionId);
+                loadCompletionStatuses(questionIds)
+                    .then((statuses) => {
+                        if (isMounted) setCompletionStatus(statuses);
+                    })
+                    .finally(() => {
+                        if (isMounted) setLoading(false);
+                    });
+            } else {
+                if (isMounted) setLoading(false);
+            }
+        } else if (isMounted) {
+            setError("Subject data could not be loaded.");
+            setSubjectData(null);
+            setLoading(false);
+        }
+        return () => { isMounted = false; };
+    }, [branchId, semId, subjectId, organizationMode, selectedYear, selectedChapter, navigation]);
+
+
+    useEffect(() => {
+        const cleanup = loadData();
         return () => {
-            isMounted = false;
+            if (typeof cleanup === 'function') cleanup();
             if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
         };
-    }, [branchId, semId, subjectId, organizationMode, selectedYear, selectedChapter, navigation]);
+    }, [loadData]);
 
     const displayFeedback = useCallback((message) => {
         if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
@@ -198,14 +218,14 @@ const QuestionListScreen = ({ route, navigation }) => {
             setShowFeedback(false);
             setFeedbackMessage('');
             feedbackTimerRef.current = null;
-        }, 2000); // Increased duration slightly
+        }, 2000);
     }, []);
 
     const handleToggleComplete = useCallback(async (questionId, newStatus) => {
         setCompletionStatus((prev) => ({ ...prev, [questionId]: newStatus }));
-        await setQuestionCompleted(questionId, newStatus); // Ensure await
+        await setQuestionCompleted(questionId, newStatus);
         if (newStatus) {
-            await updateDailyStreak(); // Ensure await
+            await updateDailyStreak();
             displayFeedback("Marked as Done!");
         } else {
             displayFeedback("Marked as Not Done.");
@@ -218,79 +238,14 @@ const QuestionListScreen = ({ route, navigation }) => {
     );
 
     // AI Related Functions
-    const callAIAndSetState = useCallback(async (itemToAsk) => {
-        if (!subjectData || !itemToAsk) {
-            displayFeedback('Cannot ask AI: Missing question or subject data.');
-            setAiError('Missing context to ask AI.');
-            setIsAILoading(false);
-            return;
-        }
-
-        setIsAILoading(true);
-        setAiResponseText('');
-        setAiError(null);
-
-        let branchName = 'N/A';
-        let semesterNumber = 'N/A';
-
-        if (beuDataStructure?.branches) {
-            const currentBranch = beuDataStructure.branches.find(b => b.id === branchId);
-            if (currentBranch) {
-                branchName = currentBranch.name;
-                if (currentBranch.semesters) {
-                    const currentSemester = currentBranch.semesters.find(s => s.id === semId);
-                    if (currentSemester) {
-                        semesterNumber = currentSemester.number.toString(); // Ensure it's a string
-                    }
-                }
-            }
-        } else {
-            // If beuDataStructure is not available, these will remain 'N/A'
-            // You might pass branchName and semesterNumber via route.params if available
-            if (route.params.branchName) branchName = route.params.branchName;
-            if (route.params.semesterNumber) semesterNumber = route.params.semesterNumber.toString();
-        }
-
-
-        const subjectContext = {
-            branchName,
-            semesterNumber,
-            subjectName: subjectData.name,
-            subjectCode: subjectData.code,
-        };
-
-        try {
-            const response = await askAIWithContext(itemToAsk, subjectContext, displayFeedback);
-            setAiResponseText(response);
-        } catch (error) {
-            console.error("AI Call Error in Screen:", error);
-            setAiError(error.message || "An unexpected error occurred with the AI service.");
-            // Optionally display an alert too
-            // Alert.alert("AI Error", error.message || "Could not get response from AI.");
-        } finally {
-            setIsAILoading(false);
-        }
-    }, [subjectData, displayFeedback, branchId, semId, route.params.branchName, route.params.semesterNumber]); // Added dependencies
-
     const handleAskAI = useCallback((item) => {
-        setCurrentAIQuestion(item);
-        setIsAIChatModalVisible(true);
-        callAIAndSetState(item); // Initial call when modal opens
-    }, [callAIAndSetState]);
-
-    const handleRegenerateAIResponse = useCallback(() => {
-        if (currentAIQuestion) {
-            callAIAndSetState(currentAIQuestion);
-        }
-    }, [currentAIQuestion, callAIAndSetState]);
+        setCurrentAIQuestion(item); // Set the question context for the modal
+        setIsAIChatModalVisible(true); // Open the modal
+        // DO NOT call AI here anymore. Modal will handle user's choice.
+    }, []); 
 
     const closeAIChatModal = useCallback(() => {
         setIsAIChatModalVisible(false);
-        // Optional: Reset AI state when closing
-        // setCurrentAIQuestion(null);
-        // setAiResponseText('');
-        // setAiError(null);
-        // setIsAILoading(false); // Ensure loading is false if modal is closed while loading
     }, []);
 
     const processedQuestions = useMemo(() => {
@@ -314,7 +269,7 @@ const QuestionListScreen = ({ route, navigation }) => {
             filtered = filtered.filter((q) => {
                 const plainText = getQuestionPlainText(q.text).toLowerCase();
                 const chapterText = (q.chapter || '').toLowerCase();
-                const yearText = (q.year || '').toString(); // Ensure year is string for includes
+                const yearText = (q.year || '').toString();
                 const qNumText = (q.qNumber || '').toLowerCase();
                 return (
                     plainText.includes(query) ||
@@ -379,20 +334,19 @@ const QuestionListScreen = ({ route, navigation }) => {
                 isCompleted={!!completionStatus[item.questionId]}
                 onToggleComplete={handleToggleComplete}
                 onCopy={handleCopy}
-                // onSearch prop is removed as QuestionItem now handles search via SearchWebViewModal internally
                 onAskAI={() => handleAskAI(item)}
             />
         ),
         [completionStatus, handleToggleComplete, handleCopy, handleAskAI]
     );
 
-    if (loading && !subjectData && !error) return <LoadingIndicator />; // Show full screen loader only if no data and no error yet
-    if (error) return <ErrorMessage message={error} onRetry={loadData} />; // Pass loadData to onRetry if ErrorMessage supports it
+    if (loading && !subjectData && !error) return <LoadingIndicator />;
+    if (error && !loading) return <ErrorMessage message={error} onRetry={loadData} />;
 
 
     const noQuestionsInitiallyForSubject = questions.length === 0;
     const noResultsAfterFilter = !noQuestionsInitiallyForSubject && processedQuestions.length === 0;
-
+    
     let listEmptyMessage = 'No questions available for this subject.';
     if (noResultsAfterFilter) {
         if (debouncedSearchQuery) {
@@ -421,7 +375,7 @@ const QuestionListScreen = ({ route, navigation }) => {
         <SafeAreaView style={styles.screen}>
             <StatusBar
                 barStyle={Platform.OS === "ios" ? "dark-content" : "dark-content"}
-                backgroundColor={COLORS.surface} // For Android status bar background
+                backgroundColor={COLORS.surface}
             />
             {showFeedback && (
                 <View style={styles.feedbackToast} pointerEvents="none">
@@ -429,9 +383,8 @@ const QuestionListScreen = ({ route, navigation }) => {
                 </View>
             )}
 
-            {/* Search and Filter Controls */}
             <View style={styles.controlsContainer}>
-                <View style={styles.searchContainer}>
+                 <View style={styles.searchContainer}>
                     <Ionicons
                         name="search-outline"
                         size={20}
@@ -454,7 +407,7 @@ const QuestionListScreen = ({ route, navigation }) => {
                     />
                 </View>
 
-                {(!noQuestionsInitiallyForSubject || loading) && ( // Show controls if questions exist or still loading them
+                {(!noQuestionsInitiallyForSubject || loading) && ( 
                     <ScrollView
                         horizontal
                         showsHorizontalScrollIndicator={false}
@@ -506,7 +459,7 @@ const QuestionListScreen = ({ route, navigation }) => {
             <FlatList
                 data={processedQuestions}
                 renderItem={renderQuestionItem}
-                keyExtractor={(item) => item.questionId.toString()} // Ensure key is string
+                keyExtractor={(item) => item.questionId.toString()}
                 contentContainerStyle={styles.listContentContainer}
                 ListEmptyComponent={!loading ? <EmptyState message={listEmptyMessage} iconName="documents-outline" /> : null}
                 initialNumToRender={7}
@@ -515,15 +468,15 @@ const QuestionListScreen = ({ route, navigation }) => {
                 removeClippedSubviews={Platform.OS === 'android'}
             />
 
-            <AIChatModal
-                visible={isAIChatModalVisible}
-                onClose={closeAIChatModal}
-                questionItem={currentAIQuestion}
-                aiResponse={aiResponseText}
-                isLoading={isAILoading}
-                error={aiError}
-                onRegenerate={handleRegenerateAIResponse}
-            />
+            {isAIChatModalVisible && currentAIQuestion && subjectContextForAI && (
+                <AIChatModal
+                    visible={isAIChatModalVisible}
+                    onClose={closeAIChatModal}
+                    questionItem={currentAIQuestion}
+                    subjectContext={subjectContextForAI}
+                    // REMOVED: initialAiResponse, initialIsLoading, initialError, onRegenerateAnswer props
+                />
+            )}
         </SafeAreaView>
     );
 };
@@ -531,22 +484,22 @@ const QuestionListScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
     screen: {
         flex: 1,
-        backgroundColor: COLORS.background || '#F2F2F7', // Default background
+        backgroundColor: COLORS.background || '#F2F2F7',
     },
     listContentContainer: {
-        paddingTop: 0, // Adjusted as controls container provides spacing
+        paddingTop: 0,
         paddingBottom: Platform.OS === 'ios' ? 40 : 30,
         paddingHorizontal: 12,
     },
     feedbackToast: {
         position: 'absolute',
-        bottom: Platform.OS === 'ios' ? 60 : 30, // Adjusted position
+        bottom: Platform.OS === 'ios' ? 60 : 30,
         left: 20,
         right: 20,
-        backgroundColor: 'rgba(40, 40, 40, 0.95)', // Slightly more opaque
+        backgroundColor: 'rgba(40, 40, 40, 0.95)',
         paddingVertical: 12,
         paddingHorizontal: 18,
-        borderRadius: 25, // Fully rounded
+        borderRadius: 25,
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 1000,
@@ -563,31 +516,30 @@ const styles = StyleSheet.create({
     },
     controlsContainer: {
         paddingBottom: 8,
-        backgroundColor: COLORS.surface || '#FFFFFF', // Surface color for controls background
+        backgroundColor: COLORS.surface || '#FFFFFF',
         borderBottomWidth: 1,
-        borderBottomColor: COLORS.border || '#E0E0E0', // Border color
-        // Removed shadow to make it feel more integrated with the list
+        borderBottomColor: COLORS.border || '#E0E0E0',
     },
     searchContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: COLORS.background || '#F2F2F7', // Background color for search input
-        borderRadius: 10, // Slightly more rounded
-        paddingHorizontal: 12, // Increased padding
+        backgroundColor: COLORS.background || '#F2F2F7',
+        borderRadius: 10,
+        paddingHorizontal: 12,
         marginHorizontal: 12,
         marginTop: 10,
-        marginBottom: 8, // Adjusted margin
+        marginBottom: 8,
         borderWidth: 1,
-        borderColor: COLORS.borderLight || '#DDD', // Lighter border for search
+        borderColor: COLORS.borderLight || '#DDD',
     },
     searchIcon: {
-        marginRight: 10, // Increased spacing
+        marginRight: 10,
     },
     searchInput: {
         flex: 1,
-        paddingVertical: Platform.OS === 'ios' ? 12 : 10, // Adjusted padding
+        paddingVertical: Platform.OS === 'ios' ? 12 : 10,
         fontSize: 15,
-        color: COLORS.text || '#000000',
+        color: COLORS.text || '#000000', // Ensure color is defined
     },
     controlsScroll: {
         paddingVertical: 8,
@@ -602,20 +554,20 @@ const styles = StyleSheet.create({
         marginLeft: 4,
     },
     controlButton: {
-        paddingVertical: 6, // Adjusted padding
-        paddingHorizontal: 14, // Adjusted padding
-        borderRadius: 18, // More rounded
-        borderWidth: 1.5, // Slightly thicker border
+        paddingVertical: 6,
+        paddingHorizontal: 14,
+        borderRadius: 18,
+        borderWidth: 1.5,
         borderColor: COLORS.border || '#D1D1D6',
         marginRight: 8,
-        backgroundColor: COLORS.surfaceAlt || COLORS.surface, // Alt surface or surface
+        backgroundColor: COLORS.surfaceAlt || COLORS.surface,
     },
     controlButtonActive: {
         backgroundColor: COLORS.primary || '#007AFF',
         borderColor: COLORS.primary || '#007AFF',
     },
     controlButtonText: {
-        fontSize: 13, // Slightly larger
+        fontSize: 13,
         color: COLORS.textSecondary || '#555',
         fontWeight: '500',
     },
@@ -625,9 +577,9 @@ const styles = StyleSheet.create({
     },
     controlSeparator: {
         width: 1,
-        height: 20, // Increased height
+        height: 20,
         backgroundColor: COLORS.borderLight || '#E0E0E0',
-        marginHorizontal: 8, // Increased margin
+        marginHorizontal: 8,
     },
 });
 
