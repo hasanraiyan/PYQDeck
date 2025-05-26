@@ -21,7 +21,7 @@ import EmptyState from '../components/EmptyState';
 import Icon from '../components/Icon';
 import { Ionicons } from '@expo/vector-icons';
 
-const APP_VERSION = '3.0.1'; // Keep updated
+const APP_VERSION = '3.0.2'; // Keep updated
 
 const BranchListScreen = ({ navigation }) => {
     const [branches, setBranches] = useState([]);
