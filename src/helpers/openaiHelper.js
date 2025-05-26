@@ -30,7 +30,7 @@ export const callOpenAIWithContent = async (systemInstruction, userMessageParts,
     }
 
     const API_URL = 'https://text.pollinations.ai/openai'; // Note: This is a proxy. Official: 'https://api.openai.com/v1/chat/completions'
-    const MODEL_NAME = options.modelName || 'openai-large'; // Allow model override, default to large
+    const MODEL_NAME = options.modelName || 'openai'; // Allow model override, default to large
     
     const body = {
         model: MODEL_NAME,
@@ -175,7 +175,7 @@ export const askAIWithContext = async (requestType, item, subjectContext, displa
         For example, if the question is about "Explain the process of photosynthesis and its importance in ecosystems", a good output would be: "photosynthesis, cellular respiration, ecosystem energy flow, carbon cycle".
         If the question is "Derive the formula for the period of a simple pendulum and discuss factors affecting it", a good output would be: "simple pendulum, period derivation, oscillation, simple harmonic motion".
         `;
-        aiModelOptions.modelName = 'openai-large'; // For now, using the same model as others, prompt is key.
+        aiModelOptions.modelName = 'openai'; // For now, using the same model as others, prompt is key.
                                                  // If 'openai-small' or similar becomes available via proxy, use it.
         aiModelOptions.max_tokens = 100; // Tags should be short.
         aiModelOptions.temperature = 0.2; // More deterministic for tag extraction.
