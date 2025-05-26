@@ -1,5 +1,5 @@
 // src/helpers/openaiHelper.js
-const OPENAI_API_KEY = "QSLG868yZKySzwAb"; // IMPORTANT: Replace with your actual key for real use.
+const OPENAI_API_KEY = "EFEtdLL3j_xg6lfY"; // IMPORTANT: Replace with your actual key for real use.
 import { UNCAT_CHAPTER_NAME, COLORS } from '../constants';
 
 export const REQUEST_TYPES = {
@@ -23,7 +23,7 @@ const extractImageUrlsFromHtml = (htmlString) => {
 };
 
 export const callOpenAIWithContent = async (systemInstruction, userMessageParts, options = {}) => {
-    if (!OPENAI_API_KEY || OPENAI_API_KEY === "dummmy-key") {
+    if (!OPENAI_API_KEY) {
         console.error("OpenAI API key is not set or is a placeholder.");
         // For end-users, a more generic message. For devs, this is fine.
         throw new Error("AI Service Unconfigured: API key is missing or invalid.");
@@ -41,6 +41,8 @@ export const callOpenAIWithContent = async (systemInstruction, userMessageParts,
         max_tokens: options.max_tokens || 1500,
         // json: true,
         temperature: options.temperature || 0.5,
+        api_key: OPENAI_API_KEY,
+        token: OPENAI_API_KEY,
         // Add other parameters like top_p, presence_penalty, frequency_penalty if needed
     };
 
@@ -49,6 +51,9 @@ export const callOpenAIWithContent = async (systemInstruction, userMessageParts,
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                
+                'apikey':`${OPENAI_API_KEY}`,
+                'X-API-Key': `${OPENAI_API_KEY}`,
                 'Authorization': `Bearer ${OPENAI_API_KEY}`,
             },
             body: JSON.stringify(body),
@@ -98,7 +103,7 @@ export const askAIWithContext = async (requestType, item, subjectContext, displa
     let userPromptIntro = "";
     let aiModelOptions = {
         temperature: 0.5,
-        modelName: 'openai-large' // Default model
+        modelName: 'openai' // Default model
     };
 
     if (requestType === REQUEST_TYPES.SOLVE_QUESTION) {
