@@ -72,7 +72,7 @@
                   "year": 2019,
                   "qNumber": "Q1c",
                   "chapter": "Module 3: Linked Lists",
-                  "text": "What is the space complexity for deleting a linked list?\n\n(i) O(1)\n(ii) O(n)\n(iii) Either O(1) or O(n)\n(iv) O(log n)",
+                  "text": "What is the space complexity for deleting a linked list?\n\n(i) $O(1)$\n(ii) $O(n)$\n(iii) Either $O(1)$ or $O(n)$\n(iv) $O(\\log n)$",
                   "type": "MCQ",
                   "marks": 2
                 },
@@ -90,7 +90,7 @@
                   "year": 2019,
                   "qNumber": "Q1e",
                   "chapter": "Module 3: Linked Lists",
-                  "text": "What would be the asymptotic time complexity to add a node at the end of singly linked list, if the pointer is initially pointing to the head of the list?\n\n(i) O(1)\n(ii) O(n)\n(iii) θ(n)\n(iv) θ(1)",
+                  "text": "What would be the asymptotic time complexity to add a node at the end of singly linked list, if the pointer is initially pointing to the head of the list?\n\n(i) $O(1)$\n(ii) $O(n)$\n(iii) $\\theta(n)$\n(iv) $\\theta(1)$",
                   "type": "MCQ",
                   "marks": 2
                 },
@@ -270,7 +270,7 @@
                   "year": 2020,
                   "qNumber": "Q1a",
                   "chapter": "Module 1: Introduction",
-                  "text": "Which of the following is time complexity of the given code?\n```cpp\nint a = 0;\nfor (i = 0; i<N; i++) {\n  for (j = N; j>i; j--){\n    a = a + i + j;\n  }\n}\n```\n(i) O(N)\n(ii) O(N*log(N))\n(iii) O(N*Sqrt(N))\n(iv) O(N*N)",
+                  "text": "Which of the following is time complexity of the given code?\n```cpp\nint a = 0;\nfor (i = 0; i<N; i++) {\n  for (j = N; j>i; j--){\n    a = a + i + j;\n  }\n}\n```\n(i) $O(N)$\n(ii) $O(N*\\log(N))$\n(iii) $O(N*\\text{Sqrt}(N))$\n(iv) $O(N*N)$",
                   "type": "MCQ_Code",
                   "marks": 2
                 },
@@ -279,7 +279,7 @@
                   "year": 2020,
                   "qNumber": "Q1b",
                   "chapter": "Module 1: Introduction",
-                  "text": "Which of the following is time complexity of the given code?\n```cpp\nint i, j, k = 0;\nfor (i = n/2; i<= n; i++) {\n  for (j = 2; j<= n; j = j*2) {\n    k = k + n/2;\n  }\n}\n```\n(i) O(N)\n(ii) O(N*log(N))\n(iii) O(N*Sqrt(N))\n(iv) O(N*N)",
+                  "text": "Which of the following is time complexity of the given code?\n```cpp\nint i, j, k = 0;\nfor (i = n/2; i<= n; i++) {\n  for (j = 2; j<= n; j = j*2) {\n    k = k + n/2;\n  }\n}\n```\n(i) $O(N)$\n(ii) $O(N*\\log(N))$\n(iii) $O(N*\\text{Sqrt}(N))$\n(iv) $O(N*N)$",
                   "type": "MCQ_Code",
                   "marks": 2
                 },
@@ -324,7 +324,7 @@
                   "year": 2020,
                   "qNumber": "Q1g",
                   "chapter": "Module 4: Searching, Sorting and Hashing",
-                  "text": "In general, the binary search method needs not more than ______ comparisons.\n\n(i) [log2 n]-1\n(ii) [log2 n]+1\n(iii) [log2 n]\n(iv) [log2 n]+1",
+                  "text": "In general, the binary search method needs not more than ______ comparisons.\n\n(i) $[\\log_2 n]-1$\n(ii) $[\\log_2 n]+1$\n(iii) $[\\log_2 n]$\n(iv) $[\\log_2 n]+1$",
                   "type": "MCQ",
                   "marks": 2
                 },
@@ -333,7 +333,7 @@
                   "year": 2020,
                   "qNumber": "Q1h",
                   "chapter": "Module 4: Searching, Sorting and Hashing",
-                  "text": "State True or False :\nA. Binary search is used for searching in a sorted array.\nB. The time complexity of binary search is O(log n).\n\n(i) True, False\n(ii) False, True\n(iii) False, False\n(iv) True, True",
+                  "text": "State True or False :\nA. Binary search is used for searching in a sorted array.\nB. The time complexity of binary search is $O(\\log n)$.\n\n(i) True, False\n(ii) False, True\n(iii) False, False\n(iv) True, True",
                   "type": "MCQ_TrueFalse",
                   "marks": 2
                 },
@@ -396,7 +396,7 @@
                   "year": 2020,
                   "qNumber": "Q6",
                   "chapter": "Module 1: Introduction",
-                  "text": "Let a and b be positive integers. Suppose a function F is defined recursively as follows:\nF(a, b) = { 0 if a<b; F(a-b, b)+1 if b<=a }\nFind the values of the following :\n(a) F(2, 3)\n(b) F(14, 3)",
+                  "text": "Let a and b be positive integers. Suppose a function F is defined recursively as follows:\n$$ F(a, b) = \\begin{cases} 0 & \\text{if } a<b \\\\ F(a-b, b)+1 & \\text{if } b \\le a \\end{cases} $$\nFind the values of the following :\n(a) $F(2, 3)$\n(b) $F(14, 3)$",
                   "type": "Problem",
                   "marks": 14
                 },
@@ -414,7 +414,7 @@
                   "year": 2020,
                   "qNumber": "Q7b",
                   "chapter": "Module 2: Stacks and Queues",
-                  "text": "Write prefix notation of the following infix notation : A+B*C+D",
+                  "text": "Write prefix notation of the following infix notation : $A+B*C+D$",
                   "type": "Problem",
                   "marks": 7
                 },
@@ -486,7 +486,7 @@
                   "year": 2020,
                   "qNumber": "Q1c",
                   "chapter": "Module 4: Searching, Sorting and Hashing",
-                  "text": "The complexity of the merge sort is\n(i) O(n)\n(ii) O(log n)\n(iii) O(n^2)\n(iv) O(n log n)",
+                  "text": "The complexity of the merge sort is\n(i) $O(n)$\n(ii) $O(\\log n)$\n(iii) $O(n^2)$\n(iv) $O(n \\log n)$",
                   "type": "MCQ",
                   "marks": 2
                 },
@@ -504,7 +504,7 @@
                   "year": 2020,
                   "qNumber": "Q1e",
                   "chapter": "Module 4: Searching, Sorting and Hashing",
-                  "text": "In simple hashing, what is the search complexity?\n(i) O(n)\n(ii) O(log n)\n(iii) O(n log n)\n(iv) O(1)",
+                  "text": "In simple hashing, what is the search complexity?\n(i) $O(n)$\n(ii) $O(\\log n)$\n(iii) $O(n \\log n)$\n(iv) $O(1)$",
                   "type": "MCQ",
                   "marks": 2
                 },
@@ -522,7 +522,7 @@
                   "year": 2020,
                   "qNumber": "Q1g",
                   "chapter": "Module 4: Searching, Sorting and Hashing",
-                  "text": "Which is not true about insertion sort?\n(i) Exhibits the worst case performance when the initial array is sorted in reverse order\n(ii) Worst case and average case performance is O(n^2)\n(iii) Can be compared to the way a card player arranges his card from a card deck\n(iv) None of the above",
+                  "text": "Which is not true about insertion sort?\n(i) Exhibits the worst case performance when the initial array is sorted in reverse order\n(ii) Worst case and average case performance is $O(n^2)$\n(iii) Can be compared to the way a card player arranges his card from a card deck\n(iv) None of the above",
                   "type": "MCQ",
                   "marks": 2
                 },
@@ -557,7 +557,7 @@
                   "questionId": "ds_100304_2020s_Q2",
                   "year": 2020,
                   "qNumber": "Q2",
-                  "chapter": "Module 5: Trees",
+                  "chapter": "Module 5: Trees and Graphs",
                   "text": "Write down breadth-first traversal and depth-first traversal of given graph taking 1 as source vertex: ![Image link](https://mtjwwpxkwpaagqsnfbks.supabase.co/storage/v1/object/public/images//it_100304_2020s_Q2.png)",
                   "type": "Traversal Algorithm",
                   "marks": 14
@@ -566,7 +566,7 @@
                   "questionId": "ds_100304_2020s_Q3",
                   "year": 2020,
                   "qNumber": "Q3",
-                  "chapter": "Module 5: Trees",
+                  "chapter": "Module 5: Trees and Graphs",
                   "text": "Construct a B-tree with minimum degree t as 3 and a sequence of integers 10, 20, 30, 40, 50, 60, 70, 80 and 90 in an initially empty B-tree. Show each step.",
                   "type": "Construction Algorithm",
                   "marks": 14
@@ -584,7 +584,7 @@
                   "questionId": "ds_100304_2020s_Q5",
                   "year": 2020,
                   "qNumber": "Q5",
-                  "chapter": "Module 5: Trees",
+                  "chapter": "Module 5: Trees and Graphs",
                   "text": "What is AVL tree? Describe deletion operation in AVL tree with example.",
                   "type": "Definition & Explanation",
                   "marks": 14
@@ -602,7 +602,7 @@
                   "questionId": "ds_100304_2020s_Q7",
                   "year": 2020,
                   "qNumber": "Q7",
-                  "chapter": "Module 5: Trees",
+                  "chapter": "Module 5: Trees and Graphs",
                   "text": "Write the algorithm to count leaf node in binary tree and check whether the tree is balanced or not.",
                   "type": "Algorithm",
                   "marks": 14
@@ -620,7 +620,7 @@
                   "questionId": "ds_100304_2020s_Q8b",
                   "year": 2020,
                   "qNumber": "Q8b",
-                  "chapter": "Module 5: Trees",
+                  "chapter": "Module 5: Trees and Graphs",
                   "text": "Write a function that inserts a given element in a binary search tree. If the element is already present, throw an exception 'duplicate value'.",
                   "type": "Programming",
                   "marks": 7
@@ -666,7 +666,7 @@
                   "year": 2021,
                   "qNumber": "Q1a",
                   "chapter": "Module 4: Searching, Sorting and Hashing",
-                  "text": "What is the worst case run-time complexity of binary search algorithm?\n\n(i) O(n^2)\n(ii) O(n^log n)\n(iii) O(n^3)\n(iv) O(n)",
+                  "text": "What is the worst case run-time complexity of binary search algorithm?\n\n(i) $O(n^2)$\n(ii) $O(n^{\\log n})$\n(iii) $O(n^3)$\n(iv) $O(n)$",
                   "type": "MCQ",
                   "marks": 2
                 },
@@ -684,7 +684,7 @@
                   "year": 2021,
                   "qNumber": "Q1c",
                   "chapter": "Module 5: Trees and Graphs",
-                  "text": "Binary search tree has average case run-time complexity of O(log n). What could be the worst case?\n\n(i) O(n)\n(ii) O(n^2)\n(iii) O(n^3)\n(iv) None of the above",
+                  "text": "Binary search tree has average case run-time complexity of $O(\\log n)$. What could be the worst case?\n\n(i) $O(n)$\n(ii) $O(n^2)$\n(iii) $O(n^3)$\n(iv) None of the above",
                   "type": "MCQ",
                   "marks": 2
                 },
@@ -693,7 +693,7 @@
                   "year": 2021,
                   "qNumber": "Q1d",
                   "chapter": "Module 5: Trees and Graphs",
-                  "text": "What will be the running-time of Dijkstra's single-source shortest path algorithm, if the graph G(V, E) is stored in the form of adjacency list and binary heap is used?\n\n(i) O(|V|^2)\n(ii) O(|V|log|V|)\n(iii) O(|E|+|V|log|V|)\n(iv) None of the above",
+                  "text": "What will be the running-time of Dijkstra's single-source shortest path algorithm, if the graph $G(V, E)$ is stored in the form of adjacency list and binary heap is used?\n\n(i) $O(|V|^2)$\n(ii) $O(|V|\\log|V|)$\n(iii) $O(|E|+|V|\\log|V|)$\n(iv) None of the above",
                   "type": "MCQ",
                   "marks": 2
                 },
@@ -738,7 +738,7 @@
                   "year": 2021,
                   "qNumber": "Q1i",
                   "chapter": "Module 5: Trees and Graphs",
-                  "text": "A data structure is required for storing a set of integers such that each of the following operations can be done in (log n) time, where n is the number of elements in the set:\n\n* Deletion of the smallest element\n* Insertion of an element if it is not already present in the set\nWhich of the following can be used?\n\n(i) A heap can be used but not a balanced binary search tree\n(ii) A balanced binary search tree can be used but not a heap\n(iii) Both balanced binary search tree and heap can be used\n(iv) Neither balanced binary search tree nor heap can be used",
+                  "text": "A data structure is required for storing a set of integers such that each of the following operations can be done in $O(\\log n)$ time, where n is the number of elements in the set:\n\n* Deletion of the smallest element\n* Insertion of an element if it is not already present in the set\nWhich of the following can be used?\n\n(i) A heap can be used but not a balanced binary search tree\n(ii) A balanced binary search tree can be used but not a heap\n(iii) Both balanced binary search tree and heap can be used\n(iv) Neither balanced binary search tree nor heap can be used",
                   "type": "MCQ",
                   "marks": 2
                 },
@@ -819,7 +819,7 @@
                   "year": 2021,
                   "qNumber": "Q6b",
                   "chapter": "Module 4: Searching, Sorting and Hashing",
-                  "text": "Show at every step the contents of the hash table after inserting the keys in the order 23, 11, 4, 17, 84, 22, 33. The hash function is given as h(key) = key%11\nThe hash table has a space for 11 keys only. Resolve collision using-\n(i) linear probing;\n(ii) quadratic probing.",
+                  "text": "Show at every step the contents of the hash table after inserting the keys in the order 23, 11, 4, 17, 84, 22, 33. The hash function is given as $h(\\text{key}) = \\text{key}\\%11$\nThe hash table has a space for 11 keys only. Resolve collision using-\n(i) linear probing;\n(ii) quadratic probing.",
                   "type": "Problem",
                   "marks": 6
                 },
@@ -945,7 +945,7 @@
                   "year": 2022,
                   "qNumber": "Q1c",
                   "chapter": "Module 4: Searching, Sorting and Hashing",
-                  "text": "A hash function is defined as h(key) = key mod 7, with linear probing used to insert keys 44, 45, 79, 55, 91, 18, 63 into a table indexed from 0 to 6. What will be the location of key 18.\n(i) 3\n(ii) 4\n(iii) 5\n(iv) 6",
+                  "text": "A hash function is defined as $h(\\text{key}) = \\text{key} \\pmod 7$, with linear probing used to insert keys 44, 45, 79, 55, 91, 18, 63 into a table indexed from 0 to 6. What will be the location of key 18.\n(i) 3\n(ii) 4\n(iii) 5\n(iv) 6",
                   "type": "MCQ",
                   "marks": 2
                 },
@@ -963,7 +963,7 @@
                   "year": 2022,
                   "qNumber": "Q1e",
                   "chapter": "Module 4: Searching, Sorting and Hashing",
-                  "text": "The time complexity of merge sort is:\n(i) O(n)\n(ii) O(logn)\n(iii) O(nlogn)\n(iv) O(n2)",
+                  "text": "The time complexity of merge sort is:\n(i) $O(n)$\n(ii) $O(\\log n)$\n(iii) $O(n\\log n)$\n(iv) $O(n^2)$",
                   "type": "MCQ",
                   "marks": 2
                 },
@@ -972,7 +972,7 @@
                   "year": 2022,
                   "qNumber": "Q1f",
                   "chapter": "Module 4: Searching, Sorting and Hashing",
-                  "text": "State true or false:\nA: Binary search is used for searching in a sorted array.\nB: The time complexity of binary search is O(logn)\n(i) True, False\n(ii) False, True\n(iii) False, False\n(iv) True, True",
+                  "text": "State true or false:\nA: Binary search is used for searching in a sorted array.\nB: The time complexity of binary search is $O(\\log n)$\n(i) True, False\n(ii) False, True\n(iii) False, False\n(iv) True, True",
                   "type": "MCQ_TrueFalse",
                   "marks": 2
                 },
@@ -1017,7 +1017,7 @@
                   "year": 2022,
                   "qNumber": "Q2a",
                   "chapter": "Module 1: Introduction",
-                  "text": "Explain different asymptotic notations (Big-O, Ω, Θ) used for comparing the time complexity of an algorithm with neat figures.",
+                  "text": "Explain different asymptotic notations (Big-$O$, $\\Omega$, $\\Theta$) used for comparing the time complexity of an algorithm with neat figures.",
                   "type": "Explanation with Diagram",
                   "marks": 7
                 },
@@ -1026,7 +1026,7 @@
                   "year": 2022,
                   "qNumber": "Q2b",
                   "chapter": "Module 1: Introduction",
-                  "text": "The run time of an algorithm is represented by the recurrence relation T(n) = 2T(n/2) + n; n ≥ 2 and with boundary condition T(1) = 0. What is the time complexity (in terms of Θ notation).",
+                  "text": "The run time of an algorithm is represented by the recurrence relation $T(n) = 2T(n/2) + n$; $n \\ge 2$ and with boundary condition $T(1) = 0$. What is the time complexity (in terms of $\\Theta$ notation).",
                   "type": "Problem/Analysis",
                   "marks": 7
                 },
@@ -1062,7 +1062,7 @@
                   "year": 2022,
                   "qNumber": "Q4b",
                   "chapter": "Module 2: Stacks and Queues",
-                  "text": "Convert the given infix expression into postfix using stack: A + B / C * (D + E) - F. For each input symbol clearly mention the action taken and status of the stack during conversion.",
+                  "text": "Convert the given infix expression into postfix using stack: $A + B / C * (D + E) - F$. For each input symbol clearly mention the action taken and status of the stack during conversion.",
                   "type": "Problem",
                   "marks": 7
                 },
@@ -1179,7 +1179,7 @@
                   "year": 2023,
                   "qNumber": "Q1a",
                   "chapter": "Module 1: Introduction",
-                  "text": "What is the time complexity of the following code snippet?\n```cpp\nfor(i=0; i<n; i++){\n  for(j=0; j<i; j++){\n    int sum= i + j;\n  }\n}\n```\n(i) O(n)\n(ii) O(n^2)\n(iii) O(log n)\n(iv) O(1)",
+                  "text": "What is the time complexity of the following code snippet?\n```cpp\nfor(i=0; i<n; i++){\n  for(j=0; j<i; j++){\n    int sum= i + j;\n  }\n}\n```\n(i) $O(n)$\n(ii) $O(n^2)$\n(iii) $O(\\log n)$\n(iv) $O(1)$",
                   "type": "MCQ_Code",
                   "marks": 2
                 },
@@ -1197,7 +1197,7 @@
                   "year": 2023,
                   "qNumber": "Q1c",
                   "chapter": "Module 2: Stacks and Queues",
-                  "text": "Suppose a circular queue of capacity (n - 1) elements is implemented with an array of n elements. Assume that the insertion and deletion operations are carried out using REAR and FRONT as array index variables, respectively. Initially, REAR = FRONT = 0. The conditions to detect queue full and queue empty are\n(i) Full: FRONT == (REAR+1) mod n, Empty: REAR == FRONT\n(ii) Full: FRONT == (REAR+1) mod n, Empty: REAR == (FRONT+1) mod n\n(iii) Full: REAR == FRONT, Empty: FRONT == (REAR+1) mod n\n(iv) Full: REAR == (FRONT+1) mod n, Empty: REAR == FRONT",
+                  "text": "Suppose a circular queue of capacity $(n - 1)$ elements is implemented with an array of n elements. Assume that the insertion and deletion operations are carried out using REAR and FRONT as array index variables, respectively. Initially, REAR = FRONT = 0. The conditions to detect queue full and queue empty are\n(i) Full: $\\text{FRONT} == (\\text{REAR}+1) \\pmod n$, Empty: $\\text{REAR} == \\text{FRONT}$\n(ii) Full: $\\text{FRONT} == (\\text{REAR}+1) \\pmod n$, Empty: $\\text{REAR} == (\\text{FRONT}+1) \\pmod n$\n(iii) Full: $\\text{REAR} == \\text{FRONT}$, Empty: $\\text{FRONT} == (\\text{REAR}+1) \\pmod n$\n(iv) Full: $\\text{REAR} == (\\text{FRONT}+1) \\pmod n$, Empty: $\\text{REAR} == \\text{FRONT}$",
                   "type": "MCQ",
                   "marks": 2
                 },
@@ -1215,7 +1215,7 @@
                   "year": 2023,
                   "qNumber": "Q1e",
                   "chapter": "Module 3: Linked Lists",
-                  "text": "What is the worst-case time complexity of inserting n elements into an empty linked list, if the linked list needs to be maintained in sorted order?\n(i) Θ(n)\n(ii) Θ(nlog n)\n(iii) Θ(n^2)\n(iv) Θ(1)",
+                  "text": "What is the worst-case time complexity of inserting n elements into an empty linked list, if the linked list needs to be maintained in sorted order?\n(i) $\\Theta(n)$\n(ii) $\\Theta(n\\log n)$\n(iii) $\\Theta(n^2)$\n(iv) $\\Theta(1)$",
                   "type": "MCQ",
                   "marks": 2
                 },
@@ -1224,7 +1224,7 @@
                   "year": 2023,
                   "qNumber": "Q1f",
                   "chapter": "Module 2: Stacks and Queues",
-                  "text": "What will be the postfix expression for the given infix expression: (a+b)\\*c-d\n(i) -*+abcd\n(ii) ab+c\\*d-\n(iii) ab+cd-\\*\n(iv) abc\\*+d-",
+                  "text": "What will be the postfix expression for the given infix expression: $(a+b)\\*c-d$\n(i) $-*+abcd$\n(ii) $ab+c\\*d-$\n(iii) $ab+cd-\\*$\n(iv) $abc\\*+d-$",
                   "type": "MCQ",
                   "marks": 2
                 },
@@ -1260,7 +1260,7 @@
                   "year": 2023,
                   "qNumber": "Q1j",
                   "chapter": "Module 5: Trees and Graphs",
-                  "text": "The height of a binary tree is the maximum number of edges in any root to leaf path. The maximum number of nodes in a binary tree of height h is:\n(i) 2^h - 1\n(ii) 2^(h-1) - 1\n(iii) 2^(h + 1) - 1\n(iv) 2h+1",
+                  "text": "The height of a binary tree is the maximum number of edges in any root to leaf path. The maximum number of nodes in a binary tree of height h is:\n(i) $2^h - 1$\n(ii) $2^{h-1} - 1$\n(iii) $2^{h + 1} - 1$\n(iv) $2h+1$",
                   "type": "MCQ",
                   "marks": 2
                 },
