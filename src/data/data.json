@@ -3778,8 +3778,47 @@
               "id": "it_100311",
               "name": "MATHEMATICS-III (DIFFERENTIAL CALCULUS)",
               "code": "100311",
-              "modules": [],
-              "questions": []
+              "modules": [
+                {
+                  "id": "m1",
+                  "name": "Module 1: Single Variable Calculus Fundamentals",
+                  "description": "Successive Differentiation, Leibnitz’s Theorem. Limit, Continuity and Differentiability of function for one variable.",
+                  "lectures": 6
+                },
+                {
+                  "id": "m2",
+                  "name": "Module 2: Multivariable Calculus - Differentiation and Optimization",
+                  "description": "Limit, Continuity and Differentiability of function for several variables. Partial Derivatives, Euler’s Theorem for Homogeneous functions, Total derivatives, Change of Variables. Maxima and Minima of Several Variables. Methods of Lagrange Multipliers. Taylor’s and Maclaurin’s Theorem with remainders of several variables.",
+                  "lectures": 8
+                },
+                {
+                  "id": "m3",
+                  "name": "Module 3: Vector Calculus",
+                  "description": "Vector Calculus: Gradient, Divergence and Curl of a Vector and their Physical Interpretations, Vector Identities. Directional Derivatives. Line, Surface and Volume integrals, Application of Green’s, Stokes and Gauss Divergence Theorem (Without Proof).",
+                  "lectures": 8
+                },
+                {
+                  "id": "m4",
+                  "name": "Module 4: First Order Ordinary Differential Equations",
+                  "description": "First Order Ordinary Differential Equations: Exact, Linear and Bernoulli’s Equations, Euler’s Equations, Equations not of First Degree. Equations Solvable for P, Equations Solvable for Y, Equations Solvable for X and Clairaut’s Type.",
+                  "lectures": 6
+                },
+                {
+                  "id": "m5",
+                  "name": "Module 5: Higher Order Ordinary Differential Equations and Special Functions",
+                  "description": "Ordinary Differential Equations of Higher Orders: Second Order Linear Differential Equations with Variable Coefficients, Method of Variation of Parameters, Cauchy-Euler Equation; Power Series Solutions; Legendre Polynomials, Bessel Functions of the First Kind and their properties.",
+                  "lectures": 8
+                },
+                {
+                  "id": "m6",
+                  "name": "Module 6: First Order Partial Differential Equations",
+                  "description": "Partial Differential Equations – First Order: First Order Partial Differential Equations, Solutions of First Order Linear and Non-Linear PDEs.",
+                  "lectures": 6
+                }
+              ],
+              "questions": [
+               
+              ]
             },
             {
               "id": "it_100314",
