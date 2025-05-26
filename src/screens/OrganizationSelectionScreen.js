@@ -113,7 +113,7 @@ const OrganizationSelectionScreen = ({ route, navigation }) => {
             <View style={styles.listContentContainer}>
                 { }
                 <ListItemCard
-                    title="View All (Default Sort)"
+                    title="View All Questions"
                     subtitle={hasQuestions ? "See all questions, newest first" : "No questions available"}
                     onPress={navigateToQuestionsAll}
                     iconName="list-outline"

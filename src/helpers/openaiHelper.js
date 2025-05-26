@@ -104,11 +104,11 @@ export const askAIWithContext = async (item, subjectContext, displayFeedback) =>
         if (imageParts.length > 0) {
             userMessageParts.push(...imageParts);
             userMessageParts.push({ type: "text", text: `The question text (which may refer to the image(s) above) is:\n\n${questionHtml}\n\nPlease analyze everything provided.` });
-            console.log(`Sending ${imageParts.length} image(s) and HTML text to AI.`);
+            // console.log(`Sending ${imageParts.length} image(s) and HTML text to AI.`);
         } else {
             // If no images, just send the plain text part of the question along with the intro and context
             userMessageParts.push({ type: "text", text: `The question text is:\n\n${questionHtml}` });
-            console.log("Sending HTML text (no images detected) to AI.");
+            // console.log("Sending HTML text (no images detected) to AI.");
         }
 
         const systemInstruction = `
@@ -140,7 +140,7 @@ export const askAIWithContext = async (item, subjectContext, displayFeedback) =>
 
 
         const aiResponse = await callOpenAIWithContent(systemInstruction, userMessageParts);
-        console.log("AI Response:", aiResponse);
+        // console.log("AI Response:", aiResponse);
         return aiResponse;
 
     } catch (error) {

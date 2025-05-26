@@ -21,7 +21,7 @@ import EmptyState from '../components/EmptyState';
 import Icon from '../components/Icon';
 import { Ionicons } from '@expo/vector-icons';
 
-const APP_VERSION = '3.0.0'; // Keep updated
+const APP_VERSION = '3.0.1'; // Keep updated
 
 const BranchListScreen = ({ navigation }) => {
     const [branches, setBranches] = useState([]);
@@ -61,7 +61,7 @@ const BranchListScreen = ({ navigation }) => {
     }, [navigation]);
 
     const handleProfilePress = useCallback(() => {
-        console.log('Profile icon pressed!');
+        // console.log('Profile icon pressed!');
         navigation.navigate('DeveloperInfo');
     }, [navigation]);
 
