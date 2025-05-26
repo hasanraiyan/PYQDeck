@@ -25,7 +25,6 @@
     "expo-updates": "~0.28.12",
     "expo-web-browser": "~14.1.6",
     "react": "19.0.0",
-    "react-dom": "19.0.0",
     "react-native": "0.79.2",
     "react-native-gesture-handler": "~2.24.0",
     "react-native-markdown-display": "^7.0.2",
