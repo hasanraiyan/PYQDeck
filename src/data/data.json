@@ -4698,6 +4698,276 @@
                   "text": "Verify the stokes' theorem for $\\vec{A} = (y-z+2)\\hat{i} + (yz+4)\\hat{j} - xz\\hat{k}$ Where S is the surface of the cube $x=0, y=0, z=0, x=2, y=2$ and $z=2$ above the xy-plane.",
                   "type": "Verification",
                   "marks": 14
+                },
+                {
+                  "questionId": "math_100311_2022_Q8a",
+                  "year": 2022,
+                  "qNumber": "Q8a",
+                  "chapter": "Module 5: Higher Order Ordinary Differential Equations and Special Functions",
+                  "text": "Prove that $2nJ_n(x) = x(J_{n-1}(x)+J_{n+1}(x))$",
+                  "type": "Proof",
+                  "marks": 6
+                },
+                {
+                  "questionId": "math_100311_2022_Q8b",
+                  "year": 2022,
+                  "qNumber": "Q8b",
+                  "chapter": "Module 5: Higher Order Ordinary Differential Equations and Special Functions",
+                  "text": "Prove that $$ \\sum_{n=0}^{\\infty} \\frac{x^{n+1}}{n+1} P_n(1) = \\frac{1}{2} \\log\\left(\\frac{1+x}{1-x}\\right) $$",
+                  "type": "Proof",
+                  "marks": 8
+                },
+                {
+                  "questionId": "math_100311_2022_Q9a",
+                  "year": 2022,
+                  "qNumber": "Q9a",
+                  "chapter": "Module 3: Vector Calculus",
+                  "text": "Solve the following questions:\n(a) Using Green's theorem, evaluate $\\oint_C [(y - \\sin x) dx + \\cos xdy]$ where C is the plane triangle enclosed by the lines $y = 0, x = \\frac{\\pi}{2}$ and $y = \\frac{2x}{\\pi}$.\n",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2022_Q9b",
+                  "year": 2022,
+                  "qNumber": "Q9b",
+                  "chapter": "Module 3: Vector Calculus",
+                  "text": "Prove that div$(r^n \\vec{r}) = (n+3)r^n$. Hence show that div$(\\frac{\\vec{r}}{r^3})$ is solenoidal.",
+                  "type": "Proof",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2023_Q1a",
+                  "year": 2023,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 1: Single Variable Calculus Fundamentals",
+                  "text": "The $y = \\sin 2x + \\cos 2x$, then $(y_5)_0$ is\n(i) $(-1)^5 \\cdot 2^5$\n(ii) $2^5$\n(iii) $\\sin \\frac{5\\pi}{2} + \\cos \\frac{5\\pi}{2}$\n(iv) none of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2023_Q1b",
+                  "year": 2023,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 1: Single Variable Calculus Fundamentals",
+                  "text": "If $y = e^{3x}$, then $y_n$ is\n(i) $3^3 e^{3x}$\n(ii) $3^n e^{3x}$\n(iii) $n^3 e^{3x}$\n(iv) $3e^{nx}$",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2023_Q1c",
+                  "year": 2023,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 2: Multivariable Calculus - Differentiation and Optimization",
+                  "text": "Sum of two homogeneous function is homogeneous if\n(i) they are both continuous\n(ii) they are both derivative\n(iii) both have same degree of homogeneity\n(iv) none of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2023_Q1d",
+                  "year": 2023,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 2: Multivariable Calculus - Differentiation and Optimization",
+                  "text": "If $f(x,y) = x^y$, then $\\frac{\\partial f}{\\partial y}$ is\n(i) $x^y \\log y$\n(ii) $x^y \\log x$\n(iii) $x^{y-1}$\n(iv) $x^y (\\log y)^2$",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2023_Q1e",
+                  "year": 2023,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 3: Vector Calculus",
+                  "text": "The vector field $\\vec{F} = y\\hat{i} + x\\hat{j}$ is\n(i) irrotational\n(ii) both irrotational and solenoidal\n(iii) solenoidal\n(iv) none of these",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2023_Q1f",
+                  "year": 2023,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 3: Vector Calculus",
+                  "text": "If $\\vec{r} = x\\hat{i} + y\\hat{j} + z\\hat{k}$ then curl $\\vec{r}$ is\n(i) 3\n(ii) $\\hat{i}+\\hat{j}+\\hat{k}$\n(iii) $3\\vec{r}$\n(iv) 0",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2023_Q1g",
+                  "year": 2023,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 4: First Order Ordinary Differential Equations",
+                  "text": "Degree of differential equation $x = (\\frac{dy}{dx}) + (\\frac{dy}{dx})^2 + (\\frac{d^3y}{dx^3})$ is\n(i) 1\n(ii) 2\n(iii) 3\n(iv) 4",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2023_Q1h",
+                  "year": 2023,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 4: First Order Ordinary Differential Equations",
+                  "text": "General solution of first order first degree differential equation contains\n(i) no arbitrary constant\n(ii) one arbitrary constant\n(iii) two arbitrary constant\n(iv) three arbitrary constant",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2023_Q1i",
+                  "year": 2023,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 6: First Order Partial Differential Equations",
+                  "text": "The linear partial differential equation of order one is known as\n(i) Lagrange's linear PDE\n(ii) Cauchy's linear PDE\n(iii) Charpits linear PDE\n(iv) none of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2023_Q1j",
+                  "year": 2023,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 5: Higher Order Ordinary Differential Equations and Special Functions",
+                  "text": "If $y_1 \\& y_2$ are two solutions of $y'' + P(x)y' + Q(x)y=0$ then for general solution of this\n(i) Linear independency\n(ii) Linear dependency\n(iii) proportional\n(iv) none of these",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2023_Q2a",
+                  "year": 2023,
+                  "qNumber": "Q2a",
+                  "chapter": "Module 1: Single Variable Calculus Fundamentals",
+                  "text": "If $y = \\frac{x^2}{(x-a)(x-b)}$, find $\\frac{d^n y}{dx^n}$.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2023_Q2b",
+                  "year": 2023,
+                  "qNumber": "Q2b",
+                  "chapter": "Module 1: Single Variable Calculus Fundamentals",
+                  "text": "If $y = e^{a \\sin^{-1}x}$, prove that $(1-x^2)y_{n+2} - (2n+1)xy_{n+1} - (n^2+a^2)y_n = 0$.",
+                  "type": "Proof",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2023_Q3a",
+                  "year": 2023,
+                  "qNumber": "Q3a",
+                  "chapter": "Module 3: Vector Calculus",
+                  "text": "If $\\frac{1}{u} = \\sqrt{x^2 + y^2 + z^2}$, show that $\\frac{\\partial^2 u}{\\partial x^2} + \\frac{\\partial^2 u}{\\partial y^2} + \\frac{\\partial^2 u}{\\partial z^2} = 0.$",
+                  "type": "Proof",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2023_Q3b",
+                  "year": 2023,
+                  "qNumber": "Q3b",
+                  "chapter": "Module 2: Multivariable Calculus - Differentiation and Optimization",
+                  "text": "If $u = \\sin^{-1} \\frac{x^2+y^2}{x+y}$, show that $x\\frac{\\partial u}{\\partial x} + y\\frac{\\partial u}{\\partial y} = \\tan u$.",
+                  "type": "Proof",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2023_Q4a",
+                  "year": 2023,
+                  "qNumber": "Q4a",
+                  "chapter": "Module 2: Multivariable Calculus - Differentiation and Optimization",
+                  "text": "Find the maximum & minimum values of $x^3+y^3-3axy$.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2023_Q4b",
+                  "year": 2023,
+                  "qNumber": "Q4b",
+                  "chapter": "Module 2: Multivariable Calculus - Differentiation and Optimization",
+                  "text": "Use Lagrange's method to determine the minimum distance from the origin to the plane $3x+2y+z=12$.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2023_Q5a",
+                  "year": 2023,
+                  "qNumber": "Q5a",
+                  "chapter": "Module 3: Vector Calculus",
+                  "text": "Find the directional derivatives of $f(x,y,z) = x^2yz + 4xz^2$ at the point $(1,2,-1)$ in the direction of the vector $2\\hat{i}-\\hat{j}-2\\hat{k}$.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2023_Q5b",
+                  "year": 2023,
+                  "qNumber": "Q5b",
+                  "chapter": "Module 3: Vector Calculus",
+                  "text": "Evaluate by Green's theorem $\\oint_{C} \\{(\\cos x \\sin y - xy)dx + \\sin x \\cos y dy\\}$\nWhen C is the circle $x^2 + y^2 = 1.$",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2023_Q6a",
+                  "year": 2023,
+                  "qNumber": "Q6a",
+                  "chapter": "Module 4: First Order Ordinary Differential Equations",
+                  "text": "Solve the following differential equations: $$x \\frac{dy}{dx} + y = x^3y^6$$.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2023_Q6b",
+                  "year": 2023,
+                  "qNumber": "Q6b",
+                  "chapter": "Module 4: First Order Ordinary Differential Equations",
+                  "text": "Solve the following differential equations:  $$\\frac{dy}{dx} + \\frac{y\\cos x + \\sin y + y}{\\sin x + x\\cos y + x} = 0$$",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2023_Q7a",
+                  "year": 2023,
+                  "qNumber": "Q7a",
+                  "chapter": "Module 4: First Order Ordinary Differential Equations",
+                  "text": "Find the general solution and singular solution: $y - x\\frac{dy}{dx} - \\frac{1}{4}(\\frac{dy}{dx})^4 = 0$.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2023_Q7b",
+                  "year": 2023,
+                  "qNumber": "Q7b",
+                  "chapter": "Module 5: Higher Order Ordinary Differential Equations and Special Functions",
+                  "text": "Solve $\\frac{d^2y}{dx^2} + y = \\tan x$ by the method of variation of parameters.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2023_Q8a",
+                  "year": 2023,
+                  "qNumber": "Q8a",
+                  "chapter": "Module 5: Higher Order Ordinary Differential Equations and Special Functions",
+                  "text": "Show that when n is positive integer $J_{-n}(x) = (-1)^n J_n(x)$.",
+                  "type": "Proof",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2023_Q8b",
+                  "year": 2023,
+                  "qNumber": "Q8b",
+                  "chapter": "Module 5: Higher Order Ordinary Differential Equations and Special Functions",
+                  "text": "Solve: $x^3 \\frac{d^3y}{dx^3} + 2x^2 \\frac{d^2y}{dx^2} + 2y = 10(x-\\frac{1}{x})$.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2023_Q9a",
+                  "year": 2023,
+                  "qNumber": "Q9a",
+                  "chapter": "Module 6: First Order Partial Differential Equations",
+                  "text": "Form partial differential equation by eliminating the function $f(y/x)$ from $z = f(y/x)$.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2023_Q9b",
+                  "year": 2023,
+                  "qNumber": "Q9b",
+                  "chapter": "Module 6: First Order Partial Differential Equations",
+                  "text": "Find the differential equation of all planes which are at a constant distance 'a' from the origin.",
+                  "type": "Problem",
+                  "marks": 7
                 }
               ]
             },
