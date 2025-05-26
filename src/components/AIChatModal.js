@@ -471,7 +471,7 @@ const AIChatModal = React.memo(({
                     </View>
                     <View style={styles.buttonTextContainer}>
                         <Text style={[styles.actionButtonText, { color: COLORS.error }]}>Explore Videos</Text>
-                        <Text style={[styles.actionButtonSubtext, { color: COLORS.textSecondary }]}>Find relevant YouTube tutorials</Text>
+                        <Text style={[styles.actionButtonSubtext, { color: COLORS.textSecondary }]}>Find relevant tutorials</Text>
                     </View>
                     <Icon name="arrow-forward" iconSet="Ionicons" size={16} color={COLORS.error + '80'} />
                 </PressableScale>
@@ -753,9 +753,9 @@ const styles = StyleSheet.create({
     },
     contentScrollContainer: {
         flexGrow: 1,
-        paddingHorizontal: 24,
-        paddingTop: 32, 
-        paddingBottom: 40, 
+        paddingHorizontal: 12,
+        // paddingTop: 32, 
+        // paddingBottom: 40, 
     },
     initialActionsContainer: {
         flex: 1,
