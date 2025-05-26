@@ -130,7 +130,12 @@ const LoadingDots = ({ color = COLORS.primary }) => {
             createAnimation(dot3, 400),
         ];
 
-        Animated.parallel(animations).start();
+        const parallelAnimation = Animated.parallel(animations);
+        parallelAnimation.start();
+
+        return () => {
+            parallelAnimation.stop(); // Stop animation on unmount
+        };
     }, [dot1, dot2, dot3]);
 
     return (
@@ -182,6 +187,14 @@ const AIChatModal = React.memo(({
     const contentScale = useRef(new Animated.Value(0.95)).current;
     const progressBarAnim = useRef(new Animated.Value(0)).current;
 
+    const isMountedRef = useRef(true);
+
+    useEffect(() => {
+        isMountedRef.current = true;
+        return () => {
+            isMountedRef.current = false;
+        };
+    }, []);
 
     // Dynamic loading text rotation
     useEffect(() => {
@@ -191,7 +204,9 @@ const AIChatModal = React.memo(({
             let currentIndex = 0;
             textInterval = setInterval(() => {
                 currentIndex = (currentIndex + 1) % DYNAMIC_LOADING_TEXTS.length;
-                setDynamicLoadingText(DYNAMIC_LOADING_TEXTS[currentIndex]);
+                if (isMountedRef.current) {
+                    setDynamicLoadingText(DYNAMIC_LOADING_TEXTS[currentIndex]);
+                }
             }, 2000);
         }
         return () => clearInterval(textInterval);
@@ -199,24 +214,33 @@ const AIChatModal = React.memo(({
 
     // Loading progress bar animation
     useEffect(() => {
+        let loopedAnimation;
         if (currentIsLoading) {
             progressBarAnim.setValue(0);
-            Animated.loop(
+            loopedAnimation = Animated.loop(
                 Animated.timing(progressBarAnim, {
                     toValue: 1,
                     duration: 1500,
                     easing: Easing.linear,
-                    useNativeDriver: false,
+                    useNativeDriver: false, // width animations are not on native driver
                 })
-            ).start();
+            );
+            loopedAnimation.start();
         } else {
             progressBarAnim.stopAnimation();
             progressBarAnim.setValue(0);
         }
+        return () => {
+            if (loopedAnimation) {
+                loopedAnimation.stop();
+            }
+             progressBarAnim.stopAnimation();
+        };
     }, [currentIsLoading, progressBarAnim]);
 
     useEffect(() => {
         if (visible) {
+            if (!isMountedRef.current) isMountedRef.current = true; // Re-affirm mount if becoming visible
             setContentType(null);
             setAiTextResponse(null);
             setYoutubeSearchUrl(null);
@@ -224,7 +248,7 @@ const AIChatModal = React.memo(({
             setCurrentError(null);
             setModalTitle("AI Assistant");
             setUserHasMadeChoice(false);
-            setIsWebViewLoading(true); // Reset for new content
+            setIsWebViewLoading(true); 
             setDynamicLoadingText(DYNAMIC_LOADING_TEXTS[0]);
 
             modalSlideAnim.setValue(screenHeight);
@@ -246,6 +270,8 @@ const AIChatModal = React.memo(({
                     Animated.spring(initialContentTranslateY, { toValue: 0, useNativeDriver: true, tension: 120, friction: 10 }),
                 ]).start();
             });
+        } else {
+            isMountedRef.current = false; // Set to false when modal is not visible
         }
     }, [visible]);
 
@@ -255,28 +281,32 @@ const AIChatModal = React.memo(({
 
     const generateAndSetResponse = useCallback(async (requestedType) => {
         if (!questionItem || !subjectContext) {
-            setCurrentError("Missing question or subject context to ask AI.");
-            setCurrentIsLoading(false);
-            setUserHasMadeChoice(true);
+            if (isMountedRef.current) {
+                setCurrentError("Missing question or subject context to ask AI.");
+                setCurrentIsLoading(false);
+                setUserHasMadeChoice(true);
+            }
             return;
         }
         if (currentIsLoading) return;
 
-        setCurrentIsLoading(true);
-        setCurrentError(null);
-        setAiTextResponse(null);
-        setYoutubeSearchUrl(null); // Clear previous search URL
-        setContentType(requestedType);
-        setUserHasMadeChoice(true);
-        setIsWebViewLoading(true); // Assume WebView will load for any choice
-        subsequentActionsOpacity.setValue(0);
+        if (isMountedRef.current) {
+            setCurrentIsLoading(true);
+            setCurrentError(null);
+            setAiTextResponse(null);
+            setYoutubeSearchUrl(null); 
+            setContentType(requestedType);
+            setUserHasMadeChoice(true);
+            setIsWebViewLoading(true); 
+            subsequentActionsOpacity.setValue(0);
 
-        if (requestedType === REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS) {
-            setModalTitle("Explore Concept Videos");
-        } else if (requestedType === REQUEST_TYPES.EXPLAIN_CONCEPTS) {
-            setModalTitle("AI Explains Concepts");
-        } else {
-            setModalTitle("AI Solution");
+            if (requestedType === REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS) {
+                setModalTitle("Explore Concept Videos");
+            } else if (requestedType === REQUEST_TYPES.EXPLAIN_CONCEPTS) {
+                setModalTitle("AI Explains Concepts");
+            } else {
+                setModalTitle("AI Solution");
+            }
         }
         
         try {
@@ -287,26 +317,31 @@ const AIChatModal = React.memo(({
                 (feedbackMsg) => console.log("AI Info:", feedbackMsg)
             );
 
-            if (requestedType === REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS) {
-                const tags = response.split(',').map(tag => tag.trim()).filter(tag => tag);
-                if (tags.length > 0) {
-                    const searchQuery = tags.join('+');
-                    setYoutubeSearchUrl(`https://m.youtube.com/results?search_query=${encodeURIComponent(searchQuery)}`);
+            if (isMountedRef.current) {
+                if (requestedType === REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS) {
+                    const tags = response.split(',').map(tag => tag.trim()).filter(tag => tag);
+                    if (tags.length > 0) {
+                        const searchQuery = tags.join('+');
+                        setYoutubeSearchUrl(`https://m.youtube.com/results?search_query=${encodeURIComponent(searchQuery)}`);
+                    } else {
+                        setCurrentError("AI could not extract relevant tags for video search. Try explaining concepts instead.");
+                    }
+                    setAiTextResponse(null); 
                 } else {
-                    setCurrentError("AI could not extract relevant tags for video search. Try explaining concepts instead.");
+                    setAiTextResponse(response);
+                    setYoutubeSearchUrl(null); 
                 }
-                setAiTextResponse(null); // No markdown for video search
-            } else {
-                setAiTextResponse(response);
-                setYoutubeSearchUrl(null); // No YouTube URL for text response
+                triggerHaptic(Haptics.ImpactFeedbackStyle.Medium);
             }
-            triggerHaptic(Haptics.ImpactFeedbackStyle.Medium);
         } catch (e) {
-            setCurrentError(e.message || `Failed to get AI response.`);
-            triggerHaptic(Haptics.NotificationFeedbackType.Error);
+            if (isMountedRef.current) {
+                setCurrentError(e.message || `Failed to get AI response.`);
+                triggerHaptic(Haptics.NotificationFeedbackType.Error);
+            }
         } finally {
-            setCurrentIsLoading(false);
-            // setIsWebViewLoading will be set to false by WebView's onLoadEnd
+            if (isMountedRef.current) {
+                setCurrentIsLoading(false);
+            }
         }
     }, [questionItem, subjectContext, currentIsLoading, subsequentActionsOpacity]);
 
@@ -324,13 +359,13 @@ const AIChatModal = React.memo(({
 
 
     const handleRegenerateCurrentView = useCallback(() => {
-        if (contentType) { // contentType will be SOLVE_QUESTION, EXPLAIN_CONCEPTS, or GET_VIDEO_SEARCH_TAGS
+        if (contentType) { 
             generateAndSetResponse(contentType);
         }
     }, [contentType, generateAndSetResponse]);
 
     useEffect(() => {
-        if (!isWebViewLoading && !currentIsLoading && (aiTextResponse || youtubeSearchUrl) && userHasMadeChoice) {
+        if (isMountedRef.current && !isWebViewLoading && !currentIsLoading && (aiTextResponse || youtubeSearchUrl) && userHasMadeChoice) {
             Animated.spring(subsequentActionsOpacity, {
                 toValue: 1,
                 useNativeDriver: true,
@@ -354,7 +389,11 @@ const AIChatModal = React.memo(({
         Animated.parallel([
             Animated.timing(backdropOpacity, { toValue: 0, duration: 250, useNativeDriver: true }),
             Animated.spring(modalSlideAnim, { toValue: screenHeight, useNativeDriver: true, tension: 100, friction: 10 }),
-        ]).start(onClose);
+        ]).start(() => {
+             if (isMountedRef.current) { // Check before calling onClose
+                onClose(); // Call onClose after animation completes
+             }
+        });
     };
 
     const renderInitialChoiceButtons = () => (
@@ -400,7 +439,6 @@ const AIChatModal = React.memo(({
                     <Icon name="arrow-forward" iconSet="Ionicons" size={16} color={COLORS.primary + '80'} />
                 </PressableScale>
 
-                {/* New Button for YouTube Video Search */}
                 <PressableScale
                     style={[styles.actionButton, styles.exploreVideosButton, currentIsLoading && styles.buttonDisabled]}
                     onPress={handleGetVideoSearchTags}
@@ -482,14 +520,18 @@ const AIChatModal = React.memo(({
                         style={[styles.webView, { opacity: isWebViewLoading ? 0.3 : 1 }]}
                         javaScriptEnabled={true}
                         domStorageEnabled={true}
-                        onLoadEnd={() => { setIsWebViewLoading(false); triggerHaptic(); }}
+                        onLoadEnd={() => { 
+                            if(isMountedRef.current) setIsWebViewLoading(false); 
+                            triggerHaptic(); 
+                        }}
                         onError={({ nativeEvent }) => {
-                            console.error('YouTube WebView error:', nativeEvent);
-                            setIsWebViewLoading(false);
-                            setCurrentError("Error displaying YouTube results. Please check your connection or try again.");
+                             if(isMountedRef.current) {
+                                console.error('YouTube WebView error:', nativeEvent);
+                                setIsWebViewLoading(false);
+                                setCurrentError("Error displaying YouTube results. Please check your connection or try again.");
+                            }
                         }}
                     />
-                    {/* Subsequent actions can be different for video view if needed */}
                 </Animated.View>
             );
         }
@@ -513,11 +555,16 @@ const AIChatModal = React.memo(({
                         setSupportMultipleWindows={false}
                         showsVerticalScrollIndicator={false}
                         showsHorizontalScrollIndicator={false}
-                        onLoadEnd={() => { setIsWebViewLoading(false); triggerHaptic(); }}
+                        onLoadEnd={() => { 
+                            if(isMountedRef.current) setIsWebViewLoading(false); 
+                            triggerHaptic(); 
+                        }}
                         onError={({ nativeEvent }) => {
-                            console.error('Chat WebView error:', nativeEvent);
-                            setIsWebViewLoading(false);
-                            setCurrentError("Error displaying AI response. Content might be malformed. Try regenerating.");
+                            if(isMountedRef.current) {
+                                console.error('Chat WebView error:', nativeEvent);
+                                setIsWebViewLoading(false);
+                                setCurrentError("Error displaying AI response. Content might be malformed. Try regenerating.");
+                            }
                         }}
                     />
                     <Animated.View style={[styles.subsequentActionsContainer, { opacity: subsequentActionsOpacity }]}>
@@ -579,7 +626,7 @@ const AIChatModal = React.memo(({
             animationType="none"
             transparent={true}
             visible={visible}
-            onRequestClose={handleCloseModal}
+            onRequestClose={handleCloseModal} // Important for Android back button
         >
             <Animated.View style={[styles.modalOverlay, { opacity: backdropOpacity }]}>
                 <Animated.View style={[styles.modalView, { transform: [{ translateY: modalSlideAnim }] }]}>
@@ -749,7 +796,7 @@ const styles = StyleSheet.create({
         shadowRadius: 6,
         elevation: 4,
     },
-    exploreVideosButton: { // New style for YouTube button
+    exploreVideosButton: { 
         backgroundColor: COLORS.surface || '#FFFFFF',
         borderWidth: 2,
         borderColor: (COLORS.error || '#D32F2F') + '20',
@@ -770,7 +817,7 @@ const styles = StyleSheet.create({
     conceptsIconContainer: {
         backgroundColor: (COLORS.primary || '#007AFF') + '15', 
     },
-    videosIconContainer: { // New style for YouTube icon container
+    videosIconContainer: { 
         backgroundColor: (COLORS.error || '#D32F2F') + '15',
     },
     buttonTextContainer: {
