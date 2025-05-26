@@ -185,4 +185,4 @@ PYQDeck is developed by **Raiyan Hasan**.
 
 *   **Email:** [raiyanhasan2006@gmail.com](mailto:raiyanhasan2006@gmail.com)
 *   **GitHub:** [hasanraiyan](https://github.com/hasanraiyan)
-*   **Portfolio/Website:** [https://hasanraiyan.github.io/Portfolio](https://hasanraiyan.github.io/Portfolio) (or [pyqdeck.vercel.app](https://pyqdeck.vercel.app) as per DeveloperInfoScreen)
+*   **Portfolio/Website:** [https://hasanraiyan.github.io/Portfolio](https://hasanraiyan.github.io/Portfolio) (or [pyqdeck.vercel.app](https://pyqdeck.vercel.app) )
