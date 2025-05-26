@@ -23,7 +23,7 @@ const DeveloperInfoScreen = () => {
     };
 
     const handleWebsitePress = () => {
-        Linking.openURL('https://pywdeck.vercel.app');
+        Linking.openURL('https://pyqdeck.vercel.app');
     };
 
     const handleGithubPress = () => {
