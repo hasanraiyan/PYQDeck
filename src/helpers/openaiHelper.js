@@ -38,6 +38,7 @@ export const callOpenAIWithContent = async (systemInstruction, userMessageParts,
             { role: 'user', content: userMessageParts },
         ],
         max_tokens: options.max_tokens || 1500,
+        json: true, 
         temperature: options.temperature || 0.5,
         // Add other parameters like top_p, presence_penalty, frequency_penalty if needed
     };
