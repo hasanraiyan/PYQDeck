@@ -19,7 +19,7 @@ import {
 import Icon from './Icon';
 import { COLORS } from '../constants';
 import { WebView } from 'react-native-webview';
-import * as Clipboard from 'expo-clipboard';
+// import * as Clipboard from 'expo-clipboard'; // Not used directly in this file
 import generateHTML from '../helpers/generateHTML';
 import { askAIWithContext, REQUEST_TYPES } from '../helpers/openaiHelper';
 import * as Haptics from 'expo-haptics';
@@ -37,7 +37,6 @@ const DYNAMIC_LOADING_TEXTS = [
     "🔍 Preparing video search...",
 ];
 
-// Enhanced PressableScale with better animations and haptic feedback
 const PressableScale = ({ onPress, style, children, disabled, hapticType = 'light', scaleValue = 0.96 }) => {
     const scale = useRef(new Animated.Value(1)).current;
     const opacity = useRef(new Animated.Value(1)).current;
@@ -88,7 +87,7 @@ const PressableScale = ({ onPress, style, children, disabled, hapticType = 'ligh
                 onPressOut={animateOut}
                 onPress={onPress}
                 style={style}
-                activeOpacity={1} // Active opacity is handled by Animated.View
+                activeOpacity={1}
                 disabled={disabled}
             >
                 {children}
@@ -97,11 +96,11 @@ const PressableScale = ({ onPress, style, children, disabled, hapticType = 'ligh
     );
 };
 
-// Animated loading dots component
 const LoadingDots = ({ color = COLORS.primary }) => {
     const dot1 = useRef(new Animated.Value(0)).current;
     const dot2 = useRef(new Animated.Value(0)).current;
     const dot3 = useRef(new Animated.Value(0)).current;
+    const animationRef = useRef(null); // Ref to store the animation instance
 
     useEffect(() => {
         const createAnimation = (dot, delay) =>
@@ -120,21 +119,21 @@ const LoadingDots = ({ color = COLORS.primary }) => {
                         easing: Easing.inOut(Easing.sin),
                         useNativeDriver: true,
                     }),
-                    Animated.delay(600) // Wait for other dots cycle
+                    Animated.delay(600)
                 ])
             );
 
-        const animations = [
+        animationRef.current = Animated.parallel([
             createAnimation(dot1, 0),
             createAnimation(dot2, 200),
             createAnimation(dot3, 400),
-        ];
-
-        const parallelAnimation = Animated.parallel(animations);
-        parallelAnimation.start();
+        ]);
+        animationRef.current.start();
 
         return () => {
-            parallelAnimation.stop(); // Stop animation on unmount
+            if (animationRef.current) {
+                animationRef.current.stop();
+            }
         };
     }, [dot1, dot2, dot3]);
 
@@ -167,17 +166,16 @@ const AIChatModal = React.memo(({
     questionItem,
     subjectContext,
 }) => {
-    const [contentType, setContentType] = useState(null); // REQUEST_TYPES enum or null
-    const [aiTextResponse, setAiTextResponse] = useState(null); // For Markdown/KaTeX responses
-    const [youtubeSearchUrl, setYoutubeSearchUrl] = useState(null); // For YouTube WebView
+    const [contentType, setContentType] = useState(null);
+    const [aiTextResponse, setAiTextResponse] = useState(null);
+    const [youtubeSearchUrl, setYoutubeSearchUrl] = useState(null);
     const [currentIsLoading, setCurrentIsLoading] = useState(false);
     const [currentError, setCurrentError] = useState(null);
     const [modalTitle, setModalTitle] = useState("AI Assistant");
     const [userHasMadeChoice, setUserHasMadeChoice] = useState(false);
     const [dynamicLoadingText, setDynamicLoadingText] = useState(DYNAMIC_LOADING_TEXTS[0]);
-    const [isWebViewLoading, setIsWebViewLoading] = useState(true); // For both markdown and YouTube WebViews
+    const [isWebViewLoading, setIsWebViewLoading] = useState(true);
 
-    // Enhanced animation values
     const modalSlideAnim = useRef(new Animated.Value(screenHeight)).current;
     const backdropOpacity = useRef(new Animated.Value(0)).current;
     const initialContentOpacity = useRef(new Animated.Value(0)).current;
@@ -186,21 +184,32 @@ const AIChatModal = React.memo(({
     const headerScale = useRef(new Animated.Value(0.9)).current;
     const contentScale = useRef(new Animated.Value(0.95)).current;
     const progressBarAnim = useRef(new Animated.Value(0)).current;
+    
+    const progressBarAnimationRef = useRef(null);
+    const subsequentActionsAnimationRef = useRef(null);
 
-    const isMountedRef = useRef(true);
+
+    const isMountedRef = useRef(false); // Initially false, set to true when visible
 
     useEffect(() => {
-        isMountedRef.current = true;
+        // This effect primarily handles setting up isMountedRef
+        // and cleaning up when the component truly unmounts.
+        if (visible) {
+            isMountedRef.current = true;
+        }
         return () => {
             isMountedRef.current = false;
+            // Stop any pending animations on unmount
+            if (progressBarAnimationRef.current) progressBarAnimationRef.current.stop();
+            if (subsequentActionsAnimationRef.current) subsequentActionsAnimationRef.current.stop();
         };
-    }, []);
+    }, [visible]); // Re-evaluate if visible changes, crucial for re-mount if modal is re-shown
 
-    // Dynamic loading text rotation
+
     useEffect(() => {
         let textInterval;
         if (currentIsLoading) {
-            setDynamicLoadingText(DYNAMIC_LOADING_TEXTS[0]);
+            if (isMountedRef.current) setDynamicLoadingText(DYNAMIC_LOADING_TEXTS[0]);
             let currentIndex = 0;
             textInterval = setInterval(() => {
                 currentIndex = (currentIndex + 1) % DYNAMIC_LOADING_TEXTS.length;
@@ -212,35 +221,40 @@ const AIChatModal = React.memo(({
         return () => clearInterval(textInterval);
     }, [currentIsLoading]);
 
-    // Loading progress bar animation
     useEffect(() => {
-        let loopedAnimation;
         if (currentIsLoading) {
             progressBarAnim.setValue(0);
-            loopedAnimation = Animated.loop(
+            progressBarAnimationRef.current = Animated.loop(
                 Animated.timing(progressBarAnim, {
                     toValue: 1,
                     duration: 1500,
                     easing: Easing.linear,
-                    useNativeDriver: false, // width animations are not on native driver
+                    useNativeDriver: false,
                 })
             );
-            loopedAnimation.start();
+            progressBarAnimationRef.current.start();
         } else {
-            progressBarAnim.stopAnimation();
+            if (progressBarAnimationRef.current) {
+                progressBarAnimationRef.current.stop();
+            }
             progressBarAnim.setValue(0);
         }
         return () => {
-            if (loopedAnimation) {
-                loopedAnimation.stop();
+            if (progressBarAnimationRef.current) {
+                progressBarAnimationRef.current.stop();
             }
-             progressBarAnim.stopAnimation();
         };
     }, [currentIsLoading, progressBarAnim]);
 
     useEffect(() => {
+        // This effect handles the modal's entrance and exit animations based on `visible`
+        let entranceAnimParallel;
+        let contentEntranceAnimParallel;
+
         if (visible) {
-            if (!isMountedRef.current) isMountedRef.current = true; // Re-affirm mount if becoming visible
+            isMountedRef.current = true; // Ensure it's true when modal is set to be visible
+
+            // Reset states
             setContentType(null);
             setAiTextResponse(null);
             setYoutubeSearchUrl(null);
@@ -248,65 +262,77 @@ const AIChatModal = React.memo(({
             setCurrentError(null);
             setModalTitle("AI Assistant");
             setUserHasMadeChoice(false);
-            setIsWebViewLoading(true); 
+            setIsWebViewLoading(true);
             setDynamicLoadingText(DYNAMIC_LOADING_TEXTS[0]);
 
+            // Reset animation values
             modalSlideAnim.setValue(screenHeight);
             backdropOpacity.setValue(0);
             initialContentOpacity.setValue(0);
             initialContentTranslateY.setValue(30);
-            subsequentActionsOpacity.setValue(0);
+            subsequentActionsOpacity.setValue(0); // Reset this explicitly
             headerScale.setValue(0.9);
             contentScale.setValue(0.95);
 
-            Animated.parallel([
+            entranceAnimParallel = Animated.parallel([
                 Animated.timing(backdropOpacity, { toValue: 1, duration: 300, useNativeDriver: true }),
                 Animated.spring(modalSlideAnim, { toValue: 0, useNativeDriver: true, tension: 100, friction: 12 }),
-            ]).start(() => {
-                Animated.parallel([
-                    Animated.spring(headerScale, { toValue: 1, useNativeDriver: true, tension: 150, friction: 10 }),
-                    Animated.spring(contentScale, { toValue: 1, useNativeDriver: true, tension: 120, friction: 10 }),
-                    Animated.timing(initialContentOpacity, { toValue: 1, duration: 400, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-                    Animated.spring(initialContentTranslateY, { toValue: 0, useNativeDriver: true, tension: 120, friction: 10 }),
-                ]).start();
+            ]);
+            
+            entranceAnimParallel.start(() => {
+                if (isMountedRef.current) {
+                    contentEntranceAnimParallel = Animated.parallel([
+                        Animated.spring(headerScale, { toValue: 1, useNativeDriver: true, tension: 150, friction: 10 }),
+                        Animated.spring(contentScale, { toValue: 1, useNativeDriver: true, tension: 120, friction: 10 }),
+                        Animated.timing(initialContentOpacity, { toValue: 1, duration: 400, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+                        Animated.spring(initialContentTranslateY, { toValue: 0, useNativeDriver: true, tension: 120, friction: 10 }),
+                    ]);
+                    contentEntranceAnimParallel.start();
+                }
             });
-        } else {
-            isMountedRef.current = false; // Set to false when modal is not visible
         }
-    }, [visible]);
+        // No 'else' block here for hiding, as `handleCloseModal` manages the exit animation.
+        // `onRequestClose` or a direct parent prop change to `visible=false` should trigger `handleCloseModal` or similar logic.
+
+        return () => {
+            // Cleanup for animations if the component unmounts unexpectedly OR if visible changes
+            if (entranceAnimParallel) entranceAnimParallel.stop();
+            if (contentEntranceAnimParallel) contentEntranceAnimParallel.stop();
+        };
+    }, [visible]); // Re-run only when `visible` prop changes
+
 
     const triggerHaptic = (type = Haptics.ImpactFeedbackStyle.Light) => {
         Haptics.impactAsync(type);
     };
 
     const generateAndSetResponse = useCallback(async (requestedType) => {
+        if (!isMountedRef.current) return; 
+
         if (!questionItem || !subjectContext) {
-            if (isMountedRef.current) {
-                setCurrentError("Missing question or subject context to ask AI.");
-                setCurrentIsLoading(false);
-                setUserHasMadeChoice(true);
-            }
+            setCurrentError("Missing question or subject context to ask AI.");
+            setCurrentIsLoading(false);
+            setUserHasMadeChoice(true);
             return;
         }
         if (currentIsLoading) return;
 
-        if (isMountedRef.current) {
-            setCurrentIsLoading(true);
-            setCurrentError(null);
-            setAiTextResponse(null);
-            setYoutubeSearchUrl(null); 
-            setContentType(requestedType);
-            setUserHasMadeChoice(true);
-            setIsWebViewLoading(true); 
-            subsequentActionsOpacity.setValue(0);
+        setCurrentIsLoading(true);
+        setCurrentError(null);
+        setAiTextResponse(null);
+        setYoutubeSearchUrl(null);
+        setContentType(requestedType);
+        setUserHasMadeChoice(true);
+        setIsWebViewLoading(true);
+        if (subsequentActionsAnimationRef.current) subsequentActionsAnimationRef.current.stop();
+        subsequentActionsOpacity.setValue(0);
 
-            if (requestedType === REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS) {
-                setModalTitle("Explore Concept Videos");
-            } else if (requestedType === REQUEST_TYPES.EXPLAIN_CONCEPTS) {
-                setModalTitle("AI Explains Concepts");
-            } else {
-                setModalTitle("AI Solution");
-            }
+        if (requestedType === REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS) {
+            setModalTitle("Explore Concept Videos");
+        } else if (requestedType === REQUEST_TYPES.EXPLAIN_CONCEPTS) {
+            setModalTitle("AI Explains Concepts");
+        } else {
+            setModalTitle("AI Solution");
         }
         
         try {
@@ -314,25 +340,25 @@ const AIChatModal = React.memo(({
                 requestedType,
                 questionItem,
                 subjectContext,
-                (feedbackMsg) => console.log("AI Info:", feedbackMsg)
+                (feedbackMsg) => console.log("AI Info:", feedbackMsg) // This feedback is just console log
             );
 
-            if (isMountedRef.current) {
-                if (requestedType === REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS) {
-                    const tags = response.split(',').map(tag => tag.trim()).filter(tag => tag);
-                    if (tags.length > 0) {
-                        const searchQuery = tags.join('+');
-                        setYoutubeSearchUrl(`https://m.youtube.com/results?search_query=${encodeURIComponent(searchQuery)}`);
-                    } else {
-                        setCurrentError("AI could not extract relevant tags for video search. Try explaining concepts instead.");
-                    }
-                    setAiTextResponse(null); 
+            if (!isMountedRef.current) return;
+
+            if (requestedType === REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS) {
+                const tags = response.split(',').map(tag => tag.trim()).filter(tag => tag);
+                if (tags.length > 0) {
+                    const searchQuery = tags.join('+');
+                    setYoutubeSearchUrl(`https://m.youtube.com/results?search_query=${encodeURIComponent(searchQuery)}`);
                 } else {
-                    setAiTextResponse(response);
-                    setYoutubeSearchUrl(null); 
+                    setCurrentError("AI could not extract relevant tags for video search. Try explaining concepts instead.");
                 }
-                triggerHaptic(Haptics.ImpactFeedbackStyle.Medium);
+                setAiTextResponse(null);
+            } else {
+                setAiTextResponse(response);
+                setYoutubeSearchUrl(null);
             }
+            triggerHaptic(Haptics.ImpactFeedbackStyle.Medium);
         } catch (e) {
             if (isMountedRef.current) {
                 setCurrentError(e.message || `Failed to get AI response.`);
@@ -345,56 +371,53 @@ const AIChatModal = React.memo(({
         }
     }, [questionItem, subjectContext, currentIsLoading, subsequentActionsOpacity]);
 
-    const handleGenerateAnswer = useCallback(() => {
-        generateAndSetResponse(REQUEST_TYPES.SOLVE_QUESTION);
-    }, [generateAndSetResponse]);
-
-    const handleExplainConcepts = useCallback(() => {
-        generateAndSetResponse(REQUEST_TYPES.EXPLAIN_CONCEPTS);
-    }, [generateAndSetResponse]);
-
-    const handleGetVideoSearchTags = useCallback(() => {
-        generateAndSetResponse(REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS);
-    }, [generateAndSetResponse]);
-
-
+    const handleGenerateAnswer = useCallback(() => generateAndSetResponse(REQUEST_TYPES.SOLVE_QUESTION), [generateAndSetResponse]);
+    const handleExplainConcepts = useCallback(() => generateAndSetResponse(REQUEST_TYPES.EXPLAIN_CONCEPTS), [generateAndSetResponse]);
+    const handleGetVideoSearchTags = useCallback(() => generateAndSetResponse(REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS), [generateAndSetResponse]);
     const handleRegenerateCurrentView = useCallback(() => {
-        if (contentType) { 
-            generateAndSetResponse(contentType);
-        }
+        if (contentType) generateAndSetResponse(contentType);
     }, [contentType, generateAndSetResponse]);
 
     useEffect(() => {
         if (isMountedRef.current && !isWebViewLoading && !currentIsLoading && (aiTextResponse || youtubeSearchUrl) && userHasMadeChoice) {
-            Animated.spring(subsequentActionsOpacity, {
+            if (subsequentActionsAnimationRef.current) subsequentActionsAnimationRef.current.stop();
+            subsequentActionsAnimationRef.current = Animated.spring(subsequentActionsOpacity, {
                 toValue: 1,
                 useNativeDriver: true,
                 tension: 120,
                 friction: 8,
-            }).start();
+            });
+            subsequentActionsAnimationRef.current.start();
+        } else {
+             // Reset if conditions are not met or modal is closing.
+             if (subsequentActionsAnimationRef.current) subsequentActionsAnimationRef.current.stop();
+             subsequentActionsOpacity.setValue(0);
         }
+        return () => {
+            if (subsequentActionsAnimationRef.current) subsequentActionsAnimationRef.current.stop();
+        };
     }, [isWebViewLoading, currentIsLoading, aiTextResponse, youtubeSearchUrl, userHasMadeChoice, subsequentActionsOpacity]);
 
-    const markdownHTML = useMemo(() => {
-        if (aiTextResponse) {
-            return generateHTML(aiTextResponse);
-        }
-        return generateHTML("<!-- Awaiting AI Content -->");
-    }, [aiTextResponse]);
-
+    const markdownHTML = useMemo(() => generateHTML(aiTextResponse || "<!-- Awaiting AI Content -->"), [aiTextResponse]);
     const canRegenerate = userHasMadeChoice && !!contentType && !currentIsLoading;
 
-    const handleCloseModal = () => {
+    const handleCloseModal = useCallback(() => {
+        if (!isMountedRef.current) return; // Don't do anything if already unmounted / closing
+
+        isMountedRef.current = false; // Signal that modal is now closing
         triggerHaptic(Haptics.ImpactFeedbackStyle.Medium);
+
         Animated.parallel([
             Animated.timing(backdropOpacity, { toValue: 0, duration: 250, useNativeDriver: true }),
             Animated.spring(modalSlideAnim, { toValue: screenHeight, useNativeDriver: true, tension: 100, friction: 10 }),
-        ]).start(() => {
-             if (isMountedRef.current) { // Check before calling onClose
-                onClose(); // Call onClose after animation completes
-             }
+        ]).start(({ finished }) => {
+            // `finished` will be true if the animation completed, false if interrupted (e.g., by unmount)
+            // It's generally safe to call onClose here because the parent controls the actual unmount.
+            // The key is that isMountedRef is already false, preventing internal state updates.
+            onClose(); 
         });
-    };
+    }, [onClose, backdropOpacity, modalSlideAnim]);
+
 
     const renderInitialChoiceButtons = () => (
         <Animated.View style={[
@@ -515,6 +538,7 @@ const AIChatModal = React.memo(({
                         </View>
                     )}
                     <WebView
+                        key={youtubeSearchUrl} // Force re-render on URL change
                         originWhitelist={['https://*', 'http://*']}
                         source={{ uri: youtubeSearchUrl }}
                         style={[styles.webView, { opacity: isWebViewLoading ? 0.3 : 1 }]}
@@ -546,6 +570,7 @@ const AIChatModal = React.memo(({
                         </View>
                     )}
                     <WebView
+                        key={markdownHTML} // Force re-render on HTML change
                         originWhitelist={['*']}
                         source={{ html: markdownHTML }}
                         style={[styles.webView, { opacity: isWebViewLoading ? 0.3 : 1 }]}
@@ -623,10 +648,10 @@ const AIChatModal = React.memo(({
 
     return (
         <Modal
-            animationType="none"
+            animationType="none" // All animations are custom
             transparent={true}
             visible={visible}
-            onRequestClose={handleCloseModal} // Important for Android back button
+            onRequestClose={handleCloseModal}
         >
             <Animated.View style={[styles.modalOverlay, { opacity: backdropOpacity }]}>
                 <Animated.View style={[styles.modalView, { transform: [{ translateY: modalSlideAnim }] }]}>
