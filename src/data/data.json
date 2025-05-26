@@ -4227,7 +4227,8 @@
                   "year": 2020,
                   "qNumber": "Q7a",
                   "chapter": "Module 4: First Order Ordinary Differential Equations",
-                  "text": "Solve the following differential equations :\n(a) $p = \\sin(y-xp)$. Also find its singular solution.",                  "type": "Problem",
+                  "text": "Solve the following differential equations :\n(a) $p = \\sin(y-xp)$. Also find its singular solution.",
+                  "type": "Problem",
                   "marks": 7
                 },
                 {
@@ -4235,7 +4236,8 @@
                   "year": 2020,
                   "qNumber": "Q7b",
                   "chapter": "Module 5: Higher Order Ordinary Differential Equations and Special Functions",
-                  "text": "Solve the following differential equations: $$x^2 \\frac{d^2y}{dx^2} - 3x \\frac{dy}{dx} + 5y = x \\log x$$",                  "type": "Problem",
+                  "text": "Solve the following differential equations: $$x^2 \\frac{d^2y}{dx^2} - 3x \\frac{dy}{dx} + 5y = x \\log x$$",
+                  "type": "Problem",
                   "marks": 7
                 },
                 {
@@ -4271,6 +4273,240 @@
                   "qNumber": "Q9b",
                   "chapter": "Module 6: First Order Partial Differential Equations",
                   "text": "Solve the following differential equations: $$(x+y)(p+q)^2 + (x-y)(p-q)^2 = 1$$",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2021_Q1a",
+                  "year": 2021,
+                  "qNumber": "Q1a",
+                  "chapter": "Module 1: Single Variable Calculus Fundamentals",
+                  "text": "The value of $\\lim_{x\\to 0} (\\cos x)^{1/x^2}$ is\n(i) 0\n(ii) $\\sqrt{e}$\n(iii) $1/\\sqrt{e}$\n(iv) 1",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2021_Q1b",
+                  "year": 2021,
+                  "qNumber": "Q1b",
+                  "chapter": "Module 1: Single Variable Calculus Fundamentals",
+                  "text": "The function $f(x) = \\sin^{-1}(\\cos x)$ is\n(i) discontinuous at $x=0$\n(ii) continuous at $x=0$\n(iii) differentiable at $x=0$\n(iv) None of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2021_Q1c",
+                  "year": 2021,
+                  "qNumber": "Q1c",
+                  "chapter": "Module 3: Vector Calculus",
+                  "text": "If $\\vec{v}$ is conservative force field, then the value of curl $\\vec{v}$ is\n(i) 0\n(ii) 1\n(iii) $\\nabla v$\n (iv) -1",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2021_Q1d",
+                  "year": 2021,
+                  "qNumber": "Q1d",
+                  "chapter": "Module 3: Vector Calculus",
+                  "text": "If $f = 2x^2 - 3y^2 + 4z^2$, then curl (grad $f$) is equal to\n(i) $4x - 6y + 8z$\n(ii) $4x\\hat{i} - 6y\\hat{j} + 8z\\hat{k}$\n(iii) 0\n(iv) 2",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2021_Q1e",
+                  "year": 2021,
+                  "qNumber": "Q1e",
+                  "chapter": "Module 4: First Order Ordinary Differential Equations",
+                  "text": "$y=cx-x^2$ is the general solution of the differential equation\n(i) $(y')^2 - xy' + y = 0$\n(ii) $y''=0$\n(iii) $y'=c$\n(iv) $(y')^2 + xy' + y = 0$",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2021_Q1f",
+                  "year": 2021,
+                  "qNumber": "Q1f",
+                  "chapter": "Module 4: First Order Ordinary Differential Equations",
+                  "text": "The solution of the boundary value problem $$(x^2-y^2)dx + 2xydy = 0$$, $y(1)=0$ is\n(i) $x^2-y^2+x=0$\n(ii) $x^2+y^2-x=0$\n(iii) $x^2+y^2+x=0$\n(iv) None of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2021_Q1g",
+                  "year": 2021,
+                  "qNumber": "Q1g",
+                  "chapter": "Module 5: Higher Order Ordinary Differential Equations and Special Functions",
+                  "text": "Let $P_n(x)$ be the Legendre polynomial of degree $n \\ge 0$. Then $\\int_{-1}^1 P_{n-2}(x)dx = 2$, if n is\n(i) 0\n(ii) 1\n(iii) 2\n(iv) None of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2021_Q1h",
+                  "year": 2021,
+                  "qNumber": "Q1h",
+                  "chapter": "Module 5: Higher Order Ordinary Differential Equations and Special Functions",
+                  "text": "The general solution of Bessel differential equation $$xy''(x)+y'(x)+xy(x)=0$$ is\n(i) $y = AJ_n(x) + BJ_{-n}(x)$, where A and B are arbitrary constants\n(ii) $y = AJ_0(x) + BY_0(x)$, where A and B are arbitrary constants\n(iii) $y = AJ_n(x) + BY_{-n}(x)$, where A and B are arbitrary constants\n(iv) None of the above",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2021_Q1i",
+                  "year": 2021,
+                  "qNumber": "Q1i",
+                  "chapter": "Module 6: First Order Partial Differential Equations",
+                  "text": "The equation $$x^2 z \\frac{\\partial z}{\\partial x} + y^2 z \\frac{\\partial z}{\\partial y} = x+y$$ is\n(i) linear\n(ii) non-linear\n(iii) quasi-linear\n(iv) semi-linear",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2021_Q1j",
+                  "year": 2021,
+                  "qNumber": "Q1j",
+                  "chapter": "Module 6: First Order Partial Differential Equations",
+                  "text": "The solution of $(y-z)p + (z-x)q = x-y$ is\n(i) $xyz = \\phi(x^2+y^2+z^2)$\n(ii) $xyz = \\phi(x+y+z)$\n(iii) $x^2+y^2+z^2 = \\phi(x+y+z)$\n(iv) $\\phi(x^2+y^2+z^2, xyz) = 0$",
+                  "type": "MCQ",
+                  "marks": 2
+                },
+                {
+                  "questionId": "math_100311_2021_Q2a",
+                  "year": 2021,
+                  "qNumber": "Q2a",
+                  "chapter": "Module 1: Single Variable Calculus Fundamentals",
+                  "text": "If $y = \\cos(m\\sin^{-1}x)$, then show that $$(1-x^2)y_{n+2} - (2n+1)xy_{n+1} + (m^2-n^2)y_n = 0$$ Hence find $(y_n)_0$.",
+                  "type": "Proof & Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2021_Q2b",
+                  "year": 2021,
+                  "qNumber": "Q2b",
+                  "chapter": "Module 1: Single Variable Calculus Fundamentals",
+                  "text": "Find the value of $$ \\lim_{n \\to \\infty} (4^n+5^n)^{1/n} $$.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2021_Q3a",
+                  "year": 2021,
+                  "qNumber": "Q3a",
+                  "chapter": "Module 2: Multivariable Calculus - Differentiation and Optimization",
+                  "text": "Discuss the continuity of the function $f(x,y)$ at the given point $(0,0)$.\n$$ f(x,y) = \\begin{cases} \\frac{x^2+y^2}{\\tan(xy)}, & (x,y) \\neq (0,0) \\text{ and } xy \\neq k\\pi/2 \\\\ 0, & (x,y) = (0,0) \\end{cases} $$",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2021_Q3b",
+                  "year": 2021,
+                  "qNumber": "Q3b",
+                  "chapter": "Module 2: Multivariable Calculus - Differentiation and Optimization",
+                  "text": "Compute $f_{xy}(0,0)$ and $f_{yx}(0,0)$ for the function\n$$ f(x,y) = \\begin{cases} \\frac{xy^3}{x+y^2}, & (x,y) \\neq (0,0) \\\\ 0, & (x,y) = (0,0) \\end{cases} $$\nAlso discuss the continuity of $f_{xy}$ and $f_{yx}$ at $(0,0)$.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2021_Q4a",
+                  "year": 2021,
+                  "qNumber": "Q4a",
+                  "chapter": "Module 2: Multivariable Calculus - Differentiation and Optimization",
+                  "text": "Use the method of Lagrange multipliers to maximize $x^3y^5$ subject to the constraint $x+y=8$.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2021_Q4b",
+                  "year": 2021,
+                  "qNumber": "Q4b",
+                  "chapter": "Module 2: Multivariable Calculus - Differentiation and Optimization",
+                  "text": "Expand $f(x,y) = \\sqrt{x+y}$ in Taylor's series up to second-order term about the point $(1,3)$. Estimate the maximum absolute error in the region $|x-1|<0.2$, $|y-3|<0.1$.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2021_Q5a",
+                  "year": 2021,
+                  "qNumber": "Q5a",
+                  "chapter": "Module 3: Vector Calculus",
+                  "text": "Find div(grad $r^n$), where $r^2 = x^2+y^2+z^2$.",
+                  "type": "Problem",
+                  "marks": 6
+                },
+                {
+                  "questionId": "math_100311_2021_Q5b",
+                  "year": 2021,
+                  "qNumber": "Q5b",
+                  "chapter": "Module 3: Vector Calculus",
+                  "text": "Show that $$ \\iint_S \\vec{F} \\cdot \\hat{n} dS = \\frac{3}{2} $$ where $\\vec{F} = 4xz\\hat{i} - y^2\\hat{j} + yz\\hat{k}$ and S is the surface of the cube bounded by the planes $x=0, x=1, y=0, y=1, z=0, z=1$.",
+                  "type": "Proof",
+                  "marks": 8
+                },
+                {
+                  "questionId": "math_100311_2021_Q6a",
+                  "year": 2021,
+                  "qNumber": "Q6a",
+                  "chapter": "Module 3: Vector Calculus",
+                  "text": "Find the directional derivative of $x^2y^2z^2$ at the point $(1,1,-1)$ in the direction of the tangent to the curve $x=e^t, y=1+\\sin(2t), z=1-\\cos t$ at $t=0$.",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2021_Q6b",
+                  "year": 2021,
+                  "qNumber": "Q6b",
+                  "chapter": "Module 4: First Order Ordinary Differential Equations",
+                  "text": "Solve the differential equation $$ \\tan y \\frac{dy}{dx} + \\tan x = \\cos y \\cos^2 x $$",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2021_Q7a",
+                  "year": 2021,
+                  "qNumber": "Q7a",
+                  "chapter": "Module 4: First Order Ordinary Differential Equations",
+                  "text": "Solve the following differential equations: $$y = 2px + y^2p^3$$",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2021_Q7b",
+                  "year": 2021,
+                  "qNumber": "Q7b",
+                  "chapter": "Module 5: Higher Order Ordinary Differential Equations and Special Functions",
+                  "text": "Solve the following differential equations: $$x^2 \\frac{d^2y}{dx^2} + 4x \\frac{dy}{dx} + 2y = e^x$$",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2021_Q8a",
+                  "year": 2021,
+                  "qNumber": "Q8a",
+                  "chapter": "Module 5: Higher Order Ordinary Differential Equations and Special Functions",
+                  "text": "Prove that\n$(x^2 - 1)P'_n(x) = (n+1)[P_{n+1}(x) - xP_n(x)]$",
+                  "type": "Proof",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2021_Q8b",
+                  "year": 2021,
+                  "qNumber": "Q8b",
+                  "chapter": "Module 5: Higher Order Ordinary Differential Equations and Special Functions",
+                  "text": "Prove that $$ \\frac{d}{dx} \\left[ \\frac{J_{-n}(x)}{J_n(x)} \\right] = \\frac{-2\\sin(n\\pi)}{x\\pi J_n^2(x)} $$",
+                  "type": "Proof",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2021_Q9a",
+                  "year": 2021,
+                  "qNumber": "Q9a",
+                  "chapter": "Module 6: First Order Partial Differential Equations",
+                  "text": "Solve the following differential equations: $$zp+yq=x$$",
+                  "type": "Problem",
+                  "marks": 7
+                },
+                {
+                  "questionId": "math_100311_2021_Q9b",
+                  "year": 2021,
+                  "qNumber": "Q9b",
+                  "chapter": "Module 6: First Order Partial Differential Equations",
+                  "text": "Solve the following differential equations: $$(p^2+q^2)y = qz$$",
                   "type": "Problem",
                   "marks": 7
                 }

@@ -127,7 +127,7 @@ const QuestionListScreen = ({ route, navigation }) => {
             }
 
             if (!subject || dataError) { // Fallback to local beuData.js
-                console.log(dataError || "No data in SecureStore or subject not found, falling back to local data.");
+                // console.log(dataError || "No data in SecureStore or subject not found, falling back to local data.");
                 const fallback = findData({ branchId, semId, subjectId });
                 subject = fallback.subject;
                 fetchedQuestions = fallback.questions;

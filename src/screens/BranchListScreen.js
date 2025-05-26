@@ -61,7 +61,7 @@ const BranchListScreen = ({ navigation }) => {
     }, [navigation]);
 
     const handleProfilePress = useCallback(() => {
-        console.log('Profile icon pressed!');
+        // console.log('Profile icon pressed!');
         navigation.navigate('DeveloperInfo');
     }, [navigation]);
 
