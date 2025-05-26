@@ -5079,7 +5079,7 @@
                   "questionId": "dm_106301_2022_Q1a",
                   "year": 2022,
                   "qNumber": "Q1a",
-                  "chapter": "Module 3: Propositional Logic",
+                  "chapter": "Module 3: Propositional Logic & Proof Techniques",
                   "text": "The statement p -> q is logically equivalent to\n(i) p v q\n(ii) ~p v q\n(iii) ~p v ~q\n(iv) ~p -> q",
                   "type": "MCQ",
                   "marks": 2
@@ -5097,7 +5097,7 @@
                   "questionId": "dm_106301_2022_Q1c",
                   "year": 2022,
                   "qNumber": "Q1c",
-                  "chapter": "Module 2: Basic counting techniques",
+                  "chapter": "Module 2: Mathematical Induction & Counting Techniques",
                   "text": "Among 200 people, 150 either swim or jog, or both. If 85 swim, and 60 swim and jog, how many jog?\n(i) 125\n(ii) 225\n(iii) 85\n(iv) 25",
                   "type": "MCQ",
                   "marks": 2
@@ -5106,7 +5106,7 @@
                   "questionId": "dm_106301_2022_Q1d",
                   "year": 2022,
                   "qNumber": "Q1d",
-                  "chapter": "Module 4: Algebraic Structures and Morphism",
+                  "chapter": "Module 4: Algebraic Structures & Boolean Algebra",
                   "text": "The total number of subgroups of group G of prime order is\n(i) 3\n(ii) 2\n(iii) 1\n(iv) 4",
                   "type": "MCQ",
                   "marks": 2
@@ -5124,7 +5124,7 @@
                   "questionId": "dm_106301_2022_Q1f",
                   "year": 2022,
                   "qNumber": "Q1f",
-                  "chapter": "Module 4: Algebraic Structures and Morphism",
+                  "chapter": "Module 4: Algebraic Structures & Boolean Algebra",
                   "text": "If f : G -> G' is a homomorphism, then which of the following it true?\n(i) f(e) = e\n(ii) f(e) = e'\n(iii) f(e) = 1\n(iv) f(e) >= phi",
                   "type": "MCQ",
                   "marks": 2
@@ -5160,7 +5160,7 @@
                   "questionId": "dm_106301_2022_Q1j",
                   "year": 2022,
                   "qNumber": "Q1j",
-                  "chapter": "Module 4: Algebraic Structures and Morphism",
+                  "chapter": "Module 4: Algebraic Structures & Boolean Algebra",
                   "text": "If (S, *) is a monoid, where S = {1, 2, 3, 6} and * is defined by a * b = lcm(a, b) where a, b E S; then the identity element is\n(i) 1\n(ii) 2\n(iii) 3\n(iv) 6",
                   "type": "MCQ",
                   "marks": 2
@@ -5169,7 +5169,7 @@
                   "questionId": "dm_106301_2022_Q2a",
                   "year": 2022,
                   "qNumber": "Q2a",
-                  "chapter": "Module 3: Propositional Logic",
+                  "chapter": "Module 3: Propositional Logic & Proof Techniques",
                   "text": "Show that ((p v q) ^ ~(~p ^ (~q v ~r))) v (~p ^ ~q) v (~p ^ ~r) is a tautology.",
                   "type": "Proof",
                   "marks": 7
@@ -5178,7 +5178,7 @@
                   "questionId": "dm_106301_2022_Q2b",
                   "year": 2022,
                   "qNumber": "Q2b",
-                  "chapter": "Module 4: Algebraic Structures and Morphism",
+                  "chapter": "Module 4: Algebraic Structures & Boolean Algebra",
                   "text": "Define sub-lattice of a lattice. Show with an example that union of two sub-lattice may not be sub-lattice.",
                   "type": "Definition & Proof",
                   "marks": 7
@@ -5187,7 +5187,7 @@
                   "questionId": "dm_106301_2022_Q3a",
                   "year": 2022,
                   "qNumber": "Q3a",
-                  "chapter": "Module 3: Propositional Logic",
+                  "chapter": "Module 3: Propositional Logic & Proof Techniques",
                   "text": "Show that s is a valid conclusion from the premises p -> ~q, q v r, ~s -> p.",
                   "type": "Proof",
                   "marks": 5
@@ -5196,7 +5196,7 @@
                   "questionId": "dm_106301_2022_Q3b",
                   "year": 2022,
                   "qNumber": "Q3b",
-                  "chapter": "Module 2: Basic counting techniques",
+                  "chapter": "Module 2: Mathematical Induction & Counting Techniques",
                   "text": "A new flag is to be designed with 6 vertical strips using 4 colors. In how many ways can this be done so that no 2 adjacent strips have the same color?",
                   "type": "Problem Solving",
                   "marks": 4
@@ -5205,7 +5205,7 @@
                   "questionId": "dm_106301_2022_Q3c",
                   "year": 2022,
                   "qNumber": "Q3c",
-                  "chapter": "Module 2: Principles of Mathematical Induction",
+                  "chapter": "Module 2: Mathematical Induction & Counting Techniques",
                   "text": "By mathematical induction, prove that 6^(n+2) + 7^(2n+1) is divisible by 43, for each natural number n.",
                   "type": "Proof",
                   "marks": 5
@@ -5223,7 +5223,7 @@
                   "questionId": "dm_106301_2022_Q4b",
                   "year": 2022,
                   "qNumber": "Q4b",
-                  "chapter": "Module 4: Algebraic Structures and Morphism",
+                  "chapter": "Module 4: Algebraic Structures & Boolean Algebra",
                   "text": "If (L, ^, v) be a complemented distributed lattice, then prove that:\n(a v b)' = a' ^ b'\n(a ^ b)' = a' v b'",
                   "type": "Proof",
                   "marks": 5
@@ -5232,7 +5232,7 @@
                   "questionId": "dm_106301_2022_Q4c",
                   "year": 2022,
                   "qNumber": "Q4c",
-                  "chapter": "Module 3: Propositional Logic",
+                  "chapter": "Module 3: Propositional Logic & Proof Techniques",
                   "text": "Obtain the CNF form of the following statement\n(p -> (q ^ r)) ^ (~p -> (~q ^ ~r))",
                   "type": "Transformation",
                   "marks": 4
@@ -5259,7 +5259,7 @@
                   "questionId": "dm_106301_2022_Q5c",
                   "year": 2022,
                   "qNumber": "Q5c",
-                  "chapter": "Module 4: Algebraic Structures and Morphism",
+                  "chapter": "Module 4: Algebraic Structures & Boolean Algebra",
                   "text": "Show that every group of order 3 is cyclic.",
                   "type": "Proof",
                   "marks": 5
@@ -5268,7 +5268,7 @@
                   "questionId": "dm_106301_2022_Q6a",
                   "year": 2022,
                   "qNumber": "Q6a",
-                  "chapter": "Module 4: Algebraic Structures and Morphism",
+                  "chapter": "Module 4: Algebraic Structures & Boolean Algebra",
                   "text": "Prove that the necessary and sufficient condition for a non-empty set H of a group (G, *) to be a subgroup is a, b E H => a * b^-1 E H.",
                   "type": "Proof",
                   "marks": 7
@@ -5295,7 +5295,7 @@
                   "questionId": "dm_106301_2022_Q7b",
                   "year": 2022,
                   "qNumber": "Q7b",
-                  "chapter": "Module 4: Algebraic Structures and Morphism",
+                  "chapter": "Module 4: Algebraic Structures & Boolean Algebra",
                   "text": "Define the following with example:\nRing, PO sets, Lattice, Cyclic group.",
                   "type": "Definition & Example",
                   "marks": 8
@@ -5304,7 +5304,7 @@
                   "questionId": "dm_106301_2022_Q8a",
                   "year": 2022,
                   "qNumber": "Q8a",
-                  "chapter": "Module 4: Algebraic Structures and Morphism",
+                  "chapter": "Module 4: Algebraic Structures & Boolean Algebra",
                   "text": "Show that the set of integers with the composition + and * defined by\na + b = a + b + 1 and\na * b = ab + a + b is a ring.",
                   "type": "Proof",
                   "marks": 7
@@ -5322,7 +5322,7 @@
                   "questionId": "dm_106301_2022_Q9a",
                   "year": 2022,
                   "qNumber": "Q9a",
-                  "chapter": "Module 4: Algebraic Structures and Morphism",
+                  "chapter": "Module 4: Algebraic Structures & Boolean Algebra",
                   "text": "Write short notes on the following:\n(a) Cosets",
                   "type": "Short Note",
                   "marks": 3.5
@@ -5340,7 +5340,7 @@
                   "questionId": "dm_106301_2022_Q9c",
                   "year": 2022,
                   "qNumber": "Q9c",
-                  "chapter": "Module 4: Algebraic Structures and Morphism",
+                  "chapter": "Module 4: Algebraic Structures & Boolean Algebra",
                   "text": "Write short notes on the following:\n(c) Homomorphism",
                   "type": "Short Note",
                   "marks": 3.5
