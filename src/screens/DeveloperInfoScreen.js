@@ -16,7 +16,7 @@ import Icon from '../components/Icon';
 import ListItemCard from '../components/ListItemCard';
 
 const DeveloperInfoScreen = () => {
-    const appVersion = '2.0.3';
+    const appVersion = '3.0.0';
 
     const handleEmailPress = () => {
         Linking.openURL('mailto:raiyanhasan2006@gmail.com');
