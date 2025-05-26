@@ -471,7 +471,7 @@ const AIChatModal = React.memo(({
                     </View>
                     <View style={styles.buttonTextContainer}>
                         <Text style={[styles.actionButtonText, { color: COLORS.error }]}>Explore Videos</Text>
-                        <Text style={[styles.actionButtonSubtext, { color: COLORS.textSecondary }]}>Find relevant YouTube tutorials</Text>
+                        <Text style={[styles.actionButtonSubtext, { color: COLORS.textSecondary }]}>Find relevant tutorials</Text>
                     </View>
                     <Icon name="arrow-forward" iconSet="Ionicons" size={16} color={COLORS.error + '80'} />
                 </PressableScale>
@@ -753,15 +753,15 @@ const styles = StyleSheet.create({
     },
     contentScrollContainer: {
         flexGrow: 1,
-        paddingHorizontal: 24,
-        paddingTop: 32, 
-        paddingBottom: 40, 
+        paddingHorizontal: 12, // Adjusted as per previous fix
+        paddingTop: 16,        // Adjusted as per previous fix
+        paddingBottom: Platform.OS === 'ios' ? 24 : 32, // Adjusted as per previous fix
     },
     initialActionsContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingHorizontal: 20,
+        paddingHorizontal: 20, // This is for the initial screen, likely okay as is
         paddingBottom: 60, 
     },
     iconContainer: { 
@@ -959,6 +959,9 @@ const styles = StyleSheet.create({
         minHeight: 300, 
         display: 'flex',
         flexDirection: 'column',
+        // Ensure aiResponseContainer itself does not have excessive padding if it's meant to fill the space:
+        // marginTop: 10, // Example: If some top margin is needed from the header
+        // marginHorizontal: 0, // Removed previous horizontal padding if now handled by contentScrollContainer
     },
     webViewLoaderContainer: {
         position: 'absolute',
@@ -979,10 +982,10 @@ const styles = StyleSheet.create({
     },
     subsequentActionsContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
+        justifyContent: 'space-around', // Distributes space between buttons
         alignItems: 'center',
         paddingVertical: 16,
-        paddingHorizontal: 16,
+        paddingHorizontal: 12, // Reduced slightly to give buttons more room if needed
         borderTopWidth: 1,
         borderTopColor: COLORS.borderLight || '#ECECEC',
         backgroundColor: COLORS.surface || '#FFFFFF', 
@@ -995,18 +998,19 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         borderRadius: 10,
         flex: 1, 
-        marginHorizontal: 5,
+        marginHorizontal: 4, // Slightly reduced margin
         maxWidth: Platform.OS === 'ios' ? 170 : 160, 
         gap: 6,
+        minHeight: 40, // Ensures a minimum tap target height
     },
     regenerateButtonSmall: {
         backgroundColor: (COLORS.primary || '#007AFF') + '10', 
         borderColor: (COLORS.primary || '#007AFF') + '30', 
         borderWidth: 1.2,
     },
-    switchButtonSmall: {
-        backgroundColor: COLORS.surfaceAlt || '#E9ECEF', 
-        borderColor: COLORS.border || '#D1D1D6',
+    switchButtonSmall: { // <<< UPDATED STYLE
+        backgroundColor: 'transparent',
+        borderColor: COLORS.textSecondary || '#6c757d',
         borderWidth: 1.2,
     },
     actionButtonTextSmall: {

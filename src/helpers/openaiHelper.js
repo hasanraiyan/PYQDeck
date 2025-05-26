@@ -1,5 +1,5 @@
 // src/helpers/openaiHelper.js
-const OPENAI_API_KEY = "skfhjkdgkjxlkhlkcvgkefh"; // IMPORTANT: Replace with your actual key for real use.
+const OPENAI_API_KEY = "QSLG868yZKySzwAb"; // IMPORTANT: Replace with your actual key for real use.
 import { UNCAT_CHAPTER_NAME, COLORS } from '../constants';
 
 export const REQUEST_TYPES = {
