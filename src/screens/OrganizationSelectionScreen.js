@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { StyleSheet, View, SafeAreaView, Platform, StatusBar } from 'react-native';
+import { StyleSheet, View, SafeAreaView, Platform, StatusBar, ScrollView } from 'react-native';
 import { COLORS } from '../constants';
 import {
     findData,
@@ -8,6 +8,7 @@ import {
     getUniqueChapters,
     saveLastJourney,
 } from '../helpers/helpers';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 import ListItemCard from '../components/ListItemCard';
 import LoadingIndicator from '../components/LoadingIndicator';
 import ErrorMessage from '../components/ErrorMessage';
@@ -27,6 +28,9 @@ const OrganizationSelectionScreen = ({ route, navigation }) => {
     );
 
     const [error, setError] = useState(dataError);
+
+    // Ad Configuration
+    const AD_UNIT_ID = __DEV__ ? TestIds.BANNER : 'ca-app-pub-7142215738625436/1197117276'; // IMPORTANT: Replace in production
 
 
     useEffect(() => {
@@ -110,46 +114,63 @@ const OrganizationSelectionScreen = ({ route, navigation }) => {
                 barStyle="dark-content"
                 backgroundColor={COLORS.surface}
             />
-            <View style={styles.listContentContainer}>
-                { }
-                <ListItemCard
-                    title="View All Questions"
-                    subtitle={hasQuestions ? "See all questions, newest first" : "No questions available"}
-                    onPress={navigateToQuestionsAll}
-                    iconName="list-outline"
-                    iconSet="Ionicons"
-                    iconColor={COLORS.primaryLight}
-                    hasData={hasQuestions}
-                    disabled={!hasQuestions}
+            {/* Wrap content in ScrollView if it might overflow, especially with the ad */}
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
+                <View style={styles.listContentContainer}>
+                    { }
+                    <ListItemCard
+                        title="View All Questions"
+                        subtitle={hasQuestions ? "See all questions, newest first" : "No questions available"}
+                        onPress={navigateToQuestionsAll}
+                        iconName="list-outline"
+                        iconSet="Ionicons"
+                        iconColor={COLORS.primaryLight}
+                        hasData={hasQuestions}
+                        disabled={!hasQuestions}
+                    />
+                    { }
+                    <ListItemCard
+                        title="View By Chapter"
+                        subtitle={canViewByChapter ? "Select a chapter to view its questions" : "No chapters found"}
+                        onPress={navigateToChapterSelection}
+                        iconName="folder-open-outline"
+                        iconSet="Ionicons"
+                        iconColor={COLORS.secondary}
+                        hasData={canViewByChapter}
+                        disabled={!canViewByChapter}
+                    />
+                    { }
+                    <ListItemCard
+                        title="View By Year"
+                        subtitle={canViewByYear ? "Filter questions by specific year" : "No years assigned to questions"}
+                        onPress={navigateToYearSelection}
+                        iconName="calendar-number-outline"
+                        iconSet="Ionicons"
+                        iconColor={COLORS.yearIconColor}
+                        hasData={canViewByYear}
+                        disabled={!canViewByYear}
+                    />
+                    { }
+                    {!hasQuestions && (
+                        <View style={{ marginTop: 20 }}>
+                            <EmptyState message="No questions available for this subject yet." />
+                        </View>
+                    )}
+                </View>
+            </ScrollView>
+            {/* Ad Banner */}
+            <View style={styles.adBannerContainer}>
+                <BannerAd
+                    unitId={AD_UNIT_ID}
+                    size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+                    requestOptions={{
+                        requestNonPersonalizedAdsOnly: true, // Consider GDPR
+                    }}
+                    onAdLoaded={() => console.log('OrganizationSelectionScreen Ad loaded')}
+                    onAdFailedToLoad={(error) => {
+                        console.error("OrganizationSelectionScreen Ad failed to load", error);
+                    }}
                 />
-                { }
-                <ListItemCard
-                    title="View By Chapter"
-                    subtitle={canViewByChapter ? "Select a chapter to view its questions" : "No chapters found"}
-                    onPress={navigateToChapterSelection}
-                    iconName="folder-open-outline"
-                    iconSet="Ionicons"
-                    iconColor={COLORS.secondary}
-                    hasData={canViewByChapter}
-                    disabled={!canViewByChapter}
-                />
-                { }
-                <ListItemCard
-                    title="View By Year"
-                    subtitle={canViewByYear ? "Filter questions by specific year" : "No years assigned to questions"}
-                    onPress={navigateToYearSelection}
-                    iconName="calendar-number-outline"
-                    iconSet="Ionicons"
-                    iconColor={COLORS.yearIconColor}
-                    hasData={canViewByYear}
-                    disabled={!canViewByYear}
-                />
-                { }
-                {!hasQuestions && (
-                    <View style={{ marginTop: 20 }}>
-                        <EmptyState message="No questions available for this subject yet." />
-                    </View>
-                )}
             </View>
         </SafeAreaView>
     );
@@ -160,10 +181,18 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: COLORS.background,
     },
+    scrollContainer: {
+        flexGrow: 1, // Ensures ScrollView takes up available space if content is short
+    },
     listContentContainer: {
         paddingTop: 15,
-        paddingBottom: Platform.OS === 'ios' ? 40 : 30,
+        // Adjusted paddingBottom to account for the ad banner (approx. 60dp)
+        // This padding is on the content itself, the ScrollView will handle scrolling.
+        paddingBottom: Platform.OS === 'ios' ? (40 + 60) : (30 + 60),
         paddingHorizontal: 12,
+    },
+    adBannerContainer: {
+        alignItems: 'center',
     },
 });
 

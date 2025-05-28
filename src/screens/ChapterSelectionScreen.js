@@ -1,9 +1,10 @@
 // src/screens/ChapterSelectionScreen.js
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { StyleSheet, FlatList, SafeAreaView, Platform, Text, StatusBar } from 'react-native';
+import { StyleSheet, FlatList, SafeAreaView, Platform, Text, StatusBar, View } from 'react-native';
 import { COLORS, UNCAT_CHAPTER_NAME } from '../constants';
 import { findData, loadCompletionStatuses } from '../helpers/helpers'; // Import loadCompletionStatuses
 import ListItemCard from '../components/ListItemCard';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 import LoadingIndicator from '../components/LoadingIndicator';
 import ErrorMessage from '../components/ErrorMessage';
 import EmptyState from '../components/EmptyState';
@@ -17,6 +18,9 @@ const ChapterSelectionScreen = ({ route, navigation }) => {
     const [completionStatus, setCompletionStatus] = useState({});
     const [isLoadingStatuses, setIsLoadingStatuses] = useState(true);
     const [error, setError] = useState(null);
+
+    // Ad Configuration - Using the same ID as QuestionListScreen for example
+    const AD_UNIT_ID = __DEV__ ? TestIds.BANNER : 'ca-app-pub-7142215738625436/1197117276'; // IMPORTANT: Replace in production if a different ID is needed
 
     // --- Effect for fetching initial data ---
     useEffect(() => {
@@ -213,6 +217,20 @@ const ChapterSelectionScreen = ({ route, navigation }) => {
                 contentContainerStyle={styles.listContentContainer}
                 extraData={completionStatus} // Ensure re-render when statuses change
             />
+            {/* Ad Banner */}
+            <View style={styles.adBannerContainer}>
+                <BannerAd
+                    unitId={AD_UNIT_ID}
+                    size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+                    requestOptions={{
+                        requestNonPersonalizedAdsOnly: true, // Consider GDPR
+                    }}
+                    onAdLoaded={() => console.log('ChapterSelectionScreen Ad loaded')}
+                    onAdFailedToLoad={(error) => {
+                        console.error("ChapterSelectionScreen Ad failed to load", error);
+                    }}
+                />
+            </View>
         </SafeAreaView>
     );
 };
@@ -224,8 +242,13 @@ const styles = StyleSheet.create({
     },
     listContentContainer: {
         paddingTop: 10,
-        paddingBottom: Platform.OS === 'ios' ? 40 : 30,
+        // Increased paddingBottom to make space for the ad banner (approx. 60dp)
+        paddingBottom: Platform.OS === 'ios' ? (40 + 60) : (30 + 60),
         paddingHorizontal: 12,
+    },
+    adBannerContainer: {
+        alignItems: 'center',
+        // The BannerAd with ANCHORED_ADAPTIVE_BANNER will determine its own height.
     },
 });
 
