@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { StyleSheet, View, SafeAreaView, Platform, StatusBar, ScrollView } from 'react-native';
-import { COLORS } from '../constants';
+import { COLORS, ADS_ENABLED } from '../constants';
 import {
     findData,
     getUniqueYears,
@@ -158,20 +158,21 @@ const OrganizationSelectionScreen = ({ route, navigation }) => {
                     )}
                 </View>
             </ScrollView>
-            {/* Ad Banner */}
-            <View style={styles.adBannerContainer}>
-                <BannerAd
-                    unitId={AD_UNIT_ID}
-                    size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-                    requestOptions={{
-                        requestNonPersonalizedAdsOnly: true, // Consider GDPR
-                    }}
-                    onAdLoaded={() => console.log('OrganizationSelectionScreen Ad loaded')}
-                    onAdFailedToLoad={(error) => {
-                        console.error("OrganizationSelectionScreen Ad failed to load", error);
-                    }}
-                />
-            </View>
+            {ADS_ENABLED && (
+                <View style={styles.adBannerContainer}>
+                    <BannerAd
+                        unitId={AD_UNIT_ID}
+                        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+                        requestOptions={{
+                            requestNonPersonalizedAdsOnly: true, // Consider GDPR
+                        }}
+                        onAdLoaded={() => console.log('OrganizationSelectionScreen Ad loaded')}
+                        onAdFailedToLoad={(error) => {
+                            console.error("OrganizationSelectionScreen Ad failed to load", error);
+                        }}
+                    />
+                </View>
+            )}
         </SafeAreaView>
     );
 };
@@ -186,9 +187,9 @@ const styles = StyleSheet.create({
     },
     listContentContainer: {
         paddingTop: 15,
-        // Adjusted paddingBottom to account for the ad banner (approx. 60dp)
-        // This padding is on the content itself, the ScrollView will handle scrolling.
-        paddingBottom: Platform.OS === 'ios' ? (40 + 60) : (30 + 60),
+        paddingBottom: Platform.OS === 'ios'
+            ? (ADS_ENABLED ? 40 + 60 : 40) // 60 is approx ad height
+            : (ADS_ENABLED ? 30 + 60 : 30),
         paddingHorizontal: 12,
     },
     adBannerContainer: {

@@ -26,6 +26,7 @@ import {
     COLORS,
     UNCAT_CHAPTER_NAME,
     SEARCH_DEBOUNCE_DELAY,
+    ADS_ENABLED,
 } from '../constants';
 import {
     findData,
@@ -340,10 +341,11 @@ const QuestionListScreen = ({ route, navigation }) => {
                 itemsWithAdsList.push(filteredAndSortedQuestions[i]); // Add the question item
                 // Add an ad after every AD_FREQUENCY questions,
                 // but not if it's the last item in the original filtered list
-                if ((i + 1) % AD_FREQUENCY === 0 && i < filteredAndSortedQuestions.length - 1) {
+                // AND only if ads are enabled
+                if (ADS_ENABLED && (i + 1) % AD_FREQUENCY === 0 && i < filteredAndSortedQuestions.length - 1) {
                     itemsWithAdsList.push({
                         type: 'ad',
-                        id: `ad-${Math.floor(i / AD_FREQUENCY)}`, // Unique key for the ad
+                        id: `ad-${Math.floor(i / AD_FREQUENCY)}`, 
                     });
                 }
             }
@@ -506,7 +508,7 @@ const QuestionListScreen = ({ route, navigation }) => {
             <FlatList
                 data={listData}
                 renderItem={({ item }) => {
-                    if (item.type === 'ad') {
+                    if (item.type === 'ad' && ADS_ENABLED) { // Ensure ADS_ENABLED is checked here too
                         return (
                             <View style={styles.adContainer}>
                                 <BannerAd

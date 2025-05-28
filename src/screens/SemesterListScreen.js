@@ -1,7 +1,7 @@
 // src/screens/SemesterListScreen.js
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { StyleSheet, FlatList, SafeAreaView, Platform, StatusBar, View } from 'react-native';
-import { COLORS } from '../constants';
+import { COLORS, ADS_ENABLED } from '../constants';
 import { findData, loadCompletionStatuses } from '../helpers/helpers';
 import ListItemCard from '../components/ListItemCard';
 import LoadingIndicator from '../components/LoadingIndicator';
@@ -179,20 +179,21 @@ const SemesterListScreen = ({ route, navigation }) => {
                 contentContainerStyle={styles.listContentContainer}
                 extraData={completionStatus} // Ensure re-render when statuses change
             />
-            {/* Ad Banner */}
-            <View style={styles.adBannerContainer}>
-                <BannerAd
-                    unitId={AD_UNIT_ID}
-                    size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-                    requestOptions={{
-                        requestNonPersonalizedAdsOnly: true, // Consider GDPR
-                    }}
-                    onAdLoaded={() => console.log('SemesterListScreen Ad loaded')}
-                    onAdFailedToLoad={(error) => {
-                        console.error("SemesterListScreen Ad failed to load", error);
-                    }}
-                />
-            </View>
+            {ADS_ENABLED && (
+                <View style={styles.adBannerContainer}>
+                    <BannerAd
+                        unitId={AD_UNIT_ID}
+                        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+                        requestOptions={{
+                            requestNonPersonalizedAdsOnly: true, // Consider GDPR
+                        }}
+                        onAdLoaded={() => console.log('SemesterListScreen Ad loaded')}
+                        onAdFailedToLoad={(error) => {
+                            console.error("SemesterListScreen Ad failed to load", error);
+                        }}
+                    />
+                </View>
+            )}
         </SafeAreaView>
     );
 };
@@ -204,8 +205,9 @@ const styles = StyleSheet.create({
     },
     listContentContainer: {
         paddingTop: 10,
-        // Increased paddingBottom to make space for the ad banner (approx. 60dp)
-        paddingBottom: Platform.OS === 'ios' ? (40 + 60) : (30 + 60),
+        paddingBottom: Platform.OS === 'ios'
+            ? (ADS_ENABLED ? 40 + 60 : 40) // 60 is approx ad height
+            : (ADS_ENABLED ? 30 + 60 : 30),
         paddingHorizontal: 12,
     },
     adBannerContainer: {
