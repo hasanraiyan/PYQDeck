@@ -192,14 +192,6 @@ export const searchGoogle = (query, showFeedback) => {
     )}`;
     openLink(url, showFeedback);
 };
-
-export const askAI = (query, showFeedback) => {
-    const url = `https://chatgpt.com?q=${encodeURIComponent(
-        query || '' 
-    )}`;
-    openLink(url, showFeedback);
-};
-
 export const debounce = (func, wait) => {
     let timeout;
     return function executedFunction(...args) {
