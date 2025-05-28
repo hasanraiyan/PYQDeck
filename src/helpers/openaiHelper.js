@@ -98,12 +98,12 @@ const stripMarkdownLinks = (text) => {
     if (!text || typeof text !== 'string') {
         return text;
     }
-    // Replaces [link text](url) with "link text (link removed)"
-    // This keeps the descriptive text part of the link but removes the clickable URL.
-    // The regex captures the link text in $1 and the URL in $2.
-    // We replace the whole Markdown link with the link text followed by a notice.
-    const linkRegex = /\[(.*?)\]\((.*?)\)/g;
-    return text.replace(linkRegex, '$1 (link removed)');
+    // Regex to find lines containing a Markdown link: [text](url)
+    // and remove the entire line.
+    const lineWithLinkRegex = /^.*\[.*?\]\(.*?\).*$(\r?\n)?/gm;
+    // 'g' for global (all occurrences)
+    // 'm' for multiline (^ and $ match start/end of line, not just start/end of string)
+    return text.replace(lineWithLinkRegex, '');
 };
 
 export const askAIWithContext = async (requestType, item, subjectContext, displayFeedback) => {
