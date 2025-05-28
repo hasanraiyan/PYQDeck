@@ -270,14 +270,14 @@ const AIChatModal = React.memo(({
             contentScale.setValue(0.95);
 
             entranceAnimParallel = Animated.parallel([
-                Animated.timing(backdropOpacity, { toValue: 1, duration: 300, useNativeDriver: true }),
-                Animated.spring(modalSlideAnim, { toValue: 0, useNativeDriver: true, tension: 100, friction: 12 }),
+                Animated.timing(backdropOpacity, { toValue: 1, duration: 300, easing: Easing.inOut(Easing.ease), useNativeDriver: true }), // Remains excellent
+                Animated.spring(modalSlideAnim, { toValue: 0, useNativeDriver: true, tension: 90, friction: 26 }), // Softer, more polished spring
             ]);
             
             entranceAnimParallel.start(() => {
                 if (isMountedRef.current) {
                     contentEntranceAnimParallel = Animated.parallel([
-                        Animated.spring(headerScale, { toValue: 1, useNativeDriver: true, tension: 150, friction: 10 }),
+                        Animated.spring(headerScale, { toValue: 1, useNativeDriver: true, tension: 160, friction: 12 }), // This can remain snappy
                         Animated.spring(contentScale, { toValue: 1, useNativeDriver: true, tension: 120, friction: 10 }),
                         Animated.timing(initialContentOpacity, { toValue: 1, duration: 400, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
                         Animated.spring(initialContentTranslateY, { toValue: 0, useNativeDriver: true, tension: 120, friction: 10 }),
@@ -389,8 +389,8 @@ const AIChatModal = React.memo(({
         triggerHaptic(Haptics.ImpactFeedbackStyle.Medium);
 
         Animated.parallel([
-            Animated.timing(backdropOpacity, { toValue: 0, duration: 250, useNativeDriver: true }),
-            Animated.spring(modalSlideAnim, { toValue: screenHeight, useNativeDriver: true, tension: 100, friction: 10 }),
+            Animated.timing(backdropOpacity, { toValue: 0, duration: 250, easing: Easing.inOut(Easing.ease), useNativeDriver: true }), // Remains excellent
+            Animated.spring(modalSlideAnim, { toValue: screenHeight, useNativeDriver: true, tension: 90, friction: 26 }), // Consistent softer spring for exit
         ]).start(({ finished }) => {
             // `finished` will be true if the animation completed, false if interrupted (e.g., by unmount)
             // It's generally safe to call onClose here because the parent controls the actual unmount.

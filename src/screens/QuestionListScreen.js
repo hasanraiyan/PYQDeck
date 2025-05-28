@@ -16,6 +16,8 @@ import {
     Platform,
     StatusBar,
     ScrollView,
+    Animated, // Import Animated
+    Easing,   // Import Easing
     TextInput,
     Alert,
 } from 'react-native';
@@ -72,6 +74,8 @@ const QuestionListScreen = ({ route, navigation }) => {
     const [feedbackMessage, setFeedbackMessage] = useState('');
     const feedbackTimerRef = useRef(null);
     const qlsMountedRef = useRef(true);
+    const feedbackAnim = useRef(new Animated.Value(0)).current; // For opacity and transform
+    const feedbackVisible = useRef(false); // To track actual visibility for animation logic
 
 
     const [sortBy, setSortBy] = useState('default');
@@ -237,18 +241,42 @@ const QuestionListScreen = ({ route, navigation }) => {
     }, [loadData]); // Rerun if loadData identity changes (due to its deps)
 
     const displayFeedback = useCallback((message) => {
-        if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
         if (!qlsMountedRef.current) return;
-
+    
         setFeedbackMessage(message);
-        setShowFeedback(true);
+    
+        // If already visible, just update message and reset timer
+        if (feedbackVisible.current) {
+            if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
+        } else {
+            feedbackVisible.current = true;
+            setShowFeedback(true); // Keep this to ensure the component is in the tree
+            Animated.spring(feedbackAnim, { // Animate in
+                toValue: 1,
+                tension: 100,
+                friction: 12,
+                useNativeDriver: true,
+            }).start();
+        }
+    
         feedbackTimerRef.current = setTimeout(() => {
             if (qlsMountedRef.current) {
-                setShowFeedback(false);
-                setFeedbackMessage('');
+                Animated.timing(feedbackAnim, { // Animate out
+                    toValue: 0,
+                    duration: 250,
+                    easing: Easing.inOut(Easing.ease),
+                    useNativeDriver: true,
+                }).start(() => {
+                    if (qlsMountedRef.current) { // Check again after animation
+                        setShowFeedback(false);
+                        setFeedbackMessage('');
+                        feedbackVisible.current = false;
+                    }
+                });
             }
         }, 2000);
-    }, []);
+    }, [feedbackAnim]); // Add feedbackAnim to dependencies
+    
 
     const handleToggleComplete = useCallback(async (questionId, newStatus) => {
         if (!qlsMountedRef.current) return;
@@ -460,9 +488,23 @@ const QuestionListScreen = ({ route, navigation }) => {
                 backgroundColor={COLORS.surface}
             />
             {showFeedback && (
-                <View style={styles.feedbackToast} pointerEvents="none">
+                <Animated.View 
+                    style={[
+                        styles.feedbackToast, 
+                        {
+                            opacity: feedbackAnim,
+                            transform: [{
+                                translateY: feedbackAnim.interpolate({
+                                    inputRange: [0, 1],
+                                    outputRange: [50, 0] // Slide in from bottom
+                                })
+                            }]
+                        }
+                    ]} 
+                    pointerEvents="none"
+                >
                     <Text style={styles.feedbackText}>{feedbackMessage}</Text>
-                </View>
+                </Animated.View>
             )}
 
             <View style={styles.controlsContainer}>
