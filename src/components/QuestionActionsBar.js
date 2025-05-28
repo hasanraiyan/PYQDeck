@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from './Icon'; 
 import { COLORS } from '../constants';
+import PressableScale from './PressableScale';
 
 const QuestionActionsBar = React.memo(({
   onSearch,
@@ -11,27 +12,32 @@ const QuestionActionsBar = React.memo(({
 }) => {
   return (
     <View style={styles.actionsRow}>
-      <View style={styles.actionsLeft}>
-        <TouchableOpacity onPress={onSearch} style={styles.iconButton} accessibilityLabel="Search question on Google">
-          <Icon iconSet="FontAwesome" name="google" size={20} color={COLORS.textSecondary || '#8E8E93'} />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={onCopy} style={styles.iconButton} accessibilityLabel="Copy question text">
-          <Icon iconSet="Ionicons" name="copy-outline" size={22} color={COLORS.textSecondary || '#8E8E93'} />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={onShare} style={styles.iconButton} accessibilityLabel="Share question">
-          <Icon iconSet="Ionicons" name="share-social-outline" size={22} color={COLORS.textSecondary || '#8E8E93'} />
-        </TouchableOpacity>
-      </View>
-      <TouchableOpacity style={styles.askAiButton} onPress={onAskAI} activeOpacity={0.8}>
-        <Icon
-          iconSet="MaterialCommunityIcons"
-          name="robot-happy-outline"
-          size={18}
-          color={COLORS.white || '#FFFFFF'}
-          style={styles.askAiButtonIcon}
-        />
-        <Text style={styles.askAiButtonText}>Ask AI</Text>
-      </TouchableOpacity>
+        <View style={styles.actionsLeft}>
+            <PressableScale onPress={onSearch} style={styles.iconButtonWrapper} hapticType="light" scaleValue={0.95}>
+                <Icon iconSet="FontAwesome" name="google" size={20} color={COLORS.textSecondary || '#8E8E93'} />
+            </PressableScale>
+            <PressableScale onPress={onCopy} style={styles.iconButtonWrapper} hapticType="light" scaleValue={0.95}>
+                <Icon iconSet="Ionicons" name="copy-outline" size={22} color={COLORS.textSecondary || '#8E8E93'} />
+            </PressableScale>
+            <PressableScale onPress={onShare} style={styles.iconButtonWrapper} hapticType="light" scaleValue={0.95}>
+                <Icon iconSet="Ionicons" name="share-social-outline" size={22} color={COLORS.textSecondary || '#8E8E93'} />
+            </PressableScale>
+        </View>
+        <PressableScale 
+            onPress={onAskAI} 
+            style={styles.askAiButton} 
+            hapticType="medium" 
+            scaleValue={0.97}
+        >
+            <Icon
+                iconSet="MaterialCommunityIcons"
+                name="robot-happy-outline"
+                size={18}
+                color={COLORS.white || '#FFFFFF'}
+                style={styles.askAiButtonIcon}
+            />
+            <Text style={styles.askAiButtonText}>Ask AI</Text>
+        </PressableScale>
     </View>
   );
 });
@@ -50,7 +56,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  iconButton: {
+    iconButtonWrapper: { // Renamed for clarity if you use PressableScale which wraps TouchableOpacity
     padding: 10,
     marginRight: 4,
   },

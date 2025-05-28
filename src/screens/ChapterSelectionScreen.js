@@ -1,6 +1,6 @@
 // src/screens/ChapterSelectionScreen.js
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { StyleSheet, FlatList, SafeAreaView, Platform, Text, StatusBar } from 'react-native';
+import { StyleSheet, FlatList, SafeAreaView, Platform, Text, StatusBar, View } from 'react-native';
 import { COLORS, UNCAT_CHAPTER_NAME } from '../constants';
 import { findData, loadCompletionStatuses } from '../helpers/helpers'; // Import loadCompletionStatuses
 import ListItemCard from '../components/ListItemCard';
@@ -212,7 +212,7 @@ const ChapterSelectionScreen = ({ route, navigation }) => {
                 keyExtractor={(item) => item.name} // Use unique chapter name as key
                 contentContainerStyle={styles.listContentContainer}
                 extraData={completionStatus} // Ensure re-render when statuses change
-            />
+            />            
         </SafeAreaView>
     );
 };
@@ -224,8 +224,14 @@ const styles = StyleSheet.create({
     },
     listContentContainer: {
         paddingTop: 10,
-        paddingBottom: Platform.OS === 'ios' ? 40 : 30,
+        paddingBottom: Platform.OS === 'ios'
+            ? 40 
+            : 30,
         paddingHorizontal: 12,
+    },
+    adBannerContainer: {
+        alignItems: 'center',
+        // The BannerAd with ANCHORED_ADAPTIVE_BANNER will determine its own height.
     },
 });
 

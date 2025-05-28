@@ -1,6 +1,6 @@
 // src/screens/SubjectListScreen.js
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { StyleSheet, FlatList, SafeAreaView, Platform, StatusBar } from 'react-native';
+import { StyleSheet, FlatList, SafeAreaView, Platform, StatusBar, View } from 'react-native';
 import { COLORS } from '../constants';
 import { findData, loadCompletionStatuses } from '../helpers/helpers';
 import ListItemCard from '../components/ListItemCard';
@@ -129,7 +129,7 @@ const SubjectListScreen = ({ route, navigation }) => {
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={styles.listContentContainer}
                 extraData={completionStatuses}
-            />
+            />            
         </SafeAreaView>
     );
 };
@@ -141,8 +141,14 @@ const styles = StyleSheet.create({
     },
     listContentContainer: {
         paddingTop: 10,
-        paddingBottom: Platform.OS === 'ios' ? 40 : 30,
+        paddingBottom: Platform.OS === 'ios'
+            ? 40
+            : 30,
         paddingHorizontal: 12,
+    },
+    adBannerContainer: {
+        alignItems: 'center',
+        // The BannerAd with ANCHORED_ADAPTIVE_BANNER will determine its own height.
     },
 });
 

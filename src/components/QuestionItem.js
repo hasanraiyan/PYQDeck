@@ -2,7 +2,6 @@ import React, { useMemo, useCallback, useState, useEffect } from 'react';
 import { View, StyleSheet, Platform, Alert, Share } from 'react-native';
 import { COLORS } from '../constants'; // Ensure these are correctly defined
 import { getQuestionPlainText } from '../helpers/helpers'; // Ensure this helper exists
-import { toggleBookmark, isQuestionBookmarked } from '../helpers/bookmarkHelpers'; // Ensure these helpers exist
 import generateHTML from '../helpers/generateHTML'; // Ensure this helper exists
 
 // Import sub-components
@@ -11,8 +10,18 @@ import QuestionContentPreview from './QuestionContentPreview';
 import QuestionActionsBar from './QuestionActionsBar';
 import ContentDisplayModal from './ContentDisplayModal';
 import SearchWebViewModal from './SearchWebViewModal';
+// Removed: import { toggleBookmark, isQuestionBookmarked } from '../helpers/bookmarkHelpers';
 
-const QuestionItem = ({ item, isCompleted, onToggleComplete, onCopy, onSearch, onAskAI }) => {
+const QuestionItem = ({
+  item,
+  isCompleted,
+  onToggleComplete,
+  onCopy,
+  // onSearch, // Already commented out as handled by SearchWebViewModal inside QuestionItem
+  onAskAI,
+  isBookmarked,      // New prop
+  onToggleBookmark,  // New prop
+}) => {
   const plainText = useMemo(
     () => getQuestionPlainText(item.text),
     [item.text]
@@ -25,15 +34,10 @@ const QuestionItem = ({ item, isCompleted, onToggleComplete, onCopy, onSearch, o
     return generateHTML(item.text, `<style>${bodyStyles}</style>`);
   }, [item.text]);
 
-  const [bookmarked, setBookmarked] = useState(false);
-  useEffect(() => {
-    let mounted = true;
-    isQuestionBookmarked(item.questionId).then((res) => {
-      if (mounted) setBookmarked(res);
-    });
-    return () => { mounted = false; };
-  }, [item.questionId]);
-
+  // Local 'bookmarked' state and useEffect have been removed.
+  // 'isBookmarked' prop is now used directly.
+  // 'onToggleBookmark' prop is now used for handling bookmark toggles.
+  
   const [isContentModalVisible, setIsContentModalVisible] = useState(false);
   const [isSearchModalVisible, setIsSearchModalVisible] = useState(false);
   const [currentSearchQuery, setCurrentSearchQuery] = useState('');
@@ -46,10 +50,8 @@ const QuestionItem = ({ item, isCompleted, onToggleComplete, onCopy, onSearch, o
     setIsContentModalVisible(false);
   }, []);
 
-  const handleBookmark = useCallback(async () => {
-    const newState = await toggleBookmark(item.questionId);
-    setBookmarked(newState);
-  }, [item.questionId]);
+  // The 'handleBookmark' useCallback that called local toggleBookmark is removed.
+  // The 'onBookmark' prop passed to QuestionHeader will now use 'onToggleBookmark(item.questionId)'.
 
   const handleToggleCompletion = useCallback(
     () => onToggleComplete(item.questionId, !isCompleted),
@@ -92,9 +94,9 @@ const QuestionItem = ({ item, isCompleted, onToggleComplete, onCopy, onSearch, o
       <QuestionHeader
         item={item}
         isCompleted={isCompleted}
-        bookmarked={bookmarked}
+        bookmarked={isBookmarked} // Use the isBookmarked prop
         onToggleComplete={handleToggleCompletion}
-        onBookmark={handleBookmark}
+        onBookmark={() => onToggleBookmark(item.questionId)} // Call the passed-in handler
       />
 
       <QuestionContentPreview

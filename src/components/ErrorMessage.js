@@ -1,13 +1,18 @@
 // src/components/ErrorMessage.js
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../constants';
 
-const ErrorMessage = ({ message }) => (
+const ErrorMessage = ({ message, onRetry }) => (
   <View style={styles.centerContainer}>
     <Ionicons name="alert-circle-outline" size={40} color={COLORS.error} />
     <Text style={styles.errorText}>{message || 'An error occurred.'}</Text>
+    {onRetry && (
+      <TouchableOpacity onPress={onRetry} style={styles.retryButton}>
+        <Text style={styles.retryButtonText}>Try Again</Text>
+      </TouchableOpacity>
+    )}
   </View>
 );
 
@@ -24,6 +29,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: COLORS.error,
     textAlign: 'center',
+    marginBottom: 20,
+  },
+  retryButton: {
+    backgroundColor: COLORS.primary || '#007AFF',
+    paddingVertical: 10,
+    paddingHorizontal: 25,
+    borderRadius: 20,
+  },
+  retryButtonText: {
+    color: COLORS.white || '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
 

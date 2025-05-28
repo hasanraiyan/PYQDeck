@@ -16,9 +16,10 @@ import {
     Platform,
     StatusBar,
     ScrollView,
+    Animated, // Import Animated
+    Easing,   // Import Easing
     TextInput,
     Alert,
-    ActivityIndicator, // Added for inline loading
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import {
@@ -33,22 +34,17 @@ import {
     copyToClipboard,
     debounce,
     getQuestionPlainText,
-    getSemesterPYQsFromSecureStore,
     updateDailyStreak,
 } from '../helpers/helpers';
-
-import LoadingIndicator from '../components/LoadingIndicator';
+import GlobalLoadingIndicator from '../components/GlobalLoadingIndicator'; // Import new
 import ErrorMessage from '../components/ErrorMessage';
 import EmptyState from '../components/EmptyState';
 import QuestionItem from '../components/QuestionItem';
 import AIChatModal from '../components/AIChatModal';
-
-let beuDataStructure = null;
-try {
-    beuDataStructure = require('../data/beuData').default;
-} catch (e) {
-    console.warn("beuData.js not found or failed to load. AI context might be limited.", e);
-}
+import {
+    getBookmarkedQuestions,
+    toggleBookmark as toggleBookmarkHelper,
+} from '../helpers/bookmarkHelpers';
 
 
 const QuestionListScreen = ({ route, navigation }) => {
@@ -64,7 +60,7 @@ const QuestionListScreen = ({ route, navigation }) => {
     const [subjectData, setSubjectData] = useState(null);
     const [questions, setQuestions] = useState([]);
     const [completionStatus, setCompletionStatus] = useState({});
-    const [loading, setLoading] = useState(true); // Overall loading for initial data
+    const [loading, setLoading] = useState(true); 
     const [loadingStatuses, setLoadingStatuses] = useState(true); // Specific loading for statuses
     const [error, setError] = useState(null);
 
@@ -72,6 +68,8 @@ const QuestionListScreen = ({ route, navigation }) => {
     const [feedbackMessage, setFeedbackMessage] = useState('');
     const feedbackTimerRef = useRef(null);
     const qlsMountedRef = useRef(true);
+    const feedbackAnim = useRef(new Animated.Value(0)).current; // For opacity and transform
+    const feedbackVisible = useRef(false); // To track actual visibility for animation logic
 
 
     const [sortBy, setSortBy] = useState('default');
@@ -81,6 +79,10 @@ const QuestionListScreen = ({ route, navigation }) => {
 
     const [isAIChatModalVisible, setIsAIChatModalVisible] = useState(false);
     const [currentAIQuestion, setCurrentAIQuestion] = useState(null);
+
+    const [bookmarkedIds, setBookmarkedIds] = useState(new Set());
+    const [currentBranchName, setCurrentBranchName] = useState('N/A');
+    const [currentSemesterNumber, setCurrentSemesterNumber] = useState('N/A');
 
     useEffect(() => {
         qlsMountedRef.current = true;
@@ -92,35 +94,42 @@ const QuestionListScreen = ({ route, navigation }) => {
         };
     }, []);
 
-    const subjectContextForAI = useMemo(() => {
-        if (!subjectData) return null;
-
-        let branchName = 'N/A';
-        let semesterNumber = 'N/A';
-
-        if (beuDataStructure?.branches) {
-            const currentBranch = beuDataStructure.branches.find(b => b.id === branchId);
-            if (currentBranch) {
-                branchName = currentBranch.name;
-                if (currentBranch.semesters) {
-                    const currentSemester = currentBranch.semesters.find(s => s.id === semId);
-                    if (currentSemester) {
-                        semesterNumber = currentSemester.number.toString();
-                    }
+    // Effect to load initial bookmarks and subscribe to focus events for refresh
+    useEffect(() => {
+        const loadBookmarks = async () => {
+            if (qlsMountedRef.current) {
+                const ids = await getBookmarkedQuestions();
+                if (qlsMountedRef.current) {
+                    setBookmarkedIds(new Set(ids));
                 }
             }
-        } else {
-            if (route.params.branchName) branchName = route.params.branchName;
-            if (route.params.semesterNumber) semesterNumber = route.params.semesterNumber.toString();
+        };
+        loadBookmarks(); // Initial load
+
+        const unsubscribeFocus = navigation.addListener('focus', loadBookmarks); // Reload on focus
+        return unsubscribeFocus; // Cleanup listener on unmount
+    }, []);
+
+    const subjectContextForAI = useMemo(() => {
+        if (!subjectData) return null; // subjectData is from state
+
+        let finalBranchName = currentBranchName;
+        let finalSemesterNumber = currentSemesterNumber;
+
+        // Fallback to route.params if findData (via beuData) couldn't provide the names
+        if (finalBranchName === 'N/A' && route.params.branchName) {
+            finalBranchName = route.params.branchName;
         }
-        
+        if (finalSemesterNumber === 'N/A' && route.params.semesterNumber) {
+            finalSemesterNumber = route.params.semesterNumber.toString();
+        }
         return {
-            branchName,
-            semesterNumber,
+            branchName: finalBranchName,
+            semesterNumber: finalSemesterNumber,
             subjectName: subjectData.name,
             subjectCode: subjectData.code,
         };
-    }, [subjectData, branchId, semId, route.params.branchName, route.params.semesterNumber]);
+    }, [subjectData, currentBranchName, currentSemesterNumber, route.params.branchName, route.params.semesterNumber]);
 
 
     const debouncedSearchHandler = useCallback(
@@ -143,38 +152,21 @@ const QuestionListScreen = ({ route, navigation }) => {
         setError(null);
         if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
 
-        let semesterData = null;
-        try {
-            semesterData = await getSemesterPYQsFromSecureStore(branchId, semId);
-        } catch (secureStoreError) {
-            console.warn("Failed to load PYQs from secure store:", secureStoreError);
-        }
-
         let subject = null;
         let fetchedQuestions = [];
         let dataError = null;
+        let branch = null;
+        let semester = null;
 
-        if (semesterData && semesterData.subjects) {
-            subject = semesterData.subjects.find(sub => sub.id === subjectId);
-            if (!subject) {
-                dataError = 'Subject not found in downloaded data. Trying local fallback.';
-            } else {
-                fetchedQuestions = Array.isArray(subject.questions) ? subject.questions : [];
-            }
-        }
-
-        if (!subject || dataError) {
-            const fallback = findData({ branchId, semId, subjectId });
-            subject = fallback.subject;
-            fetchedQuestions = fallback.questions || [];
-            dataError = fallback.error;
-        }
+        ({ subject, questions: fetchedQuestions, error: dataError, branch, semester } = findData({ branchId, semId, subjectId }));
 
         if (!qlsMountedRef.current) return;
 
         if (dataError) {
             setError(dataError);
             setSubjectData(null);
+            setCurrentBranchName('N/A');
+            setCurrentSemesterNumber('N/A');
             setLoading(false);
             setLoadingStatuses(false);
             return;
@@ -194,6 +186,9 @@ const QuestionListScreen = ({ route, navigation }) => {
                         : selectedChapter;
                 screenTitle = `${subject.code || subject.name} (${chapterDisplay.substring(0,15)}${chapterDisplay.length > 15 ? '...' : ''})`;
             }
+            setCurrentBranchName(branch?.name || 'N/A');
+            setCurrentSemesterNumber(semester?.number?.toString() || 'N/A');
+
             navigation.setOptions({ title: screenTitle });
 
             if (fetchedQuestions.length > 0) {
@@ -222,6 +217,8 @@ const QuestionListScreen = ({ route, navigation }) => {
         } else {
             setError("Subject data could not be loaded.");
             setSubjectData(null);
+            setCurrentBranchName('N/A');
+            setCurrentSemesterNumber('N/A');
         }
         if (qlsMountedRef.current) {
             setLoading(false); // Overall loading done once subject/questions are set or error occurs
@@ -238,18 +235,42 @@ const QuestionListScreen = ({ route, navigation }) => {
     }, [loadData]); // Rerun if loadData identity changes (due to its deps)
 
     const displayFeedback = useCallback((message) => {
-        if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
         if (!qlsMountedRef.current) return;
-
+    
         setFeedbackMessage(message);
-        setShowFeedback(true);
+    
+        // If already visible, just update message and reset timer
+        if (feedbackVisible.current) {
+            if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
+        } else {
+            feedbackVisible.current = true;
+            setShowFeedback(true); // Keep this to ensure the component is in the tree
+            Animated.spring(feedbackAnim, { // Animate in
+                toValue: 1,
+                tension: 100,
+                friction: 12,
+                useNativeDriver: true,
+            }).start();
+        }
+    
         feedbackTimerRef.current = setTimeout(() => {
             if (qlsMountedRef.current) {
-                setShowFeedback(false);
-                setFeedbackMessage('');
+                Animated.timing(feedbackAnim, { // Animate out
+                    toValue: 0,
+                    duration: 250,
+                    easing: Easing.inOut(Easing.ease),
+                    useNativeDriver: true,
+                }).start(() => {
+                    if (qlsMountedRef.current) { // Check again after animation
+                        setShowFeedback(false);
+                        setFeedbackMessage('');
+                        feedbackVisible.current = false;
+                    }
+                });
             }
         }, 2000);
-    }, []);
+    }, [feedbackAnim]); // Add feedbackAnim to dependencies
+    
 
     const handleToggleComplete = useCallback(async (questionId, newStatus) => {
         if (!qlsMountedRef.current) return;
@@ -258,11 +279,30 @@ const QuestionListScreen = ({ route, navigation }) => {
         await setQuestionCompleted(questionId, newStatus);
         if (newStatus) {
             await updateDailyStreak();
+            // Check mount status again after await before calling displayFeedback
+            if (!qlsMountedRef.current) return;
             displayFeedback("Marked as Done!");
         } else {
+            // Check mount status before calling displayFeedback
+            if (!qlsMountedRef.current) return;
             displayFeedback("Marked as Not Done.");
         }
-    }, [displayFeedback]);
+    }, [displayFeedback, qlsMountedRef]); // Added qlsMountedRef as it's checked
+
+    const handleToggleBookmarkInList = useCallback(async (questionId) => {
+        if (!qlsMountedRef.current) return;
+        const newBookmarkedState = await toggleBookmarkHelper(questionId); // Uses the helper
+        setBookmarkedIds(prevIds => {
+            const newIds = new Set(prevIds); // Create a new Set to ensure state update
+            if (newBookmarkedState) {
+                newIds.add(questionId);
+            } else {
+                newIds.delete(questionId);
+            }
+            return newIds;
+        });
+        displayFeedback(newBookmarkedState ? "Bookmarked!" : "Bookmark removed.");
+    }, [displayFeedback, qlsMountedRef]); // Added qlsMountedRef as it's checked
 
     const handleCopy = useCallback(
         (text) => copyToClipboard(getQuestionPlainText(text), displayFeedback), // Ensure plain text is copied
@@ -273,33 +313,33 @@ const QuestionListScreen = ({ route, navigation }) => {
         if (!qlsMountedRef.current) return;
         setCurrentAIQuestion(item); 
         setIsAIChatModalVisible(true);
-    }, []); 
+    }, [setCurrentAIQuestion, setIsAIChatModalVisible, qlsMountedRef]); // Added dependencies
 
     const closeAIChatModal = useCallback(() => {
         if (!qlsMountedRef.current) return;
         setIsAIChatModalVisible(false);
         setCurrentAIQuestion(null); // Clear the question
-    }, []);
+    }, [setIsAIChatModalVisible, setCurrentAIQuestion, qlsMountedRef]); // Added dependencies
 
-    const processedQuestions = useMemo(() => {
-        if (!Array.isArray(questions)) return [];
-        let filtered = [...questions];
+    const { listData, finalQuestionCount } = useMemo(() => {
+        if (!Array.isArray(questions)) return { listData: [], finalQuestionCount: 0 };
+        let filteredAndSortedQuestions = [...questions];
 
         if (organizationMode === 'year' && selectedYear != null) {
-            filtered = filtered.filter((q) => q.year === selectedYear);
+            filteredAndSortedQuestions = filteredAndSortedQuestions.filter((q) => q.year === selectedYear);
         } else if (organizationMode === 'chapter' && selectedChapter) {
             if (selectedChapter === UNCAT_CHAPTER_NAME) {
-                filtered = filtered.filter(
+                filteredAndSortedQuestions = filteredAndSortedQuestions.filter(
                     (q) => !q.chapter || typeof q.chapter !== 'string' || !q.chapter.trim()
                 );
             } else {
-                filtered = filtered.filter((q) => q.chapter === selectedChapter);
+                filteredAndSortedQuestions = filteredAndSortedQuestions.filter((q) => q.chapter === selectedChapter);
             }
         }
 
         const query = debouncedSearchQuery.trim().toLowerCase();
         if (query) {
-            filtered = filtered.filter((q) => {
+            filteredAndSortedQuestions = filteredAndSortedQuestions.filter((q) => {
                 const plainText = getQuestionPlainText(q.text).toLowerCase();
                 const chapterText = (q.chapter || '').toLowerCase();
                 const yearText = (q.year || '').toString();
@@ -315,7 +355,7 @@ const QuestionListScreen = ({ route, navigation }) => {
 
         if (filterCompleted !== 'all') {
             const requiredStatus = filterCompleted === 'completed';
-            filtered = filtered.filter(
+            filteredAndSortedQuestions = filteredAndSortedQuestions.filter(
                 (q) => !!completionStatus[q.questionId] === requiredStatus
             );
         }
@@ -323,17 +363,17 @@ const QuestionListScreen = ({ route, navigation }) => {
         if (organizationMode === 'all') {
             switch (sortBy) {
                 case 'year_asc':
-                    filtered.sort((a, b) => (a.year || 0) - (b.year || 0));
+                    filteredAndSortedQuestions.sort((a, b) => (a.year || 0) - (b.year || 0));
                     break;
                 case 'year_desc':
-                    filtered.sort((a, b) => (b.year || 0) - (a.year || 0));
+                    filteredAndSortedQuestions.sort((a, b) => (b.year || 0) - (a.year || 0));
                     break;
                 case 'default':
                 default:
-                    filtered.sort((a, b) => {
+                    filteredAndSortedQuestions.sort((a, b) => {
                         const yearDiff = (b.year || 0) - (a.year || 0);
                         if (yearDiff !== 0) return yearDiff;
-                        return (a.qNumber || '').localeCompare(b.qNumber || '', undefined, {
+                        return (a.qNumber || '').localeCompare(b.qNumber || '', undefined, { // Use filteredAndSortedQuestions
                             numeric: true,
                             sensitivity: 'base',
                         });
@@ -341,14 +381,18 @@ const QuestionListScreen = ({ route, navigation }) => {
                     break;
             }
         } else { // For year or chapter view, sort by qNumber
-            filtered.sort((a, b) =>
+            filteredAndSortedQuestions.sort((a, b) =>
                 (a.qNumber || '').localeCompare(b.qNumber || '', undefined, {
                     numeric: true,
                     sensitivity: 'base',
                 })
             );
         }
-        return filtered;
+
+        const currentFinalQuestionCount = filteredAndSortedQuestions.length;
+
+        // --- Inject Ads ---
+        return { listData: filteredAndSortedQuestions, finalQuestionCount: currentFinalQuestionCount };
     }, [
         questions,
         completionStatus,
@@ -360,7 +404,7 @@ const QuestionListScreen = ({ route, navigation }) => {
         selectedChapter,
     ]);
 
-    const renderQuestionItem = useCallback(
+    const renderListItem = useCallback(
         ({ item }) => (
             <QuestionItem
                 item={item}
@@ -368,18 +412,26 @@ const QuestionListScreen = ({ route, navigation }) => {
                 onToggleComplete={handleToggleComplete}
                 onCopy={handleCopy}
                 onAskAI={() => handleAskAI(item)}
-                 // Removed onSearch as it's handled by SearchWebViewModal inside QuestionItem
+                isBookmarked={bookmarkedIds.has(item.questionId)}
+                onToggleBookmark={handleToggleBookmarkInList}
             />
         ),
-        [completionStatus, handleToggleComplete, handleCopy, handleAskAI]
+        // Ensure all dependencies that affect rendering or behavior are included
+        [completionStatus, handleToggleComplete, handleCopy, handleAskAI, bookmarkedIds, handleToggleBookmarkInList]
     );
 
-    if (loading && !subjectData && !error) return <LoadingIndicator />; // Full screen loader for initial fetch
+    const keyExtractor = useCallback((item, index) => {
+        return item.questionId.toString(); // Existing key for questions
+    }, []);
+
+    if (loading && !subjectData && !error) {
+        return <GlobalLoadingIndicator fullscreen={true} text="Loading subject data..." />;
+    }
     if (error && !loading) return <ErrorMessage message={error} onRetry={loadData} />;
 
 
     const noQuestionsInitiallyForSubject = questions.length === 0;
-    const noResultsAfterFilter = !noQuestionsInitiallyForSubject && processedQuestions.length === 0;
+    const noResultsAfterFilter = !noQuestionsInitiallyForSubject && finalQuestionCount === 0;
     
     let listEmptyMessage = 'No questions available for this subject.';
     if (noResultsAfterFilter) {
@@ -395,7 +447,7 @@ const QuestionListScreen = ({ route, navigation }) => {
         } else {
             listEmptyMessage = 'No questions match the current filter criteria.';
         }
-    } else if (noQuestionsInitiallyForSubject && processedQuestions.length === 0) {
+    } else if (noQuestionsInitiallyForSubject && finalQuestionCount === 0) {
          if (organizationMode === 'year' && selectedYear) {
             listEmptyMessage = `No questions found for year ${selectedYear}.`;
         } else if (organizationMode === 'chapter' && selectedChapter) {
@@ -412,9 +464,23 @@ const QuestionListScreen = ({ route, navigation }) => {
                 backgroundColor={COLORS.surface}
             />
             {showFeedback && (
-                <View style={styles.feedbackToast} pointerEvents="none">
+                <Animated.View 
+                    style={[
+                        styles.feedbackToast, 
+                        {
+                            opacity: feedbackAnim,
+                            transform: [{
+                                translateY: feedbackAnim.interpolate({
+                                    inputRange: [0, 1],
+                                    outputRange: [50, 0] // Slide in from bottom
+                                })
+                            }]
+                        }
+                    ]} 
+                    pointerEvents="none"
+                >
                     <Text style={styles.feedbackText}>{feedbackMessage}</Text>
-                </View>
+                </Animated.View>
             )}
 
             <View style={styles.controlsContainer}>
@@ -489,23 +555,30 @@ const QuestionListScreen = ({ route, navigation }) => {
             </View>
 
              {loading && subjectData && !error && ( // Show inline loader if data exists but statuses are still loading
-                <View style={{paddingVertical: 20, alignItems: 'center'}}>
-                    <ActivityIndicator size="small" color={COLORS.primary} />
-                    <Text style={{marginTop: 8, color: COLORS.textSecondary, fontSize: 13}}>Loading questions...</Text>
-                </View>
+                <GlobalLoadingIndicator
+                    visible={loadingStatuses} // Control visibility based on specific loading state
+                    size="small"
+                    text="Loading questions..."
+                    style={{paddingVertical: 20}} // Style the wrapper view
+                    textStyle={{fontSize: 13}} // Customize text style if needed
+                />
             )}
 
 
             <FlatList
-                data={processedQuestions}
-                renderItem={renderQuestionItem}
-                keyExtractor={(item) => item.questionId.toString()}
+                data={listData}
+                renderItem={({ item }) => {
+                    // It's a question item (ads are removed), call the original render function
+                    return renderListItem({ item });
+                }}
+                keyExtractor={keyExtractor}
                 contentContainerStyle={styles.listContentContainer}
                 ListEmptyComponent={(!loading && !loadingStatuses) ? <EmptyState message={listEmptyMessage} iconName="documents-outline" /> : null}
                 initialNumToRender={7}
                 maxToRenderPerBatch={10}
                 windowSize={21}
-                removeClippedSubviews={Platform.OS === 'android'}
+                removeClippedSubviews={Platform.OS === 'android'} // Generally good for Android
+                extraData={{ completionStatus, bookmarkedIds }} // Pass as an object if multiple dynamic props affect items
             />
 
             {isAIChatModalVisible && currentAIQuestion && subjectContextForAI && (
@@ -619,6 +692,12 @@ const styles = StyleSheet.create({
         height: 20,
         backgroundColor: COLORS.borderLight || '#E0E0E0',
         marginHorizontal: 8,
+    },
+    adContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginVertical: 10, // Spacing around the ad
+        // BannerAd with ANCHORED_ADAPTIVE_BANNER will attempt to fill available width
     },
 });
 

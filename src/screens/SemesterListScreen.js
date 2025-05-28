@@ -1,13 +1,13 @@
 // src/screens/SemesterListScreen.js
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { StyleSheet, FlatList, SafeAreaView, Platform, StatusBar } from 'react-native';
+import { StyleSheet, FlatList, SafeAreaView, Platform, StatusBar, View } from 'react-native';
 import { COLORS } from '../constants';
 import { findData, loadCompletionStatuses } from '../helpers/helpers';
 import ListItemCard from '../components/ListItemCard';
 import LoadingIndicator from '../components/LoadingIndicator';
 import ErrorMessage from '../components/ErrorMessage';
 import EmptyState from '../components/EmptyState';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+// Removed Ionicons import as it's not directly used here, ListItemCard handles its own icons.
 
 
 
@@ -174,7 +174,7 @@ const SemesterListScreen = ({ route, navigation }) => {
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={styles.listContentContainer}
                 extraData={completionStatus} // Ensure re-render when statuses change
-            />
+            />            
         </SafeAreaView>
     );
 };
@@ -186,8 +186,14 @@ const styles = StyleSheet.create({
     },
     listContentContainer: {
         paddingTop: 10,
-        paddingBottom: Platform.OS === 'ios' ? 40 : 30,
+        paddingBottom: Platform.OS === 'ios'
+            ? 40
+            : 30,
         paddingHorizontal: 12,
+    },
+    adBannerContainer: {
+        alignItems: 'center',
+        // The BannerAd with ANCHORED_ADAPTIVE_BANNER will determine its own height.
     },
 });
 

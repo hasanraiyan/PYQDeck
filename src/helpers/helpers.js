@@ -192,14 +192,6 @@ export const searchGoogle = (query, showFeedback) => {
     )}`;
     openLink(url, showFeedback);
 };
-
-export const askAI = (query, showFeedback) => {
-    const url = `https://chatgpt.com?q=${encodeURIComponent(
-        query || '' 
-    )}`;
-    openLink(url, showFeedback);
-};
-
 export const debounce = (func, wait) => {
     let timeout;
     return function executedFunction(...args) {
@@ -336,65 +328,5 @@ export const checkAndResetStreak = async () => {
         }
     } catch (e) {
         console.error('Error checking/resetting streak:', e);
-    }
-};
-
-// --- PYQ Secure Store Utilities ---
-export const getPYQKey = (branchId, semId) => `PYQs_${branchId}_${semId}`;
-
-// --- Chunked SecureStore Helpers ---
-const CHUNK_SIZE = 2000;
-const getChunkKey = (branchId, semId, index) => `PYQs_${branchId}_${semId}_part${index}`;
-
-export const saveSemesterPYQsToSecureStore = async (branchId, semId, data) => {
-    try {
-        const json = JSON.stringify(data);
-        const numChunks = Math.ceil(json.length / CHUNK_SIZE);
-        // Remove old chunks first
-        for (let i = 0; i < 10; i++) {
-            await SecureStore.deleteItemAsync(getChunkKey(branchId, semId, i));
-        }
-        // Store new chunks
-        for (let i = 0; i < numChunks; i++) {
-            const chunk = json.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE);
-            await SecureStore.setItemAsync(getChunkKey(branchId, semId, i), chunk);
-        }
-        // Store chunk count
-        await SecureStore.setItemAsync(getPYQKey(branchId, semId), numChunks.toString());
-        return true;
-    } catch (e) {
-        console.error('Error saving PYQs to Secure Store (chunked):', e);
-        return false;
-    }
-};
-
-export const getSemesterPYQsFromSecureStore = async (branchId, semId) => {
-    try {
-        const countStr = await SecureStore.getItemAsync(getPYQKey(branchId, semId));
-        const numChunks = parseInt(countStr, 10);
-        if (!numChunks || isNaN(numChunks) || numChunks < 1) return null;
-        let json = '';
-        for (let i = 0; i < numChunks; i++) {
-            const chunk = await SecureStore.getItemAsync(getChunkKey(branchId, semId, i));
-            if (chunk === null) return null;
-            json += chunk;
-        }
-        return JSON.parse(json);
-    } catch (e) {
-        console.error('Error loading PYQs from Secure Store (chunked):', e);
-        return null;
-    }
-};
-
-export const isSemesterPYQDownloaded = async (branchId, semId) => {
-    try {
-        const countStr = await SecureStore.getItemAsync(getPYQKey(branchId, semId));
-        const numChunks = parseInt(countStr, 10);
-        if (!numChunks || isNaN(numChunks) || numChunks < 1) return false;
-        // Optionally, check existence of first chunk
-        const firstChunk = await SecureStore.getItemAsync(getChunkKey(branchId, semId, 0));
-        return !!firstChunk;
-    } catch (e) {
-        return false;
     }
 };

@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { StyleSheet, View, SafeAreaView, Platform, StatusBar } from 'react-native';
+import { StyleSheet, View, SafeAreaView, Platform, StatusBar, ScrollView } from 'react-native';
 import { COLORS } from '../constants';
 import {
     findData,
@@ -110,47 +110,50 @@ const OrganizationSelectionScreen = ({ route, navigation }) => {
                 barStyle="dark-content"
                 backgroundColor={COLORS.surface}
             />
-            <View style={styles.listContentContainer}>
-                { }
-                <ListItemCard
-                    title="View All Questions"
-                    subtitle={hasQuestions ? "See all questions, newest first" : "No questions available"}
-                    onPress={navigateToQuestionsAll}
-                    iconName="list-outline"
-                    iconSet="Ionicons"
-                    iconColor={COLORS.primaryLight}
-                    hasData={hasQuestions}
-                    disabled={!hasQuestions}
-                />
-                { }
-                <ListItemCard
-                    title="View By Chapter"
-                    subtitle={canViewByChapter ? "Select a chapter to view its questions" : "No chapters found"}
-                    onPress={navigateToChapterSelection}
-                    iconName="folder-open-outline"
-                    iconSet="Ionicons"
-                    iconColor={COLORS.secondary}
-                    hasData={canViewByChapter}
-                    disabled={!canViewByChapter}
-                />
-                { }
-                <ListItemCard
-                    title="View By Year"
-                    subtitle={canViewByYear ? "Filter questions by specific year" : "No years assigned to questions"}
-                    onPress={navigateToYearSelection}
-                    iconName="calendar-number-outline"
-                    iconSet="Ionicons"
-                    iconColor={COLORS.yearIconColor}
-                    hasData={canViewByYear}
-                    disabled={!canViewByYear}
-                />
-                { }
-                {!hasQuestions && (
-                    <View style={{ marginTop: 20 }}>
-                        <EmptyState message="No questions available for this subject yet." />
-                    </View>
-                )}
-            </View>
+            {/* Wrap content in ScrollView if it might overflow, especially with the ad */}
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
+                <View style={styles.listContentContainer}>
+                    { }
+                    <ListItemCard
+                        title="View All Questions"
+                        subtitle={hasQuestions ? "See all questions, newest first" : "No questions available"}
+                        onPress={navigateToQuestionsAll}
+                        iconName="list-outline"
+                        iconSet="Ionicons"
+                        iconColor={COLORS.primaryLight}
+                        hasData={hasQuestions}
+                        disabled={!hasQuestions}
+                    />
+                    { }
+                    <ListItemCard
+                        title="View By Chapter"
+                        subtitle={canViewByChapter ? "Select a chapter to view its questions" : "No chapters found"}
+                        onPress={navigateToChapterSelection}
+                        iconName="folder-open-outline"
+                        iconSet="Ionicons"
+                        iconColor={COLORS.secondary}
+                        hasData={canViewByChapter}
+                        disabled={!canViewByChapter}
+                    />
+                    { }
+                    <ListItemCard
+                        title="View By Year"
+                        subtitle={canViewByYear ? "Filter questions by specific year" : "No years assigned to questions"}
+                        onPress={navigateToYearSelection}
+                        iconName="calendar-number-outline"
+                        iconSet="Ionicons"
+                        iconColor={COLORS.yearIconColor}
+                        hasData={canViewByYear}
+                        disabled={!canViewByYear}
+                    />
+                    { }
+                    {!hasQuestions && (
+                        <View style={{ marginTop: 20 }}>
+                            <EmptyState message="No questions available for this subject yet." />
+                        </View>
+                    )}
+                </View>
+            </ScrollView>
         </SafeAreaView>
     );
 };
@@ -160,10 +163,18 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: COLORS.background,
     },
+    scrollContainer: {
+        flexGrow: 1, // Ensures ScrollView takes up available space if content is short
+    },
     listContentContainer: {
         paddingTop: 15,
-        paddingBottom: Platform.OS === 'ios' ? 40 : 30,
+        paddingBottom: Platform.OS === 'ios'
+            ? 40
+            : 30,
         paddingHorizontal: 12,
+    },
+    adBannerContainer: {
+        alignItems: 'center',
     },
 });
 

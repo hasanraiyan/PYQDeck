@@ -1,8 +1,9 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import { WebView } from 'react-native-webview';
 import Icon from './Icon'; // Assuming Icon component path
 import { COLORS as IMPORTED_COLORS } from '../constants'; // Assuming constants path
+import GlobalLoadingIndicator from './GlobalLoadingIndicator'; // Import the new component
 
 // Ensure COLORS is an object, even if the import fails or constants.js doesn't export it properly.
 const COLORS = IMPORTED_COLORS || {};
@@ -137,10 +138,12 @@ const QuestionContentPreview = React.memo(({ htmlContent, onShouldOpenModal }) =
               onHttpError={handleWebViewError}
               startInLoadingState={true}
               renderLoading={() => (
-                <View style={[styles.feedbackContainer, styles.loadingContainer, { height: '100%' }]}>
-                  <ActivityIndicator size="small" color={COLORS.primary || '#007AFF'} />
-                  <Text style={styles.feedbackText}>Loading preview...</Text>
-                </View>
+                <GlobalLoadingIndicator
+                  size="small"
+                  text="Loading preview..."
+                  style={[styles.feedbackContainer, styles.loadingContainer, { height: '100%' }]} // Apply to wrapper
+                  textStyle={styles.feedbackText} // Apply specific text style
+                />
               )}
               androidHardwareAccelerationDisabled={Platform.OS === 'android' && webViewLoadError}
               allowsInlineMediaPlayback={true}

@@ -1,6 +1,6 @@
 // src/screens/YearSelectionScreen.js
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { StyleSheet, FlatList, SafeAreaView, Platform, StatusBar } from 'react-native';
+import { StyleSheet, FlatList, SafeAreaView, Platform, StatusBar, View } from 'react-native';
 import { COLORS } from '../constants';
 import { findData, loadCompletionStatuses } from '../helpers/helpers'; // Import loadCompletionStatuses
 import ListItemCard from '../components/ListItemCard';
@@ -197,7 +197,7 @@ const YearSelectionScreen = ({ route, navigation }) => {
                 keyExtractor={(item) => item.year.toString()} // Use unique year as key
                 contentContainerStyle={styles.listContentContainer}
                 extraData={completionStatus} // Ensure re-render when statuses change
-            />
+            />            
         </SafeAreaView>
     );
 };
@@ -209,8 +209,14 @@ const styles = StyleSheet.create({
     },
     listContentContainer: {
         paddingTop: 10,
-        paddingBottom: Platform.OS === 'ios' ? 40 : 30,
+        paddingBottom: Platform.OS === 'ios'
+            ? 40
+            : 30,
         paddingHorizontal: 12,
+    },
+    adBannerContainer: {
+        alignItems: 'center',
+        // The BannerAd with ANCHORED_ADAPTIVE_BANNER will determine its own height.
     },
 });
 
