@@ -45,7 +45,7 @@ import AIChatModal from '../components/AIChatModal';
 
 // Ad Configuration
 const AD_UNIT_ID = __DEV__ ? TestIds.BANNER : 'ca-app-pub-7142215738625436/1197117276'; // IMPORTANT: Replace in production
-const AD_FREQUENCY = 5; // Show an ad every N questions
+const AD_FREQUENCY = 4; // Show an ad every N questions
 
 let beuDataStructure = null;
 try {
