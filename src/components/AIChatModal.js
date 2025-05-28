@@ -36,7 +36,7 @@ const DYNAMIC_LOADING_TEXTS = [
     "⏳ Just a moment more...",
 ];
 
-const PressableScale = ({ onPress, style, children, disabled, hapticType = 'light', scaleValue = 0.96 }) => {
+const PressableScale = ({ onPress, style, children, disabled, hapticType = 'light', scaleValue = 0.98 }) => {
     const scale = useRef(new Animated.Value(1)).current;
     const opacity = useRef(new Animated.Value(1)).current;
 
@@ -51,12 +51,12 @@ const PressableScale = ({ onPress, style, children, disabled, hapticType = 'ligh
             Animated.spring(scale, {
                 toValue: scaleValue,
                 useNativeDriver: true,
-                tension: 300,
-                friction: 10,
+                tension: 400, // Increased tension for a snappier feel
+                friction: 15, // Adjusted friction
             }),
             Animated.timing(opacity, {
-                toValue: 0.8,
-                duration: 100,
+                toValue: 0.85, // Slightly less dimming
+                duration: 75,  // Quicker opacity change
                 useNativeDriver: true,
             })
         ]).start();
@@ -68,12 +68,12 @@ const PressableScale = ({ onPress, style, children, disabled, hapticType = 'ligh
             Animated.spring(scale, {
                 toValue: 1,
                 useNativeDriver: true,
-                tension: 300,
-                friction: 8,
+                tension: 400,
+                friction: 12, // Adjusted friction
             }),
             Animated.timing(opacity, {
                 toValue: 1,
-                duration: 150,
+                duration: 120, // Quicker return
                 useNativeDriver: true,
             })
         ]).start();
