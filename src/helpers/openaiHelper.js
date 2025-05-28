@@ -94,6 +94,19 @@ export const callOpenAIWithContent = async (systemInstruction, userMessageParts,
     }
 };
 
+// New function to strip explicit Markdown links from text
+const stripMarkdownLinks = (text) => {
+    if (!text || typeof text !== 'string') {
+        return text;
+    }
+    // Replaces [link text](url) with "link text (link removed)"
+    // This keeps the descriptive text part of the link but removes the clickable URL.
+    // The regex captures the link text in $1 and the URL in $2.
+    // We replace the whole Markdown link with the link text followed by a notice.
+    const linkRegex = /\[(.*?)\]\((.*?)\)/g;
+    return text.replace(linkRegex, '$1 (link removed)');
+};
+
 export const askAIWithContext = async (requestType, item, subjectContext, displayFeedback) => {
     // item: The question object { text, chapter, year, qNumber, marks, questionId }
     // subjectContext: { branchName, semesterNumber, subjectName, subjectCode }
@@ -233,15 +246,19 @@ export const askAIWithContext = async (requestType, item, subjectContext, displa
              userMessageParts.push({ type: "text", text: contextDetails });
         }
 
-        const aiResponse = await callOpenAIWithContent(systemInstruction, userMessageParts, aiModelOptions);
+        let aiResponse = await callOpenAIWithContent(systemInstruction, userMessageParts, aiModelOptions);
         
+        // For response types that render Markdown, strip out any links.
+        if (requestType === REQUEST_TYPES.SOLVE_QUESTION || requestType === REQUEST_TYPES.EXPLAIN_CONCEPTS) {
+            aiResponse = stripMarkdownLinks(aiResponse);
+        }
+
         if (requestType === REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS) {
             // Clean up the response: remove quotes, trim whitespace.
             return aiResponse.replace(/"/g, '').trim();
         }
         
         return aiResponse;
-
     } catch (error) {
         console.error(`Error in askAIWithContext (Type: ${requestType}):`, error);
         if (displayFeedback && typeof displayFeedback === 'function') {

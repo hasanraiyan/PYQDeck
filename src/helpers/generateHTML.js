@@ -178,7 +178,7 @@ const generateHTML = (markdownContent) => {
 
         const md = window.markdownit({
           html: true,
-          linkify: true,
+          linkify: false, // Disable automatic linking of URLs
           typographer: true,
           breaks: true,
           highlight: (str, lang) => {
