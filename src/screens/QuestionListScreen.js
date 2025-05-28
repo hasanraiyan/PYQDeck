@@ -37,7 +37,6 @@ import {
     updateDailyStreak,
 } from '../helpers/helpers';
 import GlobalLoadingIndicator from '../components/GlobalLoadingIndicator'; // Import new
-// import LoadingIndicator from '../components/LoadingIndicator'; // Old import, can be removed if Global replaces it
 import ErrorMessage from '../components/ErrorMessage';
 import EmptyState from '../components/EmptyState';
 import QuestionItem from '../components/QuestionItem';
@@ -86,6 +85,9 @@ const QuestionListScreen = ({ route, navigation }) => {
     const [isAIChatModalVisible, setIsAIChatModalVisible] = useState(false);
     const [currentAIQuestion, setCurrentAIQuestion] = useState(null);
 
+    const [currentBranchName, setCurrentBranchName] = useState('N/A');
+    const [currentSemesterNumber, setCurrentSemesterNumber] = useState('N/A');
+
     useEffect(() => {
         qlsMountedRef.current = true;
         return () => {
@@ -97,34 +99,25 @@ const QuestionListScreen = ({ route, navigation }) => {
     }, []);
 
     const subjectContextForAI = useMemo(() => {
-        if (!subjectData) return null;
+        if (!subjectData) return null; // subjectData is from state
 
-        let branchName = 'N/A';
-        let semesterNumber = 'N/A';
+        let finalBranchName = currentBranchName;
+        let finalSemesterNumber = currentSemesterNumber;
 
-        if (beuDataStructure?.branches) {
-            const currentBranch = beuDataStructure.branches.find(b => b.id === branchId);
-            if (currentBranch) {
-                branchName = currentBranch.name;
-                if (currentBranch.semesters) {
-                    const currentSemester = currentBranch.semesters.find(s => s.id === semId);
-                    if (currentSemester) {
-                        semesterNumber = currentSemester.number.toString();
-                    }
-                }
-            }
-        } else {
-            if (route.params.branchName) branchName = route.params.branchName;
-            if (route.params.semesterNumber) semesterNumber = route.params.semesterNumber.toString();
+        // Fallback to route.params if findData (via beuData) couldn't provide the names
+        if (finalBranchName === 'N/A' && route.params.branchName) {
+            finalBranchName = route.params.branchName;
         }
-        
+        if (finalSemesterNumber === 'N/A' && route.params.semesterNumber) {
+            finalSemesterNumber = route.params.semesterNumber.toString();
+        }
         return {
-            branchName,
-            semesterNumber,
+            branchName: finalBranchName,
+            semesterNumber: finalSemesterNumber,
             subjectName: subjectData.name,
             subjectCode: subjectData.code,
         };
-    }, [subjectData, branchId, semId, route.params.branchName, route.params.semesterNumber]);
+    }, [subjectData, currentBranchName, currentSemesterNumber, route.params.branchName, route.params.semesterNumber]);
 
 
     const debouncedSearchHandler = useCallback(
@@ -150,13 +143,18 @@ const QuestionListScreen = ({ route, navigation }) => {
         let subject = null;
         let fetchedQuestions = [];
         let dataError = null;
-        ({ subject, questions: fetchedQuestions, error: dataError } = findData({ branchId, semId, subjectId }));
+        let branch = null;
+        let semester = null;
+
+        ({ subject, questions: fetchedQuestions, error: dataError, branch, semester } = findData({ branchId, semId, subjectId }));
 
         if (!qlsMountedRef.current) return;
 
         if (dataError) {
             setError(dataError);
             setSubjectData(null);
+            setCurrentBranchName('N/A');
+            setCurrentSemesterNumber('N/A');
             setLoading(false);
             setLoadingStatuses(false);
             return;
@@ -176,6 +174,9 @@ const QuestionListScreen = ({ route, navigation }) => {
                         : selectedChapter;
                 screenTitle = `${subject.code || subject.name} (${chapterDisplay.substring(0,15)}${chapterDisplay.length > 15 ? '...' : ''})`;
             }
+            setCurrentBranchName(branch?.name || 'N/A');
+            setCurrentSemesterNumber(semester?.number?.toString() || 'N/A');
+
             navigation.setOptions({ title: screenTitle });
 
             if (fetchedQuestions.length > 0) {
@@ -204,6 +205,8 @@ const QuestionListScreen = ({ route, navigation }) => {
         } else {
             setError("Subject data could not be loaded.");
             setSubjectData(null);
+            setCurrentBranchName('N/A');
+            setCurrentSemesterNumber('N/A');
         }
         if (qlsMountedRef.current) {
             setLoading(false); // Overall loading done once subject/questions are set or error occurs
@@ -537,6 +540,7 @@ const QuestionListScreen = ({ route, navigation }) => {
                 maxToRenderPerBatch={10}
                 windowSize={21}
                 removeClippedSubviews={Platform.OS === 'android'}
+                extraData={completionStatus}
             />
 
             {isAIChatModalVisible && currentAIQuestion && subjectContextForAI && (
