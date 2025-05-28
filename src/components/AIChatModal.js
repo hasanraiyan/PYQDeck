@@ -23,6 +23,7 @@ import generateHTML from '../helpers/generateHTML';
 import { askAIWithContext, REQUEST_TYPES } from '../helpers/openaiHelper';
 import GlobalLoadingIndicator from './GlobalLoadingIndicator'; // Import the new component
 import * as Haptics from 'expo-haptics';
+import PressableScale from './PressableScale'; // Import the extracted component
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
@@ -33,65 +34,6 @@ const DYNAMIC_LOADING_TEXTS = [
     "💡 Formulating insights...",
     "⏳ Just a moment more...",
 ];
-
-const PressableScale = ({ onPress, style, children, disabled, hapticType = 'light', scaleValue = 0.98 }) => {
-    const scale = useRef(new Animated.Value(1)).current;
-    const opacity = useRef(new Animated.Value(1)).current;
-
-    const animateIn = () => {
-        if (disabled) return;
-        Haptics.impactAsync(
-            hapticType === 'medium' ? Haptics.ImpactFeedbackStyle.Medium :
-                hapticType === 'heavy' ? Haptics.ImpactFeedbackStyle.Heavy :
-                    Haptics.ImpactFeedbackStyle.Light
-        );
-        Animated.parallel([
-            Animated.spring(scale, {
-                toValue: scaleValue,
-                useNativeDriver: true,
-                tension: 400, // Increased tension for a snappier feel
-                friction: 15, // Adjusted friction
-            }),
-            Animated.timing(opacity, {
-                toValue: 0.85, // Slightly less dimming
-                duration: 75,  // Quicker opacity change
-                useNativeDriver: true,
-            })
-        ]).start();
-    };
-
-    const animateOut = () => {
-        if (disabled) return;
-        Animated.parallel([
-            Animated.spring(scale, {
-                toValue: 1,
-                useNativeDriver: true,
-                tension: 400,
-                friction: 12, // Adjusted friction
-            }),
-            Animated.timing(opacity, {
-                toValue: 1,
-                duration: 120, // Quicker return
-                useNativeDriver: true,
-            })
-        ]).start();
-    };
-
-    return (
-        <Animated.View style={[{ transform: [{ scale }], opacity }, disabled && { opacity: 0.5 }]}>
-            <TouchableOpacity
-                onPressIn={animateIn}
-                onPressOut={animateOut}
-                onPress={onPress}
-                style={style}
-                activeOpacity={1}
-                disabled={disabled}
-            >
-                {children}
-            </TouchableOpacity>
-        </Animated.View>
-    );
-};
 
 const LoadingDots = ({ color = COLORS.primary }) => {
     const dot1 = useRef(new Animated.Value(0)).current;

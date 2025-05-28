@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from './Icon'; 
 import { COLORS } from '../constants';
-import PressableScale from './PressableScale'; // Assuming you've extracted PressableScale
+import PressableScale from './PressableScale';
 
 const QuestionActionsBar = React.memo(({
   onSearch,

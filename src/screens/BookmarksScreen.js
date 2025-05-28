@@ -4,10 +4,11 @@ import {
     getBookmarkedQuestions,
     toggleBookmark as toggleBookmarkHelper, // Import the helper
 } from '../helpers/bookmarkHelpers';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 import beuData from '../data/beuData';
 import QuestionItem from '../components/QuestionItem';
-import { COLORS } from '../constants';
-import { copyToClipboard, getQuestionPlainText, loadCompletionStatuses, setQuestionCompleted, findData } from '../helpers/helpers'; // Removed askAI as askAIHelper, added findData
+import { COLORS, ADS_ENABLED } from '../constants';
+import { copyToClipboard, getQuestionPlainText, loadCompletionStatuses, setQuestionCompleted, findData, updateDailyStreak } from '../helpers/helpers'; // Removed askAI as askAIHelper, added findData
 import { askAIWithContext } from '../helpers/openaiHelper';
 import AIChatModal from '../components/AIChatModal'; // Import AIChatModal
 
@@ -32,6 +33,10 @@ function flattenQuestions(data) {
   }
   return questions;
 }
+
+// Ad Configuration
+const AD_UNIT_ID = __DEV__ ? TestIds.BANNER : 'ca-app-pub-7142215738625436/1197117276'; // IMPORTANT: Replace in production
+const AD_FREQUENCY = 3; // Show an ad every N bookmarked questions (can be different from QuestionListScreen)
 
 const BookmarksScreen = ({ navigation }) => {
   const [bookmarkedIds, setBookmarkedIds] = useState(new Set()); // Use Set
@@ -107,9 +112,16 @@ const BookmarksScreen = ({ navigation }) => {
   }, []);
 
   // Completion toggle (persisted)
-  const handleToggleComplete = useCallback((questionId, newStatus) => {
+  const handleToggleComplete = useCallback(async (questionId, newStatus) => {
     setCompletionStatus(prev => ({ ...prev, [questionId]: newStatus }));
-    setQuestionCompleted(questionId, newStatus);
+    await setQuestionCompleted(questionId, newStatus);
+    if (newStatus) {
+        await updateDailyStreak();
+        // Check mount status again after await before calling displayFeedback
+        if (!bookmarksScreenMountedRef.current) return;
+        displayFeedback("Marked as Done!");
+    }
+    // No feedback for "Marked as Not Done" here to keep it concise, or add if desired.
   }, []);
 
   // Handler for toggling a bookmark from the BookmarksScreen
@@ -188,11 +200,33 @@ const BookmarksScreen = ({ navigation }) => {
     setCurrentAISubjectContext(null);
   }, [bookmarksScreenMountedRef, setIsAIChatModalVisible, setCurrentAIQuestionItem, setCurrentAISubjectContext]);
 
-  // This is the list of questions that are currently bookmarked and should be displayed.
-  const displayedBookmarkedQuestions = React.useMemo(() => {
-    return allQuestions.filter(q => bookmarkedIds.has(q.questionId)); // Use .has() for Set
+  // Memoize the list of bookmarked questions with ads injected
+  const listDataWithAds = React.useMemo(() => {
+    const bookmarkedQuestions = allQuestions.filter(q => bookmarkedIds.has(q.questionId));
+
+    if (!ADS_ENABLED || bookmarkedQuestions.length === 0) {
+      return bookmarkedQuestions;
+    }
+
+    const itemsWithAds = [];
+    for (let i = 0; i < bookmarkedQuestions.length; i++) {
+      itemsWithAds.push(bookmarkedQuestions[i]);
+      if ((i + 1) % AD_FREQUENCY === 0 && i < bookmarkedQuestions.length - 1) {
+        itemsWithAds.push({
+          type: 'ad',
+          id: `ad-bookmark-${Math.floor(i / AD_FREQUENCY)}`,
+        });
+      }
+    }
+    return itemsWithAds;
   }, [allQuestions, bookmarkedIds]);
 
+  const keyExtractor = useCallback((item, index) => {
+    if (item.type === 'ad') {
+        return item.id;
+    }
+    return item.questionId.toString();
+  }, []);
 
   if (loading) {
     return (
@@ -200,7 +234,7 @@ const BookmarksScreen = ({ navigation }) => {
     );
   }
   // Check after loading is complete
-  if (!loading && displayedBookmarkedQuestions.length === 0) {
+  if (!loading && listDataWithAds.filter(item => item.type !== 'ad').length === 0) {
     return (
       <View style={styles.centered}><Text style={styles.emptyText}>No bookmarked questions yet.</Text></View>
     );
@@ -215,21 +249,38 @@ const BookmarksScreen = ({ navigation }) => {
         </View>
       )}
       <FlatList
-        data={displayedBookmarkedQuestions} // Use the memoized list
-        keyExtractor={item => item.questionId}
-        renderItem={({ item }) => (
-          <QuestionItem
-            item={item}
-            isCompleted={!!completionStatus[item.questionId]}
-            onToggleComplete={handleToggleComplete} // Pass existing handler
-            onCopy={() => handleCopy(getQuestionPlainText(item.text))}
-            // onSearch prop is no longer needed by QuestionItem as it uses its own SearchWebViewModal
-            onAskAI={() => handleAskAI(item)}
-            isBookmarked={bookmarkedIds.has(item.questionId)} // Check against the Set
-            onToggleBookmark={handleToggleBookmarkOnBookmarksScreen} // Pass the new handler
-          />
-        )}
-        contentContainerStyle={{ padding: 16 }}
+        data={listDataWithAds} // Use the list with ads
+        keyExtractor={keyExtractor}
+        renderItem={({ item }) => {
+          if (item.type === 'ad' && ADS_ENABLED) {
+            return (
+              <View style={styles.adContainer}>
+                <BannerAd
+                  unitId={AD_UNIT_ID}
+                  size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+                  requestOptions={{
+                    requestNonPersonalizedAdsOnly: true,
+                  }}
+                  onAdLoaded={() => console.log('Bookmark Ad loaded:', item.id)}
+                  onAdFailedToLoad={(error) => console.error('Bookmark Ad failed to load:', item.id, error)}
+                />
+              </View>
+            );
+          }
+          // It's a question item
+          return (
+            <QuestionItem
+              item={item}
+              isCompleted={!!completionStatus[item.questionId]}
+              onToggleComplete={handleToggleComplete}
+              onCopy={() => handleCopy(getQuestionPlainText(item.text))}
+              onAskAI={() => handleAskAI(item)}
+              isBookmarked={bookmarkedIds.has(item.questionId)}
+              onToggleBookmark={handleToggleBookmarkOnBookmarksScreen}
+            />
+          );
+        }}
+        contentContainerStyle={styles.listContentContainer}
         initialNumToRender={7}
         maxToRenderPerBatch={10}
         windowSize={21}
@@ -263,6 +314,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
     marginTop: 20,
+  },
+  adContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 10,
+  },
+  listContentContainer: {
+    paddingHorizontal: 12,
+    paddingTop: 10,
+    paddingBottom: Platform.OS === 'ios' ? 40 : 30,
   },
 });
 
