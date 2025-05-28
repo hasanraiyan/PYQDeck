@@ -114,13 +114,12 @@ const AIChatModal = React.memo(({
     const [dynamicLoadingText, setDynamicLoadingText] = useState(DYNAMIC_LOADING_TEXTS[0]);
     const [isWebViewLoading, setIsWebViewLoading] = useState(true);
 
-    const modalSlideAnim = useRef(new Animated.Value(screenHeight)).current;
     const backdropOpacity = useRef(new Animated.Value(0)).current;
     const initialContentOpacity = useRef(new Animated.Value(0)).current;
     const initialContentTranslateY = useRef(new Animated.Value(30)).current;
     const subsequentActionsOpacity = useRef(new Animated.Value(0)).current;
-    const headerScale = useRef(new Animated.Value(0.9)).current;
-    const contentScale = useRef(new Animated.Value(0.95)).current;
+    const headerScale = useRef(new Animated.Value(1)).current; // Initialize at full scale
+    const contentScale = useRef(new Animated.Value(1)).current; // Initialize at full scale
     const progressBarAnim = useRef(new Animated.Value(0)).current;
     
     const progressBarAnimationRef = useRef(null);
@@ -186,7 +185,7 @@ const AIChatModal = React.memo(({
 
     useEffect(() => {
         // This effect handles the modal's entrance and exit animations based on `visible`
-        let entranceAnimParallel;
+        let entranceAnimation;
         let contentEntranceAnimParallel;
 
         if (visible) {
@@ -203,24 +202,16 @@ const AIChatModal = React.memo(({
             setDynamicLoadingText(DYNAMIC_LOADING_TEXTS[0]);
 
             // Reset animation values
-            modalSlideAnim.setValue(screenHeight);
             backdropOpacity.setValue(0);
             initialContentOpacity.setValue(0);
             initialContentTranslateY.setValue(30);
             subsequentActionsOpacity.setValue(0); // Reset this explicitly
-            headerScale.setValue(0.9);
-            contentScale.setValue(0.95);
 
-            entranceAnimParallel = Animated.parallel([
-                Animated.timing(backdropOpacity, { toValue: 1, duration: 300, easing: Easing.inOut(Easing.ease), useNativeDriver: true }), // Remains excellent
-                Animated.spring(modalSlideAnim, { toValue: 0, useNativeDriver: true, tension: 90, friction: 26 }), // Softer, more polished spring
-            ]);
+            entranceAnimation = Animated.timing(backdropOpacity, { toValue: 1, duration: 300, easing: Easing.inOut(Easing.ease), useNativeDriver: true });
             
-            entranceAnimParallel.start(() => {
+            entranceAnimation.start(() => {
                 if (isMountedRef.current) {
                     contentEntranceAnimParallel = Animated.parallel([
-                        Animated.spring(headerScale, { toValue: 1, useNativeDriver: true, tension: 160, friction: 12 }), // This can remain snappy
-                        Animated.spring(contentScale, { toValue: 1, useNativeDriver: true, tension: 120, friction: 10 }),
                         Animated.timing(initialContentOpacity, { toValue: 1, duration: 400, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
                         Animated.spring(initialContentTranslateY, { toValue: 0, useNativeDriver: true, tension: 120, friction: 10 }),
                     ]);
@@ -233,7 +224,7 @@ const AIChatModal = React.memo(({
 
         return () => {
             // Cleanup for animations if the component unmounts unexpectedly OR if visible changes
-            if (entranceAnimParallel) entranceAnimParallel.stop();
+            if (entranceAnimation) entranceAnimation.stop();
             if (contentEntranceAnimParallel) contentEntranceAnimParallel.stop();
         };
     }, [visible]); // Re-run only when `visible` prop changes
@@ -330,17 +321,14 @@ const AIChatModal = React.memo(({
         isMountedRef.current = false; // Signal that modal is now closing
         triggerHaptic(Haptics.ImpactFeedbackStyle.Medium);
 
-        Animated.parallel([
-            Animated.timing(backdropOpacity, { toValue: 0, duration: 250, easing: Easing.inOut(Easing.ease), useNativeDriver: true }), // Remains excellent
-            Animated.spring(modalSlideAnim, { toValue: screenHeight, useNativeDriver: true, tension: 90, friction: 26 }), // Consistent softer spring for exit
-        ]).start(({ finished }) => {
+        Animated.timing(backdropOpacity, { toValue: 0, duration: 250, easing: Easing.inOut(Easing.ease), useNativeDriver: true })
+        .start(({ finished }) => {
             // `finished` will be true if the animation completed, false if interrupted (e.g., by unmount)
             // It's generally safe to call onClose here because the parent controls the actual unmount.
             // The key is that isMountedRef is already false, preventing internal state updates.
             onClose(); 
         });
-    }, [onClose, backdropOpacity, modalSlideAnim]);
-
+    }, [onClose, backdropOpacity]);
 
     const renderInitialChoiceButtons = () => (
         <Animated.View style={[
@@ -531,7 +519,7 @@ const AIChatModal = React.memo(({
             onRequestClose={handleCloseModal}
         >
             <Animated.View style={[styles.modalOverlay, { opacity: backdropOpacity }]}>
-                <Animated.View style={[styles.modalView, { transform: [{ translateY: modalSlideAnim }] }]}>
+                <Animated.View style={styles.modalView}>
                     <Animated.View style={[styles.modalHeader, { transform: [{ scale: headerScale }] }]}>
                         <View style={styles.modalTitleContainer}>
                             <View style={styles.titleIconContainer}>
