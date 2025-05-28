@@ -21,13 +21,11 @@ import {
     TextInput,
     Alert,
 } from 'react-native';
-import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 import { Ionicons } from '@expo/vector-icons';
 import {
     COLORS,
     UNCAT_CHAPTER_NAME,
     SEARCH_DEBOUNCE_DELAY,
-    ADS_ENABLED,
 } from '../constants';
 import {
     findData,
@@ -47,10 +45,6 @@ import {
     getBookmarkedQuestions,
     toggleBookmark as toggleBookmarkHelper,
 } from '../helpers/bookmarkHelpers';
-
-// Ad Configuration
-const AD_UNIT_ID = __DEV__ ? TestIds.BANNER : 'ca-app-pub-7142215738625436/1197117276'; // IMPORTANT: Replace in production
-const AD_FREQUENCY = 4; // Show an ad every N questions
 
 
 const QuestionListScreen = ({ route, navigation }) => {
@@ -398,22 +392,7 @@ const QuestionListScreen = ({ route, navigation }) => {
         const currentFinalQuestionCount = filteredAndSortedQuestions.length;
 
         // --- Inject Ads ---
-        const itemsWithAdsList = [];
-        if (filteredAndSortedQuestions.length > 0) {
-            for (let i = 0; i < filteredAndSortedQuestions.length; i++) {
-                itemsWithAdsList.push(filteredAndSortedQuestions[i]); // Add the question item
-                // Add an ad after every AD_FREQUENCY questions,
-                // but not if it's the last item in the original filtered list
-                // AND only if ads are enabled
-                if (ADS_ENABLED && (i + 1) % AD_FREQUENCY === 0 && i < filteredAndSortedQuestions.length - 1) {
-                    itemsWithAdsList.push({
-                        type: 'ad',
-                        id: `ad-${Math.floor(i / AD_FREQUENCY)}`, 
-                    });
-                }
-            }
-        }
-        return { listData: itemsWithAdsList, finalQuestionCount: currentFinalQuestionCount };
+        return { listData: filteredAndSortedQuestions, finalQuestionCount: currentFinalQuestionCount };
     }, [
         questions,
         completionStatus,
@@ -442,9 +421,6 @@ const QuestionListScreen = ({ route, navigation }) => {
     );
 
     const keyExtractor = useCallback((item, index) => {
-        if (item.type === 'ad') {
-            return item.id; // Use the unique ad ID
-        }
         return item.questionId.toString(); // Existing key for questions
     }, []);
 
@@ -592,22 +568,7 @@ const QuestionListScreen = ({ route, navigation }) => {
             <FlatList
                 data={listData}
                 renderItem={({ item }) => {
-                    if (item.type === 'ad' && ADS_ENABLED) { // Ensure ADS_ENABLED is checked here too
-                        return (
-                            <View style={styles.adContainer}>
-                                <BannerAd
-                                    unitId={AD_UNIT_ID}
-                                    size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-                                    requestOptions={{
-                                        requestNonPersonalizedAdsOnly: true, // Consider GDPR
-                                    }}
-                                    onAdLoaded={() => console.log('Banner Ad loaded for item:', item.id)}
-                                    onAdFailedToLoad={(error) => console.error('Banner Ad failed to load for item:', item.id, error)}
-                                />
-                            </View>
-                        );
-                    }
-                    // It's a question item, call the original render function
+                    // It's a question item (ads are removed), call the original render function
                     return renderListItem({ item });
                 }}
                 keyExtractor={keyExtractor}

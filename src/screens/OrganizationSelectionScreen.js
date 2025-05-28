@@ -1,14 +1,13 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { StyleSheet, View, SafeAreaView, Platform, StatusBar, ScrollView } from 'react-native';
-import { COLORS, ADS_ENABLED } from '../constants';
+import { COLORS } from '../constants';
 import {
     findData,
     getUniqueYears,
     getUniqueChapters,
     saveLastJourney,
 } from '../helpers/helpers';
-import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 import ListItemCard from '../components/ListItemCard';
 import LoadingIndicator from '../components/LoadingIndicator';
 import ErrorMessage from '../components/ErrorMessage';
@@ -28,9 +27,6 @@ const OrganizationSelectionScreen = ({ route, navigation }) => {
     );
 
     const [error, setError] = useState(dataError);
-
-    // Ad Configuration
-    const AD_UNIT_ID = __DEV__ ? TestIds.BANNER : 'ca-app-pub-7142215738625436/1197117276'; // IMPORTANT: Replace in production
 
 
     useEffect(() => {
@@ -158,21 +154,6 @@ const OrganizationSelectionScreen = ({ route, navigation }) => {
                     )}
                 </View>
             </ScrollView>
-            {ADS_ENABLED && (
-                <View style={styles.adBannerContainer}>
-                    <BannerAd
-                        unitId={AD_UNIT_ID}
-                        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-                        requestOptions={{
-                            requestNonPersonalizedAdsOnly: true, // Consider GDPR
-                        }}
-                        onAdLoaded={() => console.log('OrganizationSelectionScreen Ad loaded')}
-                        onAdFailedToLoad={(error) => {
-                            console.error("OrganizationSelectionScreen Ad failed to load", error);
-                        }}
-                    />
-                </View>
-            )}
         </SafeAreaView>
     );
 };
@@ -188,8 +169,8 @@ const styles = StyleSheet.create({
     listContentContainer: {
         paddingTop: 15,
         paddingBottom: Platform.OS === 'ios'
-            ? (ADS_ENABLED ? 40 + 60 : 40) // 60 is approx ad height
-            : (ADS_ENABLED ? 30 + 60 : 30),
+            ? 40
+            : 30,
         paddingHorizontal: 12,
     },
     adBannerContainer: {

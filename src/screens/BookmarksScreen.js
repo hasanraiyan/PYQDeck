@@ -3,11 +3,10 @@ import { View, Text, FlatList, StyleSheet, ActivityIndicator, Platform } from 'r
 import {
     getBookmarkedQuestions,
     toggleBookmark as toggleBookmarkHelper, // Import the helper
-} from '../helpers/bookmarkHelpers';
-import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
+} from '../helpers/bookmarkHelpers'; 
 import beuData from '../data/beuData';
 import QuestionItem from '../components/QuestionItem';
-import { COLORS, ADS_ENABLED } from '../constants';
+import { COLORS } from '../constants';
 import { copyToClipboard, getQuestionPlainText, loadCompletionStatuses, setQuestionCompleted, findData, updateDailyStreak } from '../helpers/helpers'; // Removed askAI as askAIHelper, added findData
 import { askAIWithContext } from '../helpers/openaiHelper';
 import AIChatModal from '../components/AIChatModal'; // Import AIChatModal
@@ -34,9 +33,6 @@ function flattenQuestions(data) {
   return questions;
 }
 
-// Ad Configuration
-const AD_UNIT_ID = __DEV__ ? TestIds.BANNER : 'ca-app-pub-7142215738625436/1197117276'; // IMPORTANT: Replace in production
-const AD_FREQUENCY = 3; // Show an ad every N bookmarked questions (can be different from QuestionListScreen)
 
 const BookmarksScreen = ({ navigation }) => {
   const [bookmarkedIds, setBookmarkedIds] = useState(new Set()); // Use Set
@@ -203,28 +199,10 @@ const BookmarksScreen = ({ navigation }) => {
   // Memoize the list of bookmarked questions with ads injected
   const listDataWithAds = React.useMemo(() => {
     const bookmarkedQuestions = allQuestions.filter(q => bookmarkedIds.has(q.questionId));
-
-    if (!ADS_ENABLED || bookmarkedQuestions.length === 0) {
-      return bookmarkedQuestions;
-    }
-
-    const itemsWithAds = [];
-    for (let i = 0; i < bookmarkedQuestions.length; i++) {
-      itemsWithAds.push(bookmarkedQuestions[i]);
-      if ((i + 1) % AD_FREQUENCY === 0 && i < bookmarkedQuestions.length - 1) {
-        itemsWithAds.push({
-          type: 'ad',
-          id: `ad-bookmark-${Math.floor(i / AD_FREQUENCY)}`,
-        });
-      }
-    }
-    return itemsWithAds;
+    return bookmarkedQuestions;
   }, [allQuestions, bookmarkedIds]);
 
   const keyExtractor = useCallback((item, index) => {
-    if (item.type === 'ad') {
-        return item.id;
-    }
     return item.questionId.toString();
   }, []);
 
@@ -252,22 +230,7 @@ const BookmarksScreen = ({ navigation }) => {
         data={listDataWithAds} // Use the list with ads
         keyExtractor={keyExtractor}
         renderItem={({ item }) => {
-          if (item.type === 'ad' && ADS_ENABLED) {
-            return (
-              <View style={styles.adContainer}>
-                <BannerAd
-                  unitId={AD_UNIT_ID}
-                  size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-                  requestOptions={{
-                    requestNonPersonalizedAdsOnly: true,
-                  }}
-                  onAdLoaded={() => console.log('Bookmark Ad loaded:', item.id)}
-                  onAdFailedToLoad={(error) => console.error('Bookmark Ad failed to load:', item.id, error)}
-                />
-              </View>
-            );
-          }
-          // It's a question item
+          // It's a question item (ads are removed)
           return (
             <QuestionItem
               item={item}

@@ -48,5 +48,3 @@ export const SEARCH_DEBOUNCE_DELAY = 300; // Milliseconds to wait after typing b
 
 // Export Platform for potential use elsewhere if needed, or keep it directly used
 export { Platform };
-
-export const ADS_ENABLED = true; // Set to false to disable ads globally

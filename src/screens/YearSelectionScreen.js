@@ -1,11 +1,10 @@
 // src/screens/YearSelectionScreen.js
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { StyleSheet, FlatList, SafeAreaView, Platform, StatusBar, View } from 'react-native';
-import { COLORS, ADS_ENABLED } from '../constants';
+import { COLORS } from '../constants';
 import { findData, loadCompletionStatuses } from '../helpers/helpers'; // Import loadCompletionStatuses
 import ListItemCard from '../components/ListItemCard';
 import LoadingIndicator from '../components/LoadingIndicator';
-import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 import ErrorMessage from '../components/ErrorMessage';
 import EmptyState from '../components/EmptyState';
 
@@ -18,9 +17,6 @@ const YearSelectionScreen = ({ route, navigation }) => {
     const [completionStatus, setCompletionStatus] = useState({});
     const [isLoadingStatuses, setIsLoadingStatuses] = useState(true);
     const [error, setError] = useState(null);
-
-    // Ad Configuration
-    const AD_UNIT_ID = __DEV__ ? TestIds.BANNER : 'ca-app-pub-7142215738625436/1197117276'; // IMPORTANT: Replace in production
 
     // --- Effect for fetching initial data ---
     useEffect(() => {
@@ -201,22 +197,7 @@ const YearSelectionScreen = ({ route, navigation }) => {
                 keyExtractor={(item) => item.year.toString()} // Use unique year as key
                 contentContainerStyle={styles.listContentContainer}
                 extraData={completionStatus} // Ensure re-render when statuses change
-            />
-            {ADS_ENABLED && (
-                <View style={styles.adBannerContainer}>
-                    <BannerAd
-                        unitId={AD_UNIT_ID}
-                        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-                        requestOptions={{
-                            requestNonPersonalizedAdsOnly: true, // Consider GDPR
-                        }}
-                        onAdLoaded={() => console.log('YearSelectionScreen Ad loaded')}
-                        onAdFailedToLoad={(error) => {
-                            console.error("YearSelectionScreen Ad failed to load", error);
-                        }}
-                    />
-                </View>
-            )}
+            />            
         </SafeAreaView>
     );
 };
@@ -229,8 +210,8 @@ const styles = StyleSheet.create({
     listContentContainer: {
         paddingTop: 10,
         paddingBottom: Platform.OS === 'ios'
-            ? (ADS_ENABLED ? 40 + 60 : 40) // 60 is approx ad height
-            : (ADS_ENABLED ? 30 + 60 : 30),
+            ? 40
+            : 30,
         paddingHorizontal: 12,
     },
     adBannerContainer: {

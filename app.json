@@ -36,13 +36,8 @@
     "plugins": [
       "expo-font",
       "expo-secure-store",
-      "expo-web-browser", 
-      [
-        "react-native-google-mobile-ads",
-        {
-          "androidAppId": "ca-app-pub-7142215738625436~4195278723"
-        }
-      ]
+      "expo-web-browser"
+     
     ],
     "extra": {
       "eas": {
