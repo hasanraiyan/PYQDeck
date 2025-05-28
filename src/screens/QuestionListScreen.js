@@ -18,7 +18,6 @@ import {
     ScrollView,
     TextInput,
     Alert,
-    ActivityIndicator, // Added for inline loading
 } from 'react-native';
 import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 import { Ionicons } from '@expo/vector-icons';
@@ -37,8 +36,8 @@ import {
     getQuestionPlainText,
     updateDailyStreak,
 } from '../helpers/helpers';
-
-import LoadingIndicator from '../components/LoadingIndicator';
+import GlobalLoadingIndicator from '../components/GlobalLoadingIndicator'; // Import new
+// import LoadingIndicator from '../components/LoadingIndicator'; // Old import, can be removed if Global replaces it
 import ErrorMessage from '../components/ErrorMessage';
 import EmptyState from '../components/EmptyState';
 import QuestionItem from '../components/QuestionItem';
@@ -383,7 +382,9 @@ const QuestionListScreen = ({ route, navigation }) => {
         return item.questionId.toString(); // Existing key for questions
     }, []);
 
-    if (loading && !subjectData && !error) return <LoadingIndicator />; // Full screen loader for initial fetch
+    if (loading && !subjectData && !error) {
+        return <GlobalLoadingIndicator fullscreen={true} text="Loading subject data..." />;
+    }
     if (error && !loading) return <ErrorMessage message={error} onRetry={loadData} />;
 
 
@@ -498,10 +499,13 @@ const QuestionListScreen = ({ route, navigation }) => {
             </View>
 
              {loading && subjectData && !error && ( // Show inline loader if data exists but statuses are still loading
-                <View style={{paddingVertical: 20, alignItems: 'center'}}>
-                    <ActivityIndicator size="small" color={COLORS.primary} />
-                    <Text style={{marginTop: 8, color: COLORS.textSecondary, fontSize: 13}}>Loading questions...</Text>
-                </View>
+                <GlobalLoadingIndicator
+                    visible={loadingStatuses} // Control visibility based on specific loading state
+                    size="small"
+                    text="Loading questions..."
+                    style={{paddingVertical: 20}} // Style the wrapper view
+                    textStyle={{fontSize: 13}} // Customize text style if needed
+                />
             )}
 
 

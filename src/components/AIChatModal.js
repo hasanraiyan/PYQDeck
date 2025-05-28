@@ -9,7 +9,6 @@ import {
     SafeAreaView,
     ScrollView,
     ActivityIndicator,
-    Platform,
     Alert,
     Pressable,
     Animated,
@@ -22,6 +21,7 @@ import { WebView } from 'react-native-webview';
 // import * as Clipboard from 'expo-clipboard'; // Not used directly in this file
 import generateHTML from '../helpers/generateHTML';
 import { askAIWithContext, REQUEST_TYPES } from '../helpers/openaiHelper';
+import GlobalLoadingIndicator from './GlobalLoadingIndicator'; // Import the new component
 import * as Haptics from 'expo-haptics';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
@@ -532,10 +532,13 @@ const AIChatModal = React.memo(({
             return (
                 <Animated.View style={[styles.aiResponseContainer, { transform: [{ scale: contentScale }] }]}>
                     {isWebViewLoading && (
-                        <View style={styles.webViewLoaderContainer}>
-                            <ActivityIndicator size="large" color={COLORS.primary || '#007AFF'} />
-                            <Text style={styles.webViewLoaderText}>Loading YouTube search results...</Text>
-                        </View>
+                        <GlobalLoadingIndicator
+                            visible={isWebViewLoading}
+                            size="large"
+                            text="Loading YouTube search results..."
+                            style={styles.webViewLoaderContainer} // Applies position: 'absolute' and background
+                            textStyle={styles.webViewLoaderText} // Matches existing text style
+                        />
                     )}
                     <WebView
                         key={youtubeSearchUrl} // Force re-render on URL change
@@ -564,10 +567,13 @@ const AIChatModal = React.memo(({
             return (
                 <Animated.View style={[styles.aiResponseContainer, { transform: [{ scale: contentScale }] }]}>
                     {isWebViewLoading && (
-                        <View style={styles.webViewLoaderContainer}>
-                            <ActivityIndicator size="large" color={COLORS.primary || '#007AFF'} />
-                            <Text style={styles.webViewLoaderText}>Formatting response...</Text>
-                        </View>
+                         <GlobalLoadingIndicator
+                            visible={isWebViewLoading}
+                            size="large"
+                            text="Formatting response..."
+                            style={styles.webViewLoaderContainer} // Applies position: 'absolute' and background
+                            textStyle={styles.webViewLoaderText} // Matches existing text style
+                        />
                     )}
                     <WebView
                         key={markdownHTML} // Force re-render on HTML change
