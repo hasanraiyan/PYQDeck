@@ -754,8 +754,8 @@ const styles = StyleSheet.create({
     contentScrollContainer: {
         flexGrow: 1,
         paddingHorizontal: 12, // Adjusted as per previous fix
-        paddingTop: 16,        // Adjusted as per previous fix
-        paddingBottom: Platform.OS === 'ios' ? 24 : 32, // Adjusted as per previous fix
+        // paddingTop: 4,        // Adjusted as per previous fix
+        // paddingBottom: Platform.OS === 'ios' ? 24 : 32, // Adjusted as per previous fix
     },
     initialActionsContainer: {
         flex: 1,

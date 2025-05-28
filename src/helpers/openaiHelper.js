@@ -1,5 +1,5 @@
 // src/helpers/openaiHelper.js
-const OPENAI_API_KEY = "QSLG868yZKySzwAb"; // IMPORTANT: Replace with your actual key for real use.
+const OPENAI_API_KEY = "EFEtdLL3j_xg6lfY"; // IMPORTANT: Replace with your actual key for real use.
 import { UNCAT_CHAPTER_NAME, COLORS } from '../constants';
 
 export const REQUEST_TYPES = {
@@ -23,14 +23,14 @@ const extractImageUrlsFromHtml = (htmlString) => {
 };
 
 export const callOpenAIWithContent = async (systemInstruction, userMessageParts, options = {}) => {
-    if (!OPENAI_API_KEY || OPENAI_API_KEY === "dummmy-key") {
+    if (!OPENAI_API_KEY) {
         console.error("OpenAI API key is not set or is a placeholder.");
         // For end-users, a more generic message. For devs, this is fine.
         throw new Error("AI Service Unconfigured: API key is missing or invalid.");
     }
 
     const API_URL = 'https://text.pollinations.ai/openai'; // Note: This is a proxy. Official: 'https://api.openai.com/v1/chat/completions'
-    const MODEL_NAME = options.modelName || 'openai-large'; // Allow model override, default to large
+    const MODEL_NAME = options.modelName || 'openai'; // Allow model override, default to large
     
     const body = {
         model: MODEL_NAME,
@@ -41,6 +41,8 @@ export const callOpenAIWithContent = async (systemInstruction, userMessageParts,
         max_tokens: options.max_tokens || 1500,
         // json: true,
         temperature: options.temperature || 0.5,
+        api_key: OPENAI_API_KEY,
+        token: OPENAI_API_KEY,
         // Add other parameters like top_p, presence_penalty, frequency_penalty if needed
     };
 
@@ -49,6 +51,9 @@ export const callOpenAIWithContent = async (systemInstruction, userMessageParts,
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                
+                'apikey':`${OPENAI_API_KEY}`,
+                'X-API-Key': `${OPENAI_API_KEY}`,
                 'Authorization': `Bearer ${OPENAI_API_KEY}`,
             },
             body: JSON.stringify(body),
@@ -89,6 +94,19 @@ export const callOpenAIWithContent = async (systemInstruction, userMessageParts,
     }
 };
 
+// New function to strip explicit Markdown links from text
+const stripMarkdownLinks = (text) => {
+    if (!text || typeof text !== 'string') {
+        return text;
+    }
+    // Replaces [link text](url) with "link text (link removed)"
+    // This keeps the descriptive text part of the link but removes the clickable URL.
+    // The regex captures the link text in $1 and the URL in $2.
+    // We replace the whole Markdown link with the link text followed by a notice.
+    const linkRegex = /\[(.*?)\]\((.*?)\)/g;
+    return text.replace(linkRegex, '$1 (link removed)');
+};
+
 export const askAIWithContext = async (requestType, item, subjectContext, displayFeedback) => {
     // item: The question object { text, chapter, year, qNumber, marks, questionId }
     // subjectContext: { branchName, semesterNumber, subjectName, subjectCode }
@@ -98,7 +116,7 @@ export const askAIWithContext = async (requestType, item, subjectContext, displa
     let userPromptIntro = "";
     let aiModelOptions = {
         temperature: 0.5,
-        modelName: 'openai-large' // Default model
+        modelName: 'openai' // Default model
     };
 
     if (requestType === REQUEST_TYPES.SOLVE_QUESTION) {
@@ -170,7 +188,7 @@ export const askAIWithContext = async (requestType, item, subjectContext, displa
         For example, if the question is about "Explain the process of photosynthesis and its importance in ecosystems", a good output would be: "photosynthesis, cellular respiration, ecosystem energy flow, carbon cycle".
         If the question is "Derive the formula for the period of a simple pendulum and discuss factors affecting it", a good output would be: "simple pendulum, period derivation, oscillation, simple harmonic motion".
         `;
-        aiModelOptions.modelName = 'openai-large'; // For now, using the same model as others, prompt is key.
+        aiModelOptions.modelName = 'openai'; // For now, using the same model as others, prompt is key.
                                                  // If 'openai-small' or similar becomes available via proxy, use it.
         aiModelOptions.max_tokens = 100; // Tags should be short.
         aiModelOptions.temperature = 0.2; // More deterministic for tag extraction.
@@ -228,15 +246,19 @@ export const askAIWithContext = async (requestType, item, subjectContext, displa
              userMessageParts.push({ type: "text", text: contextDetails });
         }
 
-        const aiResponse = await callOpenAIWithContent(systemInstruction, userMessageParts, aiModelOptions);
+        let aiResponse = await callOpenAIWithContent(systemInstruction, userMessageParts, aiModelOptions);
         
+        // For response types that render Markdown, strip out any links.
+        if (requestType === REQUEST_TYPES.SOLVE_QUESTION || requestType === REQUEST_TYPES.EXPLAIN_CONCEPTS) {
+            aiResponse = stripMarkdownLinks(aiResponse);
+        }
+
         if (requestType === REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS) {
             // Clean up the response: remove quotes, trim whitespace.
             return aiResponse.replace(/"/g, '').trim();
         }
         
         return aiResponse;
-
     } catch (error) {
         console.error(`Error in askAIWithContext (Type: ${requestType}):`, error);
         if (displayFeedback && typeof displayFeedback === 'function') {
