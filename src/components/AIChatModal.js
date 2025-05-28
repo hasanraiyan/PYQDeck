@@ -326,8 +326,7 @@ const AIChatModal = React.memo(({
 
     const renderInitialChoiceButtons = () => (
         <Animated.View style={[
-            styles.initialActionsContainer,
-            { opacity: initialContentOpacity, transform: [{ translateY: initialContentTranslateY }] }
+            styles.initialActionsContainer
         ]}>
             <View style={styles.iconContainer}>
                 <Icon name="sparkles" iconSet="Ionicons" size={48} color={COLORS.primary || '#007AFF'} />
