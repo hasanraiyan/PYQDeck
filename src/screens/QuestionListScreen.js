@@ -20,6 +20,7 @@ import {
     Alert,
     ActivityIndicator, // Added for inline loading
 } from 'react-native';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 import { Ionicons } from '@expo/vector-icons';
 import {
     COLORS,
@@ -33,7 +34,6 @@ import {
     copyToClipboard,
     debounce,
     getQuestionPlainText,
-    getSemesterPYQsFromSecureStore,
     updateDailyStreak,
 } from '../helpers/helpers';
 
@@ -42,6 +42,10 @@ import ErrorMessage from '../components/ErrorMessage';
 import EmptyState from '../components/EmptyState';
 import QuestionItem from '../components/QuestionItem';
 import AIChatModal from '../components/AIChatModal';
+
+// Ad Configuration
+const AD_UNIT_ID = __DEV__ ? TestIds.BANNER : 'ca-app-pub-7142215738625436/1197117276'; // IMPORTANT: Replace in production
+const AD_FREQUENCY = 5; // Show an ad every N questions
 
 let beuDataStructure = null;
 try {
@@ -64,7 +68,7 @@ const QuestionListScreen = ({ route, navigation }) => {
     const [subjectData, setSubjectData] = useState(null);
     const [questions, setQuestions] = useState([]);
     const [completionStatus, setCompletionStatus] = useState({});
-    const [loading, setLoading] = useState(true); // Overall loading for initial data
+    const [loading, setLoading] = useState(true); 
     const [loadingStatuses, setLoadingStatuses] = useState(true); // Specific loading for statuses
     const [error, setError] = useState(null);
 
@@ -143,32 +147,10 @@ const QuestionListScreen = ({ route, navigation }) => {
         setError(null);
         if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
 
-        let semesterData = null;
-        try {
-            semesterData = await getSemesterPYQsFromSecureStore(branchId, semId);
-        } catch (secureStoreError) {
-            console.warn("Failed to load PYQs from secure store:", secureStoreError);
-        }
-
         let subject = null;
         let fetchedQuestions = [];
         let dataError = null;
-
-        if (semesterData && semesterData.subjects) {
-            subject = semesterData.subjects.find(sub => sub.id === subjectId);
-            if (!subject) {
-                dataError = 'Subject not found in downloaded data. Trying local fallback.';
-            } else {
-                fetchedQuestions = Array.isArray(subject.questions) ? subject.questions : [];
-            }
-        }
-
-        if (!subject || dataError) {
-            const fallback = findData({ branchId, semId, subjectId });
-            subject = fallback.subject;
-            fetchedQuestions = fallback.questions || [];
-            dataError = fallback.error;
-        }
+        ({ subject, questions: fetchedQuestions, error: dataError } = findData({ branchId, semId, subjectId }));
 
         if (!qlsMountedRef.current) return;
 
@@ -281,25 +263,25 @@ const QuestionListScreen = ({ route, navigation }) => {
         setCurrentAIQuestion(null); // Clear the question
     }, []);
 
-    const processedQuestions = useMemo(() => {
-        if (!Array.isArray(questions)) return [];
-        let filtered = [...questions];
+    const { listData, finalQuestionCount } = useMemo(() => {
+        if (!Array.isArray(questions)) return { listData: [], finalQuestionCount: 0 };
+        let filteredAndSortedQuestions = [...questions];
 
         if (organizationMode === 'year' && selectedYear != null) {
-            filtered = filtered.filter((q) => q.year === selectedYear);
+            filteredAndSortedQuestions = filteredAndSortedQuestions.filter((q) => q.year === selectedYear);
         } else if (organizationMode === 'chapter' && selectedChapter) {
             if (selectedChapter === UNCAT_CHAPTER_NAME) {
-                filtered = filtered.filter(
+                filteredAndSortedQuestions = filteredAndSortedQuestions.filter(
                     (q) => !q.chapter || typeof q.chapter !== 'string' || !q.chapter.trim()
                 );
             } else {
-                filtered = filtered.filter((q) => q.chapter === selectedChapter);
+                filteredAndSortedQuestions = filteredAndSortedQuestions.filter((q) => q.chapter === selectedChapter);
             }
         }
 
         const query = debouncedSearchQuery.trim().toLowerCase();
         if (query) {
-            filtered = filtered.filter((q) => {
+            filteredAndSortedQuestions = filteredAndSortedQuestions.filter((q) => {
                 const plainText = getQuestionPlainText(q.text).toLowerCase();
                 const chapterText = (q.chapter || '').toLowerCase();
                 const yearText = (q.year || '').toString();
@@ -315,7 +297,7 @@ const QuestionListScreen = ({ route, navigation }) => {
 
         if (filterCompleted !== 'all') {
             const requiredStatus = filterCompleted === 'completed';
-            filtered = filtered.filter(
+            filteredAndSortedQuestions = filteredAndSortedQuestions.filter(
                 (q) => !!completionStatus[q.questionId] === requiredStatus
             );
         }
@@ -323,17 +305,17 @@ const QuestionListScreen = ({ route, navigation }) => {
         if (organizationMode === 'all') {
             switch (sortBy) {
                 case 'year_asc':
-                    filtered.sort((a, b) => (a.year || 0) - (b.year || 0));
+                    filteredAndSortedQuestions.sort((a, b) => (a.year || 0) - (b.year || 0));
                     break;
                 case 'year_desc':
-                    filtered.sort((a, b) => (b.year || 0) - (a.year || 0));
+                    filteredAndSortedQuestions.sort((a, b) => (b.year || 0) - (a.year || 0));
                     break;
                 case 'default':
                 default:
-                    filtered.sort((a, b) => {
+                    filteredAndSortedQuestions.sort((a, b) => {
                         const yearDiff = (b.year || 0) - (a.year || 0);
                         if (yearDiff !== 0) return yearDiff;
-                        return (a.qNumber || '').localeCompare(b.qNumber || '', undefined, {
+                        return (a.qNumber || '').localeCompare(b.qNumber || '', undefined, { // Use filteredAndSortedQuestions
                             numeric: true,
                             sensitivity: 'base',
                         });
@@ -341,14 +323,32 @@ const QuestionListScreen = ({ route, navigation }) => {
                     break;
             }
         } else { // For year or chapter view, sort by qNumber
-            filtered.sort((a, b) =>
+            filteredAndSortedQuestions.sort((a, b) =>
                 (a.qNumber || '').localeCompare(b.qNumber || '', undefined, {
                     numeric: true,
                     sensitivity: 'base',
                 })
             );
         }
-        return filtered;
+
+        const currentFinalQuestionCount = filteredAndSortedQuestions.length;
+
+        // --- Inject Ads ---
+        const itemsWithAdsList = [];
+        if (filteredAndSortedQuestions.length > 0) {
+            for (let i = 0; i < filteredAndSortedQuestions.length; i++) {
+                itemsWithAdsList.push(filteredAndSortedQuestions[i]); // Add the question item
+                // Add an ad after every AD_FREQUENCY questions,
+                // but not if it's the last item in the original filtered list
+                if ((i + 1) % AD_FREQUENCY === 0 && i < filteredAndSortedQuestions.length - 1) {
+                    itemsWithAdsList.push({
+                        type: 'ad',
+                        id: `ad-${Math.floor(i / AD_FREQUENCY)}`, // Unique key for the ad
+                    });
+                }
+            }
+        }
+        return { listData: itemsWithAdsList, finalQuestionCount: currentFinalQuestionCount };
     }, [
         questions,
         completionStatus,
@@ -360,7 +360,7 @@ const QuestionListScreen = ({ route, navigation }) => {
         selectedChapter,
     ]);
 
-    const renderQuestionItem = useCallback(
+    const renderListItem = useCallback(
         ({ item }) => (
             <QuestionItem
                 item={item}
@@ -371,15 +371,22 @@ const QuestionListScreen = ({ route, navigation }) => {
                  // Removed onSearch as it's handled by SearchWebViewModal inside QuestionItem
             />
         ),
-        [completionStatus, handleToggleComplete, handleCopy, handleAskAI]
+        [completionStatus, handleToggleComplete, handleCopy, handleAskAI] // AD_UNIT_ID is constant
     );
+
+    const keyExtractor = useCallback((item, index) => {
+        if (item.type === 'ad') {
+            return item.id; // Use the unique ad ID
+        }
+        return item.questionId.toString(); // Existing key for questions
+    }, []);
 
     if (loading && !subjectData && !error) return <LoadingIndicator />; // Full screen loader for initial fetch
     if (error && !loading) return <ErrorMessage message={error} onRetry={loadData} />;
 
 
     const noQuestionsInitiallyForSubject = questions.length === 0;
-    const noResultsAfterFilter = !noQuestionsInitiallyForSubject && processedQuestions.length === 0;
+    const noResultsAfterFilter = !noQuestionsInitiallyForSubject && finalQuestionCount === 0;
     
     let listEmptyMessage = 'No questions available for this subject.';
     if (noResultsAfterFilter) {
@@ -395,7 +402,7 @@ const QuestionListScreen = ({ route, navigation }) => {
         } else {
             listEmptyMessage = 'No questions match the current filter criteria.';
         }
-    } else if (noQuestionsInitiallyForSubject && processedQuestions.length === 0) {
+    } else if (noQuestionsInitiallyForSubject && finalQuestionCount === 0) {
          if (organizationMode === 'year' && selectedYear) {
             listEmptyMessage = `No questions found for year ${selectedYear}.`;
         } else if (organizationMode === 'chapter' && selectedChapter) {
@@ -497,9 +504,27 @@ const QuestionListScreen = ({ route, navigation }) => {
 
 
             <FlatList
-                data={processedQuestions}
-                renderItem={renderQuestionItem}
-                keyExtractor={(item) => item.questionId.toString()}
+                data={listData}
+                renderItem={({ item }) => {
+                    if (item.type === 'ad') {
+                        return (
+                            <View style={styles.adContainer}>
+                                <BannerAd
+                                    unitId={AD_UNIT_ID}
+                                    size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+                                    requestOptions={{
+                                        requestNonPersonalizedAdsOnly: true, // Consider GDPR
+                                    }}
+                                    onAdLoaded={() => console.log('Banner Ad loaded for item:', item.id)}
+                                    onAdFailedToLoad={(error) => console.error('Banner Ad failed to load for item:', item.id, error)}
+                                />
+                            </View>
+                        );
+                    }
+                    // It's a question item, call the original render function
+                    return renderListItem({ item });
+                }}
+                keyExtractor={keyExtractor}
                 contentContainerStyle={styles.listContentContainer}
                 ListEmptyComponent={(!loading && !loadingStatuses) ? <EmptyState message={listEmptyMessage} iconName="documents-outline" /> : null}
                 initialNumToRender={7}
@@ -619,6 +644,12 @@ const styles = StyleSheet.create({
         height: 20,
         backgroundColor: COLORS.borderLight || '#E0E0E0',
         marginHorizontal: 8,
+    },
+    adContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginVertical: 10, // Spacing around the ad
+        // BannerAd with ANCHORED_ADAPTIVE_BANNER will attempt to fill available width
     },
 });
 
