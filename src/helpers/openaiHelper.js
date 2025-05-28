@@ -5,7 +5,6 @@ import { UNCAT_CHAPTER_NAME, COLORS } from '../constants';
 export const REQUEST_TYPES = {
     SOLVE_QUESTION: 'SOLVE_QUESTION',
     EXPLAIN_CONCEPTS: 'EXPLAIN_CONCEPTS',
-    GET_VIDEO_SEARCH_TAGS: 'GET_VIDEO_SEARCH_TAGS', // New type for getting tags
 };
 
 const extractImageUrlsFromHtml = (htmlString) => {
@@ -176,22 +175,6 @@ export const askAIWithContext = async (requestType, item, subjectContext, displa
         `;
         aiModelOptions.max_tokens = 2500; // Concepts might need more tokens
         aiModelOptions.temperature = 0.3; // Slightly more factual for concept explanations
-    } else if (requestType === REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS) {
-        userPromptIntro = `Analyze the following academic question. Identify the most crucial concepts or topics within it. Based on these, provide 3 to 5 concise keywords or short phrases that would be highly effective for searching relevant educational videos on YouTube.
-        The goal is to find videos that explain these core concepts.
-        Return ONLY the keywords/phrases, separated by commas. Do not add any other text, numbers, or explanations.
-        For example: "Fourier series, signal processing, periodic functions" or "Newton's laws, kinematics, projectile motion"`;
-        systemInstruction = `
-        You are an "Academic Keyword Extractor AI". Your sole purpose is to identify key concepts from an academic question and distill them into a comma-separated list of 3-5 concise search terms suitable for finding educational YouTube videos.
-        Prioritize terms that represent fundamental principles or distinct topics mentioned or implied in the question.
-        Output ONLY the comma-separated keywords/phrases. No other text.
-        For example, if the question is about "Explain the process of photosynthesis and its importance in ecosystems", a good output would be: "photosynthesis, cellular respiration, ecosystem energy flow, carbon cycle".
-        If the question is "Derive the formula for the period of a simple pendulum and discuss factors affecting it", a good output would be: "simple pendulum, period derivation, oscillation, simple harmonic motion".
-        `;
-        aiModelOptions.modelName = 'openai'; // For now, using the same model as others, prompt is key.
-                                                 // If 'openai-small' or similar becomes available via proxy, use it.
-        aiModelOptions.max_tokens = 100; // Tags should be short.
-        aiModelOptions.temperature = 0.2; // More deterministic for tag extraction.
     } else {
         console.error("Invalid requestType for AI:", requestType);
         throw new Error("AI request type is invalid.");
@@ -199,7 +182,7 @@ export const askAIWithContext = async (requestType, item, subjectContext, displa
 
     try {
         let contextDetails = "\n\n--- Question Context (for AI analysis only, do not include in keyword output if extracting tags) ---\n";
-        if (subjectContext.branchName && subjectContext.branchName !== 'N/A') contextDetails += `Branch: ${subjectContext.branchName}\n`;
+        if (subjectContext.branchName && subjectContext.branchName !== 'N/A') contextDetails += `Branch: ${subjectContext.branchName}\n`; // No change here, but context is general
         if (subjectContext.semesterNumber && subjectContext.semesterNumber !== 'N/A') contextDetails += `Semester: ${subjectContext.semesterNumber}\n`;
         if (subjectContext.subjectName) contextDetails += `Subject: ${subjectContext.subjectName} (${subjectContext.subjectCode || 'N/A'})\n`;
         if (item.chapter && item.chapter !== UNCAT_CHAPTER_NAME && item.chapter.trim() !== '') contextDetails += `Chapter: ${item.chapter}\n`;
@@ -211,39 +194,23 @@ export const askAIWithContext = async (requestType, item, subjectContext, displa
         const questionHtml = item.text || "No question text provided.";
         const userMessageParts = [];
 
-        // For tag extraction, the user prompt intro is very specific.
-        // For other types, it's more general.
         let fullUserPromptText = userPromptIntro;
-        if (requestType !== REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS) {
-            fullUserPromptText += contextDetails;
-        }
-
+        fullUserPromptText += contextDetails; // Context is always added now
 
         userMessageParts.push({ type: "text", text: fullUserPromptText });
 
         const imageParts = extractImageUrlsFromHtml(questionHtml);
         if (imageParts.length > 0) {
             userMessageParts.push(...imageParts);
-            const imageReferenceText =
-                requestType === REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS
-                ? `The question text (which may refer to the image(s) above) from which to extract YouTube search tags is:\n\n${questionHtml}\n\nPlease analyze everything provided based on the initial instruction for extracting comma-separated keywords.`
-                : requestType === REQUEST_TYPES.EXPLAIN_CONCEPTS
+            const imageReferenceText = requestType === REQUEST_TYPES.EXPLAIN_CONCEPTS
                     ? `The question text (which may refer to the image(s) above) for which concepts need to be explained is:\n\n${questionHtml}\n\nPlease analyze everything provided based on the initial instruction to explain concepts.`
                     : `The question text (which may refer to the image(s) above) is:\n\n${questionHtml}\n\nPlease analyze everything provided based on the initial instruction to solve/discuss the question.`;
             userMessageParts.push({ type: "text", text: imageReferenceText });
         } else {
-            const textOnlyPrompt =
-                requestType === REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS
-                ? `The question text from which to extract YouTube search tags is:\n\n${questionHtml}`
-                : requestType === REQUEST_TYPES.EXPLAIN_CONCEPTS
+            const textOnlyPrompt = requestType === REQUEST_TYPES.EXPLAIN_CONCEPTS
                     ? `The question text for which concepts need to be explained is:\n\n${questionHtml}`
                     : `The question text is:\n\n${questionHtml}`;
             userMessageParts.push({ type: "text", text: textOnlyPrompt });
-        }
-        
-        // Add context for tag extraction at the end, so it doesn't interfere with the primary instruction.
-        if (requestType === REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS) {
-             userMessageParts.push({ type: "text", text: contextDetails });
         }
 
         let aiResponse = await callOpenAIWithContent(systemInstruction, userMessageParts, aiModelOptions);
@@ -253,11 +220,6 @@ export const askAIWithContext = async (requestType, item, subjectContext, displa
             aiResponse = stripMarkdownLinks(aiResponse);
         }
 
-        if (requestType === REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS) {
-            // Clean up the response: remove quotes, trim whitespace.
-            return aiResponse.replace(/"/g, '').trim();
-        }
-        
         return aiResponse;
     } catch (error) {
         console.error(`Error in askAIWithContext (Type: ${requestType}):`, error);

@@ -26,8 +26,6 @@ import * as Haptics from 'expo-haptics';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
-const IS_YOUTUBE_ENABLED = false; // Control YouTube feature
-
 const DYNAMIC_LOADING_TEXTS = [
     "🧠 AI is analyzing your question...",
     "📚 Consulting knowledge base...",
@@ -362,7 +360,7 @@ const AIChatModal = React.memo(({
     }, [contentType, generateAndSetResponse]);
 
     useEffect(() => {
-        if (isMountedRef.current && !isWebViewLoading && !currentIsLoading && (aiTextResponse || youtubeSearchUrl) && userHasMadeChoice) {
+        if (isMountedRef.current && !isWebViewLoading && !currentIsLoading && aiTextResponse && userHasMadeChoice) {
             if (subsequentActionsAnimationRef.current) subsequentActionsAnimationRef.current.stop();
             subsequentActionsAnimationRef.current = Animated.spring(subsequentActionsOpacity, {
                 toValue: 1,
@@ -444,22 +442,6 @@ const AIChatModal = React.memo(({
                     </View>
                     <Icon name="arrow-forward" iconSet="Ionicons" size={16} color={COLORS.primary + '80'} />
                 </PressableScale>
-
-                {IS_YOUTUBE_ENABLED && (
-                    <PressableScale
-                        style={[styles.actionButton, styles.exploreVideosButton, currentIsLoading && styles.buttonDisabled]}
-                        onPress={() => generateAndSetResponse(REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS)}
-                        disabled={currentIsLoading} hapticType="medium">
-                        <View style={[styles.buttonIconContainer, styles.videosIconContainer]}>
-                            <Icon name="logo-youtube" iconSet="Ionicons" size={20} color={COLORS.error} />
-                        </View>
-                        <View style={styles.buttonTextContainer}>
-                            <Text style={[styles.actionButtonText, { color: COLORS.error }]}>Explore Videos</Text>
-                            <Text style={[styles.actionButtonSubtext, { color: COLORS.textSecondary }]}>Find relevant tutorials</Text>
-                        </View>
-                        <Icon name="arrow-forward" iconSet="Ionicons" size={16} color={COLORS.error + '80'} />
-                    </PressableScale>
-                )}
             </View>
         </Animated.View>
     );
@@ -615,9 +597,7 @@ const AIChatModal = React.memo(({
                                     iconSet={headerIconInfo.set}
                                     name={headerIconInfo.name}
                                     size={24}
-                                    color={
-                                        (IS_YOUTUBE_ENABLED && contentType === REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS) ? COLORS.error : (COLORS.primary || '#007AFF')
-                                    }
+                                    color={COLORS.primary || '#007AFF'}
                                 />
                             </View>
                             <Text style={styles.modalTitle} numberOfLines={1}>{modalTitle}</Text>
@@ -776,16 +756,6 @@ const styles = StyleSheet.create({
         shadowRadius: 6,
         elevation: 4,
     },
-    exploreVideosButton: { 
-        backgroundColor: COLORS.surface || '#FFFFFF',
-        borderWidth: 2,
-        borderColor: (COLORS.error || '#D32F2F') + '20',
-        shadowColor: '#000000',
-        shadowOffset: { width: 0, height: 3 },
-        shadowOpacity: 0.08,
-        shadowRadius: 6,
-        elevation: 4,
-    },
     buttonIconContainer: {
         width: 36,
         height: 36,
@@ -796,9 +766,6 @@ const styles = StyleSheet.create({
     },
     conceptsIconContainer: {
         backgroundColor: (COLORS.primary || '#007AFF') + '15', 
-    },
-    videosIconContainer: { 
-        backgroundColor: (COLORS.error || '#D32F2F') + '15',
     },
     buttonTextContainer: {
         flex: 1,
