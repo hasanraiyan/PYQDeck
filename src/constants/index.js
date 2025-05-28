@@ -1,5 +1,8 @@
 // src/constants/index.js
 import { Platform } from 'react-native';
+import Constants from 'expo-constants';
+
+export const appVersion = Constants.expoConfig.version;
 
 export const ASYNC_STORAGE_PREFIX = 'beuApp_vNative_completed_';
 export const UNCAT_CHAPTER_NAME = 'Uncategorized'; // Consistent name for questions without a chapter

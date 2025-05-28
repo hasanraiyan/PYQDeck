@@ -20,8 +20,8 @@ import ErrorMessage from '../components/ErrorMessage';
 import EmptyState from '../components/EmptyState';
 import Icon from '../components/Icon';
 import { Ionicons } from '@expo/vector-icons';
-
-const APP_VERSION = '3.1.0'; // Keep updated
+import { appVersion } from '../constants';
+const APP_VERSION = appVersion;
 
 const BranchListScreen = ({ navigation }) => {
     const [branches, setBranches] = useState([]);

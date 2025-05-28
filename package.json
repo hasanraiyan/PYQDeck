@@ -1,6 +1,6 @@
 {
   "name": "pyqdeck",
-  "version": "3.1.0",
+  "version": "3.1.2",
   "main": "index.js",
   "scripts": {
     "start": "expo start",
@@ -32,7 +32,8 @@
     "react-native-svg": "15.11.2",
     "react-native-view-shot": "^4.0.3",
     "react-native-web": "^0.20.0",
-    "react-native-webview": "^13.13.5"
+    "react-native-webview": "^13.13.5",
+    "expo-constants": "~17.1.6"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
