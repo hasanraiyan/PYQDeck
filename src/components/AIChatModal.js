@@ -26,6 +26,7 @@ import * as Haptics from 'expo-haptics';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
+const IS_YOUTUBE_ENABLED = false; // Control YouTube feature
 
 const DYNAMIC_LOADING_TEXTS = [
     "🧠 AI is analyzing your question...",
@@ -33,8 +34,6 @@ const DYNAMIC_LOADING_TEXTS = [
     "✨ Crafting a response...",
     "💡 Formulating insights...",
     "⏳ Just a moment more...",
-    "🏷️ Extracting key concepts for videos...",
-    "🔍 Preparing video search...",
 ];
 
 const PressableScale = ({ onPress, style, children, disabled, hapticType = 'light', scaleValue = 0.96 }) => {
@@ -168,7 +167,6 @@ const AIChatModal = React.memo(({
 }) => {
     const [contentType, setContentType] = useState(null);
     const [aiTextResponse, setAiTextResponse] = useState(null);
-    const [youtubeSearchUrl, setYoutubeSearchUrl] = useState(null);
     const [currentIsLoading, setCurrentIsLoading] = useState(false);
     const [currentError, setCurrentError] = useState(null);
     const [modalTitle, setModalTitle] = useState("AI Assistant");
@@ -257,7 +255,6 @@ const AIChatModal = React.memo(({
             // Reset states
             setContentType(null);
             setAiTextResponse(null);
-            setYoutubeSearchUrl(null);
             setCurrentIsLoading(false);
             setCurrentError(null);
             setModalTitle("AI Assistant");
@@ -320,16 +317,13 @@ const AIChatModal = React.memo(({
         setCurrentIsLoading(true);
         setCurrentError(null);
         setAiTextResponse(null);
-        setYoutubeSearchUrl(null);
         setContentType(requestedType);
         setUserHasMadeChoice(true);
         setIsWebViewLoading(true);
         if (subsequentActionsAnimationRef.current) subsequentActionsAnimationRef.current.stop();
         subsequentActionsOpacity.setValue(0);
 
-        if (requestedType === REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS) {
-            setModalTitle("Explore Concept Videos");
-        } else if (requestedType === REQUEST_TYPES.EXPLAIN_CONCEPTS) {
+        if (requestedType === REQUEST_TYPES.EXPLAIN_CONCEPTS) {
             setModalTitle("AI Explains Concepts");
         } else {
             setModalTitle("AI Solution");
@@ -345,18 +339,8 @@ const AIChatModal = React.memo(({
 
             if (!isMountedRef.current) return;
 
-            if (requestedType === REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS) {
-                const tags = response.split(',').map(tag => tag.trim()).filter(tag => tag);
-                if (tags.length > 0) {
-                    const searchQuery = tags.join('+');
-                    setYoutubeSearchUrl(`https://m.youtube.com/results?search_query=${encodeURIComponent(searchQuery)}`);
-                } else {
-                    setCurrentError("AI could not extract relevant tags for video search. Try explaining concepts instead.");
-                }
-                setAiTextResponse(null);
-            } else {
+            if (requestedType === REQUEST_TYPES.SOLVE_QUESTION || requestedType === REQUEST_TYPES.EXPLAIN_CONCEPTS) {
                 setAiTextResponse(response);
-                setYoutubeSearchUrl(null);
             }
             triggerHaptic(Haptics.ImpactFeedbackStyle.Medium);
         } catch (e) {
@@ -369,11 +353,10 @@ const AIChatModal = React.memo(({
                 setCurrentIsLoading(false);
             }
         }
-    }, [questionItem, subjectContext, currentIsLoading, subsequentActionsOpacity]);
+    }, [questionItem, subjectContext, currentIsLoading, subsequentActionsOpacity, contentType]);
 
     const handleGenerateAnswer = useCallback(() => generateAndSetResponse(REQUEST_TYPES.SOLVE_QUESTION), [generateAndSetResponse]);
     const handleExplainConcepts = useCallback(() => generateAndSetResponse(REQUEST_TYPES.EXPLAIN_CONCEPTS), [generateAndSetResponse]);
-    const handleGetVideoSearchTags = useCallback(() => generateAndSetResponse(REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS), [generateAndSetResponse]);
     const handleRegenerateCurrentView = useCallback(() => {
         if (contentType) generateAndSetResponse(contentType);
     }, [contentType, generateAndSetResponse]);
@@ -396,7 +379,7 @@ const AIChatModal = React.memo(({
         return () => {
             if (subsequentActionsAnimationRef.current) subsequentActionsAnimationRef.current.stop();
         };
-    }, [isWebViewLoading, currentIsLoading, aiTextResponse, youtubeSearchUrl, userHasMadeChoice, subsequentActionsOpacity]);
+    }, [isWebViewLoading, currentIsLoading, aiTextResponse, userHasMadeChoice, subsequentActionsOpacity]);
 
     const markdownHTML = useMemo(() => generateHTML(aiTextResponse || "<!-- Awaiting AI Content -->"), [aiTextResponse]);
     const canRegenerate = userHasMadeChoice && !!contentType && !currentIsLoading;
@@ -462,23 +445,24 @@ const AIChatModal = React.memo(({
                     <Icon name="arrow-forward" iconSet="Ionicons" size={16} color={COLORS.primary + '80'} />
                 </PressableScale>
 
-                <PressableScale
-                    style={[styles.actionButton, styles.exploreVideosButton, currentIsLoading && styles.buttonDisabled]}
-                    onPress={handleGetVideoSearchTags}
-                    disabled={currentIsLoading} hapticType="medium">
-                    <View style={[styles.buttonIconContainer, styles.videosIconContainer]}>
-                        <Icon name="logo-youtube" iconSet="Ionicons" size={20} color={COLORS.error} />
-                    </View>
-                    <View style={styles.buttonTextContainer}>
-                        <Text style={[styles.actionButtonText, { color: COLORS.error }]}>Explore Videos</Text>
-                        <Text style={[styles.actionButtonSubtext, { color: COLORS.textSecondary }]}>Find relevant tutorials</Text>
-                    </View>
-                    <Icon name="arrow-forward" iconSet="Ionicons" size={16} color={COLORS.error + '80'} />
-                </PressableScale>
+                {IS_YOUTUBE_ENABLED && (
+                    <PressableScale
+                        style={[styles.actionButton, styles.exploreVideosButton, currentIsLoading && styles.buttonDisabled]}
+                        onPress={() => generateAndSetResponse(REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS)}
+                        disabled={currentIsLoading} hapticType="medium">
+                        <View style={[styles.buttonIconContainer, styles.videosIconContainer]}>
+                            <Icon name="logo-youtube" iconSet="Ionicons" size={20} color={COLORS.error} />
+                        </View>
+                        <View style={styles.buttonTextContainer}>
+                            <Text style={[styles.actionButtonText, { color: COLORS.error }]}>Explore Videos</Text>
+                            <Text style={[styles.actionButtonSubtext, { color: COLORS.textSecondary }]}>Find relevant tutorials</Text>
+                        </View>
+                        <Icon name="arrow-forward" iconSet="Ionicons" size={16} color={COLORS.error + '80'} />
+                    </PressableScale>
+                )}
             </View>
         </Animated.View>
     );
-
     const renderPostChoiceContent = () => {
         if (currentIsLoading) {
             return (
@@ -506,7 +490,6 @@ const AIChatModal = React.memo(({
             let retryActionText = "Retry";
             if (contentType === REQUEST_TYPES.EXPLAIN_CONCEPTS) retryActionText = "Retry Explanation";
             else if (contentType === REQUEST_TYPES.SOLVE_QUESTION) retryActionText = "Retry Answer";
-            else if (contentType === REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS) retryActionText = "Retry Tag Extraction";
 
             return (
                 <Animated.View style={[styles.stateInfoContainer, styles.errorStateContainer, { transform: [{ scale: contentScale }] }]}>
@@ -528,41 +511,6 @@ const AIChatModal = React.memo(({
             );
         }
 
-        if (contentType === REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS && youtubeSearchUrl) {
-            return (
-                <Animated.View style={[styles.aiResponseContainer, { transform: [{ scale: contentScale }] }]}>
-                    {isWebViewLoading && (
-                        <GlobalLoadingIndicator
-                            visible={isWebViewLoading}
-                            size="large"
-                            text="Loading YouTube search results..."
-                            style={styles.webViewLoaderContainer} // Applies position: 'absolute' and background
-                            textStyle={styles.webViewLoaderText} // Matches existing text style
-                        />
-                    )}
-                    <WebView
-                        key={youtubeSearchUrl} // Force re-render on URL change
-                        originWhitelist={['https://*', 'http://*']}
-                        source={{ uri: youtubeSearchUrl }}
-                        style={[styles.webView, { opacity: isWebViewLoading ? 0.3 : 1 }]}
-                        javaScriptEnabled={true}
-                        domStorageEnabled={true}
-                        onLoadEnd={() => { 
-                            if(isMountedRef.current) setIsWebViewLoading(false); 
-                            triggerHaptic(); 
-                        }}
-                        onError={({ nativeEvent }) => {
-                             if(isMountedRef.current) {
-                                console.error('YouTube WebView error:', nativeEvent);
-                                setIsWebViewLoading(false);
-                                setCurrentError("Error displaying YouTube results. Please check your connection or try again.");
-                            }
-                        }}
-                    />
-                </Animated.View>
-            );
-        }
-        
         if (aiTextResponse && (contentType === REQUEST_TYPES.SOLVE_QUESTION || contentType === REQUEST_TYPES.EXPLAIN_CONCEPTS)) {
             return (
                 <Animated.View style={[styles.aiResponseContainer, { transform: [{ scale: contentScale }] }]}>
@@ -645,7 +593,6 @@ const AIChatModal = React.memo(({
         switch (contentType) {
             case REQUEST_TYPES.EXPLAIN_CONCEPTS: return { name: "brain", set: "MaterialCommunityIcons" };
             case REQUEST_TYPES.SOLVE_QUESTION: return { name: "robot-happy-outline", set: "MaterialCommunityIcons" };
-            case REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS: return { name: "logo-youtube", set: "Ionicons" };
             default: return { name: "sparkles", set: "Ionicons" };
         }
     };
@@ -668,7 +615,9 @@ const AIChatModal = React.memo(({
                                     iconSet={headerIconInfo.set}
                                     name={headerIconInfo.name}
                                     size={24}
-                                    color={contentType === REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS ? COLORS.error : (COLORS.primary || '#007AFF')}
+                                    color={
+                                        (IS_YOUTUBE_ENABLED && contentType === REQUEST_TYPES.GET_VIDEO_SEARCH_TAGS) ? COLORS.error : (COLORS.primary || '#007AFF')
+                                    }
                                 />
                             </View>
                             <Text style={styles.modalTitle} numberOfLines={1}>{modalTitle}</Text>
