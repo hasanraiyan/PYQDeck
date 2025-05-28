@@ -14,9 +14,9 @@ import {
 import { appVersion, COLORS } from '../constants';
 import Icon from '../components/Icon';
 import ListItemCard from '../components/ListItemCard';
-import { appVersion } from '../constants';
+
 const DeveloperInfoScreen = () => {
-    const appVersion = appVersion;
+    
 
     const handleEmailPress = () => {
         Linking.openURL('mailto:raiyanhasan2006@gmail.com');
