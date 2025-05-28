@@ -41,17 +41,14 @@ import ErrorMessage from '../components/ErrorMessage';
 import EmptyState from '../components/EmptyState';
 import QuestionItem from '../components/QuestionItem';
 import AIChatModal from '../components/AIChatModal';
+import {
+    getBookmarkedQuestions,
+    toggleBookmark as toggleBookmarkHelper,
+} from '../helpers/bookmarkHelpers';
 
 // Ad Configuration
 const AD_UNIT_ID = __DEV__ ? TestIds.BANNER : 'ca-app-pub-7142215738625436/1197117276'; // IMPORTANT: Replace in production
 const AD_FREQUENCY = 4; // Show an ad every N questions
-
-let beuDataStructure = null;
-try {
-    beuDataStructure = require('../data/beuData').default;
-} catch (e) {
-    console.warn("beuData.js not found or failed to load. AI context might be limited.", e);
-}
 
 
 const QuestionListScreen = ({ route, navigation }) => {
@@ -85,6 +82,7 @@ const QuestionListScreen = ({ route, navigation }) => {
     const [isAIChatModalVisible, setIsAIChatModalVisible] = useState(false);
     const [currentAIQuestion, setCurrentAIQuestion] = useState(null);
 
+    const [bookmarkedIds, setBookmarkedIds] = useState(new Set());
     const [currentBranchName, setCurrentBranchName] = useState('N/A');
     const [currentSemesterNumber, setCurrentSemesterNumber] = useState('N/A');
 
@@ -96,6 +94,22 @@ const QuestionListScreen = ({ route, navigation }) => {
                 clearTimeout(feedbackTimerRef.current);
             }
         };
+    }, []);
+
+    // Effect to load initial bookmarks and subscribe to focus events for refresh
+    useEffect(() => {
+        const loadBookmarks = async () => {
+            if (qlsMountedRef.current) {
+                const ids = await getBookmarkedQuestions();
+                if (qlsMountedRef.current) {
+                    setBookmarkedIds(new Set(ids));
+                }
+            }
+        };
+        loadBookmarks(); // Initial load
+
+        const unsubscribeFocus = navigation.addListener('focus', loadBookmarks); // Reload on focus
+        return unsubscribeFocus; // Cleanup listener on unmount
     }, []);
 
     const subjectContextForAI = useMemo(() => {
@@ -243,11 +257,30 @@ const QuestionListScreen = ({ route, navigation }) => {
         await setQuestionCompleted(questionId, newStatus);
         if (newStatus) {
             await updateDailyStreak();
+            // Check mount status again after await before calling displayFeedback
+            if (!qlsMountedRef.current) return;
             displayFeedback("Marked as Done!");
         } else {
+            // Check mount status before calling displayFeedback
+            if (!qlsMountedRef.current) return;
             displayFeedback("Marked as Not Done.");
         }
-    }, [displayFeedback]);
+    }, [displayFeedback, qlsMountedRef]); // Added qlsMountedRef as it's checked
+
+    const handleToggleBookmarkInList = useCallback(async (questionId) => {
+        if (!qlsMountedRef.current) return;
+        const newBookmarkedState = await toggleBookmarkHelper(questionId); // Uses the helper
+        setBookmarkedIds(prevIds => {
+            const newIds = new Set(prevIds); // Create a new Set to ensure state update
+            if (newBookmarkedState) {
+                newIds.add(questionId);
+            } else {
+                newIds.delete(questionId);
+            }
+            return newIds;
+        });
+        displayFeedback(newBookmarkedState ? "Bookmarked!" : "Bookmark removed.");
+    }, [displayFeedback, qlsMountedRef]); // Added qlsMountedRef as it's checked
 
     const handleCopy = useCallback(
         (text) => copyToClipboard(getQuestionPlainText(text), displayFeedback), // Ensure plain text is copied
@@ -258,13 +291,13 @@ const QuestionListScreen = ({ route, navigation }) => {
         if (!qlsMountedRef.current) return;
         setCurrentAIQuestion(item); 
         setIsAIChatModalVisible(true);
-    }, []); 
+    }, [setCurrentAIQuestion, setIsAIChatModalVisible, qlsMountedRef]); // Added dependencies
 
     const closeAIChatModal = useCallback(() => {
         if (!qlsMountedRef.current) return;
         setIsAIChatModalVisible(false);
         setCurrentAIQuestion(null); // Clear the question
-    }, []);
+    }, [setIsAIChatModalVisible, setCurrentAIQuestion, qlsMountedRef]); // Added dependencies
 
     const { listData, finalQuestionCount } = useMemo(() => {
         if (!Array.isArray(questions)) return { listData: [], finalQuestionCount: 0 };
@@ -372,10 +405,12 @@ const QuestionListScreen = ({ route, navigation }) => {
                 onToggleComplete={handleToggleComplete}
                 onCopy={handleCopy}
                 onAskAI={() => handleAskAI(item)}
-                 // Removed onSearch as it's handled by SearchWebViewModal inside QuestionItem
+                isBookmarked={bookmarkedIds.has(item.questionId)}
+                onToggleBookmark={handleToggleBookmarkInList}
             />
         ),
-        [completionStatus, handleToggleComplete, handleCopy, handleAskAI] // AD_UNIT_ID is constant
+        // Ensure all dependencies that affect rendering or behavior are included
+        [completionStatus, handleToggleComplete, handleCopy, handleAskAI, bookmarkedIds, handleToggleBookmarkInList]
     );
 
     const keyExtractor = useCallback((item, index) => {
@@ -539,8 +574,8 @@ const QuestionListScreen = ({ route, navigation }) => {
                 initialNumToRender={7}
                 maxToRenderPerBatch={10}
                 windowSize={21}
-                removeClippedSubviews={Platform.OS === 'android'}
-                extraData={completionStatus}
+                removeClippedSubviews={Platform.OS === 'android'} // Generally good for Android
+                extraData={{ completionStatus, bookmarkedIds }} // Pass as an object if multiple dynamic props affect items
             />
 
             {isAIChatModalVisible && currentAIQuestion && subjectContextForAI && (
